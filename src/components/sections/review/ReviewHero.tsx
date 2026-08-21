@@ -6,7 +6,7 @@ import type { Deadline } from "@/lib/offer";
 import { Container } from "@/components/ui/Layout";
 import { DottedWorldMap } from "@/components/textures/Textures";
 import { DeadlineChip } from "./OfferBits";
-import { RatingCounter } from "./RatingCounter";
+import { ProfileCard } from "./ProfileCard";
 
 /**
  * Hero — design.md §10 signature pattern 1: Deep Navy with the dotted world
@@ -105,7 +105,7 @@ export function ReviewHero({
           </div>
 
           <div className="hidden lg:block">
-            <CounterWithGlow biz={biz} size="lg" />
+            <CounterWithGlow biz={biz} />
           </div>
         </div>
       </Container>
@@ -114,13 +114,7 @@ export function ReviewHero({
 }
 
 /** Soft blue bloom behind the card so it lifts off the navy. */
-function CounterWithGlow({
-  biz,
-  size = "md",
-}: {
-  biz?: string;
-  size?: "md" | "lg";
-}) {
+function CounterWithGlow({ biz }: { biz?: string }) {
   return (
     <div className="relative">
       <div
@@ -128,7 +122,7 @@ function CounterWithGlow({
         className="absolute -inset-6 rounded-lg bg-fynd-blue/25 blur-3xl"
       />
       <div className="relative">
-        <RatingCounter businessName={biz} size={size} />
+        <ProfileCard businessName={biz} />
       </div>
     </div>
   );

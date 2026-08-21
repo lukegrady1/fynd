@@ -122,6 +122,22 @@ export const ratingDemo = {
   to: { rating: 4.8, reviews: 94 },
 } as const;
 
+/**
+ * The hero profile card. The reference layout centres a map-position readout;
+ * this shows review volume instead, because that is what the product moves.
+ */
+export const profileCard = {
+  header: "Business Profile",
+  live: "Live",
+  panelLabel: "Google reviews",
+  panelHint: "Last six months",
+  trend: "Climbing",
+  /** Monthly review volume, in px bar heights. Sample shape, not real data. */
+  months: [10, 14, 18, 26, 34, 44],
+  newReview: "New review received",
+  footnote: "Sample profile. Yours replaces it on day one.",
+} as const;
+
 export const vsl = {
   duration: "2:14",
   caption:

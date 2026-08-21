@@ -159,6 +159,18 @@ These are the `TODO(integration)` markers in the codebase.
   hidden start state lives behind `@media (scripting: enabled)`. Don't replace
   this with a JS library that SSRs `opacity: 0` — that breaks the no-JS
   requirement and reintroduces a hydration mismatch.
+- **The hero card is `ProfileCard`.** Modelled on a Google Business Profile
+  layout, but the dark panel shows REVIEW VOLUME, not map position — the
+  reference showed "local map position #2", which contradicts the
+  reviews-not-ranking positioning and promises something the product doesn't
+  sell. Its floating chips are absolutely positioned; the footnote must stay
+  OUTSIDE that `relative` wrapper or `-bottom-4` anchors below the footnote
+  and the chip lands on top of the text.
+- **Statistics (`content/stats.ts`) are empty and require a `source` per
+  entry.** Figures like "92% of consumers read reviews" circulate everywhere
+  but are unverifiable from here. Do not populate them from a competitor's
+  landing page — pull from the study (BrightLocal's annual Local Consumer
+  Review Survey is the usual citation) and cite the year.
 - **The logo is a raster** (`public/transparent-fynd.PNG`, 1831x2048). Rendered
   through next/image in `src/components/brand/Logo.tsx`. Two things must stay
   true: give it a **height and `w-auto`, never a square box** (it is 0.894:1 and
