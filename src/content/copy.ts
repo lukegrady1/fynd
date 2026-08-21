@@ -438,9 +438,6 @@ export const trust = {
   /** Only shown when real values exist in content/clients.ts. */
   statsHeading: "Where things stand",
   logosHeading: "Businesses running Fynd",
-  /** Shown instead of the logo wall while there's nothing real to show. */
-  emptyFallback:
-    "This list is short on purpose. Ask me on the call who's already running it and I'll put you in touch with them directly.",
 } as const;
 
 export const problem = {

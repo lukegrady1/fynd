@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { offer, trust } from "@/content/copy";
+import { trust } from "@/content/copy";
 import {
   suppliedCaseStudies,
   suppliedLogos,
@@ -12,23 +12,17 @@ import { Reveal } from "./Reveal";
  * Trust bar — headline stats and a client logo wall.
  *
  * Comparable pages in this category open with "trusted by 700+ businesses" and
- * a logo carousel. That proof is earned. Until real values exist in
- * content/clients.ts this renders an honest one-line alternative instead of a
- * fabricated wall, and once logos are supplied it becomes the wall.
+ * a logo carousel. That proof is earned, so this renders NOTHING until real
+ * values exist in content/clients.ts. Fill in trustStats or clientLogos and the
+ * section appears on both pages automatically.
  */
 export function TrustBar() {
   const stats = suppliedStats();
   const logos = suppliedLogos();
-  const empty = stats.length === 0 && logos.length === 0;
+  if (stats.length === 0 && logos.length === 0) return null;
 
   return (
-    <section
-      className={
-        empty
-          ? "border-b border-line bg-white py-5"
-          : "border-b border-line bg-white py-8 lg:py-10"
-      }
-    >
+    <section className="border-b border-line bg-white py-8 lg:py-10">
       <Container>
         {stats.length > 0 && (
           <dl className="flex flex-wrap justify-center gap-x-12 gap-y-6">
@@ -43,7 +37,7 @@ export function TrustBar() {
           </dl>
         )}
 
-        {logos.length > 0 ? (
+        {logos.length > 0 && (
           <>
             <p className="text-center text-micro uppercase text-ink-soft">
               {trust.logosHeading}
@@ -62,24 +56,6 @@ export function TrustBar() {
               ))}
             </ul>
           </>
-        ) : (
-          empty && (
-            /* Nothing real to show yet, so this stays a compact single line
-               rather than a large empty band pretending to be a logo wall. */
-            <p className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-center text-small text-ink-soft">
-              <span className="flex items-center gap-2 font-semibold text-ink">
-                <span
-                  aria-hidden="true"
-                  className="h-1.5 w-1.5 rounded-full bg-fynd-green"
-                />
-                {`${offer.capacity.perMonth} accounts a month`}
-              </span>
-              <span aria-hidden="true" className="text-ink-soft">
-                ·
-              </span>
-              {trust.emptyFallback}
-            </p>
-          )
         )}
       </Container>
     </section>
