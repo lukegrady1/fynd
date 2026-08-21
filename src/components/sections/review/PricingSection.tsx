@@ -4,7 +4,7 @@ import { Check, Minus } from "lucide-react";
 import { offer, pricing } from "@/content/copy";
 import { track } from "@/lib/analytics";
 import { Container, Eyebrow } from "@/components/ui/Layout";
-import { CapacityLine, PriceBlock } from "./OfferBits";
+import { PriceBlock } from "./OfferBits";
 import { Reveal } from "./Reveal";
 
 /**
@@ -107,7 +107,6 @@ export function PricingSection({
             </div>
           </div>
 
-          <CapacityLine className="mt-5 text-center" />
         </Reveal>
       </Container>
     </section>

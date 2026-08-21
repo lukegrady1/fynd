@@ -4,7 +4,7 @@ import { finalCta } from "@/content/copy";
 import { track } from "@/lib/analytics";
 import { Container } from "@/components/ui/Layout";
 import { DotGrid } from "@/components/textures/Textures";
-import { CapacityLine, PriceBlock } from "./OfferBits";
+import { PriceBlock } from "./OfferBits";
 
 /**
  * Dark closer. Restates the outcome and scrolls back to the conversion module.
@@ -46,7 +46,6 @@ export function FinalCta({
             {ctaLabel}
           </button>
 
-          <CapacityLine tone="dark" className="mt-6" />
         </div>
       </Container>
     </section>

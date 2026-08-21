@@ -42,7 +42,7 @@ export default async function StartPage({
   return (
     <>
       <PageTracking page="start" cid={params.cid} />
-      <FunnelHeader />
+      <FunnelHeader tone="dark" />
 
       {/* Bottom bar on mobile needs clearance so it never covers content.
           No top padding on desktop: the sticky bar only fades in after the

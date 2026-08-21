@@ -49,7 +49,7 @@ export default async function CallPage({
   return (
     <>
       <PageTracking page="call" cid={params.cid} />
-      <FunnelHeader />
+      <FunnelHeader tone="dark" />
 
       <main className="flex-1 pb-24 lg:pb-0">
         <ReviewHero

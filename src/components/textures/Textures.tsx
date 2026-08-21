@@ -34,7 +34,7 @@ export function DottedWorldMap({
             height="11"
             patternUnits="userSpaceOnUse"
           >
-            <circle cx="2.4" cy="2.4" r="2.1" fill="#8FA0FF" fillOpacity="0.34" />
+            <circle cx="2.4" cy="2.4" r="2.1" fill="#8FA0FF" fillOpacity="0.26" />
           </pattern>
           <radialGradient id="fynd-map-fade" cx="50%" cy="45%" r="62%">
             <stop offset="0%" stopColor="white" stopOpacity="1" />

@@ -31,13 +31,21 @@ export const offer = {
 } as const;
 
 export const hero = {
-  h1: "Get more Google reviews without asking for them.",
-  /** Used when a `biz` query param is present. */
-  h1WithBiz: (biz: string) => `Get more Google reviews for ${biz}.`,
+  /**
+   * Split across two lines with the payoff in Fynd Green (design.md §4).
+   * When `biz` is present the business name becomes the green line, which
+   * makes the personalization the emphasis rather than a bolted-on suffix.
+   */
+  h1Lead: "Get more Google reviews",
+  h1Accent: "without asking for them.",
+  h1LeadWithBiz: "More Google reviews for",
+  h1AccentWithBiz: (biz: string) => `${biz}.`,
   sub: "Every time you finish a job, your customer gets a text with a one-tap review link. You do nothing. Reviews show up.",
   ctaStart: "Start for $97/mo",
   ctaCall: "Pick a time to talk",
   demoLink: "Watch the 2-min demo",
+  /** Short reassurances under the CTA row — replaces the stacked price block. */
+  trustRow: ["Live in under a week", "No contract", "Cancel anytime"],
 } as const;
 
 /** The signature element: where the counter starts and where it lands. */
@@ -384,7 +392,7 @@ export const trust = {
   logosHeading: "Businesses running Fynd",
   /** Shown instead of the logo wall while there's nothing real to show. */
   emptyFallback:
-    "I take five accounts a month, so this list is short on purpose. Ask me on the call who's on it and I'll put you in touch with them.",
+    "This list is short on purpose. Ask me on the call who's already running it and I'll put you in touch with them directly.",
 } as const;
 
 export const problem = {

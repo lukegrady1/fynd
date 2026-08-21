@@ -34,8 +34,11 @@ in this category (problem → stakes → mechanism → speed → proof → featu
 pricing → objections → close). All wording is original, written for Fynd.
 
 1. Sticky offer bar — bottom on mobile, top on desktop
-2. Hero + rating counter
-3. **Trust bar** — stats + client logos (honest fallback line while empty)
+2. **Hero** — navy + dotted world map with pins (design.md §10 pattern 1),
+   two-line headline with the payoff in Fynd Green, rating counter as a white
+   card on a blue bloom. With `?biz=`, the business name becomes the green
+   line and the card header — the personalization is the emphasis.
+3. **Trust bar** — stats + client logos (compact one-line state while empty)
 4. **Problem** — the four compounding reasons you have no reviews
 5. **Why it matters** — the stakes, on navy
 6. **Mechanism** — phone artifact, 01/02/03 with You/Fynd badges, routing fork
@@ -53,6 +56,11 @@ pricing → objections → close). All wording is original, written for Fynd.
 18. Objection FAQ — 14 entries
 19. **Founder note** + guarantee
 20. Final CTA + compliance footer (SMS opt-out, Google trademark notice)
+
+**The capacity line ("5 accounts a month") appears once**, at the conversion
+module. It was previously repeated at pricing, the final CTA and the trust bar,
+which read as nagging. The trust bar's empty state references the cap without
+restating the whole sentence.
 
 **Pricing is deliberately one plan, not tiers.** Tiers would break the
 single-price Stripe checkout and the founding-rate/deadline mechanics in §5,

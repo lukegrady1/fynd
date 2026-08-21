@@ -8,13 +8,19 @@ import { brand } from "@/lib/brand";
  * Minimal chrome for the funnel pages. They already know who I am — they just
  * got off the phone — so there's no nav and nothing to click away with.
  */
-export function FunnelHeader() {
+export function FunnelHeader({
+  tone = "light",
+}: {
+  /** "dark" sits directly above the navy hero with no seam. */
+  tone?: "light" | "dark";
+}) {
+  const dark = tone === "dark";
   return (
-    <header className="border-b border-line bg-white">
+    <header className={dark ? "bg-navy" : "border-b border-line bg-white"}>
       <Container>
         <div className="flex h-16 items-center">
           <Link href="/" aria-label="Fynd — home">
-            <Logo tone="dark" />
+            <Logo tone={dark ? "light" : "dark"} />
           </Link>
         </div>
       </Container>

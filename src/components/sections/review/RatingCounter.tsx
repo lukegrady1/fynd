@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useReducedMotion } from "@/lib/use-reduced-motion";
 import { ratingDemo } from "@/content/copy";
 import { colors } from "@/lib/brand";
+import { cn } from "@/lib/utils";
 
 /**
  * The signature element. A Google-business-profile-style card whose rating
@@ -16,7 +17,15 @@ import { colors } from "@/lib/brand";
 const DURATION = 1200;
 const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
 
-export function RatingCounter({ businessName }: { businessName?: string }) {
+export function RatingCounter({
+  businessName,
+  size = "md",
+}: {
+  businessName?: string;
+  /** "lg" is the hero treatment — bigger numerals, more padding, delta chip. */
+  size?: "md" | "lg";
+}) {
+  const lg = size === "lg";
   const reduced = useReducedMotion();
   const { from, to } = ratingDemo;
 
@@ -54,10 +63,20 @@ export function RatingCounter({ businessName }: { businessName?: string }) {
   }, [reduced, from, to]);
 
   return (
-    <div className="rounded-md border border-line bg-white p-5 shadow-sm">
+    <div
+      className={cn(
+        "rounded-md border border-line bg-white shadow-sm",
+        lg ? "rounded-lg p-6 lg:p-7" : "p-5",
+      )}
+    >
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
-          <p className="truncate text-[15px] font-semibold text-ink">
+          <p
+            className={cn(
+              "truncate font-semibold text-ink",
+              lg ? "text-h3" : "text-[15px]",
+            )}
+          >
             {businessName ?? ratingDemo.businessName}
           </p>
           <p className="mt-0.5 text-small text-ink-soft">
@@ -71,17 +90,45 @@ export function RatingCounter({ businessName }: { businessName?: string }) {
         aria-live is deliberately off: the number changes ~60x/sec during the
         animation. Screen readers get the settled value from the label below.
       */}
-      <div className="mt-4 flex items-end gap-3" aria-hidden="true">
-        <span className="text-[44px] font-bold leading-none tabular-nums text-ink">
+      <div
+        className={cn("flex items-end gap-3", lg ? "mt-6" : "mt-4")}
+        aria-hidden="true"
+      >
+        <span
+          className={cn(
+            "font-bold leading-none tabular-nums text-ink",
+            lg ? "text-[64px]" : "text-[44px]",
+          )}
+        >
           {value.rating.toFixed(1)}
         </span>
         <div className="pb-1">
-          <Stars rating={value.rating} />
-          <p className="mt-1.5 text-small tabular-nums text-ink-soft">
+          <Stars rating={value.rating} size={lg ? "lg" : "md"} />
+          <p
+            className={cn(
+              "tabular-nums text-ink-soft",
+              lg ? "mt-2 text-body" : "mt-1.5 text-small",
+            )}
+          >
             {value.reviews} Google reviews
           </p>
         </div>
       </div>
+
+      {/* The delta the card just animated through — same figures, stated. */}
+      {lg && (
+        <p
+          aria-hidden="true"
+          className="mt-6 flex items-center gap-2 border-t border-line pt-4 text-small"
+        >
+          <span className="rounded-full bg-fynd-green/15 px-2 py-1 text-micro text-[#0F8F6E]">
+            {`+${to.reviews - from.reviews} reviews`}
+          </span>
+          <span className="text-ink-soft">
+            {`from ${from.rating.toFixed(1)} in six months`}
+          </span>
+        </p>
+      )}
 
       <p className="sr-only">
         {`Rating ${to.rating.toFixed(1)} out of 5, from ${to.reviews} Google reviews.`}
@@ -94,14 +141,14 @@ export function RatingCounter({ businessName }: { businessName?: string }) {
  * Five stars with a fractional fill. Gold is not in the Fynd palette, so stars
  * use Fynd Green — the palette's reserved "rating" colour.
  */
-function Stars({ rating }: { rating: number }) {
+function Stars({ rating, size = "md" }: { rating: number; size?: "md" | "lg" }) {
   const pct = Math.max(0, Math.min(rating / 5, 1)) * 100;
 
   return (
     <span className="relative inline-block align-middle">
       <span className="flex gap-0.5">
         {Array.from({ length: 5 }).map((_, i) => (
-          <StarGlyph key={i} filled={false} />
+          <StarGlyph key={i} filled={false} size={size} />
         ))}
       </span>
       <span
@@ -110,7 +157,7 @@ function Stars({ rating }: { rating: number }) {
       >
         <span className="flex gap-0.5">
           {Array.from({ length: 5 }).map((_, i) => (
-            <StarGlyph key={i} filled />
+            <StarGlyph key={i} filled size={size} />
           ))}
         </span>
       </span>
@@ -118,11 +165,14 @@ function Stars({ rating }: { rating: number }) {
   );
 }
 
-function StarGlyph({ filled }: { filled: boolean }) {
+function StarGlyph({ filled, size }: { filled: boolean; size: "md" | "lg" }) {
   return (
     <svg
       viewBox="0 0 20 20"
-      className="h-[18px] w-[18px] shrink-0"
+      className={cn(
+        "shrink-0",
+        size === "lg" ? "h-6 w-6" : "h-[18px] w-[18px]",
+      )}
       fill={filled ? colors.green : "none"}
       stroke={filled ? colors.green : colors.line}
       strokeWidth={filled ? 0 : 1.75}
