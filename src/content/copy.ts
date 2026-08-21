@@ -399,21 +399,6 @@ export const compliance = {
     "The private feedback path isn't a filter on who gets asked — everybody gets the same message. It's an extra channel for someone who's already unhappy, so they have somewhere to put it besides your public profile.",
 } as const;
 
-export const founder = {
-  eyebrow: "From me",
-  heading: "We just talked.",
-  body: [
-    "So I'll skip the part where I explain who I am.",
-    "Here's the honest version of what you're buying. This isn't complicated software. It's a text that goes out after every job, a link that makes leaving a review take ten seconds instead of two minutes, and a rule that sends unhappy people to me instead of to Google. That's it. The reason it works isn't cleverness — it's that almost nobody asks, and the ones who do ask badly.",
-    "I take five accounts a month because I set each one up myself. If that's full when you call, I'll tell you.",
-  ],
-  signoff: "— Luke",
-  role: "Fynd",
-  guarantee: {
-    heading: "If it doesn't work, leave.",
-    body: "Month to month, cancel from the dashboard or by texting me. No exit call, no retention offer. Every review you collected stays on your Google profile — those belong to your business, not to me.",
-  },
-} as const;
 
 /* ==========================================================================
    Structural expansion — problem → stakes → speed → features → plan.

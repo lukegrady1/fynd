@@ -53,9 +53,12 @@ pricing → objections → close). All wording is original, written for Fynd.
 15. **Pricing** — one plan, included vs. what you won't find
 16. **Conversion module** — Stripe checkout on /start, GHL calendar on /call
 17. **Compliance** — why this is inside Google's rules
-18. Objection FAQ — 14 entries
-19. **Founder note** + guarantee
-20. Final CTA + compliance footer (SMS opt-out, Google trademark notice)
+18. Objection FAQ — 16 entries
+19. Final CTA + compliance footer (SMS opt-out, Google trademark notice)
+
+The founder note ("From me / We just talked") was removed at Luke's request.
+Its guarantee block was already covered almost word-for-word by the FAQ entry
+"Am I locked in?", so no risk reversal was lost with it.
 
 **The offer is free management + software at cost**, not a discounted rate.
 `offer.software` ($97) is what the client pays; `offer.managed` ($197) is what

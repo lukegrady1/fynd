@@ -15,7 +15,6 @@ import { ProofSection } from "@/components/sections/review/ProofSection";
 import { RoiCalculator } from "@/components/sections/review/RoiCalculator";
 import { FitSection } from "@/components/sections/review/FitSection";
 import { Compliance } from "@/components/sections/review/Compliance";
-import { FounderNote } from "@/components/sections/review/FounderNote";
 import { TrustBar, CaseStudies } from "@/components/sections/review/SocialProof";
 import { ProblemSection, WhyReviews } from "@/components/sections/review/ProblemSection";
 import { QuickWins } from "@/components/sections/review/QuickWins";
@@ -77,7 +76,6 @@ export default async function CallPage({
         />
         <Compliance />
         <ObjectionFaq />
-        <FounderNote />
         <FinalCta
           heading={finalCtaCopy.headingCall}
           sub={finalCtaCopy.subCall}
