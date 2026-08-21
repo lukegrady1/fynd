@@ -173,6 +173,27 @@
   .pin-pulse {
     animation: fynd-pulse 2s var(--ease-fynd) infinite;
   }
+
+  /* --- Scroll reveal, progressive enhancement --------------------------------
+     The markup renders VISIBLE. The hidden start state is applied only where
+     scripting is actually enabled, so with JS disabled the copy is simply
+     readable — and there's no inline script, no [data-js] attribute, and so no
+     hydration mismatch. Browsers without `scripting` support just skip the
+     animation and show the content, which is the right degradation. */
+  @media (scripting: enabled) {
+    .js-reveal {
+      opacity: 0;
+      transform: translateY(12px);
+      transition:
+        opacity 300ms var(--ease-fynd),
+        transform 300ms var(--ease-fynd);
+    }
+
+    .js-reveal.is-visible {
+      opacity: 1;
+      transform: none;
+    }
+  }
 }
 
 @keyframes fynd-reveal {
@@ -215,6 +236,13 @@
     opacity: 1;
     transform: none;
     animation: none;
+  }
+
+  .js-reveal,
+  .js-reveal.is-visible {
+    opacity: 1;
+    transform: none;
+    transition: none;
   }
 
   .pin-pulse {

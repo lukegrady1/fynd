@@ -54,4 +54,41 @@ Key conventions:
 Hero map pins are positioned as percentages in an overlay layer and only render
 at `lg` and up: below that the hero stacks and there is no band clear of the text.
 
+
+## Funnel pages — /start and /call
+
+Built from `review-system-landing-pages.md` (the build spec). Two pages, ~85%
+shared; the only structural difference is the conversion module: Stripe checkout
+on `/start`, GHL calendar on `/call`. Mobile at 390px is the primary target —
+the links get texted to a prospect who is still on the phone.
+
+- **All copy lives in `src/content/copy.ts`.** Never inline strings in JSX —
+  headlines get rewritten and A/B tested without touching components.
+- **Testimonials are real quotes only** (`src/content/testimonials.ts`). Slots
+  with `quote: null` render nothing. Never invent a testimonial, name, business,
+  town, or before/after stat.
+- **Urgency must be true** (spec §5). The deadline comes from the `exp` query
+  param; missing/past/garbage falls back to the cohort date in `copy.ts`. Never
+  build a session-based countdown that resets, fake viewer counts, or a timer
+  whose expiry doesn't change anything.
+- **Both pages are `noindex, nofollow`** — the pricing differs from the public
+  site.
+
+Integration boundaries are stubbed and marked `TODO(integration)`:
+`src/lib/stripe.ts`, `src/lib/ghl.ts`, and the two API routes. The Stripe webhook
+rejects unverified requests with 501 by design — wire signature verification
+before pointing anything live at it. See `progress.md` for the full state.
+
+### Traps worth knowing
+
+- `--text-muted` (#8A93A6) **fails WCAG AA** on white (3.09:1) and Fynd Gray
+  (2.80:1). Use `text-ink-soft` (#5A6478) for anything readable. Fynd Green and
+  Fynd Orange have the same problem as small text on white.
+- Scroll reveals (`Reveal`, `.js-reveal`) are progressive enhancement: markup
+  renders visible, the hidden start state sits behind
+  `@media (scripting: enabled)`. Don't swap in a motion library that SSRs
+  `opacity: 0` — it breaks the no-JS requirement and causes hydration mismatches.
+- Deadline strings are formatted in a fixed timezone (`offer.timeZone`) so the
+  server and client agree.
+
 <!-- END:fynd-project-rules -->
