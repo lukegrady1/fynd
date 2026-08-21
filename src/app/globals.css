@@ -1,0 +1,224 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   Fynd design system — tokens are the source of truth (see design.md).
+   Do not introduce colors, fonts, radii, or shadows that aren't defined here.
+   ========================================================================== */
+
+@theme {
+  /* --- Brand palette --- */
+  --color-navy: #0b132b;
+  --color-navy-card: #121b36;
+  --color-fynd-blue: #4c5bff;
+  --color-fynd-blue2: #7a5cff;
+  --color-fynd-green: #19d3a2;
+  --color-fynd-green2: #16b98a;
+  --color-fynd-green-text: #0f8f6e; /* accessible green for small text on white */
+  --color-fynd-orange: #ff8a1f;
+  --color-fynd-gray: #f2f4f7;
+
+  /* --- Text + lines --- */
+  --color-ink: #0b132b;
+  --color-ink-soft: #5a6478;
+  --color-ink-muted: #8a93a6;
+  --color-line: #e3e7ee;
+
+  /* --- Type --- */
+  --font-sans: var(--font-poppins), system-ui, sans-serif;
+
+  --text-h1: 2.5rem; /* 40 */
+  --text-h1--line-height: 3rem; /* 48 */
+  --text-h1--font-weight: 700;
+  --text-h1--letter-spacing: -0.01em;
+
+  --text-display: 3.5rem; /* 56 */
+  --text-display--line-height: 4rem; /* 64 */
+  --text-display--font-weight: 700;
+  --text-display--letter-spacing: -0.01em;
+
+  --text-h2: 1.75rem; /* 28 */
+  --text-h2--line-height: 2.25rem; /* 36 */
+  --text-h2--font-weight: 600;
+  --text-h2--letter-spacing: -0.01em;
+
+  --text-h3: 1.25rem; /* 20 */
+  --text-h3--line-height: 1.75rem; /* 28 */
+  --text-h3--font-weight: 600;
+
+  --text-body: 1rem; /* 16 */
+  --text-body--line-height: 1.5rem; /* 24 */
+  --text-body--font-weight: 500;
+
+  --text-small: 0.875rem; /* 14 */
+  --text-small--line-height: 1.25rem; /* 20 */
+  --text-small--font-weight: 400;
+
+  --text-micro: 0.75rem; /* 12 */
+  --text-micro--line-height: 1rem; /* 16 */
+  --text-micro--font-weight: 600;
+  --text-micro--letter-spacing: 0.12em;
+
+  --text-data: 2.5rem; /* 40 */
+  --text-data--line-height: 1.1;
+  --text-data--font-weight: 700;
+
+  /* --- Radii (8 / 16 / 24 / full) --- */
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+
+  /* --- Shadows --- */
+  --shadow-sm: 0 2px 8px rgba(11, 19, 43, 0.05);
+  --shadow-md: 0 8px 24px rgba(11, 19, 43, 0.08);
+  --shadow-lg: 0 16px 48px rgba(11, 19, 43, 0.12);
+  --shadow-blue: 0 6px 16px rgba(76, 91, 255, 0.28);
+
+  /* --- Motion --- */
+  --ease-fynd: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* --- Layout --- */
+  --container-content: 1200px;
+}
+
+/* Gradients — decorative blocks only. Never body text, never primary buttons. */
+@theme {
+  --background-image-grad-blue: linear-gradient(135deg, #4c5bff 0%, #7a5cff 100%);
+  --background-image-grad-green: linear-gradient(135deg, #19d3a2 0%, #16b98a 100%);
+  --background-image-grad-mesh: linear-gradient(135deg, #4c5bff 0%, #19d3a2 100%);
+}
+
+:root {
+  --grad-blue: linear-gradient(135deg, #4c5bff 0%, #7a5cff 100%);
+  --grad-green: linear-gradient(135deg, #19d3a2 0%, #16b98a 100%);
+  --grad-mesh: linear-gradient(135deg, #4c5bff 0%, #19d3a2 100%);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background: #ffffff;
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.5rem;
+    font-weight: 500; /* Body is Medium — a deliberate brand trait */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Visible focus ring on everything interactive. */
+  :focus-visible {
+    outline: 3px solid rgba(76, 91, 255, 0.4);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  ::selection {
+    background: rgba(76, 91, 255, 0.18);
+  }
+}
+
+@layer utilities {
+  /* Paragraph max measure — 65ch (~640px). */
+  .measure {
+    max-width: 65ch;
+  }
+
+  /* --- Background treatment 1: dot grid ------------------------------------
+     3px dots on a 24px grid in blue/green, fading toward the edges. */
+  .tex-dots {
+    background-image:
+      radial-gradient(circle, rgba(76, 91, 255, 0.35) 1.5px, transparent 1.5px),
+      radial-gradient(circle, rgba(25, 211, 162, 0.28) 1.5px, transparent 1.5px);
+    background-size: 24px 24px, 24px 24px;
+    background-position: 0 0, 12px 12px;
+    mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, #000 40%, transparent 100%);
+  }
+
+  .tex-dots-dark {
+    background-image:
+      radial-gradient(circle, rgba(76, 91, 255, 0.5) 1.5px, transparent 1.5px),
+      radial-gradient(circle, rgba(25, 211, 162, 0.35) 1.5px, transparent 1.5px);
+    background-size: 24px 24px, 24px 24px;
+    background-position: 0 0, 12px 12px;
+    mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, #000 40%, transparent 100%);
+  }
+
+  /* --- Background treatments 2 & 3: topographic contour lines -------------- */
+  .tex-topo-dark {
+    background-image: repeating-radial-gradient(
+      ellipse 46% 60% at 62% 34%,
+      transparent 0 26px,
+      rgba(255, 255, 255, 0.06) 26px 27px
+    );
+  }
+
+  .tex-topo-light {
+    background-image: repeating-radial-gradient(
+      ellipse 46% 60% at 62% 34%,
+      transparent 0 26px,
+      rgba(227, 231, 238, 0.9) 26px 27px
+    );
+  }
+
+  /* --- Motion: scroll reveal (16px translate-Y + fade, 400ms) -------------- */
+  .reveal {
+    opacity: 0;
+    transform: translateY(16px);
+    animation: fynd-reveal 400ms var(--ease-fynd) forwards;
+  }
+
+  .pin-pulse {
+    animation: fynd-pulse 2s var(--ease-fynd) infinite;
+  }
+}
+
+@keyframes fynd-reveal {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes fynd-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  70% {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+
+/* Respect reduced motion: keep opacity fades, drop transforms. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
+
+  .pin-pulse {
+    animation: none;
+    opacity: 0.4;
+  }
+}
