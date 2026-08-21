@@ -57,6 +57,18 @@ pricing → objections → close). All wording is original, written for Fynd.
 19. **Founder note** + guarantee
 20. Final CTA + compliance footer (SMS opt-out, Google trademark notice)
 
+**The offer is free management + software at cost**, not a discounted rate.
+`offer.software` ($97) is what the client pays; `offer.managed` ($197) is what
+management costs once the free period ends. There is deliberately no
+struck-through "was $197" — the discount IS the free labour, and a crossed-out
+price on top of that would be a second unexplained anchor. The anchor is the
+`Management: Free / Software: $97` pair.
+
+**`offer.goal` is a PLACEHOLDER** ("100 reviews"). Luke to set the real
+threshold that ends the free period. It has to be something the client can
+verify on their own profile and something Luke will honour. It appears in the
+hero, the pricing card, and two FAQ answers, all driven from that one value.
+
 **The capacity line ("5 accounts a month") appears once**, at the conversion
 module. It was previously repeated at pricing, the final CTA and the trust bar,
 which read as nagging. The trust bar's empty state references the cap without
@@ -117,6 +129,13 @@ These are the `TODO(integration)` markers in the codebase.
 7. **Capacity + cohort deadline** — `src/content/copy.ts`. `spotsLeft` and
    `cohortDeadlineIso` are set by hand and must be kept current. Deliberately
    not automated: §5 forbids a fake live-decrementing counter.
+   **The deadline now holds the free management, not a price.** Set `exp` in
+   the GHL workflow to control the window — a short one (call time + 1h) shows
+   a live ticking countdown, a long one shows a date. It does not reset on
+   reload because it lives in the link, and the expiry genuinely changes the
+   price ($197 management), which is what §5 requires. Luke asked for a
+   10-minute page-load timer; that was declined once as a session-based
+   countdown that restarts, which §5 explicitly lists under "do not build".
 8. **Real 4G perf check** — measured on localhost only. Re-run throttled on
    Vercel before trusting the <1.5s LCP target.
 9. **Illustrative proof figures** — `proof` and `roi` in `src/content/copy.ts`

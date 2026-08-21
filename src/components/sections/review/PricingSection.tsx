@@ -85,7 +85,7 @@ export function PricingSection({
               </div>
 
               {/* included side */}
-              <div className="p-6 lg:p-8">
+              <div className="flex flex-col p-6 lg:p-8">
                 <p className="text-micro uppercase text-ink-soft">
                   {pricing.includedHeading}
                 </p>
@@ -103,6 +103,16 @@ export function PricingSection({
                     </li>
                   ))}
                 </ul>
+
+                {/* The free period ends — said plainly, not buried in the FAQ. */}
+                <div className="mt-auto rounded-sm border border-line bg-fynd-gray p-4 lg:mt-8">
+                  <p className="text-micro uppercase text-ink-soft">
+                    {pricing.afterHeading}
+                  </p>
+                  <p className="mt-2 text-small text-ink">
+                    {pricing.afterBody}
+                  </p>
+                </div>
               </div>
             </div>
           </div>

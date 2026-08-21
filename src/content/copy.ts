@@ -5,13 +5,39 @@
 
 export const offer = {
   productName: "Review System",
-  priceNow: 97,
-  priceLater: 197,
-  /** One-line version of the price story. The long version lives in the FAQ. */
-  priceReason:
-    "$97 is the founding-client rate while we build case studies in your trade.",
+
+  /**
+   * The angle: Luke does the work for free and the client covers the software
+   * at cost. `software` is what they actually pay today; `managed` is what
+   * management costs once the free window closes.
+   *
+   * There is deliberately no struck-through "was $197" — the discount IS the
+   * free labour, and a crossed-out price on top of it would be a second,
+   * unexplained anchor.
+   */
+  software: 97,
+  managed: 197,
+
+  /**
+   * PLACEHOLDER — Luke to set the real goal that ends the free period.
+   * Whatever goes here has to be something the client can verify themselves,
+   * and something Luke will actually honour.
+   */
+  goal: "100 reviews",
+
+  labels: {
+    management: "Management",
+    software: "Software",
+    free: "Free",
+  },
+
+  /** One-line version of the angle. The long version lives in the FAQ. */
+  angle: "You cover the software. I run the whole thing for free until you hit 100 reviews.",
+  afterLine: "After that, management is $197/mo — and only if you want to keep it.",
   terms: "No contract. Cancel anytime.",
-  lockLine: "Locked at $97 for as long as you stay.",
+  lockLine:
+    "Nothing else to pay while the free period runs. No setup fee, no per-seat charge.",
+
   /**
    * Capacity is real and set by hand — never a live-decrementing counter.
    * Update these two together.
@@ -46,6 +72,8 @@ export const hero = {
   demoLink: "Watch the 2-min demo",
   /** Short reassurances under the CTA row — replaces the stacked price block. */
   trustRow: ["Live in under a week", "No contract", "Cancel anytime"],
+  /** Sits under the price rows in the hero. */
+  angleLine: "I run it for free until you hit 100 reviews. You just cover the software.",
 } as const;
 
 /** The signature element: where the counter starts and where it lands. */
@@ -68,7 +96,7 @@ export const testimonialsSection = {
 } as const;
 
 export const checkout = {
-  heading: `${offer.productName} — $${offer.priceNow}/mo`,
+  heading: `${offer.productName} — $${offer.software}/mo`,
   cta: "Start for $97/mo",
   secure: "Secure checkout by Stripe",
   billing: "First charge today, then monthly.",
@@ -111,8 +139,16 @@ export const faq = {
       a: "Month to month. Cancel anytime from your dashboard or by texting me. The reviews you've collected are on your Google Business Profile — they're yours and they stay there whether you keep paying or not.",
     },
     {
-      q: `Why is it $${offer.priceNow} when it says $${offer.priceLater}?`,
-      a: `Because I'm still building case studies in your trade, and a real before-and-after from your business is worth more to me right now than the difference. $${offer.priceNow} is the founding-client rate. It goes to $${offer.priceLater} once I have 25 accounts. If you're on at $${offer.priceNow}, you stay at $${offer.priceNow} for as long as you stay subscribed — it doesn't step up later.`,
+      q: `Why would you work for free?`,
+      a: `Because I need proof in your trade more than I need your money right now. A real before-and-after from a business like yours is worth more to me than a few hundred dollars, and the fastest way to get one is to do the work properly and let the result speak. The $${offer.software} covers the platform the system runs on — messaging, the dashboard, the integrations. That's a real cost I can't absorb. My time is the part I'm not charging for.`,
+    },
+    {
+      q: `What happens when I hit the goal?`,
+      a: `I'll tell you, and then you decide. Management becomes $${offer.managed}/mo if you want me to keep running it, or you keep the system at $${offer.software}/mo and run it yourself — the requests keep going out either way. You can also just stop. The reviews are on your profile and they stay there.`,
+    },
+    {
+      q: `What's the catch?`,
+      a: `Two, and they're both real. First, I only take ${offer.capacity.perMonth} accounts a month, because I'm doing the setup and the ongoing work by hand — if that's full when you call, I'll say so. Second, this only works if you're actually finishing jobs for people who are happy. I can automate the asking. I can't fix the work.`,
     },
   ],
 } as const;
@@ -518,7 +554,7 @@ export const features = {
 export const pricing = {
   eyebrow: "Pricing",
   heading: "One plan. Everything in it.",
-  sub: "Most tools in this category split the useful parts across three tiers and charge per seat. This is the whole product at one price.",
+  sub: "You are paying for software, not for me. I build it, run it, and keep it running for free until you hit the goal — the $97 covers the platform underneath it.",
   planName: "Review System",
   includedHeading: "Included",
   included: [
@@ -538,8 +574,11 @@ export const pricing = {
     "Setup fees",
     "Per-seat charges",
     "A contract",
-    "A price that steps up later",
+    "A management fee, until you hit the goal",
   ],
+  /** Stated plainly rather than buried — the free period does end. */
+  afterHeading: "When the free period ends",
+  afterBody: `You'll have hit ${offer.goal}. Keep me running it for $${offer.managed}/mo, keep the software at $${offer.software}/mo and run it yourself, or stop. Your reviews stay on your profile either way.`,
 } as const;
 
 /** Additional FAQ entries appended to the originals. */

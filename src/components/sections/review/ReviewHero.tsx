@@ -88,19 +88,32 @@ export function ReviewHero({
               </button>
             </div>
 
-            {/* One compact price line — the stacked block that used to sit here
-                repeated the deadline chip and buried the CTA. */}
-            <p className="mt-7 flex flex-wrap items-baseline gap-x-3 gap-y-1">
-              <span className="text-small tabular-nums text-white/50 line-through decoration-fynd-orange decoration-2">
-                ${offer.priceLater}/mo
-              </span>
-              <span className="text-h3 font-bold tabular-nums text-white">
-                ${offer.priceNow}
-                <span className="text-body font-medium text-white/72">/mo</span>
-              </span>
-              <span className="text-small text-white/60">
-                {offer.priceReason}
-              </span>
+            {/* Anchored on the free labour rather than a struck-through
+                price — the discount is that the work costs nothing. */}
+            <div className="mt-7 flex flex-wrap items-baseline gap-x-8 gap-y-2">
+              <p className="flex items-baseline gap-2.5">
+                <span className="text-small text-white/60">
+                  {offer.labels.management}
+                </span>
+                <span className="text-h3 font-bold text-fynd-green">
+                  {offer.labels.free}
+                </span>
+              </p>
+              <p className="flex items-baseline gap-2.5">
+                <span className="text-small text-white/60">
+                  {offer.labels.software}
+                </span>
+                <span className="text-h3 font-bold tabular-nums text-white">
+                  ${offer.software}
+                  <span className="text-body font-medium text-white/72">
+                    /mo
+                  </span>
+                </span>
+              </p>
+            </div>
+
+            <p className="mt-2 max-w-[500px] text-small text-white/60">
+              {hero.angleLine}
             </p>
 
             <ul className="mt-5 flex flex-wrap gap-x-6 gap-y-2">

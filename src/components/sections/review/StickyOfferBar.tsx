@@ -65,24 +65,30 @@ export function StickyOfferBar({
       <div className="mx-auto flex w-full max-w-[1200px] items-center gap-3 px-4 py-3 sm:px-6">
         <div className="hidden min-w-0 flex-1 items-center gap-4 lg:flex">
           <p className="flex shrink-0 items-baseline gap-2">
-            <span className="text-small tabular-nums text-white/55 line-through decoration-fynd-orange decoration-2">
-              ${offer.priceLater}/mo
+            <span className="text-small text-white/60">
+              {offer.labels.management}
+            </span>
+            <span className="text-h3 font-bold text-fynd-green">
+              {offer.labels.free}
+            </span>
+            <span className="text-small text-white/40">·</span>
+            <span className="text-small text-white/60">
+              {offer.labels.software}
             </span>
             <span className="text-h3 font-bold tabular-nums text-white">
-              ${offer.priceNow}/mo
+              ${offer.software}/mo
             </span>
-            <span className="text-small text-white/72">· no contract</span>
           </p>
           <DeadlineChip deadline={deadline} tone="dark" className="shrink-0" />
         </div>
 
         {/* Mobile: price stays compact so the button keeps its full width. */}
-        <p className="flex shrink-0 items-baseline gap-1.5 lg:hidden">
-          <span className="text-[13px] tabular-nums text-white/55 line-through decoration-fynd-orange decoration-2">
-            ${offer.priceLater}
+        <p className="flex shrink-0 flex-col leading-tight lg:hidden">
+          <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-fynd-green">
+            {`${offer.labels.management} ${offer.labels.free.toLowerCase()}`}
           </span>
           <span className="text-body font-bold tabular-nums text-white">
-            ${offer.priceNow}
+            ${offer.software}
             <span className="text-small font-medium text-white/72">/mo</span>
           </span>
         </p>

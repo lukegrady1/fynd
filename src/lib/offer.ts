@@ -105,8 +105,10 @@ export const resolveDeadline = (
 export const isLive = (d: Deadline, now: number = Date.now()) => d.at > now;
 
 export const priceBlock = {
-  now: offer.priceNow,
-  later: offer.priceLater,
-  formattedNow: `$${offer.priceNow}`,
-  formattedLater: `$${offer.priceLater}`,
+  /** What the client pays today — the software, at cost. */
+  software: offer.software,
+  /** What management costs once the free window closes. */
+  managed: offer.managed,
+  formattedSoftware: `$${offer.software}`,
+  formattedManaged: `$${offer.managed}`,
 } as const;

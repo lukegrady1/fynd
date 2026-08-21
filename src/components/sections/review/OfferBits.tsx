@@ -63,7 +63,7 @@ const pad = (n: number) => String(n).padStart(2, "0");
  * a deadline days away returns a constant and never re-renders the chip.
  */
 function useCountdownLabel(deadline: Deadline): string | null {
-  const dateLabel = `$${offer.priceNow} rate held until ${deadline.formatted}`;
+  const dateLabel = `Free management held until ${deadline.formatted}`;
 
   const store = useMemo(() => {
     const at = deadline.at;
@@ -98,12 +98,16 @@ function useCountdownLabel(deadline: Deadline): string | null {
   const h = Math.floor(secondsLeft / 3600);
   const m = Math.floor((secondsLeft % 3600) / 60);
   const s = secondsLeft % 60;
-  return `$${offer.priceNow} rate expires in ${h}:${pad(m)}:${pad(s)}`;
+  return `Free management ends in ${h}:${pad(m)}:${pad(s)}`;
 }
 
 /**
- * Price block. The struck-through $197 needs a reason or it reads as a fake
- * anchor, so the founding-rate line sits directly beneath it.
+ * Price block.
+ *
+ * The anchor is the free labour, not a struck-through price: management reads
+ * $0 against the software cost they actually pay. A crossed-out "was $197" on
+ * top of that would be a second, unexplained anchor — exactly the fake-anchor
+ * problem the build spec warns about.
  */
 export function PriceBlock({
   tone = "light",
@@ -118,40 +122,34 @@ export function PriceBlock({
 
   return (
     <div className={className}>
-      <p className="flex items-baseline gap-2.5">
+      <dl className="flex flex-col gap-2">
+        <Row
+          dark={dark}
+          label={offer.labels.management}
+          value={offer.labels.free}
+          accent
+        />
         <span
-          className={cn(
-            "text-[13px] font-medium tabular-nums line-through decoration-fynd-orange decoration-2",
-            dark ? "text-white/55" : "text-ink-soft",
-          )}
-        >
-          ${offer.priceLater}/mo
-        </span>
-        <span
-          className={cn(
-            "text-[28px] font-bold leading-none tabular-nums",
-            dark ? "text-white" : "text-ink",
-          )}
-        >
-          ${offer.priceNow}
-          <span
-            className={cn(
-              "ml-0.5 text-body font-medium",
-              dark ? "text-white/72" : "text-ink-soft",
-            )}
-          >
-            /mo
-          </span>
-        </span>
-      </p>
+          aria-hidden="true"
+          className={cn("h-px w-full", dark ? "bg-white/10" : "bg-line")}
+        />
+        <Row
+          dark={dark}
+          label={offer.labels.software}
+          value={`$${offer.software}`}
+          suffix="/mo"
+        />
+      </dl>
+
       <p
         className={cn(
-          "mt-1.5 text-small",
+          "mt-3 text-small",
           dark ? "text-white/72" : "text-ink-soft",
         )}
       >
         {offer.terms}
       </p>
+
       {showReason && (
         <p
           className={cn(
@@ -159,9 +157,55 @@ export function PriceBlock({
             dark ? "text-white/55" : "text-ink-soft",
           )}
         >
-          {offer.priceReason}
+          {offer.angle}
         </p>
       )}
+    </div>
+  );
+}
+
+function Row({
+  dark,
+  label,
+  value,
+  suffix,
+  accent,
+}: {
+  dark: boolean;
+  label: string;
+  value: string;
+  suffix?: string;
+  accent?: boolean;
+}) {
+  return (
+    <div className="flex items-baseline justify-between gap-4">
+      <dt className={cn("text-body", dark ? "text-white/72" : "text-ink-soft")}>
+        {label}
+      </dt>
+      <dd
+        className={cn(
+          "text-h3 font-bold tabular-nums",
+          accent
+            ? dark
+              ? "text-fynd-green"
+              : "text-[#0F8F6E]"
+            : dark
+              ? "text-white"
+              : "text-ink",
+        )}
+      >
+        {value}
+        {suffix && (
+          <span
+            className={cn(
+              "text-body font-medium",
+              dark ? "text-white/72" : "text-ink-soft",
+            )}
+          >
+            {suffix}
+          </span>
+        )}
+      </dd>
     </div>
   );
 }
