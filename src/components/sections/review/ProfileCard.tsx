@@ -149,7 +149,7 @@ export function ProfileCard({
           </div>
 
           <p className="sr-only">
-            {`Sample profile: rating ${to.rating.toFixed(1)} out of 5, from ${to.reviews} Google reviews.`}
+            {`Business profile preview: rating ${to.rating.toFixed(1)} out of 5, from ${to.reviews} Google reviews.`}
           </p>
         </div>
 

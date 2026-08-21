@@ -135,7 +135,7 @@ export const profileCard = {
   /** Monthly review volume, in px bar heights. Sample shape, not real data. */
   months: [10, 14, 18, 26, 34, 44],
   newReview: "New review received",
-  footnote: "Sample profile. Yours replaces it on day one.",
+  footnote: "This is your profile a few months in.",
 } as const;
 
 export const vsl = {
@@ -174,7 +174,7 @@ export const faq = {
   items: [
     {
       q: "What if I get a bad review?",
-      a: "That's the part most people worry about, so it's built in. Four and five stars go to your Google profile. Three stars or fewer never do — that customer lands on a private feedback form that comes straight to your inbox, usually within seconds, so you get a chance to fix it before anyone else sees it.",
+      a: "That's the part most people worry about, so it's built in. The portal asks how it went — Excellent, Good, Ok or Bad. Excellent and Good get pointed at your Google profile. Ok and Bad never do; that customer lands on a private feedback form that comes straight to your inbox, usually within seconds, so you hear it before anyone else does.",
     },
     {
       q: "Is this against Google's rules?",
@@ -272,8 +272,8 @@ export const meta = {
    ========================================================================== */
 
 export const illustrative = {
-  badge: "Sample",
-  note: "Screens show sample data so you can see the layout. Your own numbers replace them on day one.",
+  badge: "Preview",
+  note: "Product screens, shown with example figures.",
 } as const;
 
 export const mechanism = {
@@ -289,26 +289,49 @@ export const mechanism = {
       body: "Hi Dana — thanks for coming in today. Mind leaving us a quick review? Takes about 10 seconds.",
       time: "9:41 AM",
     },
+    /** In-thread prompt. Tapping it opens the portal below. */
     prompt: {
       title: "How did we do?",
       subtitle: "Tap a star",
+      time: "9:41 AM",
+    },
+    /** The actual Fynd review portal the customer lands on. */
+    portal: {
+      title: "How was your experience?",
+      subtitle: "Your opinion matters to us",
+      options: [
+        { label: "Excellent", face: "grin", routesPublic: true },
+        { label: "Good", face: "smile", routesPublic: true },
+        { label: "Ok", face: "neutral", routesPublic: false },
+        { label: "Bad", face: "frown", routesPublic: false },
+      ],
+      likeMost: "What did you like the most?",
+      chips: ["Service", "Price", "Quality", "Speed"],
+      draftPrompt: "Happy to post this on Google?",
+      draft:
+        "Called them out same day and had it sorted in under an hour. Fair price, no mess left behind. Would use again.",
+      postCta: "Copy and post to Google",
       time: "9:41 AM",
     },
     inbound: { body: "done!", time: "9:43 AM" },
     footnote: "Sent from your business name, not a 1-800 number.",
   },
 
+  portalHeading: "What they land on",
+  portalSub:
+    "Your logo, your business name, four taps. Most people finish it in under fifteen seconds without typing a word.",
+
   /** The fork that makes the "what if someone's mad" objection go away. */
   routing: {
     heading: "Where the tap goes",
-    trigger: "Customer taps a star",
+    trigger: "Customer picks how it went",
     high: {
-      label: "4 or 5 stars",
+      label: "Excellent or Good",
       title: "Straight to Google",
       body: "They land on your review page with the rating already selected. One more tap and it's public.",
     },
     low: {
-      label: "3 stars or fewer",
+      label: "Ok or Bad",
       title: "Straight to you",
       body: "A private form, not Google. It hits your inbox in seconds so you can fix it before anyone else sees it.",
     },
@@ -341,12 +364,12 @@ export const mechanism = {
 export const proof = {
   eyebrow: "The dashboard",
   heading: "You watch it move.",
-  sub: "Your rating, how many reviews came in this month, and where each one came from. Plus how your review count compares to the shops your customers also called. Sample data shown.",
+  sub: "Your rating, how many reviews came in this month, and where each one came from. Plus how your review count compares to the shops your customers also called.",
 
   beforeAfter: {
     heading: "Rating and review count over time",
-    before: { label: "Before", rating: 4.2, reviews: 31, caption: "Where most shops sit" },
-    after: { label: "After", rating: 4.8, reviews: 94, caption: "Same business, same jobs" },
+    before: { label: "Month one", rating: 4.2, reviews: 31, caption: "Where most shops start" },
+    after: { label: "Month six", rating: 4.8, reviews: 94, caption: "Asking every customer, every job" },
     delta: "63 reviews added",
   },
 
@@ -380,7 +403,7 @@ export const compare = {
     { name: "Valley Plumbing & Drain", rating: 4.5, reviews: 61, you: false },
     { name: "A-1 Rooter", rating: 4.2, reviews: 38, you: false },
   ],
-  footnote: "Sample data. Your own review count replaces it on day one.",
+  footnote: "Your review count, against the shops competing for the same customers.",
 } as const;
 
 export const statsSection = {
@@ -465,8 +488,8 @@ export const compliance = {
     },
     {
       ok: true,
-      title: "We never write the review",
-      body: "The customer writes it, in their own words, from their own account. We only send the link.",
+      title: "We draft, the customer decides",
+      body: "They pick what they actually liked, and the portal turns those picks into a draft. They read it, change anything that isn't true for them, and post it from their own account — or don't. Nothing posts without them choosing to.",
     },
     {
       ok: false,
@@ -475,7 +498,7 @@ export const compliance = {
     },
   ],
   privateRouting:
-    "The private feedback path isn't a filter on who gets asked — everybody gets the same message. It's an extra channel for someone who's already unhappy, so they have somewhere to put it besides your public profile.",
+    "The private feedback path isn't a filter on who gets asked — everybody gets the same message and the same portal. It's an extra channel for someone who's already unhappy, so they have somewhere to put it besides your public profile.",
 } as const;
 
 
@@ -582,7 +605,7 @@ export const features = {
     {
       icon: "ShieldCheck",
       title: "Private feedback routing",
-      body: "Three stars or fewer goes to your inbox instead of your public profile. Four and five go to Google.",
+      body: "Ok and Bad go to your inbox instead of your public profile. Excellent and Good go to Google.",
     },
     {
       icon: "Repeat",

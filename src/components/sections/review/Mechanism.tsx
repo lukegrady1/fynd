@@ -3,6 +3,7 @@ import { mechanism } from "@/content/copy";
 import { colors } from "@/lib/brand";
 import { Container, Eyebrow } from "@/components/ui/Layout";
 import { Bubble, PhoneFrame } from "./PhoneFrame";
+import { ReviewPortal } from "./ReviewPortal";
 import { Reveal } from "./Reveal";
 
 /**
@@ -103,6 +104,19 @@ export function Mechanism() {
               <RoutingFork />
             </Reveal>
           </div>
+        </div>
+
+        {/* What the link opens. The one screen a customer actually sees. */}
+        <div className="mt-16 grid items-center gap-10 lg:mt-24 lg:grid-cols-[1fr_minmax(0,380px)] lg:gap-16">
+          <Reveal>
+            <h3 className="text-h2 text-white">{mechanism.portalHeading}</h3>
+            <p className="measure mt-3 text-body text-white/75">
+              {mechanism.portalSub}
+            </p>
+          </Reveal>
+          <Reveal delay={0.06}>
+            <ReviewPortal business={sms.business} />
+          </Reveal>
         </div>
       </Container>
     </section>
