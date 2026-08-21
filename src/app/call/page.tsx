@@ -55,7 +55,6 @@ export default async function CallPage({
       <main className="flex-1 pb-24 lg:pb-0">
         <ReviewHero
           biz={params.biz}
-          deadline={deadline}
           variant="call"
           targetId="convert"
         />

@@ -2,10 +2,8 @@
 
 import { hero } from "@/content/copy";
 import { track } from "@/lib/analytics";
-import type { Deadline } from "@/lib/offer";
 import { Container } from "@/components/ui/Layout";
 import { DottedWorldMap } from "@/components/textures/Textures";
-import { DeadlineChip } from "./OfferBits";
 import { ProfileCard } from "./ProfileCard";
 
 /**
@@ -20,12 +18,10 @@ import { ProfileCard } from "./ProfileCard";
  */
 export function ReviewHero({
   biz,
-  deadline,
   variant,
   targetId,
 }: {
   biz?: string;
-  deadline: Deadline;
   /** "start" sells the product, "call" sells the call. See copy.ts. */
   variant: "start" | "call";
   targetId: string;
@@ -48,7 +44,7 @@ export function ReviewHero({
   return (
     <section
       id="hero"
-      className="relative isolate overflow-hidden bg-navy pb-14 pt-12 lg:pb-24 lg:pt-20"
+      className="relative isolate overflow-hidden bg-navy pb-20 pt-16 lg:min-h-[720px] lg:pb-32 lg:pt-28"
     >
       <DottedWorldMap />
       <div
@@ -59,11 +55,7 @@ export function ReviewHero({
       <Container className="relative">
         <div className="grid items-center gap-12 lg:grid-cols-[1.05fr_minmax(0,420px)] lg:gap-16">
           <div>
-            {/* Deadline reads as a quiet eyebrow, not a bordered orange pill.
-                As a pill it competed with the headline for first attention. */}
-            <DeadlineChip deadline={deadline} tone="dark" variant="eyebrow" />
-
-            <h1 className="mt-4 text-[30px] font-bold leading-[1.08] tracking-[-0.02em] text-white min-[420px]:text-[34px] sm:text-[44px] lg:text-[52px]">
+            <h1 className="text-[30px] font-bold leading-[1.08] tracking-[-0.02em] text-white min-[420px]:text-[34px] sm:text-[44px] lg:text-[52px]">
               <span className="block">{lead}</span>
               <span className="block text-fynd-green">{accent}</span>
             </h1>

@@ -51,7 +51,6 @@ export default async function StartPage({
       <main className="flex-1 pb-24 lg:pb-0">
         <ReviewHero
           biz={params.biz}
-          deadline={deadline}
           variant="start"
           targetId="convert"
         />
