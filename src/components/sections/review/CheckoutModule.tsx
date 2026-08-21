@@ -5,8 +5,8 @@ import Link from "next/link";
 import { Lock } from "lucide-react";
 import { checkout, offer } from "@/content/copy";
 import { track } from "@/lib/analytics";
-import { Container } from "@/components/ui/Layout";
-import { CapacityLine, PriceBlock } from "./OfferBits";
+import { Container, Eyebrow } from "@/components/ui/Layout";
+import { PriceBlock } from "./OfferBits";
 
 /**
  * /start — instant checkout. Same card dimensions as the calendar module on
@@ -52,8 +52,17 @@ export function CheckoutModule({
   };
 
   return (
-    <section id="convert" className="scroll-mt-20 bg-fynd-gray py-12 lg:py-20">
+    <section id="convert" className="scroll-mt-20 bg-fynd-gray py-14 lg:py-24">
       <Container>
+        {/* Bridge from the mechanism above. Without it the card lands cold. */}
+        <div className="mx-auto mb-8 max-w-[520px] text-center">
+          <Eyebrow variant="pill">{checkout.eyebrow}</Eyebrow>
+          <h2 className="mt-4 text-h1 text-ink">{checkout.sectionHeading}</h2>
+          <p className="mt-3 text-body text-ink-soft">
+            {checkout.sectionSub}
+          </p>
+        </div>
+
         <div className="mx-auto max-w-[520px]">
           {cancelled && (
             <p className="mb-4 rounded-sm border border-line bg-white px-4 py-3 text-small text-ink-soft">
@@ -68,7 +77,7 @@ export function CheckoutModule({
           )}
 
           <div className="rounded-lg border-2 border-fynd-blue bg-white p-6 lg:p-8">
-            <h2 className="text-h2 text-ink">{checkout.heading}</h2>
+            <h3 className="text-h3 text-ink">{checkout.heading}</h3>
 
             <PriceBlock className="mt-5" />
 
@@ -104,7 +113,6 @@ export function CheckoutModule({
             </p>
           </div>
 
-          <CapacityLine className="mt-5 text-center" />
         </div>
       </Container>
     </section>

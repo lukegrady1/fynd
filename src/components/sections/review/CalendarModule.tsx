@@ -5,7 +5,7 @@ import { callPreview, calendar, offer } from "@/content/copy";
 import { track, trackOnce } from "@/lib/analytics";
 import { Check } from "lucide-react";
 import { Container } from "@/components/ui/Layout";
-import { CapacityLine, PriceBlock } from "./OfferBits";
+import { PriceBlock } from "./OfferBits";
 
 /**
  * /call — booking. Matches the checkout card's dimensions so the pages twin.
@@ -92,7 +92,6 @@ export function CalendarModule({
             </p>
           </div>
 
-          <CapacityLine className="mt-5 text-center" />
         </div>
       </Container>
     </section>

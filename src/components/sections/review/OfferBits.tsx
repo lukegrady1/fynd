@@ -232,36 +232,3 @@ function Row({
     </div>
   );
 }
-
-/** Real capacity limit — driven by a hand-set number, never a live counter. */
-export function CapacityLine({
-  tone = "light",
-  className,
-}: {
-  tone?: "light" | "dark";
-  className?: string;
-}) {
-  const { perMonth, month } = offer.capacity;
-  const spotsLeft: number = offer.capacity.spotsLeft;
-  if (spotsLeft <= 0) return null;
-
-  return (
-    <p
-      className={cn(
-        "text-small",
-        tone === "dark" ? "text-white/72" : "text-ink-soft",
-        className,
-      )}
-    >
-      {`I take ${perMonth} new accounts a month so setup stays hands-on. `}
-      <span
-        className={cn(
-          "font-semibold",
-          tone === "dark" ? "text-white" : "text-ink",
-        )}
-      >
-        {`${spotsLeft} ${spotsLeft === 1 ? "spot" : "spots"} left in ${month}.`}
-      </span>
-    </p>
-  );
-}

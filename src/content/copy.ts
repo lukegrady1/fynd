@@ -38,14 +38,9 @@ export const offer = {
   lockLine:
     "Nothing else to pay while the free period runs. No setup fee, no per-seat charge.",
 
-  /**
-   * Capacity is real and set by hand — never a live-decrementing counter.
-   * Update these two together.
-   */
+  /** Used by the "what's the catch" FAQ answer. */
   capacity: {
     perMonth: 5,
-    spotsLeft: 2,
-    month: "September",
   },
   /**
    * Fallback deadline used when the `exp` query param is missing or past.
@@ -102,7 +97,7 @@ export const callPreview = {
   items: [
     "I pull up your Google Business Profile and read you your real review count and rating.",
     "I work out how many reviews a month you get now, and how many you'd get with every customer asked.",
-    "I show you the exact text your customers would receive, and you tell me if it sounds like you.",
+    "I walk you through how the message reads and where each rating ends up, so there are no surprises.",
     "If it's not a fit, I'll say so on the call. I'd rather not set up an account I have to unwind.",
   ],
   footer: "No slides. If you want to start after, you can. If not, you keep the numbers.",
@@ -143,7 +138,16 @@ export const testimonialsSection = {
 } as const;
 
 export const checkout = {
-  heading: `${offer.productName} — $${offer.software}/mo`,
+  /**
+   * The card sits right after the mechanism, so it needs a bridge — dropping
+   * a price card on someone with no transition reads as abrupt.
+   */
+  eyebrow: "Get started",
+  sectionHeading: "That's the whole system.",
+  sectionSub:
+    "If it makes sense for you, you can be set up today. The form takes a few minutes and your first requests go out this week.",
+  /** Price lives in the rows below, so it isn't repeated in the heading. */
+  heading: offer.productName,
   cta: "Start for $97/mo",
   secure: "Secure checkout by Stripe",
   billing: "First charge today, then monthly.",
@@ -219,7 +223,7 @@ export const welcome = {
     },
     {
       when: "Next",
-      body: "I build your portal and your message, then send you the exact text to read before anything goes out.",
+      body: "I build your portal, your message and the routing rules, and connect it all to your Google Business Profile.",
     },
     {
       when: "Then",
@@ -501,12 +505,12 @@ export const quickWins = {
     {
       when: "Step one",
       title: "You fill out the form",
-      body: "Your Google Business Profile, how you track jobs, and who your customers should hear from. A few minutes, once.",
+      body: "Your Google Business Profile, how you track jobs, and who your customers should hear from.",
     },
     {
       when: "Step two",
       title: "I build it",
-      body: "Your portal, your message in your voice, the routing rules and your Fynd number. You get to read the exact text before anything sends.",
+      body: "Your portal, your message in your voice, the routing rules and your Fynd number. Nothing for you to set up.",
     },
     {
       when: "Step three",
