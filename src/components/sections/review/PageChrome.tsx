@@ -20,7 +20,7 @@ export function FunnelHeader({
       <Container>
         <div className="flex h-16 items-center">
           <Link href="/" aria-label="Fynd — home">
-            <Logo tone={dark ? "light" : "dark"} />
+            <Logo tone={dark ? "light" : "dark"} priority />
           </Link>
         </div>
       </Container>

@@ -40,7 +40,7 @@ export function Nav({ solid = false }: { solid?: boolean }) {
       <Container>
         <div className="flex h-18 items-center justify-between py-4">
           <Link href="/" aria-label="Fynd — home">
-            <Logo tone="light" />
+            <Logo tone="light" priority />
           </Link>
 
           <nav className="hidden items-center gap-8 lg:flex" aria-label="Main">

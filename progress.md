@@ -170,6 +170,13 @@ These are the `TODO(integration)` markers in the codebase.
   hidden start state lives behind `@media (scripting: enabled)`. Don't replace
   this with a JS library that SSRs `opacity: 0` — that breaks the no-JS
   requirement and reintroduces a hydration mismatch.
+- **The logo is a raster** (`public/transparent-fynd.PNG`, 1831x2048). Rendered
+  through next/image in `src/components/brand/Logo.tsx`. Two things must stay
+  true: give it a **height and `w-auto`, never a square box** (it is 0.894:1 and
+  a square squashes it), and **keep the `sizes` prop**. Without `sizes`,
+  next/image builds a 1x/2x srcset off the 1831px intrinsic width and a
+  retina screen downloads the 3840px candidate — 48KB for a 25px logo instead
+  of 1.7KB.
 - **Deadline formatting uses a fixed timezone** (`offer.timeZone`,
   America/New_York). Without it server and client format differently and React
   reports a hydration mismatch.
