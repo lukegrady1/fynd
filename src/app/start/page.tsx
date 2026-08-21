@@ -18,6 +18,8 @@ import { TrustBar, CaseStudies } from "@/components/sections/review/SocialProof"
 import { ProblemSection, WhyReviews } from "@/components/sections/review/ProblemSection";
 import { QuickWins } from "@/components/sections/review/QuickWins";
 import { FeatureGrid } from "@/components/sections/review/FeatureGrid";
+import { CompetitorCompare } from "@/components/sections/review/CompetitorCompare";
+import { StatsGrid } from "@/components/sections/review/StatsGrid";
 import { PricingSection } from "@/components/sections/review/PricingSection";
 import { CheckoutModule } from "@/components/sections/review/CheckoutModule";
 import { ObjectionFaq } from "@/components/sections/review/ObjectionFaq";
@@ -66,7 +68,9 @@ export default async function StartPage({
         <FeatureGrid />
         <QuickWins />
         <DemoVideo />
+        <CompetitorCompare ctaLabel={hero.start.cta} targetId="convert" />
         <ProofSection />
+        <StatsGrid />
         <FitSection />
         <PricingSection ctaLabel={hero.start.cta} targetId="convert" />
         <ProblemSection />

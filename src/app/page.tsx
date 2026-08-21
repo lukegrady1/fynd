@@ -4,10 +4,12 @@ import { Hero } from "@/components/sections/Hero";
 import { PillarRow } from "@/components/sections/PillarRow";
 import { DashboardProof } from "@/components/sections/DashboardProof";
 import { CtaCloser } from "@/components/sections/CtaCloser";
-import { Container } from "@/components/ui/Layout";
-import { Card, TestimonialCard } from "@/components/ui/Card";
+import { Card } from "@/components/ui/Card";
 import { KpiBlock, ScoreGauge } from "@/components/ui/DataViz";
 import { brand } from "@/lib/brand";
+import { CompetitorCompare } from "@/components/sections/review/CompetitorCompare";
+import { StatsGrid } from "@/components/sections/review/StatsGrid";
+import { Testimonials } from "@/components/sections/review/Testimonials";
 
 export default function Home() {
   return (
@@ -40,31 +42,13 @@ export default function Home() {
         <PillarRow />
         <DashboardProof />
 
-        {/* Signature pattern 4 — testimonial band */}
-        <section className="bg-white py-12 md:py-16 lg:py-24">
-          <Container>
-            <div className="grid gap-6 md:grid-cols-3">
-              <TestimonialCard
-                quote="We went from 40 reviews to over 300 in five months. Customers actually find us now."
-                name="Marisol Reyes"
-                role="Owner, Reyes Auto Care"
-                initials="MR"
-              />
-              <TestimonialCard
-                quote="I stopped chasing reviews by hand. Fynd asks every customer, and the requests actually get answered."
-                name="Dan Whitfield"
-                role="Director, Whitfield Dental"
-                initials="DW"
-              />
-              <TestimonialCard
-                quote="Our listings were wrong on half the internet. One dashboard fixed all of it."
-                name="Priya Nair"
-                role="GM, Northline Fitness"
-                initials="PN"
-              />
-            </div>
-          </Container>
-        </section>
+        <CompetitorCompare />
+        <StatsGrid />
+
+        {/* Data-driven: renders nothing until real quotes exist in
+            content/testimonials.ts. This band previously held three invented
+            customers, which the funnel pages had already stopped doing. */}
+        <Testimonials />
 
         <CtaCloser />
       </main>

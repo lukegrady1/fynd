@@ -348,6 +348,31 @@ export const proof = {
   },
 } as const;
 
+/**
+ * Side-by-side comparison, ranked by REVIEW COUNT rather than map position —
+ * the product is review volume, not search rank. Sample figures, consistent
+ * with the hero counter's end state.
+ */
+export const compare = {
+  eyebrow: "The gap",
+  heading: "Be the one with the most reviews.",
+  body: "When someone searches your trade and three businesses come back, they read the review counts before they read anything else. The shop with 94 gets the call. The shop with 31 gets skipped, even when the work is better.",
+  cta: "See how it works",
+  cardHeading: "Plumbers within 5 miles",
+  rows: [
+    { name: "Your business", rating: 4.8, reviews: 94, you: true },
+    { name: "Valley Plumbing & Drain", rating: 4.5, reviews: 61, you: false },
+    { name: "A-1 Rooter", rating: 4.2, reviews: 38, you: false },
+  ],
+  footnote: "Sample data. Your own review count replaces it on day one.",
+} as const;
+
+export const statsSection = {
+  eyebrow: "The numbers",
+  heading: "Why reviews decide who gets called.",
+  sub: "Figures below are from published research, cited so you can check them.",
+} as const;
+
 export const roi = {
   eyebrow: "The math",
   heading: "What a review is actually worth",

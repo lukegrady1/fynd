@@ -57,16 +57,35 @@ export function Eyebrow({
   className,
   children,
   tone = "dark",
+  variant = "plain",
 }: {
   className?: string;
   children: ReactNode;
   tone?: "dark" | "light";
+  /** "pill" gives it a bordered chip, for section openers that need weight. */
+  variant?: "plain" | "pill";
 }) {
+  if (variant === "pill") {
+    return (
+      <span
+        className={cn(
+          "inline-flex items-center rounded-full border px-3 py-1 text-micro uppercase",
+          tone === "light"
+            ? "border-white/20 bg-white/5 text-white/80"
+            : "border-line bg-white text-ink-soft",
+          className,
+        )}
+      >
+        {children}
+      </span>
+    );
+  }
+
   return (
     <p
       className={cn(
         "text-micro uppercase",
-        tone === "light" ? "text-white/72" : "text-ink-muted",
+        tone === "light" ? "text-white/72" : "text-ink-soft",
         className,
       )}
     >

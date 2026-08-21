@@ -23,12 +23,9 @@ export function ProofSection() {
           <p className="measure mt-3 text-body text-ink-soft">{proof.sub}</p>
         </Reveal>
 
-        <div className="mt-12 grid gap-6 lg:grid-cols-[1.15fr_1fr] lg:gap-8">
+        <div className="mt-12">
           <Reveal>
             <BeforeAfter />
-          </Reveal>
-          <Reveal delay={0.06}>
-            <RankTable />
           </Reveal>
         </div>
 
@@ -140,83 +137,6 @@ function Star({ color }: { color: string }) {
     <svg viewBox="0 0 20 20" className="h-3.5 w-3.5 shrink-0" fill={color}>
       <path d="M10 1.6l2.6 5.27 5.82.85-4.21 4.1.99 5.79L10 14.88l-5.2 2.73.99-5.79-4.21-4.1 5.82-.85L10 1.6Z" />
     </svg>
-  );
-}
-
-/**
- * Rank table. Tabular numerals and a hairline grid — deliberately closer to a
- * spreadsheet than a marketing card, because that's what makes it credible to
- * someone who checks their own listing every week.
- */
-function RankTable() {
-  const { heading, sub, rows, takeaway } = proof.rank;
-
-  return (
-    <div className="flex h-full flex-col rounded-lg border border-line bg-white p-6 lg:p-8">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <h3 className="text-h3 text-ink">{heading}</h3>
-          <p className="mt-1 text-small text-ink-soft">{sub}</p>
-        </div>
-        <ExampleBadge />
-      </div>
-
-      <table className="mt-6 w-full border-collapse text-left">
-        <thead>
-          <tr className="border-b border-line">
-            <th className="pb-2 text-micro uppercase text-ink-soft">#</th>
-            <th className="pb-2 text-micro uppercase text-ink-soft">Business</th>
-            <th className="pb-2 text-right text-micro uppercase text-ink-soft">
-              Rating
-            </th>
-            <th className="pb-2 text-right text-micro uppercase text-ink-soft">
-              Reviews
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((row, i) => (
-            <tr
-              key={row.name}
-              className={cn(
-                "border-b border-line last:border-0",
-                row.you && "bg-fynd-blue/6",
-              )}
-            >
-              <td
-                className={cn(
-                  "py-3 text-small tabular-nums",
-                  row.you ? "font-semibold text-fynd-blue" : "text-ink-soft",
-                )}
-              >
-                {row.you ? "▸" : i + 1}
-              </td>
-              <td
-                className={cn(
-                  "py-3 pr-2 text-small",
-                  row.you ? "font-semibold text-ink" : "text-ink",
-                )}
-              >
-                {row.name}
-              </td>
-              <td className="py-3 text-right text-small tabular-nums text-ink">
-                {row.rating.toFixed(1)}
-              </td>
-              <td
-                className={cn(
-                  "py-3 text-right text-small tabular-nums",
-                  row.you ? "font-semibold text-ink" : "text-ink-soft",
-                )}
-              >
-                {row.reviews}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-      <p className="mt-auto pt-5 text-body text-ink">{takeaway}</p>
-    </div>
   );
 }
 
