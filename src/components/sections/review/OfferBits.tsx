@@ -23,14 +23,37 @@ const DAY_MS = 24 * 60 * 60 * 1000;
 export function DeadlineChip({
   deadline,
   tone = "light",
+  variant = "chip",
   className,
 }: {
   deadline: Deadline;
   tone?: "light" | "dark";
+  /** "eyebrow" is the quieter hero form — a dot and a line, not a pill. */
+  variant?: "chip" | "eyebrow";
   className?: string;
 }) {
   const label = useCountdownLabel(deadline);
   if (!label) return null;
+
+  if (variant === "eyebrow") {
+    return (
+      <p
+        className={cn(
+          "flex items-start gap-2 text-micro uppercase tabular-nums",
+          tone === "dark" ? "text-fynd-orange" : "text-ink-soft",
+          className,
+        )}
+      >
+        {/* items-start + nudge keeps the dot on the first line when the label
+            wraps on a narrow phone, instead of floating to the middle. */}
+        <span
+          aria-hidden="true"
+          className="mt-[5px] h-1.5 w-1.5 shrink-0 rounded-full bg-fynd-orange"
+        />
+        <span className="max-w-[34ch]">{label}</span>
+      </p>
+    );
+  }
 
   return (
     <span
@@ -63,7 +86,7 @@ const pad = (n: number) => String(n).padStart(2, "0");
  * a deadline days away returns a constant and never re-renders the chip.
  */
 function useCountdownLabel(deadline: Deadline): string | null {
-  const dateLabel = `Free management held until ${deadline.formatted}`;
+  const dateLabel = `Free management until ${deadline.formatted}`;
 
   const store = useMemo(() => {
     const at = deadline.at;

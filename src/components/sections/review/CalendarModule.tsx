@@ -42,7 +42,9 @@ export function CalendarModule({
           {/* The fear on a booking page is "this is going to be a pitch".
               Naming the agenda removes more friction than anything else here. */}
           <div className="mt-6 rounded-lg border border-line bg-white p-6 lg:p-8">
-            <h3 className="text-h3 text-ink">{callPreview.heading}</h3>
+            {/* h2, not h3: this block sits above the calendar's own h2, so an
+                h3 here jumps the heading order. Visual size stays text-h3. */}
+            <h2 className="text-h3 text-ink">{callPreview.heading}</h2>
             <ul className="mt-4 flex flex-col gap-3">
               {callPreview.items.map((item) => (
                 <li key={item} className="flex gap-3">

@@ -1,6 +1,6 @@
 "use client";
 
-import { hero, offer } from "@/content/copy";
+import { hero } from "@/content/copy";
 import { track } from "@/lib/analytics";
 import type { Deadline } from "@/lib/offer";
 import { Container } from "@/components/ui/Layout";
@@ -59,28 +59,26 @@ export function ReviewHero({
       <Container className="relative">
         <div className="grid items-center gap-12 lg:grid-cols-[1.05fr_minmax(0,420px)] lg:gap-16">
           <div>
-            <DeadlineChip deadline={deadline} tone="dark" />
+            {/* Deadline reads as a quiet eyebrow, not a bordered orange pill.
+                As a pill it competed with the headline for first attention. */}
+            <DeadlineChip deadline={deadline} tone="dark" variant="eyebrow" />
 
-            <h1 className="mt-6 text-[30px] font-bold leading-[1.1] tracking-[-0.02em] text-white min-[420px]:text-[34px] sm:text-[44px] lg:text-[52px]">
+            <h1 className="mt-4 text-[30px] font-bold leading-[1.08] tracking-[-0.02em] text-white min-[420px]:text-[34px] sm:text-[44px] lg:text-[52px]">
               <span className="block">{lead}</span>
               <span className="block text-fynd-green">{accent}</span>
             </h1>
 
-            <p className="mt-5 max-w-[500px] text-body text-white/75">
+            <p className="mt-6 max-w-[460px] text-body text-white/75">
               {copy.sub}
             </p>
 
-            {/* On mobile the counter sits directly under the promise, where it
-                does the most work, and moves alongside it from lg up. */}
-            <div className="mt-9 lg:hidden">
-              <CounterWithGlow biz={biz} />
-            </div>
-
-            <div className="mt-9 flex flex-col items-start gap-4">
+            {/* CTA sits directly under the promise. It used to come after the
+                counter card, which pushed it off a small phone screen. */}
+            <div className="mt-8 flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:gap-6">
               <button
                 type="button"
                 onClick={() => goTo(targetId, "hero", ctaLabel)}
-                className="flex h-14 w-full items-center justify-center rounded-sm bg-fynd-blue px-8 text-body font-semibold text-white shadow-blue transition-all duration-150 ease-fynd hover:bg-[#3F4DF0] hover:-translate-y-px active:scale-[0.99] sm:w-auto"
+                className="flex h-14 w-full items-center justify-center rounded-sm bg-fynd-blue px-8 text-body font-semibold text-white shadow-blue transition-all duration-150 ease-fynd hover:-translate-y-px hover:bg-[#3F4DF0] active:scale-[0.99] sm:w-auto"
               >
                 {ctaLabel}
               </button>
@@ -96,48 +94,14 @@ export function ReviewHero({
               )}
             </div>
 
-            {/* Anchored on the free labour rather than a struck-through
-                price — the discount is that the work costs nothing. */}
-            <div className="mt-7 flex flex-wrap items-baseline gap-x-8 gap-y-2">
-              <p className="flex items-baseline gap-2.5">
-                <span className="text-small text-white/60">
-                  {offer.labels.management}
-                </span>
-                <span className="text-h3 font-bold text-fynd-green">
-                  {offer.labels.free}
-                </span>
-              </p>
-              <p className="flex items-baseline gap-2.5">
-                <span className="text-small text-white/60">
-                  {offer.labels.software}
-                </span>
-                <span className="text-h3 font-bold tabular-nums text-white">
-                  ${offer.software}
-                  <span className="text-body font-medium text-white/72">
-                    /mo
-                  </span>
-                </span>
-              </p>
-            </div>
-
-            <p className="mt-2 max-w-[500px] text-small text-white/60">
-              {hero.angleLine}
+            {/* One offer line, replacing the price row + angle line + bullets. */}
+            <p className="mt-5 max-w-[460px] text-small text-white/60">
+              {hero.offerLine}
             </p>
 
-            <ul className="mt-5 flex flex-wrap gap-x-6 gap-y-2">
-              {hero.trustRow.map((item) => (
-                <li
-                  key={item}
-                  className="flex items-center gap-2 text-small text-white/72"
-                >
-                  <span
-                    aria-hidden="true"
-                    className="h-1.5 w-1.5 shrink-0 rounded-full bg-fynd-green"
-                  />
-                  {item}
-                </li>
-              ))}
-            </ul>
+            <div className="mt-10 lg:hidden">
+              <CounterWithGlow biz={biz} />
+            </div>
           </div>
 
           <div className="hidden lg:block">

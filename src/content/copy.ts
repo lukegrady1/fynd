@@ -63,6 +63,11 @@ export const hero = {
    * (button books it). Promising the product outcome and then asking for a
    * meeting is the mismatch that stalls booking pages.
    */
+  /**
+   * /start uses pain reversal (formula 2). "Start" deliberately echoes the
+   * button, so headline and CTA rhyme. The biz variant switches formula —
+   * naming the business is a stronger opening than any pattern.
+   */
   start: {
     lead: "Get more Google reviews",
     accent: "without asking for them.",
@@ -71,20 +76,26 @@ export const hero = {
     sub: "Every time you finish a job, your customer gets a text with a one-tap review link. You do nothing. Reviews show up.",
     cta: "Start for $97/mo",
   },
+  /**
+   * /call also uses pain reversal, with the objection ("is this a pitch?")
+   * answered in the green line rather than left for the reader to worry about.
+   */
   call: {
-    lead: "See where your rating",
-    accent: "actually stands.",
-    leadWithBiz: "See where",
-    accentWithBiz: (biz: string) => `${biz} actually stands.`,
-    sub: "Fifteen minutes. I'll pull up your Google profile, show you what your competitors have, and tell you what it would take to close the gap. No deck, no pressure.",
+    lead: "Get more Google reviews",
+    accent: "without asking for them.",
+    leadWithBiz: "More Google reviews for",
+    accentWithBiz: (biz: string) => `${biz}.`,
+    sub: "Fifteen minutes on the phone. I'll tell you how many reviews you're getting now, how many you'd get with every customer asked, and exactly how the system does it. No slides, no pitch.",
     cta: "Pick a time to talk",
   },
 
   demoLink: "Watch the 2-min demo",
-  /** Short reassurances under the CTA row. */
-  trustRow: ["Live in under a week", "No contract", "Cancel anytime"],
-  angleLine:
-    "I run it for free until you hit 100 reviews. You just cover the software.",
+  /**
+   * One line, not three. The hero previously restated the offer in a price
+   * row, an angle line and a bullet row — all after the CTA, all competing.
+   */
+  offerLine:
+    "I run it free until you hit 100 reviews. You cover the software: $97/mo, no contract, cancel anytime.",
 } as const;
 
 /**
@@ -95,9 +106,9 @@ export const hero = {
 export const callPreview = {
   heading: "What the fifteen minutes actually is",
   items: [
-    "I pull up your Google Business Profile while we talk and read you the real numbers.",
-    "I show you the two or three competitors ranking above you and what they have that you don't.",
-    "I tell you roughly how long it would take to close that gap at your job volume.",
+    "I pull up your Google Business Profile and read you your real review count and rating.",
+    "I work out how many reviews a month you get now, and how many you'd get with every customer asked.",
+    "I show you the exact text your customers would receive, and you tell me if it sounds like you.",
     "If it's not a fit, I'll say so on the call. I'd rather not set up an account I have to unwind.",
   ],
   footer: "No slides. If you want to start after, you can. If not, you keep the numbers.",
@@ -135,7 +146,7 @@ export const checkout = {
 
 export const calendar = {
   heading: "Grab 15 minutes.",
-  body: "I'll show you your current rating, what your competitors have, and exactly what the system would do for you. No pitch deck.",
+  body: "I'll show you how many reviews you're getting now, how many you'd get with every customer asked, and exactly how the system does it. No pitch deck.",
   preframe: (deadline: string) =>
     `This is what we'll be talking about. Same price whether you buy today or Friday — the $97 rate is held until ${deadline}.`,
   textInstead: "Prefer to text? Reply to my message and I'll answer there.",
@@ -314,7 +325,7 @@ export const mechanism = {
 export const proof = {
   eyebrow: "The dashboard",
   heading: "You watch it move.",
-  sub: "Google weighs rating and review count when it decides who shows up in the map pack. Your dashboard tracks both, plus where you sit against the shops competing for the same searches. Sample data shown.",
+  sub: "Your rating, how many reviews came in this month, and where each one came from. Plus how your review count compares to the shops your customers also called. Sample data shown.",
 
   beforeAfter: {
     heading: "Rating and review count over time",
@@ -324,7 +335,7 @@ export const proof = {
   },
 
   rank: {
-    heading: "Where you sit locally",
+    heading: "Review counts near you",
     sub: "Plumbers within 5 miles",
     rows: [
       { name: "Valley Plumbing & Drain", rating: 4.9, reviews: 312, you: false },
@@ -454,8 +465,8 @@ export const problem = {
       body: "You meant to text them. Then the next job started. Asking works, but only if it happens the same day, every day, without you.",
     },
     {
-      title: "You're buried in the map pack",
-      body: "Three businesses show up when someone searches your trade near them. Rating and review count decide which three.",
+      title: "The happy ones never post",
+      body: "The customers who loved the work are exactly the ones who forget to say so. The rare unhappy one always finds the time.",
     },
     {
       title: "The shop down the road wins",
@@ -470,7 +481,7 @@ export const whyReviews = {
   items: [
     {
       title: "They decide who gets called",
-      body: "People pick from the top three results and barely scroll. Getting into that group is worth more than any ad you can buy.",
+      body: "Given two businesses that both look competent, people call the one with more reviews. It is the cheapest tiebreaker you can own.",
     },
     {
       title: "They're the last thing checked",
@@ -550,7 +561,7 @@ export const features = {
     {
       icon: "BarChart3",
       title: "The dashboard",
-      body: "Rating, review velocity, where requests came from, and how you rank against local competitors.",
+      body: "Rating, how many reviews came in, where each one came from, and how your count compares locally.",
     },
     {
       icon: "CreditCard",
@@ -573,7 +584,7 @@ export const pricing = {
     "CRM integration",
     "Reply assistance",
     "Past-customer reactivation",
-    "Competitor rank tracking",
+    "Review count benchmarking",
     "NFC review cards",
     "Unlimited users",
     "Setup done for you",
@@ -614,7 +625,7 @@ export const faqExtra = [
   },
   {
     q: "Do you do platforms other than Google?",
-    a: "Google first, always — it's what shows up in the map pack and it's where the search traffic is. Facebook and industry-specific sites can be added once Google's moving.",
+    a: "Google first, always — it's the one your customers actually check before they call. Facebook and industry-specific sites can be added once your Google reviews are coming in steadily.",
   },
   {
     q: "Do you need access to my Google account?",
