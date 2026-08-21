@@ -55,27 +55,6 @@ export const vsl = {
   playLabel: "Play the demo",
 } as const;
 
-export const howItWorks = {
-  heading: "How it works",
-  steps: [
-    {
-      n: "01",
-      title: "You finish the job.",
-      body: "Mark it done in your CRM, or just text a number. Takes 5 seconds.",
-    },
-    {
-      n: "02",
-      title: "We text your customer.",
-      body: "Personalized, from your business name, with a one-tap link straight to your Google review page.",
-    },
-    {
-      n: "03",
-      title: "The review posts.",
-      body: "Happy customers go public. Unhappy ones get routed privately to you first, so you hear it before Google does.",
-    },
-  ],
-} as const;
-
 export const whatYouGet = {
   heading: "What you get",
   items: [
@@ -194,5 +173,212 @@ export const meta = {
     title: "Book a call — Fynd Review System",
     description:
       "Fifteen minutes to see where your rating stands and what the review system would do for your business.",
+  },
+} as const;
+
+/* ==========================================================================
+   Expanded sections — proof-led artifacts.
+
+   IMPORTANT: numbers in `proof` and `roi` are ILLUSTRATIVE, not client
+   results. Every component that renders them also renders the label in
+   `illustrative.badge`. If real numbers arrive, swap them in AND keep the
+   labelling honest about which is which.
+   ========================================================================== */
+
+export const illustrative = {
+  badge: "Example",
+  note: "Illustrative figures, not a client result or a promise.",
+} as const;
+
+export const mechanism = {
+  eyebrow: "The mechanism",
+  heading: "What actually happens",
+  sub: "Three steps. You're only involved in the first one.",
+
+  /** The message your customer receives, rendered as a real thread. */
+  sms: {
+    business: "Reyes Auto Care",
+    statusTime: "9:41",
+    outbound: {
+      body: "Hi Dana — thanks for coming in today. Mind leaving us a quick review? Takes about 10 seconds.",
+      time: "9:41 AM",
+    },
+    prompt: {
+      title: "How did we do?",
+      subtitle: "Tap a star",
+      time: "9:41 AM",
+    },
+    inbound: { body: "done!", time: "9:43 AM" },
+    footnote: "Sent from your business name, not a 1-800 number.",
+  },
+
+  /** The fork that makes the "what if someone's mad" objection go away. */
+  routing: {
+    heading: "Where the tap goes",
+    trigger: "Customer taps a star",
+    high: {
+      label: "4 or 5 stars",
+      title: "Straight to Google",
+      body: "They land on your review page with the rating already selected. One more tap and it's public.",
+    },
+    low: {
+      label: "1 to 3 stars",
+      title: "Straight to you",
+      body: "A private form, not Google. It hits your inbox in seconds so you can fix it before anyone else sees it.",
+    },
+    footnote:
+      "Every customer gets asked the same way. The rating decides where they land — nobody is filtered out beforehand.",
+  },
+
+  steps: [
+    {
+      n: "01",
+      title: "You finish the job.",
+      body: "Mark it done in your CRM, or text the customer's number to your Fynd line. Five seconds, once.",
+      actor: "You",
+    },
+    {
+      n: "02",
+      title: "We send the request.",
+      body: "Within the hour, while you're still fresh in their mind. From your business name, with a one-tap link.",
+      actor: "Fynd",
+    },
+    {
+      n: "03",
+      title: "The rating routes itself.",
+      body: "Happy customers go public. Unhappy ones come to you privately, first.",
+      actor: "Fynd",
+    },
+  ],
+} as const;
+
+export const proof = {
+  eyebrow: "What changes",
+  heading: "A rating is a ranking factor.",
+  sub: "Google weighs rating and review count when it decides who shows up in the map pack. Most local businesses are one good quarter away from moving up.",
+
+  beforeAfter: {
+    heading: "Six months of steady requests",
+    before: { label: "Before", rating: 4.2, reviews: 31, caption: "Where most shops sit" },
+    after: { label: "After", rating: 4.8, reviews: 94, caption: "Same business, same jobs" },
+    delta: "63 reviews added",
+  },
+
+  rank: {
+    heading: "Where you sit locally",
+    sub: "Plumbers within 5 miles",
+    rows: [
+      { name: "Valley Plumbing & Drain", rating: 4.9, reviews: 312, you: false },
+      { name: "A-1 Rooter", rating: 4.8, reviews: 204, you: false },
+      { name: "Your business", rating: 4.2, reviews: 31, you: true },
+      { name: "Metro Drain Co.", rating: 4.1, reviews: 88, you: false },
+    ],
+    takeaway:
+      "You don't need to beat the top shop. You need to stop being the one with 31 reviews.",
+  },
+} as const;
+
+export const roi = {
+  eyebrow: "The math",
+  heading: "What a review is actually worth",
+  sub: "Move the sliders to match your business. These are estimates from your own inputs — not a forecast, and not a promise.",
+  inputs: {
+    jobsLabel: "Jobs you finish per week",
+    rateLabel: "Customers who leave a review",
+    rateHelp:
+      "Set this to whatever you believe. We default to 30% because a same-day text asking once tends to land far better than an email a week later — but your trade and your customers decide the real number.",
+  },
+  outputs: {
+    perMonth: "New reviews per month",
+    sixMonths: "After six months",
+    ratingNote: "Enough to move a 4.2 to a 4.8 in most cases",
+  },
+  disclaimer:
+    "Arithmetic on the numbers you entered. Actual results depend on your job volume, your customers, and how good the work is.",
+} as const;
+
+export const fit = {
+  eyebrow: "Fit",
+  heading: "Does this work with what you already use?",
+
+  integrations: {
+    heading: "Connects to your CRM",
+    sub: "Mark a job complete and the request fires. Nothing else to remember.",
+    items: [
+      { name: "ServiceTitan", status: "Direct integration" },
+      { name: "Jobber", status: "Direct integration" },
+      { name: "Housecall Pro", status: "Direct integration" },
+      { name: "Anything else", status: "Text a number, or a Zapier hook" },
+    ],
+    fallback:
+      "No CRM? Text the customer's number to your Fynd line when you pack up. That's the whole workflow.",
+  },
+
+  timeline: {
+    heading: "What the first month looks like",
+    steps: [
+      { when: "Day 1", title: "Kickoff call", body: "Fifteen minutes. I need your Google Business Profile and how you track jobs." },
+      { when: "Days 2–4", title: "I build it", body: "Message templates in your voice, routing rules, CRM connection, your Fynd number." },
+      { when: "Day 5", title: "You approve", body: "You read the exact text your customers will get and change anything you don't like." },
+      { when: "Week 1", title: "First requests go out", body: "We start with recent jobs so you see reviews inside days, not months." },
+      { when: "Week 3", title: "NFC cards arrive", body: "Tap-to-review cards for the truck and the front counter." },
+    ],
+  },
+
+  trades: {
+    heading: "Who this is built for",
+    sub: "Anything where you finish a job and leave.",
+    items: [
+      "Plumbing", "HVAC", "Electrical", "Roofing", "Auto repair", "Auto detailing",
+      "Pressure washing", "Landscaping", "Barbers & salons", "Pest control",
+      "Garage doors", "Cleaning services",
+    ],
+    other: "Not listed? It probably still works. Ask me on the call.",
+  },
+} as const;
+
+export const compliance = {
+  eyebrow: "The legal bit",
+  heading: "This is inside Google's rules. Here's exactly why.",
+  sub: "Worth knowing the difference, because plenty of tools in this space do get it wrong.",
+  rules: [
+    {
+      ok: true,
+      title: "We ask every customer",
+      body: "Not just the ones you think will be nice. Selectively soliciting only happy customers is called review gating, and it's the thing Google actually prohibits.",
+    },
+    {
+      ok: true,
+      title: "We never offer anything for a review",
+      body: "No discounts, no entries into a drawing, no free oil change. Incentivized reviews violate Google's policy and get removed.",
+    },
+    {
+      ok: true,
+      title: "We never write the review",
+      body: "The customer writes it, in their own words, from their own account. We only send the link.",
+    },
+    {
+      ok: false,
+      title: "What we don't do",
+      body: "No fake reviews, no review swaps, no buying them, no filtering unhappy customers out of the ask. Those get profiles suspended.",
+    },
+  ],
+  privateRouting:
+    "The private feedback path isn't a filter on who gets asked — everybody gets the same message. It's an extra channel for someone who's already unhappy, so they have somewhere to put it besides your public profile.",
+} as const;
+
+export const founder = {
+  eyebrow: "From me",
+  heading: "We just talked.",
+  body: [
+    "So I'll skip the part where I explain who I am.",
+    "Here's the honest version of what you're buying. This isn't complicated software. It's a text that goes out after every job, a link that makes leaving a review take ten seconds instead of two minutes, and a rule that sends unhappy people to me instead of to Google. That's it. The reason it works isn't cleverness — it's that almost nobody asks, and the ones who do ask badly.",
+    "I take five accounts a month because I set each one up myself. If that's full when you call, I'll tell you.",
+  ],
+  signoff: "— Luke",
+  role: "Fynd",
+  guarantee: {
+    heading: "If it doesn't work, leave.",
+    body: "Month to month, cancel from the dashboard or by texting me. No exit call, no retention offer. Every review you collected stays on your Google profile — those belong to your business, not to me.",
   },
 } as const;

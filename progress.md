@@ -20,10 +20,29 @@ Decisions taken with Luke:
 - **"Fynd"** as the name in copy, footer, and metadata (not Grady Digital).
 - **Pages + stubs**: pages complete; Stripe/GHL behind typed boundaries.
 
-Design direction: *quiet dashboard, one loud moment*. The rating counter is the
-only bold element; everything else is flat cards, hairline rules, and space.
+Design direction: *proof-led artifacts*. The generic three-card "how it works"
+was replaced with the actual objects — a drawn phone showing the real SMS, the
+routing fork as a diagram, Google profile cards, a rank table. Specificity is
+what stops it reading as templated.
 
 Both pages verified at 390px and 1280px.
+
+### Section order (identical on both, except the conversion module)
+
+1. Sticky offer bar — bottom on mobile, top on desktop
+2. Hero + rating counter
+3. **Mechanism** — phone artifact, 01/02/03 with You/Fynd actor badges, routing fork
+4. Demo / VSL
+5. **Proof** — before/after profile cards + rank vs. local competitors
+6. **The math** — interactive estimator (jobs/week x response rate)
+7. What you get
+8. **Fit** — CRM integrations, first-month timeline, trades served
+9. Testimonials (renders nothing until real quotes exist)
+10. **Conversion module** — Stripe checkout on /start, GHL calendar on /call
+11. **Compliance** — why this is inside Google's rules
+12. Objection FAQ
+13. **Founder note** + guarantee
+14. Final CTA
 
 ## Verified
 
@@ -43,6 +62,8 @@ Both pages verified at 390px and 1280px.
 | Checkout with no Stripe env | 503 + inline note pointing at `/call` |
 | Invented testimonials | none — all four slots ship empty by design |
 | Typecheck / lint / build | clean |
+| ROI estimator math | verified: 40 jobs x 4.33 wk x 50% = 87/mo, 522 at six months |
+| Illustrative figures labelled | every proof block carries an `Example` badge + plain-text disclaimer |
 
 ## Not done — needs credentials or content
 
@@ -73,6 +94,12 @@ These are the `TODO(integration)` markers in the codebase.
    not automated: §5 forbids a fake live-decrementing counter.
 8. **Real 4G perf check** — measured on localhost only. Re-run throttled on
    Vercel before trusting the <1.5s LCP target.
+9. **Illustrative proof figures** — `proof` and `roi` in `src/content/copy.ts`
+   are made up for illustration and labelled as such. Replace with real client
+   numbers when they exist, and keep the labelling honest about which is which
+   rather than quietly dropping the `Example` badge.
+10. **The SMS artifact** shows "Reyes Auto Care" as a stand-in business. Swap for
+   a real one if you have permission, or leave it — it reads as an example.
 
 ## Notes for whoever picks this up
 

@@ -8,8 +8,14 @@ import { FunnelHeader, FunnelFooter } from "@/components/sections/review/PageChr
 import { StickyOfferBar } from "@/components/sections/review/StickyOfferBar";
 import { ReviewHero } from "@/components/sections/review/ReviewHero";
 import { DemoVideo } from "@/components/sections/review/DemoVideo";
-import { HowItWorks, WhatYouGet } from "@/components/sections/review/HowItWorks";
+import { WhatYouGet } from "@/components/sections/review/WhatYouGet";
 import { Testimonials } from "@/components/sections/review/Testimonials";
+import { Mechanism } from "@/components/sections/review/Mechanism";
+import { ProofSection } from "@/components/sections/review/ProofSection";
+import { RoiCalculator } from "@/components/sections/review/RoiCalculator";
+import { FitSection } from "@/components/sections/review/FitSection";
+import { Compliance } from "@/components/sections/review/Compliance";
+import { FounderNote } from "@/components/sections/review/FounderNote";
 import { CheckoutModule } from "@/components/sections/review/CheckoutModule";
 import { ObjectionFaq } from "@/components/sections/review/ObjectionFaq";
 import { FinalCta } from "@/components/sections/review/FinalCta";
@@ -44,12 +50,17 @@ export default async function StartPage({
           ctaLabel={hero.ctaStart}
           targetId="convert"
         />
+        <Mechanism />
         <DemoVideo />
-        <HowItWorks />
+        <ProofSection />
+        <RoiCalculator />
         <WhatYouGet />
+        <FitSection />
         <Testimonials />
         <CheckoutModule cid={params.cid} cancelled={params.cancelled} />
+        <Compliance />
         <ObjectionFaq />
+        <FounderNote />
         <FinalCta
           heading={finalCtaCopy.headingStart}
           sub={finalCtaCopy.subStart}

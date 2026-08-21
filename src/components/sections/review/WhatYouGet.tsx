@@ -1,38 +1,7 @@
-import { howItWorks, whatYouGet } from "@/content/copy";
+import { whatYouGet } from "@/content/copy";
 import { Container } from "@/components/ui/Layout";
 import { Check } from "lucide-react";
 import { Reveal } from "./Reveal";
-
-/**
- * Numbered 01/02/03 because it's a genuine sequence, not decoration.
- * Step 3's second sentence is the objection-killer for "what if someone's
- * mad" — it stays.
- */
-export function HowItWorks() {
-  return (
-    <section className="bg-white py-12 lg:py-20">
-      <Container>
-        <Reveal>
-          <h2 className="text-h2 text-ink">{howItWorks.heading}</h2>
-        </Reveal>
-
-        <ol className="mt-8 grid gap-px overflow-hidden rounded-md border border-line bg-line lg:grid-cols-3">
-          {howItWorks.steps.map((step, i) => (
-            <li key={step.n} className="bg-white">
-              <Reveal delay={i * 0.06} className="h-full p-6 lg:p-8">
-                <span className="text-small font-semibold tabular-nums text-fynd-blue">
-                  {step.n}
-                </span>
-                <h3 className="mt-3 text-h3 text-ink">{step.title}</h3>
-                <p className="mt-2 text-body text-ink-soft">{step.body}</p>
-              </Reveal>
-            </li>
-          ))}
-        </ol>
-      </Container>
-    </section>
-  );
-}
 
 /** Two-column checklist. No icon soup — one repeated check mark. */
 export function WhatYouGet() {
