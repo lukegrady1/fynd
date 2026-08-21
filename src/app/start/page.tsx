@@ -47,7 +47,7 @@ export default async function StartPage({
       {/* Bottom bar on mobile needs clearance so it never covers content.
           No top padding on desktop: the sticky bar only fades in after the
           hero exits, so reserving space for it just opens a void up top. */}
-      <main className="flex-1 pb-24 lg:pb-0">
+      <main className="flex-1 pb-24">
         <ReviewHero
           biz={params.biz}
           variant="start"
@@ -56,26 +56,31 @@ export default async function StartPage({
         <TrustBar />
         <Mechanism />
 
-        {/* Paying is a higher-commitment ask than booking, so it earns one
-            beat of build-up: the mechanism, showing exactly what they are
-            buying. The problem framing moved below — Luke already delivered
-            that on the phone. Everything under this is the long tail for
-            whoever is still hesitating. */}
+        {/* The ask. Warm traffic — they just got off the phone — so it comes
+            early, right after they see what they are buying. Everything below
+            is the long tail for whoever is still deciding. */}
         <CheckoutModule cid={params.cid} cancelled={params.cancelled} />
+        <DemoVideo />
 
+        {/* Is it complete, fast, and right for me? */}
         <FeatureGrid />
         <QuickWins />
-        <DemoVideo />
+        <FitSection />
+
+        {/* Does it work, and what is it worth? */}
         <CompetitorCompare ctaLabel={hero.start.cta} targetId="convert" />
         <ProofSection />
-        <StatsGrid />
-        <FitSection />
-        <PricingSection ctaLabel={hero.start.cta} targetId="convert" />
-        <ProblemSection />
-        <WhyReviews />
         <RoiCalculator />
         <CaseStudies />
         <Testimonials />
+        <StatsGrid />
+
+        {/* Why it matters — the last argument for anyone still reading. */}
+        <ProblemSection />
+        <WhyReviews />
+
+        {/* Close: restate the offer, answer the tail, ask once more. */}
+        <PricingSection ctaLabel={hero.start.cta} targetId="convert" />
         <ObjectionFaq />
         <FinalCta
           heading={finalCtaCopy.headingStart}

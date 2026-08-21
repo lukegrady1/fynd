@@ -51,7 +51,7 @@ export default async function CallPage({
       <PageTracking page="call" cid={params.cid} />
       <FunnelHeader tone="dark" />
 
-      <main className="flex-1 pb-24 lg:pb-0">
+      <main className="flex-1 pb-24">
         <ReviewHero
           biz={params.biz}
           variant="call"
@@ -59,30 +59,34 @@ export default async function CallPage({
         />
         <TrustBar />
 
-        {/* Booking a call is a low-commitment ask, so it comes almost
-            immediately — the hero sells the call and this delivers it. The
-            visitor just got off the phone; making them scroll four screens to
-            reach a calendar is the whole problem. Everything below is the long
-            tail for whoever is still hesitating. */}
+        {/* Booking is low-commitment, so the calendar comes before the
+            explanation rather than after it. */}
         <CalendarModule
           embedUrl={embedUrl}
           deadlineLabel={deadline.formatted}
         />
-
         <Mechanism />
-        <ProblemSection />
+        <DemoVideo />
+
+        {/* Is it complete, fast, and right for me? */}
         <FeatureGrid />
         <QuickWins />
-        <DemoVideo />
+        <FitSection />
+
+        {/* Does it work, and what is it worth? */}
         <CompetitorCompare ctaLabel={hero.call.cta} targetId="convert" />
         <ProofSection />
-        <StatsGrid />
-        <FitSection />
-        <PricingSection ctaLabel={hero.call.cta} targetId="convert" />
-        <WhyReviews />
         <RoiCalculator />
         <CaseStudies />
         <Testimonials />
+        <StatsGrid />
+
+        {/* Why it matters — the last argument for anyone still reading. */}
+        <ProblemSection />
+        <WhyReviews />
+
+        {/* Close: restate the offer, answer the tail, ask once more. */}
+        <PricingSection ctaLabel={hero.call.cta} targetId="convert" />
         <ObjectionFaq />
         <FinalCta
           heading={finalCtaCopy.headingCall}

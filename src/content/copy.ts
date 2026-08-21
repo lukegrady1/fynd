@@ -522,8 +522,8 @@ export const quickWins = {
 
 export const features = {
   eyebrow: "What's included",
-  heading: "Everything, on the one plan.",
-  sub: "No tiers, no add-ons, no per-seat pricing. You get the whole thing.",
+  heading: "What you're actually getting.",
+  sub: "Every part of it, running from the day you're set up. Nothing here is an add-on.",
   items: [
     {
       icon: "MessageSquare",

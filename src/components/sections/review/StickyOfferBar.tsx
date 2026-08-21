@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { offer } from "@/content/copy";
 import { track } from "@/lib/analytics";
 import type { Deadline } from "@/lib/offer";
@@ -25,22 +24,6 @@ export function StickyOfferBar({
   targetId: string;
   deadline: Deadline;
 }) {
-  const [pastHero, setPastHero] = useState(false);
-
-  useEffect(() => {
-    // Both funnel pages render #hero. If it's absent the desktop bar simply
-    // stays hidden rather than flashing in and out.
-    const hero = document.getElementById("hero");
-    if (!hero) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => setPastHero(!entry.isIntersecting),
-      { rootMargin: "-80px 0px 0px 0px" },
-    );
-    observer.observe(hero);
-    return () => observer.disconnect();
-  }, []);
-
   const handleClick = () => {
     track("cta_click", { cta: ctaLabel, section: "sticky_bar" });
     document
@@ -51,15 +34,8 @@ export function StickyOfferBar({
   return (
     <div
       className={cn(
-        "fixed inset-x-0 z-40 border-white/10 bg-navy/95 backdrop-blur-sm",
-        // Bottom on mobile (thumb reach), top on desktop.
-        "bottom-0 border-t pb-[env(safe-area-inset-bottom)]",
-        "lg:bottom-auto lg:top-0 lg:border-b lg:border-t-0",
-        "transition-opacity duration-250 ease-fynd",
-        // Mobile: always available. Desktop: fades in after the hero exits.
-        pastHero
-          ? "opacity-100"
-          : "opacity-100 lg:pointer-events-none lg:opacity-0",
+        "fixed inset-x-0 bottom-0 z-40 border-t border-white/10 bg-navy/95",
+        "pb-[env(safe-area-inset-bottom)] backdrop-blur-sm",
       )}
     >
       <div className="mx-auto flex w-full max-w-[1200px] items-center gap-3 px-4 py-3 sm:px-6">
