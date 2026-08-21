@@ -54,26 +54,33 @@ export default async function CallPage({
         <ReviewHero
           biz={params.biz}
           deadline={deadline}
-          ctaLabel={hero.ctaCall}
+          variant="call"
           targetId="convert"
         />
         <TrustBar />
-        <ProblemSection />
-        <WhyReviews />
-        <Mechanism />
-        <QuickWins />
-        <DemoVideo />
-        <CaseStudies />
-        <ProofSection />
-        <RoiCalculator />
-        <FeatureGrid />
-        <FitSection />
-        <Testimonials />
-        <PricingSection ctaLabel={hero.ctaCall} targetId="convert" />
+
+        {/* Booking a call is a low-commitment ask, so it comes almost
+            immediately — the hero sells the call and this delivers it. The
+            visitor just got off the phone; making them scroll four screens to
+            reach a calendar is the whole problem. Everything below is the long
+            tail for whoever is still hesitating. */}
         <CalendarModule
           embedUrl={embedUrl}
           deadlineLabel={deadline.formatted}
         />
+
+        <Mechanism />
+        <ProblemSection />
+        <FeatureGrid />
+        <QuickWins />
+        <DemoVideo />
+        <ProofSection />
+        <FitSection />
+        <PricingSection ctaLabel={hero.call.cta} targetId="convert" />
+        <WhyReviews />
+        <RoiCalculator />
+        <CaseStudies />
+        <Testimonials />
         <Compliance />
         <ObjectionFaq />
         <FinalCta

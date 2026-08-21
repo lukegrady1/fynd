@@ -21,14 +21,20 @@ import { RatingCounter } from "./RatingCounter";
 export function ReviewHero({
   biz,
   deadline,
-  ctaLabel,
+  variant,
   targetId,
 }: {
   biz?: string;
   deadline: Deadline;
-  ctaLabel: string;
+  /** "start" sells the product, "call" sells the call. See copy.ts. */
+  variant: "start" | "call";
   targetId: string;
 }) {
+  const copy = hero[variant];
+  const ctaLabel = copy.cta;
+  // The demo only exists once a video id is set. Without this the hero offers
+  // a second, equal-weight CTA that leads to a dead placeholder.
+  const hasDemo = Boolean(process.env.NEXT_PUBLIC_VSL_EMBED_ID);
   const goTo = (id: string, section: string, label: string) => {
     track("cta_click", { cta: label, section });
     document
@@ -36,8 +42,8 @@ export function ReviewHero({
       ?.scrollIntoView({ behavior: "smooth", block: id === "demo" ? "center" : "start" });
   };
 
-  const lead = biz ? hero.h1LeadWithBiz : hero.h1Lead;
-  const accent = biz ? hero.h1AccentWithBiz(biz) : hero.h1Accent;
+  const lead = biz ? copy.leadWithBiz : copy.lead;
+  const accent = biz ? copy.accentWithBiz(biz) : copy.accent;
 
   return (
     <section
@@ -61,7 +67,7 @@ export function ReviewHero({
             </h1>
 
             <p className="mt-5 max-w-[500px] text-body text-white/75">
-              {hero.sub}
+              {copy.sub}
             </p>
 
             {/* On mobile the counter sits directly under the promise, where it
@@ -70,22 +76,24 @@ export function ReviewHero({
               <CounterWithGlow biz={biz} />
             </div>
 
-            <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center">
+            <div className="mt-9 flex flex-col items-start gap-4">
               <button
                 type="button"
                 onClick={() => goTo(targetId, "hero", ctaLabel)}
-                className="flex h-14 items-center justify-center rounded-sm bg-fynd-blue px-7 text-body font-semibold text-white shadow-blue transition-all duration-150 ease-fynd hover:bg-[#3F4DF0] hover:-translate-y-px active:scale-[0.99]"
+                className="flex h-14 w-full items-center justify-center rounded-sm bg-fynd-blue px-8 text-body font-semibold text-white shadow-blue transition-all duration-150 ease-fynd hover:bg-[#3F4DF0] hover:-translate-y-px active:scale-[0.99] sm:w-auto"
               >
                 {ctaLabel}
               </button>
 
-              <button
-                type="button"
-                onClick={() => goTo("demo", "hero", "demo")}
-                className="flex h-14 items-center justify-center rounded-sm border-[1.5px] border-white/30 px-7 text-body font-semibold text-white transition-all duration-150 ease-fynd hover:border-white hover:bg-white/10"
-              >
-                {hero.demoLink}
-              </button>
+              {hasDemo && (
+                <button
+                  type="button"
+                  onClick={() => goTo("demo", "hero", "demo")}
+                  className="text-body font-semibold text-white/80 underline-offset-4 hover:text-white hover:underline"
+                >
+                  {hero.demoLink}
+                </button>
+              )}
             </div>
 
             {/* Anchored on the free labour rather than a struck-through

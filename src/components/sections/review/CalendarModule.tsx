@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { calendar, offer } from "@/content/copy";
+import { callPreview, calendar, offer } from "@/content/copy";
 import { track, trackOnce } from "@/lib/analytics";
+import { Check } from "lucide-react";
 import { Container } from "@/components/ui/Layout";
 import { CapacityLine, PriceBlock } from "./OfferBits";
 
@@ -35,6 +36,27 @@ export function CalendarModule({
             <PriceBlock />
             <p className="mt-4 text-small text-ink-soft">
               {calendar.preframe(deadlineLabel)}
+            </p>
+          </div>
+
+          {/* The fear on a booking page is "this is going to be a pitch".
+              Naming the agenda removes more friction than anything else here. */}
+          <div className="mt-6 rounded-lg border border-line bg-white p-6 lg:p-8">
+            <h3 className="text-h3 text-ink">{callPreview.heading}</h3>
+            <ul className="mt-4 flex flex-col gap-3">
+              {callPreview.items.map((item) => (
+                <li key={item} className="flex gap-3">
+                  <Check
+                    aria-hidden="true"
+                    strokeWidth={2.5}
+                    className="mt-1 h-3.5 w-3.5 shrink-0 text-[#0F8F6E]"
+                  />
+                  <span className="text-small text-ink">{item}</span>
+                </li>
+              ))}
+            </ul>
+            <p className="mt-4 border-t border-line pt-4 text-small text-ink-soft">
+              {callPreview.footer}
             </p>
           </div>
 

@@ -36,20 +36,23 @@ export function DemoVideo() {
   const [playing, setPlaying] = useState(false);
   const embedId = process.env.NEXT_PUBLIC_VSL_EMBED_ID;
 
+  // No video, no section. A play button that does nothing is worse than no
+  // demo at all — it breaks a promise in the middle of the page.
+  if (!embedId) return null;
+
   return (
     <section id="demo" className="bg-fynd-gray py-12 lg:py-20">
       <Container>
         <div className="mx-auto max-w-[720px]">
           <div className="relative aspect-video overflow-hidden rounded-md border border-line bg-navy">
-            {playing && embedId ? (
+            {playing ? (
               <Player embedId={embedId} />
             ) : (
               <Poster
                 onPlay={() => {
                   track("vsl_play", { section: "demo" });
-                  if (embedId) setPlaying(true);
+                  setPlaying(true);
                 }}
-                disabled={!embedId}
               />
             )}
           </div>
@@ -60,13 +63,7 @@ export function DemoVideo() {
   );
 }
 
-function Poster({
-  onPlay,
-  disabled,
-}: {
-  onPlay: () => void;
-  disabled: boolean;
-}) {
+function Poster({ onPlay }: { onPlay: () => void }) {
   return (
     <button
       type="button"
@@ -91,14 +88,6 @@ function Poster({
       >
         {vsl.duration}
       </span>
-      {disabled && (
-        <span
-          aria-hidden="true"
-          className="absolute bottom-3 left-3 rounded-sm bg-navy/80 px-2 py-1 text-micro uppercase text-white/72"
-        >
-          Demo coming soon
-        </span>
-      )}
     </button>
   );
 }

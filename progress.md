@@ -27,60 +27,49 @@ what stops it reading as templated.
 
 Both pages verified at 390px and 1280px.
 
-### Section order (identical on both, except the conversion module)
+### Section order — now DIFFERENT per page, on purpose
 
-Restructured to follow the section sequence that converts on comparable pages
-in this category (problem → stakes → mechanism → speed → proof → features →
-pricing → objections → close). All wording is original, written for Fynd.
+The two pages previously shared one order. That was the main thing wrong with
+them. They were built with a cold-traffic structure (modelled on a competitor
+page that runs Google Ads) but they serve warm traffic — the link gets texted
+to someone who just got off the phone with Luke. The ask sat at section 14 of
+18, roughly 8,700px down.
 
-1. Sticky offer bar — bottom on mobile, top on desktop
-2. **Hero** — navy + dotted world map with pins (design.md §10 pattern 1),
-   two-line headline with the payoff in Fynd Green, rating counter as a white
-   card on a blue bloom. With `?biz=`, the business name becomes the green
-   line and the card header — the personalization is the emphasis.
-3. **Trust bar** — stats + client logos (compact one-line state while empty)
-4. **Problem** — the four compounding reasons you have no reviews
-5. **Why it matters** — the stakes, on navy
-6. **Mechanism** — phone artifact, 01/02/03 with You/Fynd badges, routing fork
-7. **Quick wins** — Day 1 / Day 3 / Day 7 on a horizontal rail
-8. Demo / VSL
-9. **Case studies** — renders nothing until real ones exist
-10. **Proof** — before/after profile cards + rank vs. local competitors
-11. **The math** — interactive estimator (jobs/week x response rate)
-12. **Features** — eight capabilities beside a dashboard mockup
-13. **Fit** — CRM integrations + trades served
-14. Testimonials (renders nothing until real quotes exist)
-15. **Pricing** — one plan, included vs. what you won't find
-16. **Conversion module** — Stripe checkout on /start, GHL calendar on /call
-17. **Compliance** — why this is inside Google's rules
-18. Objection FAQ — 16 entries
-19. Final CTA + compliance footer (SMS opt-out, Google trademark notice)
+Commitment level differs, so the ordering does too:
 
-The founder note ("From me / We just talked") was removed at Luke's request.
-Its guarantee block was already covered almost word-for-word by the FAQ entry
-"Am I locked in?", so no risk reversal was lost with it.
+**/call** — booking is low-commitment, so the calendar comes almost immediately.
+Ask at ~908px (1.1 screens on a 390px phone).
 
-**The offer is free management + software at cost**, not a discounted rate.
-`offer.software` ($97) is what the client pays; `offer.managed` ($197) is what
-management costs once the free period ends. There is deliberately no
-struck-through "was $197" — the discount IS the free labour, and a crossed-out
-price on top of that would be a second unexplained anchor. The anchor is the
-`Management: Free / Software: $97` pair.
+  Hero -> TrustBar -> **Calendar** -> Mechanism -> Problem -> Features ->
+  QuickWins -> Demo -> Proof -> Fit -> Pricing -> WhyReviews -> ROI ->
+  CaseStudies -> Testimonials -> Compliance -> FAQ -> FinalCta
 
-**`offer.goal` is a PLACEHOLDER** ("100 reviews"). Luke to set the real
-threshold that ends the free period. It has to be something the client can
-verify on their own profile and something Luke will honour. It appears in the
-hero, the pricing card, and two FAQ answers, all driven from that one value.
+**/start** — paying is higher-commitment, so it earns one beat of build-up (the
+mechanism, showing what they are buying). Ask at ~2,728px (3.2 screens).
 
-**The capacity line ("5 accounts a month") appears once**, at the conversion
-module. It was previously repeated at pricing, the final CTA and the trust bar,
-which read as nagging. The trust bar's empty state references the cap without
-restating the whole sentence.
+  Hero -> TrustBar -> Mechanism -> **Checkout** -> Features -> QuickWins ->
+  Demo -> Proof -> Fit -> Pricing -> Problem -> WhyReviews -> ROI ->
+  CaseStudies -> Testimonials -> Compliance -> FAQ -> FinalCta
 
-**Pricing is deliberately one plan, not tiers.** Tiers would break the
-single-price Stripe checkout and the founding-rate/deadline mechanics in §5,
-and would mean inventing prices. "Everything on one plan" is also the stronger
-position against tiered competitors. Reversible if Luke wants tiers.
+Everything below the ask is the long tail for whoever is still hesitating.
+Nothing was deleted — it was resequenced.
+
+### Other conversion fixes
+
+- **Hero copy is per-page.** The headline and CTA have to rhyme. /call now
+  sells the CALL ("See where your rating actually stands" / "Pick a time to
+  talk"), not the product. Previously both pages promised the product outcome
+  and then asked for a meeting.
+- **One primary CTA in the hero.** There were two of equal weight, and the
+  second ("Watch the 2-min demo") led to a placeholder that did not play.
+- **The demo section returns null when NEXT_PUBLIC_VSL_EMBED_ID is unset.** A
+  play button that does nothing breaks a promise mid-page.
+- **The proof section was reframed** from a results claim badged "Example" to a
+  dashboard illustration labelled "Sample". Three proof slots render nothing;
+  having the fourth announce itself as fiction was worse than omitting it.
+- **/call gained a "what the fifteen minutes actually is" block** above the
+  calendar. The fear on a booking page is that it will be a pitch; naming the
+  agenda is the cheapest friction removal available.
 
 ## Verified
 

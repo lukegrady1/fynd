@@ -58,22 +58,49 @@ export const offer = {
 
 export const hero = {
   /**
-   * Split across two lines with the payoff in Fynd Green (design.md §4).
-   * When `biz` is present the business name becomes the green line, which
-   * makes the personalization the emphasis rather than a bolted-on suffix.
+   * Hero copy is per-page on purpose. The headline and the CTA have to rhyme:
+   * /start sells the product (button buys it), /call sells the CALL itself
+   * (button books it). Promising the product outcome and then asking for a
+   * meeting is the mismatch that stalls booking pages.
    */
-  h1Lead: "Get more Google reviews",
-  h1Accent: "without asking for them.",
-  h1LeadWithBiz: "More Google reviews for",
-  h1AccentWithBiz: (biz: string) => `${biz}.`,
-  sub: "Every time you finish a job, your customer gets a text with a one-tap review link. You do nothing. Reviews show up.",
-  ctaStart: "Start for $97/mo",
-  ctaCall: "Pick a time to talk",
+  start: {
+    lead: "Get more Google reviews",
+    accent: "without asking for them.",
+    leadWithBiz: "More Google reviews for",
+    accentWithBiz: (biz: string) => `${biz}.`,
+    sub: "Every time you finish a job, your customer gets a text with a one-tap review link. You do nothing. Reviews show up.",
+    cta: "Start for $97/mo",
+  },
+  call: {
+    lead: "See where your rating",
+    accent: "actually stands.",
+    leadWithBiz: "See where",
+    accentWithBiz: (biz: string) => `${biz} actually stands.`,
+    sub: "Fifteen minutes. I'll pull up your Google profile, show you what your competitors have, and tell you what it would take to close the gap. No deck, no pressure.",
+    cta: "Pick a time to talk",
+  },
+
   demoLink: "Watch the 2-min demo",
-  /** Short reassurances under the CTA row — replaces the stacked price block. */
+  /** Short reassurances under the CTA row. */
   trustRow: ["Live in under a week", "No contract", "Cancel anytime"],
-  /** Sits under the price rows in the hero. */
-  angleLine: "I run it for free until you hit 100 reviews. You just cover the software.",
+  angleLine:
+    "I run it for free until you hit 100 reviews. You just cover the software.",
+} as const;
+
+/**
+ * Booking pages stall on "what is this actually going to be" — the fear is a
+ * pitch. Naming the agenda up front is the highest-leverage friction remover
+ * on /call.
+ */
+export const callPreview = {
+  heading: "What the fifteen minutes actually is",
+  items: [
+    "I pull up your Google Business Profile while we talk and read you the real numbers.",
+    "I show you the two or three competitors ranking above you and what they have that you don't.",
+    "I tell you roughly how long it would take to close that gap at your job volume.",
+    "If it's not a fit, I'll say so on the call. I'd rather not set up an account I have to unwind.",
+  ],
+  footer: "No slides. If you want to start after, you can. If not, you keep the numbers.",
 } as const;
 
 /** The signature element: where the counter starts and where it lands. */
@@ -218,8 +245,8 @@ export const meta = {
    ========================================================================== */
 
 export const illustrative = {
-  badge: "Example",
-  note: "Illustrative figures, not a client result or a promise.",
+  badge: "Sample",
+  note: "Screens show sample data so you can see the layout. Your own numbers replace them on day one.",
 } as const;
 
 export const mechanism = {
@@ -285,12 +312,12 @@ export const mechanism = {
 } as const;
 
 export const proof = {
-  eyebrow: "What changes",
-  heading: "A rating is a ranking factor.",
-  sub: "Google weighs rating and review count when it decides who shows up in the map pack. Most local businesses are one good quarter away from moving up.",
+  eyebrow: "The dashboard",
+  heading: "You watch it move.",
+  sub: "Google weighs rating and review count when it decides who shows up in the map pack. Your dashboard tracks both, plus where you sit against the shops competing for the same searches. Sample data shown.",
 
   beforeAfter: {
-    heading: "Six months of steady requests",
+    heading: "Rating and review count over time",
     before: { label: "Before", rating: 4.2, reviews: 31, caption: "Where most shops sit" },
     after: { label: "After", rating: 4.8, reviews: 94, caption: "Same business, same jobs" },
     delta: "63 reviews added",

@@ -50,23 +50,30 @@ export default async function StartPage({
         <ReviewHero
           biz={params.biz}
           deadline={deadline}
-          ctaLabel={hero.ctaStart}
+          variant="start"
           targetId="convert"
         />
         <TrustBar />
-        <ProblemSection />
-        <WhyReviews />
         <Mechanism />
+
+        {/* Paying is a higher-commitment ask than booking, so it earns one
+            beat of build-up: the mechanism, showing exactly what they are
+            buying. The problem framing moved below — Luke already delivered
+            that on the phone. Everything under this is the long tail for
+            whoever is still hesitating. */}
+        <CheckoutModule cid={params.cid} cancelled={params.cancelled} />
+
+        <FeatureGrid />
         <QuickWins />
         <DemoVideo />
-        <CaseStudies />
         <ProofSection />
-        <RoiCalculator />
-        <FeatureGrid />
         <FitSection />
+        <PricingSection ctaLabel={hero.start.cta} targetId="convert" />
+        <ProblemSection />
+        <WhyReviews />
+        <RoiCalculator />
+        <CaseStudies />
         <Testimonials />
-        <PricingSection ctaLabel={hero.ctaStart} targetId="convert" />
-        <CheckoutModule cid={params.cid} cancelled={params.cancelled} />
         <Compliance />
         <ObjectionFaq />
         <FinalCta
