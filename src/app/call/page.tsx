@@ -14,7 +14,6 @@ import { Mechanism } from "@/components/sections/review/Mechanism";
 import { ProofSection } from "@/components/sections/review/ProofSection";
 import { RoiCalculator } from "@/components/sections/review/RoiCalculator";
 import { FitSection } from "@/components/sections/review/FitSection";
-import { Compliance } from "@/components/sections/review/Compliance";
 import { TrustBar, CaseStudies } from "@/components/sections/review/SocialProof";
 import { ProblemSection, WhyReviews } from "@/components/sections/review/ProblemSection";
 import { QuickWins } from "@/components/sections/review/QuickWins";
@@ -84,7 +83,6 @@ export default async function CallPage({
         <RoiCalculator />
         <CaseStudies />
         <Testimonials />
-        <Compliance />
         <ObjectionFaq />
         <FinalCta
           heading={finalCtaCopy.headingCall}

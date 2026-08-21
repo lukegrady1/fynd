@@ -178,7 +178,7 @@ export const faq = {
     },
     {
       q: "Is this against Google's rules?",
-      a: "No. Google's policy prohibits incentivizing reviews and review gating — selectively soliciting only customers you expect to be happy. We ask every customer, and we never offer anything in exchange. The private-feedback path is an additional channel, not a filter on who gets asked.",
+      a: "No. Google's policy prohibits incentivizing reviews and review gating — selectively soliciting only customers you expect to be happy. We ask every customer, and we never offer anything in exchange. The private-feedback path is an additional channel, not a filter on who gets asked. The portal does turn what the customer picked into a draft, but they read it, change anything that isn't true for them, and post it from their own account — or don't.",
     },
     {
       q: "How long until I see reviews?",
@@ -471,35 +471,6 @@ export const fit = {
   },
 } as const;
 
-export const compliance = {
-  eyebrow: "The legal bit",
-  heading: "This is inside Google's rules. Here's exactly why.",
-  sub: "Worth knowing the difference, because plenty of tools in this space do get it wrong.",
-  rules: [
-    {
-      ok: true,
-      title: "We ask every customer",
-      body: "Not just the ones you think will be nice. Selectively soliciting only happy customers is called review gating, and it's the thing Google actually prohibits.",
-    },
-    {
-      ok: true,
-      title: "We never offer anything for a review",
-      body: "No discounts, no entries into a drawing, no free oil change. Incentivized reviews violate Google's policy and get removed.",
-    },
-    {
-      ok: true,
-      title: "We draft, the customer decides",
-      body: "They pick what they actually liked, and the portal turns those picks into a draft. They read it, change anything that isn't true for them, and post it from their own account — or don't. Nothing posts without them choosing to.",
-    },
-    {
-      ok: false,
-      title: "What we don't do",
-      body: "No fake reviews, no review swaps, no buying them, no filtering unhappy customers out of the ask. Those get profiles suspended.",
-    },
-  ],
-  privateRouting:
-    "The private feedback path isn't a filter on who gets asked — everybody gets the same message and the same portal. It's an extra channel for someone who's already unhappy, so they have somewhere to put it besides your public profile.",
-} as const;
 
 
 /* ==========================================================================
