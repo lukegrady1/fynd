@@ -55,18 +55,6 @@ export const vsl = {
   playLabel: "Play the demo",
 } as const;
 
-export const whatYouGet = {
-  heading: "What you get",
-  items: [
-    "Automated review requests by text and email",
-    "Private feedback routing for anything under 4 stars",
-    "Reply-to-reviews assistance",
-    "NFC review cards for the truck or front counter",
-    "A dashboard showing rating, review velocity, and where you rank vs. local competitors",
-    "Setup done for you — you're live in under a week",
-  ],
-} as const;
-
 export const testimonialsSection = {
   heading: "What owners say",
 } as const;
@@ -382,3 +370,202 @@ export const founder = {
     body: "Month to month, cancel from the dashboard or by texting me. No exit call, no retention offer. Every review you collected stays on your Google profile — those belong to your business, not to me.",
   },
 } as const;
+
+/* ==========================================================================
+   Structural expansion — problem → stakes → speed → features → plan.
+
+   The section *order* follows what converts on comparable pages in this
+   category. All wording here is original, written for Fynd's voice.
+   ========================================================================== */
+
+export const trust = {
+  /** Only shown when real values exist in content/clients.ts. */
+  statsHeading: "Where things stand",
+  logosHeading: "Businesses running Fynd",
+  /** Shown instead of the logo wall while there's nothing real to show. */
+  emptyFallback:
+    "I take five accounts a month, so this list is short on purpose. Ask me on the call who's on it and I'll put you in touch with them.",
+} as const;
+
+export const problem = {
+  eyebrow: "The problem",
+  heading: "You do good work. Your profile doesn't show it.",
+  sub: "Four things are usually true at once, and they compound.",
+  items: [
+    {
+      title: "Nobody's asking",
+      body: "The job ends, the customer leaves happy, and that's it. Almost every review you never got was one you never asked for.",
+    },
+    {
+      title: "You don't have time to chase",
+      body: "You meant to text them. Then the next job started. Asking works, but only if it happens the same day, every day, without you.",
+    },
+    {
+      title: "You're buried in the map pack",
+      body: "Three businesses show up when someone searches your trade near them. Rating and review count decide which three.",
+    },
+    {
+      title: "The shop down the road wins",
+      body: "They're not better than you. They have 200 reviews and you have 31, and to someone scrolling on a phone that reads as the same thing.",
+    },
+  ],
+} as const;
+
+export const whyReviews = {
+  eyebrow: "Why it matters",
+  heading: "Reviews are the whole ballgame for local.",
+  items: [
+    {
+      title: "They decide who gets called",
+      body: "People pick from the top three results and barely scroll. Getting into that group is worth more than any ad you can buy.",
+    },
+    {
+      title: "They're the last thing checked",
+      body: "Even a referral looks you up first. Your profile is the interview you don't get to attend.",
+    },
+    {
+      title: "Recent beats old",
+      body: "Reviews decay. A steady trickle every week reads as a business that's busy right now — a wall of reviews from 2021 doesn't.",
+    },
+    {
+      title: "Volume makes price matter less",
+      body: "When you're clearly the safest choice, you stop being the cheapest quote and start being the obvious one.",
+    },
+  ],
+} as const;
+
+export const quickWins = {
+  eyebrow: "Speed",
+  heading: "First reviews inside a week.",
+  sub: "Not a 90-day onboarding. Here's the actual clock.",
+  steps: [
+    {
+      when: "Day 1",
+      title: "Fifteen-minute call",
+      body: "I need your Google Business Profile and how you track jobs. That's the whole ask.",
+    },
+    {
+      when: "Day 3",
+      title: "You approve the message",
+      body: "I build it, you read the exact text your customers will get and change anything that doesn't sound like you.",
+    },
+    {
+      when: "Day 7",
+      title: "Reviews start landing",
+      body: "We open with your recent jobs, so there's a backlog of happy customers to ask on day one.",
+    },
+  ],
+  footnote:
+    "How fast it moves after that is a function of your job volume — 20 jobs a week moves quicker than 3.",
+} as const;
+
+export const features = {
+  eyebrow: "What's included",
+  heading: "Everything, on the one plan.",
+  sub: "No tiers, no add-ons, no per-seat pricing. You get the whole thing.",
+  items: [
+    {
+      icon: "MessageSquare",
+      title: "Requests that sound like you",
+      body: "Personalized with the customer's name and the job you did, sent from your business name. Not a template blast.",
+    },
+    {
+      icon: "Plug",
+      title: "CRM integration",
+      body: "ServiceTitan, Jobber, Housecall Pro. Mark the job complete and the request fires on its own.",
+    },
+    {
+      icon: "ShieldCheck",
+      title: "Private feedback routing",
+      body: "Anything under four stars goes to your inbox instead of your public profile, so you hear it first.",
+    },
+    {
+      icon: "Repeat",
+      title: "Polite follow-up",
+      body: "One nudge if they don't respond, then it stops. Nobody gets pestered into a bad review.",
+    },
+    {
+      icon: "Sparkles",
+      title: "Reply assistance",
+      body: "Drafted responses to every review, in your voice, for you to approve. Google counts replies too.",
+    },
+    {
+      icon: "History",
+      title: "Past-customer reactivation",
+      body: "We start by asking everyone you've served recently, not just new jobs. That's where the first wave comes from.",
+    },
+    {
+      icon: "BarChart3",
+      title: "The dashboard",
+      body: "Rating, review velocity, where requests came from, and how you rank against local competitors.",
+    },
+    {
+      icon: "CreditCard",
+      title: "NFC review cards",
+      body: "Tap-to-review cards for the truck and the front counter, for the customers who'd rather do it there and then.",
+    },
+  ],
+} as const;
+
+export const pricing = {
+  eyebrow: "Pricing",
+  heading: "One plan. Everything in it.",
+  sub: "Most tools in this category split the useful parts across three tiers and charge per seat. This is the whole product at one price.",
+  planName: "Review System",
+  includedHeading: "Included",
+  included: [
+    "Unlimited review requests",
+    "Text and email sequences",
+    "Private feedback routing",
+    "CRM integration",
+    "Reply assistance",
+    "Past-customer reactivation",
+    "Competitor rank tracking",
+    "NFC review cards",
+    "Unlimited users",
+    "Setup done for you",
+  ],
+  notIncludedHeading: "What you won't find",
+  notIncluded: [
+    "Setup fees",
+    "Per-seat charges",
+    "A contract",
+    "A price that steps up later",
+  ],
+} as const;
+
+/** Additional FAQ entries appended to the originals. */
+export const faqExtra = [
+  {
+    q: "Who is this actually for?",
+    a: "Local businesses where you finish a job and leave — trades, auto, home services, personal services. If your customers find you on Google Maps and you'd struggle to name the last person who reviewed you, it fits.",
+  },
+  {
+    q: "What if I have more than one location?",
+    a: "Each location has its own Google Business Profile, its own review flow, and its own dashboard. Message me about pricing for multiple locations rather than assuming it's a multiple of $97 — it usually isn't.",
+  },
+  {
+    q: "How many messages will my customers get?",
+    a: "One request, and one follow-up if they don't respond. Then it stops. Anyone who replies STOP is removed immediately, and nothing sends outside 8am–8pm their time.",
+  },
+  {
+    q: "What about repeat customers?",
+    a: "Someone who's already reviewed you doesn't get asked again. Regulars on recurring work get asked once, not after every visit.",
+  },
+  {
+    q: "Can I ask customers from before I signed up?",
+    a: "Yes, and that's usually where the first wave comes from. If you can export a list of recent customers, we ask them in the first week. It's the fastest lever you have.",
+  },
+  {
+    q: "Do you do platforms other than Google?",
+    a: "Google first, always — it's what shows up in the map pack and it's where the search traffic is. Facebook and industry-specific sites can be added once Google's moving.",
+  },
+  {
+    q: "Do you need access to my Google account?",
+    a: "You add me as a manager on your Business Profile, which lets me read reviews and post replies. It doesn't give me access to your email, your ads, or anything else in your Google account, and you can remove me in two clicks.",
+  },
+  {
+    q: "Can I put the reviews on my website?",
+    a: "Yes. There's an embeddable widget that pulls your live Google reviews onto your site, so the same proof works on the page people land on after they find you.",
+  },
+];

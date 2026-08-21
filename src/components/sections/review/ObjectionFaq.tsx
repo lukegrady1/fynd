@@ -1,7 +1,7 @@
 "use client";
 
 import { Plus } from "lucide-react";
-import { faq } from "@/content/copy";
+import { faq, faqExtra } from "@/content/copy";
 import { track } from "@/lib/analytics";
 import { Container } from "@/components/ui/Layout";
 
@@ -11,6 +11,10 @@ import { Container } from "@/components/ui/Layout";
  * Which question gets opened is tracked — it reveals the real objections.
  */
 export function ObjectionFaq() {
+  // The six from the phone come first — they're the real objections; the rest
+  // are implementation questions people scroll for.
+  const items = [...faq.items, ...faqExtra];
+
   return (
     <section className="bg-white py-12 lg:py-20">
       <Container>
@@ -18,7 +22,7 @@ export function ObjectionFaq() {
           <h2 className="text-h2 text-ink">{faq.heading}</h2>
 
           <div className="mt-8 divide-y divide-line border-y border-line">
-            {faq.items.map((item) => (
+            {items.map((item) => (
               <details
                 key={item.q}
                 className="group"

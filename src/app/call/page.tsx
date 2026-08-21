@@ -9,7 +9,6 @@ import { FunnelHeader, FunnelFooter } from "@/components/sections/review/PageChr
 import { StickyOfferBar } from "@/components/sections/review/StickyOfferBar";
 import { ReviewHero } from "@/components/sections/review/ReviewHero";
 import { DemoVideo } from "@/components/sections/review/DemoVideo";
-import { WhatYouGet } from "@/components/sections/review/WhatYouGet";
 import { Testimonials } from "@/components/sections/review/Testimonials";
 import { Mechanism } from "@/components/sections/review/Mechanism";
 import { ProofSection } from "@/components/sections/review/ProofSection";
@@ -17,6 +16,11 @@ import { RoiCalculator } from "@/components/sections/review/RoiCalculator";
 import { FitSection } from "@/components/sections/review/FitSection";
 import { Compliance } from "@/components/sections/review/Compliance";
 import { FounderNote } from "@/components/sections/review/FounderNote";
+import { TrustBar, CaseStudies } from "@/components/sections/review/SocialProof";
+import { ProblemSection, WhyReviews } from "@/components/sections/review/ProblemSection";
+import { QuickWins } from "@/components/sections/review/QuickWins";
+import { FeatureGrid } from "@/components/sections/review/FeatureGrid";
+import { PricingSection } from "@/components/sections/review/PricingSection";
 import { CalendarModule } from "@/components/sections/review/CalendarModule";
 import { ObjectionFaq } from "@/components/sections/review/ObjectionFaq";
 import { FinalCta } from "@/components/sections/review/FinalCta";
@@ -54,13 +58,19 @@ export default async function CallPage({
           ctaLabel={hero.ctaCall}
           targetId="convert"
         />
+        <TrustBar />
+        <ProblemSection />
+        <WhyReviews />
         <Mechanism />
+        <QuickWins />
         <DemoVideo />
+        <CaseStudies />
         <ProofSection />
         <RoiCalculator />
-        <WhatYouGet />
+        <FeatureGrid />
         <FitSection />
         <Testimonials />
+        <PricingSection ctaLabel={hero.ctaCall} targetId="convert" />
         <CalendarModule
           embedUrl={embedUrl}
           deadlineLabel={deadline.formatted}

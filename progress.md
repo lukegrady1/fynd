@@ -29,20 +29,35 @@ Both pages verified at 390px and 1280px.
 
 ### Section order (identical on both, except the conversion module)
 
+Restructured to follow the section sequence that converts on comparable pages
+in this category (problem → stakes → mechanism → speed → proof → features →
+pricing → objections → close). All wording is original, written for Fynd.
+
 1. Sticky offer bar — bottom on mobile, top on desktop
 2. Hero + rating counter
-3. **Mechanism** — phone artifact, 01/02/03 with You/Fynd actor badges, routing fork
-4. Demo / VSL
-5. **Proof** — before/after profile cards + rank vs. local competitors
-6. **The math** — interactive estimator (jobs/week x response rate)
-7. What you get
-8. **Fit** — CRM integrations, first-month timeline, trades served
-9. Testimonials (renders nothing until real quotes exist)
-10. **Conversion module** — Stripe checkout on /start, GHL calendar on /call
-11. **Compliance** — why this is inside Google's rules
-12. Objection FAQ
-13. **Founder note** + guarantee
-14. Final CTA
+3. **Trust bar** — stats + client logos (honest fallback line while empty)
+4. **Problem** — the four compounding reasons you have no reviews
+5. **Why it matters** — the stakes, on navy
+6. **Mechanism** — phone artifact, 01/02/03 with You/Fynd badges, routing fork
+7. **Quick wins** — Day 1 / Day 3 / Day 7 on a horizontal rail
+8. Demo / VSL
+9. **Case studies** — renders nothing until real ones exist
+10. **Proof** — before/after profile cards + rank vs. local competitors
+11. **The math** — interactive estimator (jobs/week x response rate)
+12. **Features** — eight capabilities beside a dashboard mockup
+13. **Fit** — CRM integrations + trades served
+14. Testimonials (renders nothing until real quotes exist)
+15. **Pricing** — one plan, included vs. what you won't find
+16. **Conversion module** — Stripe checkout on /start, GHL calendar on /call
+17. **Compliance** — why this is inside Google's rules
+18. Objection FAQ — 14 entries
+19. **Founder note** + guarantee
+20. Final CTA + compliance footer (SMS opt-out, Google trademark notice)
+
+**Pricing is deliberately one plan, not tiers.** Tiers would break the
+single-price Stripe checkout and the founding-rate/deadline mechanics in §5,
+and would mean inventing prices. "Everything on one plan" is also the stronger
+position against tiered competitors. Reversible if Luke wants tiers.
 
 ## Verified
 
@@ -64,6 +79,8 @@ Both pages verified at 390px and 1280px.
 | Typecheck / lint / build | clean |
 | ROI estimator math | verified: 40 jobs x 4.33 wk x 50% = 87/mo, 522 at six months |
 | Illustrative figures labelled | every proof block carries an `Example` badge + plain-text disclaimer |
+| Fabricated social proof | none — grep for "trusted by N"/"N businesses" returns nothing |
+| Trust bar / case studies with no data | degrade to an honest line, or render nothing |
 
 ## Not done — needs credentials or content
 
@@ -100,6 +117,12 @@ These are the `TODO(integration)` markers in the codebase.
    rather than quietly dropping the `Example` badge.
 10. **The SMS artifact** shows "Reyes Auto Care" as a stand-in business. Swap for
    a real one if you have permission, or leave it — it reads as an example.
+11. **Social proof — `src/content/clients.ts`.** Three empty structures:
+   `trustStats` (headline numbers), `clientLogos` (logo wall, files go in
+   /public/logos), and `caseStudies` ("X reviews in Y months" + quote). All
+   render nothing until filled. This is the single highest-leverage thing to
+   supply — roughly a third of a competitive page in this category is social
+   proof, and it's the part that can't be written, only earned.
 
 ## Notes for whoever picks this up
 

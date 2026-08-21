@@ -2,18 +2,15 @@ import { cn } from "@/lib/utils";
 import type { ReactNode } from "react";
 
 /**
- * A phone, drawn rather than photographed — bezel, notch, status bar, and a
- * message header. Pure CSS/SVG so it costs nothing to load and stays crisp at
- * any size. The point is that the SMS inside is the *actual* message, not an
- * abstraction of one.
+ * Bare device shell — bezel, buttons, notch, status bar. Drawn in CSS/SVG
+ * rather than photographed, so it costs nothing to load and stays crisp at any
+ * size. Shared by the SMS thread and the dashboard mockup.
  */
-export function PhoneFrame({
-  business,
+export function DeviceShell({
   statusTime,
   children,
   className,
 }: {
-  business: string;
   statusTime: string;
   children: ReactNode;
   className?: string;
@@ -55,17 +52,39 @@ export function PhoneFrame({
           </span>
         </div>
 
-        {/* conversation header */}
-        <div className="border-b border-line px-4 pb-2.5 pt-1.5 text-center">
-          <p className="truncate text-[13px] font-semibold text-ink">
-            {business}
-          </p>
-          <p className="text-[10px] font-normal text-ink-soft">Text message</p>
-        </div>
-
-        <div className="flex flex-col gap-2.5 px-3 py-4">{children}</div>
+        {children}
       </div>
     </div>
+  );
+}
+
+/**
+ * A phone showing a text thread. The point is that the SMS inside is the
+ * *actual* message, not an abstraction of one.
+ */
+export function PhoneFrame({
+  business,
+  statusTime,
+  children,
+  className,
+}: {
+  business: string;
+  statusTime: string;
+  children: ReactNode;
+  className?: string;
+}) {
+  return (
+    <DeviceShell statusTime={statusTime} className={className}>
+      {/* conversation header */}
+      <div className="border-b border-line px-4 pb-2.5 pt-1.5 text-center">
+        <p className="truncate text-[13px] font-semibold text-ink">
+          {business}
+        </p>
+        <p className="text-[10px] font-normal text-ink-soft">Text message</p>
+      </div>
+
+      <div className="flex flex-col gap-2.5 px-3 py-4">{children}</div>
+    </DeviceShell>
   );
 }
 
