@@ -171,8 +171,6 @@ export function ProfileCard({
           </span>
         </span>
       </div>
-
-      <p className="mt-10 text-small text-white/60">{profileCard.footnote}</p>
     </div>
   );
 }

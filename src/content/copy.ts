@@ -90,12 +90,6 @@ export const hero = {
   },
 
   demoLink: "Watch the 2-min demo",
-  /**
-   * One line, not three. The hero previously restated the offer in a price
-   * row, an angle line and a bullet row — all after the CTA, all competing.
-   */
-  offerLine:
-    "I run it free until you hit 100 reviews. You cover the software: $97/mo, no contract, cancel anytime.",
 } as const;
 
 /**
@@ -135,7 +129,6 @@ export const profileCard = {
   /** Monthly review volume, in px bar heights. Sample shape, not real data. */
   months: [10, 14, 18, 26, 34, 44],
   newReview: "New review received",
-  footnote: "This is your profile a few months in.",
 } as const;
 
 export const vsl = {
@@ -218,26 +211,26 @@ export const finalCta = {
 
 export const welcome = {
   heading: "You're in.",
-  sub: "Here's exactly what happens next.",
+  sub: "One form and I can get started. Here's the order it happens in.",
   steps: [
     {
       when: "Right now",
-      body: "You'll get a receipt by email and a text from me confirming we're on.",
+      body: "Fill out the form below. It's the only thing I need from you.",
     },
     {
-      when: "Within 24 hours",
-      body: "I'll set up your review pipeline and connect it to your Google Business Profile.",
+      when: "Next",
+      body: "I build your portal and your message, then send you the exact text to read before anything goes out.",
     },
     {
-      when: "This week",
-      body: "We do a 15-minute setup call, then the first requests go out.",
+      when: "Then",
+      body: "You give the word and requests start going to your recent customers.",
     },
   ],
-  formHeading: "One thing first",
+  formHeading: "The onboarding form",
   formBody:
-    "Fill this in so I can start setting up — it takes about a minute.",
-  callHeading: "Book your setup call",
-  callBody: "Fifteen minutes. Pick whatever time works.",
+    "This is the whole setup. A few minutes now and I can start building.",
+  callHeading: "Want to walk through it instead?",
+  callBody: "Optional. If you'd rather do the form together, grab a time.",
 } as const;
 
 export const confirmed = {
@@ -294,31 +287,8 @@ export const mechanism = {
       subtitle: "Tap a star",
       time: "9:41 AM",
     },
-    /** The actual Fynd review portal the customer lands on. */
-    portal: {
-      title: "How was your experience?",
-      subtitle: "Your opinion matters to us",
-      options: [
-        { label: "Excellent", face: "grin", routesPublic: true },
-        { label: "Good", face: "smile", routesPublic: true },
-        { label: "Ok", face: "neutral", routesPublic: false },
-        { label: "Bad", face: "frown", routesPublic: false },
-      ],
-      likeMost: "What did you like the most?",
-      chips: ["Service", "Price", "Quality", "Speed"],
-      draftPrompt: "Happy to post this on Google?",
-      draft:
-        "Called them out same day and had it sorted in under an hour. Fair price, no mess left behind. Would use again.",
-      postCta: "Copy and post to Google",
-      time: "9:41 AM",
-    },
     inbound: { body: "done!", time: "9:43 AM" },
-    footnote: "Sent from your business name, not a 1-800 number.",
   },
-
-  portalHeading: "What they land on",
-  portalSub:
-    "Your logo, your business name, four taps. Most people finish it in under fifteen seconds without typing a word.",
 
   /** The fork that makes the "what if someone's mad" objection go away. */
   routing: {
@@ -448,16 +418,6 @@ export const fit = {
       "No CRM? Text the customer's number to your Fynd line when you pack up. That's the whole workflow.",
   },
 
-  timeline: {
-    heading: "What the first month looks like",
-    steps: [
-      { when: "Day 1", title: "Kickoff call", body: "Fifteen minutes. I need your Google Business Profile and how you track jobs." },
-      { when: "Days 2–4", title: "I build it", body: "Message templates in your voice, routing rules, CRM connection, your Fynd number." },
-      { when: "Day 5", title: "You approve", body: "You read the exact text your customers will get and change anything you don't like." },
-      { when: "Week 1", title: "First requests go out", body: "We start with recent jobs so you see reviews inside days, not months." },
-      { when: "Week 3", title: "NFC cards arrive", body: "Tap-to-review cards for the truck and the front counter." },
-    ],
-  },
 
   trades: {
     heading: "Who this is built for",
@@ -535,27 +495,25 @@ export const whyReviews = {
 
 export const quickWins = {
   eyebrow: "Speed",
-  heading: "First reviews inside a week.",
-  sub: "Not a 90-day onboarding. Here's the actual clock.",
+  heading: "Reviews in days, not weeks.",
+  sub: "No drawn-out onboarding. One form and you're in the queue.",
   steps: [
     {
-      when: "Day 1",
-      title: "Fifteen-minute call",
-      body: "I need your Google Business Profile and how you track jobs. That's the whole ask.",
+      when: "Step one",
+      title: "You fill out the form",
+      body: "Your Google Business Profile, how you track jobs, and who your customers should hear from. A few minutes, once.",
     },
     {
-      when: "Day 3",
-      title: "You approve the message",
-      body: "I build it, you read the exact text your customers will get and change anything that doesn't sound like you.",
+      when: "Step two",
+      title: "I build it",
+      body: "Your portal, your message in your voice, the routing rules and your Fynd number. You get to read the exact text before anything sends.",
     },
     {
-      when: "Day 7",
-      title: "Reviews start landing",
-      body: "We open with your recent jobs, so there's a backlog of happy customers to ask on day one.",
+      when: "Step three",
+      title: "Requests start going out",
+      body: "We open with the customers you've already served, so there's a backlog of happy people to ask on day one.",
     },
   ],
-  footnote:
-    "How fast it moves after that is a function of your job volume — 20 jobs a week moves quicker than 3.",
 } as const;
 
 export const features = {

@@ -6,8 +6,8 @@ import { Reveal } from "./Reveal";
 /**
  * "Will this work with what I already use, and is it built for my trade?"
  *
- * The onboarding timeline that used to live here moved to QuickWins, where the
- * speed claim belongs — this section is now purely about fit.
+ * Purely about fit: what it connects to, and who it's built for. The
+ * onboarding sequence lives in QuickWins.
  */
 export function FitSection() {
   return (

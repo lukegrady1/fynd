@@ -44,7 +44,7 @@ export function ReviewHero({
   return (
     <section
       id="hero"
-      className="relative isolate overflow-hidden bg-navy pb-20 pt-16 lg:min-h-[720px] lg:pb-32 lg:pt-28"
+      className="relative isolate flex items-center overflow-hidden bg-navy py-16 lg:min-h-[760px] lg:py-24"
     >
       <DottedWorldMap />
       <div
@@ -52,7 +52,7 @@ export function ReviewHero({
         className="pointer-events-none absolute inset-0 bg-gradient-to-b from-navy via-navy/70 to-navy/40 lg:bg-gradient-to-r lg:from-navy lg:via-navy/80 lg:to-transparent"
       />
 
-      <Container className="relative">
+      <Container className="relative w-full">
         <div className="grid items-center gap-12 lg:grid-cols-[1.05fr_minmax(0,420px)] lg:gap-16">
           <div>
             <h1 className="text-[30px] font-bold leading-[1.08] tracking-[-0.02em] text-white min-[420px]:text-[34px] sm:text-[44px] lg:text-[52px]">
@@ -85,11 +85,6 @@ export function ReviewHero({
                 </button>
               )}
             </div>
-
-            {/* One offer line, replacing the price row + angle line + bullets. */}
-            <p className="mt-5 max-w-[460px] text-small text-white/60">
-              {hero.offerLine}
-            </p>
 
             <div className="mt-10 lg:hidden">
               <CounterWithGlow biz={biz} />

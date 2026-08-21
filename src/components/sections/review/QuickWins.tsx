@@ -44,12 +44,6 @@ export function QuickWins() {
             </li>
           ))}
         </ol>
-
-        <Reveal>
-          <p className="mt-10 border-t border-line pt-5 text-small text-ink-soft">
-            {quickWins.footnote}
-          </p>
-        </Reveal>
       </Container>
     </section>
   );
