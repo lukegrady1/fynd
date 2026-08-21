@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { meta, finalCta as finalCtaCopy, hero } from "@/content/copy";
 import { parseParams, type SearchParams } from "@/lib/params";
-import { resolveDeadline } from "@/lib/offer";
 
 import { PageTracking } from "@/components/sections/review/PageTracking";
 import { FunnelHeader, FunnelFooter } from "@/components/sections/review/PageChrome";
@@ -37,7 +36,6 @@ export default async function StartPage({
   searchParams: Promise<SearchParams>;
 }) {
   const params = parseParams(await searchParams);
-  const deadline = resolveDeadline(params.exp, params.sig);
 
   return (
     <>
@@ -95,7 +93,6 @@ export default async function StartPage({
       <StickyOfferBar
         ctaLabel="Start for $97"
         targetId="convert"
-        deadline={deadline}
       />
     </>
   );

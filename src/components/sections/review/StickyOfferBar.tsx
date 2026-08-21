@@ -2,9 +2,8 @@
 
 import { offer } from "@/content/copy";
 import { track } from "@/lib/analytics";
-import type { Deadline } from "@/lib/offer";
 import { cn } from "@/lib/utils";
-import { DeadlineChip } from "./OfferBits";
+import { OfferCountdown } from "./OfferBits";
 
 /**
  * The highest-leverage element on the page: the CTA is never more than one
@@ -17,12 +16,10 @@ import { DeadlineChip } from "./OfferBits";
 export function StickyOfferBar({
   ctaLabel,
   targetId,
-  deadline,
 }: {
   ctaLabel: string;
   /** Element to scroll to — the checkout card or the calendar. */
   targetId: string;
-  deadline: Deadline;
 }) {
   const handleClick = () => {
     track("cta_click", { cta: ctaLabel, section: "sticky_bar" });
@@ -55,7 +52,7 @@ export function StickyOfferBar({
               ${offer.software}/mo
             </span>
           </p>
-          <DeadlineChip deadline={deadline} tone="dark" className="shrink-0" />
+          <OfferCountdown tone="dark" className="shrink-0" />
         </div>
 
         {/* Mobile: price stays compact so the button keeps its full width. */}

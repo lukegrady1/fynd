@@ -159,6 +159,15 @@ These are the `TODO(integration)` markers in the codebase.
   hidden start state lives behind `@media (scripting: enabled)`. Don't replace
   this with a JS library that SSRs `opacity: 0` — that breaks the no-JS
   requirement and reintroduces a hydration mismatch.
+- **The claim countdown is `useOfferWindow` + `OfferCountdown`.** Ten minutes
+  from the visitor's FIRST arrival, with the start timestamp persisted in
+  localStorage so a reload continues the countdown instead of handing out a
+  fresh ten minutes. That persistence is the point — a timer that restarts is
+  what the build spec §5 lists under "do not build", and it is what a
+  skeptical trades owner catches. Verified: 588s before reload, 574s after.
+  **This is only honest if Luke actually honours the expiry.** The date-based
+  `exp`/HMAC logic in `src/lib/offer.ts` still exists unused, if he ever wants
+  to go back to a per-prospect deadline set by the GHL workflow.
 - **The hero card is `ProfileCard`.** Modelled on a Google Business Profile
   layout, but the dark panel shows REVIEW VOLUME, not map position — the
   reference showed "local map position #2", which contradicts the

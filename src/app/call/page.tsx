@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { meta, finalCta as finalCtaCopy, hero } from "@/content/copy";
 import { parseParams, type SearchParams } from "@/lib/params";
-import { resolveDeadline } from "@/lib/offer";
 import { calendarEmbedUrl } from "@/lib/ghl";
 
 import { PageTracking } from "@/components/sections/review/PageTracking";
@@ -37,7 +36,6 @@ export default async function CallPage({
   searchParams: Promise<SearchParams>;
 }) {
   const params = parseParams(await searchParams);
-  const deadline = resolveDeadline(params.exp, params.sig);
 
   // Prefilled so nobody retypes their details on a phone keyboard.
   const embedUrl = calendarEmbedUrl({
@@ -63,7 +61,6 @@ export default async function CallPage({
             explanation rather than after it. */}
         <CalendarModule
           embedUrl={embedUrl}
-          deadlineLabel={deadline.formatted}
         />
         <Mechanism />
         <DemoVideo />
@@ -101,7 +98,6 @@ export default async function CallPage({
       <StickyOfferBar
         ctaLabel="Pick a time"
         targetId="convert"
-        deadline={deadline}
       />
     </>
   );

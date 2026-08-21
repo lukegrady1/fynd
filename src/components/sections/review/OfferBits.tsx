@@ -1,128 +1,9 @@
 "use client";
 
-import { useMemo, useSyncExternalStore } from "react";
 import { Clock } from "lucide-react";
+import { useOfferWindow } from "@/lib/use-offer-window";
 import { cn } from "@/lib/utils";
-import { offer } from "@/content/copy";
-import type { Deadline } from "@/lib/offer";
-
-const DAY_MS = 24 * 60 * 60 * 1000;
-
-/**
- * Deadline chip.
- *
- * Renders the server-formatted date string on first paint so SSR and hydration
- * agree, then upgrades to a live countdown only once under 24 hours remain.
- * Never renders negative time; when the deadline passes the chip disappears
- * rather than resetting the clock.
- *
- * Fynd Orange fails contrast as small text on white (design.md §13), so on
- * light surfaces the alert colour carries the border, tint and icon while the
- * text stays navy. On navy the orange text passes and is used directly.
- */
-export function DeadlineChip({
-  deadline,
-  tone = "light",
-  variant = "chip",
-  className,
-}: {
-  deadline: Deadline;
-  tone?: "light" | "dark";
-  /** "eyebrow" is the quieter hero form — a dot and a line, not a pill. */
-  variant?: "chip" | "eyebrow";
-  className?: string;
-}) {
-  const label = useCountdownLabel(deadline);
-  if (!label) return null;
-
-  if (variant === "eyebrow") {
-    return (
-      <p
-        className={cn(
-          "flex items-start gap-2 text-micro uppercase tabular-nums",
-          tone === "dark" ? "text-fynd-orange" : "text-ink-soft",
-          className,
-        )}
-      >
-        {/* items-start + nudge keeps the dot on the first line when the label
-            wraps on a narrow phone, instead of floating to the middle. */}
-        <span
-          aria-hidden="true"
-          className="mt-[5px] h-1.5 w-1.5 shrink-0 rounded-full bg-fynd-orange"
-        />
-        <span className="max-w-[34ch]">{label}</span>
-      </p>
-    );
-  }
-
-  return (
-    <span
-      className={cn(
-        "inline-flex items-center gap-2 rounded-sm border px-3 py-1.5 text-small font-semibold tabular-nums",
-        tone === "light"
-          ? "border-fynd-orange/40 bg-fynd-orange/8 text-ink"
-          : "border-fynd-orange/40 bg-fynd-orange/12 text-fynd-orange",
-        className,
-      )}
-    >
-      <Clock
-        aria-hidden="true"
-        strokeWidth={2}
-        className="h-4 w-4 shrink-0 text-fynd-orange"
-      />
-      {label}
-    </span>
-  );
-}
-
-const pad = (n: number) => String(n).padStart(2, "0");
-
-/**
- * Reads the clock via useSyncExternalStore rather than an effect + setState:
- * the server snapshot is `null`, so SSR and the hydrating render both use the
- * pre-formatted date and can't mismatch.
- *
- * The snapshot is bucketed so it only changes when the rendered label would —
- * a deadline days away returns a constant and never re-renders the chip.
- */
-function useCountdownLabel(deadline: Deadline): string | null {
-  const dateLabel = `Free management until ${deadline.formatted}`;
-
-  const store = useMemo(() => {
-    const at = deadline.at;
-
-    const getSnapshot = () => {
-      const remaining = at - Date.now();
-      if (remaining <= 0) return -1; // expired
-      if (remaining >= DAY_MS) return 0; // show the date, not a timer
-      return Math.floor(remaining / 1000);
-    };
-
-    return {
-      subscribe: (onChange: () => void) => {
-        const id = setInterval(onChange, 1000);
-        return () => clearInterval(id);
-      },
-      getSnapshot,
-      getServerSnapshot: (): number | null => null,
-    };
-  }, [deadline.at]);
-
-  const secondsLeft = useSyncExternalStore(
-    store.subscribe,
-    store.getSnapshot,
-    store.getServerSnapshot,
-  );
-
-  // First render (server and hydration): show the date string.
-  if (secondsLeft === null || secondsLeft === 0) return dateLabel;
-  if (secondsLeft < 0) return null;
-
-  const h = Math.floor(secondsLeft / 3600);
-  const m = Math.floor((secondsLeft % 3600) / 60);
-  const s = secondsLeft % 60;
-  return `Free management ends in ${h}:${pad(m)}:${pad(s)}`;
-}
+import { offer, offerWindow } from "@/content/copy";
 
 /**
  * Price block.
@@ -230,5 +111,60 @@ function Row({
         )}
       </dd>
     </div>
+  );
+}
+
+/**
+ * The claim countdown. Ten minutes from first arrival, persisted so a reload
+ * does not hand out a fresh window — see use-offer-window.ts.
+ *
+ * Renders nothing on the server and during hydration, because the start time
+ * lives in the visitor's browser and guessing it would flash the wrong number.
+ */
+export function OfferCountdown({
+  tone = "dark",
+  className,
+}: {
+  tone?: "light" | "dark";
+  className?: string;
+}) {
+  const window = useOfferWindow();
+  if (window.state === "unknown") return null;
+
+  const closed = window.state === "closed";
+
+  return (
+    <span
+      className={cn(
+        "inline-flex items-center gap-2 rounded-sm border px-3 py-1.5 text-small font-semibold tabular-nums",
+        closed
+          ? tone === "dark"
+            ? "border-white/15 bg-white/5 text-white/60"
+            : "border-line bg-white text-ink-soft"
+          : tone === "dark"
+            ? "border-fynd-orange/40 bg-fynd-orange/12 text-fynd-orange"
+            : "border-fynd-orange/40 bg-fynd-orange/8 text-ink",
+        className,
+      )}
+    >
+      <Clock
+        aria-hidden="true"
+        strokeWidth={2}
+        className={cn(
+          "h-4 w-4 shrink-0",
+          closed ? "opacity-60" : "text-fynd-orange",
+        )}
+      />
+      {closed ? (
+        offerWindow.closedLabel
+      ) : (
+        <>
+          <span>{`${offerWindow.label} — ${window.label}`}</span>
+          <span className="hidden font-medium opacity-80 sm:inline">
+            {offerWindow.claimBoth}
+          </span>
+        </>
+      )}
+    </span>
   );
 }

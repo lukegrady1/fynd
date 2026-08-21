@@ -51,6 +51,17 @@ export const offer = {
   timeZone: "America/New_York",
 } as const;
 
+/**
+ * The claim window shown in the offer bar. Ten minutes from the visitor's
+ * first arrival, persisted so a reload does not restart it.
+ */
+export const offerWindow = {
+  label: "Free management",
+  claimBoth: "Book a call or start now to claim it",
+  closedLabel: "Claim window closed",
+  closedHint: "Book a call and I'll see what I can do",
+} as const;
+
 export const hero = {
   /**
    * Hero copy is per-page on purpose. The headline and the CTA have to rhyme:
@@ -160,8 +171,8 @@ export const checkout = {
 export const calendar = {
   heading: "Grab 15 minutes.",
   body: "I'll show you how many reviews you're getting now, how many you'd get with every customer asked, and exactly how the system does it. No pitch deck.",
-  preframe: (deadline: string) =>
-    `This is what we'll be talking about. Same price whether you buy today or Friday — the $97 rate is held until ${deadline}.`,
+  preframe:
+    "This is what we'll be talking about, so nobody turns up expecting free consulting. Book inside the window and the free management is yours either way — whether you start on the call or after it.",
   textInstead: "Prefer to text? Reply to my message and I'll answer there.",
   loading: "Loading available times…",
 } as const;

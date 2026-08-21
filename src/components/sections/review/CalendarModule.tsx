@@ -13,13 +13,7 @@ import { PriceBlock } from "./OfferBits";
  * The iframe gets a fixed min-height (700px mobile / 620px desktop) so the
  * page doesn't jump as the embed loads, with a skeleton underneath.
  */
-export function CalendarModule({
-  embedUrl,
-  deadlineLabel,
-}: {
-  embedUrl: string | null;
-  deadlineLabel: string;
-}) {
+export function CalendarModule({ embedUrl }: { embedUrl: string | null }) {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
@@ -35,7 +29,7 @@ export function CalendarModule({
           <div className="rounded-lg border border-line bg-white p-6 lg:p-8">
             <PriceBlock />
             <p className="mt-4 text-small text-ink-soft">
-              {calendar.preframe(deadlineLabel)}
+              {calendar.preframe}
             </p>
           </div>
 
