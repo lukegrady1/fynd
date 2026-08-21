@@ -1,5 +1,6 @@
 import {
   BarChart3,
+  ShieldAlert,
   CreditCard,
   History,
   MessageSquare,
@@ -71,6 +72,7 @@ function FeatureIcon({ name }: { name: string }) {
     MessageSquare: { node: <MessageSquare {...props} />, tone: "text-fynd-green" },
     Plug: { node: <Plug {...props} />, tone: "text-fynd-orange" },
     ShieldCheck: { node: <ShieldCheck {...props} />, tone: "text-fynd-blue" },
+    ShieldAlert: { node: <ShieldAlert {...props} />, tone: "text-fynd-orange" },
     Repeat: { node: <Repeat {...props} />, tone: "text-fynd-blue" },
     Sparkles: { node: <Sparkles {...props} />, tone: "text-fynd-green" },
     History: { node: <History {...props} />, tone: "text-fynd-blue" },

@@ -174,7 +174,7 @@ export const faq = {
   items: [
     {
       q: "What if I get a bad review?",
-      a: "That's the part most people worry about, so it's built in. Anything under 4 stars never goes to Google — the customer lands on a private feedback form that comes straight to you. You get a chance to fix it before it's public. Only the happy ones get pointed at your Google profile.",
+      a: "That's the part most people worry about, so it's built in. Four and five stars go to your Google profile. Three stars or fewer never do — that customer lands on a private feedback form that comes straight to your inbox, usually within seconds, so you get a chance to fix it before anyone else sees it.",
     },
     {
       q: "Is this against Google's rules?",
@@ -308,7 +308,7 @@ export const mechanism = {
       body: "They land on your review page with the rating already selected. One more tap and it's public.",
     },
     low: {
-      label: "1 to 3 stars",
+      label: "3 stars or fewer",
       title: "Straight to you",
       body: "A private form, not Google. It hits your inbox in seconds so you can fix it before anyone else sees it.",
     },
@@ -582,7 +582,7 @@ export const features = {
     {
       icon: "ShieldCheck",
       title: "Private feedback routing",
-      body: "Anything under four stars goes to your inbox instead of your public profile, so you hear it first.",
+      body: "Three stars or fewer goes to your inbox instead of your public profile. Four and five go to Google.",
     },
     {
       icon: "Repeat",
@@ -593,6 +593,11 @@ export const features = {
       icon: "Sparkles",
       title: "Reply assistance",
       body: "Drafted responses to every review, in your voice, for you to approve. Google counts replies too.",
+    },
+    {
+      icon: "ShieldAlert",
+      title: "Removal requests",
+      body: "Reviews that break Google's rules — fake ones, competitor attacks, off-topic rants — get reported and chased. Google makes the call, but they do come down.",
     },
     {
       icon: "History",
@@ -626,6 +631,7 @@ export const pricing = {
     "Reply assistance",
     "Past-customer reactivation",
     "Review count benchmarking",
+    "Removal requests for rule-breaking reviews",
     "NFC review cards",
     "Unlimited users",
     "Setup done for you",
@@ -644,6 +650,10 @@ export const pricing = {
 
 /** Additional FAQ entries appended to the originals. */
 export const faqExtra = [
+  {
+    q: "Can you get a bad review taken down?",
+    a: "Only if it breaks Google's rules, and I'll tell you straight which bucket yours is in. Fake reviews, ones from competitors, off-topic rants, anything with slurs or personal details — those get reported and chased, and they do come down. A real customer who had a genuinely bad experience and said so honestly is not coming down, not by me and not by anyone selling you otherwise. What we do instead is bury it: enough recent four and five star reviews and one bad one stops being the first thing anybody reads.",
+  },
   {
     q: "Who is this actually for?",
     a: "Local businesses where you finish a job and leave — trades, auto, home services, personal services. If your customers find you on Google Maps and you'd struggle to name the last person who reviewed you, it fits.",
