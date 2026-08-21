@@ -28,8 +28,6 @@ export function ProofSection() {
             <BeforeAfter />
           </Reveal>
         </div>
-
-        <p className="mt-5 text-small text-ink-soft">{illustrative.note}</p>
       </Container>
     </section>
   );

@@ -186,7 +186,7 @@ export const faq = {
     },
     {
       q: "Do I have to do anything?",
-      a: "The manual version takes five seconds: text a number to a dedicated line when the job's done. The automatic version takes zero — if you're on ServiceTitan, Jobber, or Housecall Pro, we connect to it and requests fire when you mark a job complete. Either way, you never write the message.",
+      a: "The manual version takes five seconds: text a number to a dedicated line when the job's done. The automatic version takes zero — we connect to most CRMs, including ServiceTitan, Jobber and Housecall Pro, and requests fire when you mark a job complete. If yours isn't a direct integration it almost certainly works over Zapier. Either way, you never write the message.",
     },
     {
       q: "Am I locked in?",
@@ -273,7 +273,6 @@ export const meta = {
 
 export const illustrative = {
   badge: "Preview",
-  note: "Product screens, shown with example figures.",
 } as const;
 
 export const mechanism = {
@@ -436,13 +435,14 @@ export const fit = {
   heading: "Does this work with what you already use?",
 
   integrations: {
-    heading: "Connects to your CRM",
+    heading: "Connects to most CRMs",
     sub: "Mark a job complete and the request fires. Nothing else to remember.",
     items: [
       { name: "ServiceTitan", status: "Direct integration" },
       { name: "Jobber", status: "Direct integration" },
       { name: "Housecall Pro", status: "Direct integration" },
-      { name: "Anything else", status: "Text a number, or a Zapier hook" },
+      { name: "Most other CRMs", status: "Direct or via Zapier" },
+      { name: "Not sure what you're on?", status: "Tell me and I'll check" },
     ],
     fallback:
       "No CRM? Text the customer's number to your Fynd line when you pack up. That's the whole workflow.",
@@ -571,7 +571,7 @@ export const features = {
     {
       icon: "Plug",
       title: "CRM integration",
-      body: "ServiceTitan, Jobber, Housecall Pro. Mark the job complete and the request fires on its own.",
+      body: "ServiceTitan, Jobber, Housecall Pro and most others. Mark the job complete and the request fires on its own.",
     },
     {
       icon: "ShieldCheck",
@@ -621,7 +621,7 @@ export const pricing = {
     "Unlimited review requests",
     "Text and email sequences",
     "Private feedback routing",
-    "CRM integration",
+    "Connects to most CRMs",
     "Reply assistance",
     "Past-customer reactivation",
     "Review count benchmarking",
