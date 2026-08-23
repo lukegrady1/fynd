@@ -1,20 +1,16 @@
 "use client";
 
+import { Check } from "lucide-react";
 import { hero } from "@/content/copy";
 import { track } from "@/lib/analytics";
 import { Container } from "@/components/ui/Layout";
 import { DottedWorldMap } from "@/components/textures/Textures";
-import { ProfileCard } from "./ProfileCard";
+import { HeroFlow } from "./HeroFlow";
 
 /**
- * Hero — design.md §10 signature pattern 1: Deep Navy with the dotted world
- * map and colored pins, headline split across two lines with the payoff in
- * Fynd Green.
- *
- * The navy ground exists for a reason beyond brand: the rating counter is a
- * white card, and on a white page it read as a faint outline floating in
- * space. On navy, with a blue glow behind it, it finally carries the section
- * the way the signature element should.
+ * Hero. The visual is the automation running end to end, not a dashboard —
+ * the product's magic is that a finished job turns into a review without
+ * anyone touching it, and a static dashboard cannot show that.
  */
 export function ReviewHero({
   biz,
@@ -27,33 +23,29 @@ export function ReviewHero({
   targetId: string;
 }) {
   const copy = hero[variant];
-  const ctaLabel = copy.cta;
-  // The demo only exists once a video id is set. Without this the hero offers
-  // a second, equal-weight CTA that leads to a dead placeholder.
-  const hasDemo = Boolean(process.env.NEXT_PUBLIC_VSL_EMBED_ID);
-  const goTo = (id: string, section: string, label: string) => {
-    track("cta_click", { cta: label, section });
-    document
-      .getElementById(id)
-      ?.scrollIntoView({ behavior: "smooth", block: id === "demo" ? "center" : "start" });
-  };
-
   const lead = biz ? copy.leadWithBiz : copy.lead;
   const accent = biz ? copy.accentWithBiz(biz) : copy.accent;
+
+  const goTo = () => {
+    track("cta_click", { cta: copy.cta, section: "hero" });
+    document
+      .getElementById(targetId)
+      ?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
   return (
     <section
       id="hero"
-      className="relative isolate flex items-center overflow-hidden bg-navy py-16 lg:min-h-[760px] lg:py-24"
+      className="relative isolate overflow-hidden bg-navy py-16 lg:py-24"
     >
       <DottedWorldMap />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 bg-gradient-to-b from-navy via-navy/70 to-navy/40 lg:bg-gradient-to-r lg:from-navy lg:via-navy/80 lg:to-transparent"
+        className="pointer-events-none absolute inset-0 bg-gradient-to-b from-navy via-navy/70 to-navy/40 lg:bg-gradient-to-r lg:from-navy lg:via-navy/85 lg:to-navy/50"
       />
 
       <Container className="relative w-full">
-        <div className="grid items-center gap-12 lg:grid-cols-[1.05fr_minmax(0,420px)] lg:gap-16">
+        <div className="grid items-center gap-14 lg:grid-cols-[1fr_minmax(0,420px)] lg:gap-16">
           <div>
             <h1 className="text-[30px] font-bold leading-[1.08] tracking-[-0.02em] text-white min-[420px]:text-[34px] sm:text-[44px] lg:text-[52px]">
               <span className="block">{lead}</span>
@@ -64,53 +56,29 @@ export function ReviewHero({
               {copy.sub}
             </p>
 
-            {/* CTA sits directly under the promise. It used to come after the
-                counter card, which pushed it off a small phone screen. */}
-            <div className="mt-8 flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:gap-6">
+            <div className="mt-9 flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:gap-6">
               <button
                 type="button"
-                onClick={() => goTo(targetId, "hero", ctaLabel)}
+                onClick={goTo}
                 className="flex h-14 w-full items-center justify-center rounded-sm bg-fynd-blue px-8 text-body font-semibold text-white shadow-blue transition-all duration-150 ease-fynd hover:-translate-y-px hover:bg-[#3F4DF0] active:scale-[0.99] sm:w-auto"
               >
-                {ctaLabel}
+                {copy.cta}
               </button>
 
-              {hasDemo && (
-                <button
-                  type="button"
-                  onClick={() => goTo("demo", "hero", "demo")}
-                  className="text-body font-semibold text-white/80 underline-offset-4 hover:text-white hover:underline"
-                >
-                  {hero.demoLink}
-                </button>
-              )}
-            </div>
-
-            <div className="mt-10 lg:hidden">
-              <CounterWithGlow biz={biz} />
+              <p className="flex items-center gap-2 text-small text-white/60">
+                <Check
+                  aria-hidden="true"
+                  strokeWidth={2.5}
+                  className="h-4 w-4 shrink-0 text-fynd-green"
+                />
+                {copy.reassure}
+              </p>
             </div>
           </div>
 
-          <div className="hidden lg:block">
-            <CounterWithGlow biz={biz} />
-          </div>
+          <HeroFlow business={biz} />
         </div>
       </Container>
     </section>
-  );
-}
-
-/** Soft blue bloom behind the card so it lifts off the navy. */
-function CounterWithGlow({ biz }: { biz?: string }) {
-  return (
-    <div className="relative">
-      <div
-        aria-hidden="true"
-        className="absolute -inset-6 rounded-lg bg-fynd-blue/25 blur-3xl"
-      />
-      <div className="relative">
-        <ProfileCard businessName={biz} />
-      </div>
-    </div>
   );
 }

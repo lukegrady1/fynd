@@ -62,6 +62,48 @@ export const offerWindow = {
   closedHint: "Book a call and I'll see what I can do",
 } as const;
 
+/**
+ * The hero visual: the automation running end to end. This is the product —
+ * a dashboard is not. Times are minutes apart on purpose; the whole point is
+ * that it happens while the owner is already on the next job.
+ */
+export const heroFlow = {
+  job: {
+    label: "Job completed",
+    business: "Reyes Auto Care",
+    detail: "Oil change",
+    time: "9:41 AM",
+  },
+  review: {
+    label: "New review",
+    quote: "Great service, on time and super friendly!",
+    name: "Dana M.",
+    time: "9:43 AM",
+  },
+  reply: {
+    label: "Reply posted",
+    body: "Thanks so much, Dana! We appreciate you!",
+    business: "Reyes Auto Care",
+    time: "9:48 AM",
+  },
+  autopilot: "All on autopilot",
+} as const;
+
+/** Small strip under the hero. Qualifies the visitor without an essay. */
+export const trustStrip = {
+  lead: "Built for businesses where the job ends and the customer leaves.",
+  industries: [
+    "Plumbing",
+    "HVAC",
+    "Auto",
+    "Electrical",
+    "Roofing",
+    "Cleaning",
+    "Landscaping",
+  ],
+  crms: "Works with ServiceTitan, Jobber, Housecall Pro and most CRMs",
+} as const;
+
 export const hero = {
   /**
    * Hero copy is per-page on purpose. The headline and the CTA have to rhyme:
@@ -79,8 +121,9 @@ export const hero = {
     accent: "without asking for them.",
     leadWithBiz: "More Google reviews for",
     accentWithBiz: (biz: string) => `${biz}.`,
-    sub: "Every time you finish a job, your customer gets a text with a one-tap review link. You do nothing. Reviews show up.",
+    sub: "Every time you finish a job, Fynd automatically asks your customers for a review. Then it keeps your reputation moving while you work.",
     cta: "Start for $97/mo",
+    reassure: "No contract. Cancel anytime.",
   },
   /**
    * /call also uses pain reversal, with the objection ("is this a pitch?")
@@ -93,6 +136,7 @@ export const hero = {
     accentWithBiz: (biz: string) => `${biz}.`,
     sub: "Fifteen minutes on the phone. I'll tell you how many reviews you're getting now, how many you'd get with every customer asked, and exactly how the system does it. No slides, no pitch.",
     cta: "Pick a time to talk",
+    reassure: "No contract. Cancel anytime.",
   },
 
   demoLink: "Watch the 2-min demo",
@@ -285,8 +329,8 @@ export const illustrative = {
 
 export const mechanism = {
   eyebrow: "The mechanism",
-  heading: "What actually happens",
-  sub: "Three steps. You're only involved in the first one.",
+  heading: "Here's what happens after every job.",
+  sub: "You finish the job. Fynd handles the rest. So you can get back to work.",
 
   /** The message your customer receives, rendered as a real thread. */
   sms: {
@@ -296,78 +340,60 @@ export const mechanism = {
       body: "Hi Dana — thanks for coming in today. Mind leaving us a quick review? Takes about 10 seconds.",
       time: "9:41 AM",
     },
-    /** In-thread prompt. Tapping it opens the portal below. */
     prompt: {
       title: "How did we do?",
-      subtitle: "Tap a star",
+      subtitle: "Tap a star to review",
       time: "9:41 AM",
     },
-    inbound: { body: "done!", time: "9:43 AM" },
-  },
-
-  /** The fork that makes the "what if someone's mad" objection go away. */
-  routing: {
-    heading: "Where the tap goes",
-    trigger: "Customer picks how it went",
-    high: {
-      label: "Excellent or Good",
-      title: "Straight to Google",
-      body: "They land on your review page with the rating already selected. One more tap and it's public.",
-    },
-    low: {
-      label: "Ok or Bad",
-      title: "Straight to you",
-      body: "A private form, not Google. It hits your inbox in seconds so you can fix it before anyone else sees it.",
-    },
-    footnote:
-      "Every customer gets asked the same way. The rating decides where they land — nobody is filtered out beforehand.",
   },
 
   steps: [
     {
-      n: "01",
-      title: "You finish the job.",
-      body: "Mark it done in your CRM, or text the customer's number to your Fynd line. Five seconds, once.",
-      actor: "You",
+      icon: "wrench",
+      title: "You finish the job",
+      body: "Mark the job complete in your CRM. That's all you have to do.",
     },
     {
-      n: "02",
-      title: "We send the request.",
-      body: "Within the hour, while you're still fresh in their mind. From your business name, with a one-tap link.",
-      actor: "Fynd",
+      icon: "send",
+      title: "Fynd sends the request",
+      body: "Within the hour, your customer gets a personalized text from your business.",
     },
     {
-      n: "03",
-      title: "The rating routes itself.",
-      body: "Happy customers go public. Unhappy ones come to you privately, first.",
-      actor: "Fynd",
+      icon: "star",
+      title: "The customer leaves a review",
+      body: "One tap takes them to Google. The review shows up on your profile.",
+    },
+    {
+      icon: "reply",
+      title: "Fynd manages it for you",
+      body: "Fynd keeps your reviews organized and replies in your voice.",
     },
   ],
-} as const;
 
-export const proof = {
-  eyebrow: "The dashboard",
-  heading: "You watch it move.",
-  sub: "Your rating, how many reviews came in this month, and where each one came from. Plus how your review count compares to the shops your customers also called.",
-
-  beforeAfter: {
-    heading: "Rating and review count over time",
-    before: { label: "Month one", rating: 4.2, reviews: 31, caption: "Where most shops start" },
-    after: { label: "Month six", rating: 4.8, reviews: 94, caption: "Asking every customer, every job" },
-    delta: "63 reviews added",
-  },
-
-  rank: {
-    heading: "Review counts near you",
-    sub: "Plumbers within 5 miles",
-    rows: [
-      { name: "Valley Plumbing & Drain", rating: 4.9, reviews: 312, you: false },
-      { name: "A-1 Rooter", rating: 4.8, reviews: 204, you: false },
-      { name: "Your business", rating: 4.2, reviews: 31, you: true },
-      { name: "Metro Drain Co.", rating: 4.1, reviews: 88, you: false },
+  behindScenes: {
+    heading: "Behind the scenes",
+    items: [
+      {
+        icon: "clock",
+        title: "Smart timing",
+        body: "We wait the right amount of time before sending.",
+      },
+      {
+        icon: "user",
+        title: "Personalized",
+        body: "Every message uses the customer's name and the job they had done.",
+      },
+      {
+        icon: "shield",
+        title: "Every customer gets asked",
+        body: "Same message, after every job. Nobody is left off the list.",
+      },
+      {
+        icon: "lock",
+        title: "Private feedback",
+        body: "If someone has an issue, it comes to you first.",
+      },
     ],
-    takeaway:
-      "You don't need to beat the top shop. You need to stop being the one with 31 reviews.",
   },
 } as const;
 
@@ -376,18 +402,25 @@ export const proof = {
  * the product is review volume, not search rank. Sample figures, consistent
  * with the hero counter's end state.
  */
-export const compare = {
-  eyebrow: "The gap",
-  heading: "Be the one with the most reviews.",
-  body: "When someone searches your trade and three businesses come back, they read the review counts before they read anything else. The shop with 94 gets the call. The shop with 31 gets skipped, even when the work is better.",
-  cta: "See how it works",
-  cardHeading: "Plumbers within 5 miles",
-  rows: [
-    { name: "Your business", rating: 4.8, reviews: 94, you: true },
-    { name: "Valley Plumbing & Drain", rating: 4.5, reviews: 61, you: false },
-    { name: "A-1 Rooter", rating: 4.2, reviews: 38, you: false },
-  ],
-  footnote: "Your review count, against the shops competing for the same customers.",
+/**
+ * Results: the dashboard and the competitor comparison, together, because
+ * they answer the same question — what does this do to my reputation.
+ *
+ * Figures describe a demo account. No claim is made about what any real
+ * customer achieved; there is no client data to draw on yet.
+ */
+/**
+ * Pricing, deliberately small. The features section says what's included, so
+ * this only has to state the number and clear the objections.
+ */
+export const pricing = {
+  eyebrow: "Pricing",
+  heading: "Put the whole thing on autopilot.",
+  planName: "Review System",
+  clears: ["No contract", "No setup fee", "No per-seat pricing"],
+  cta: "Start for $97/mo",
+  reassure:
+    "We'll get you set up and your first requests can go out this week.",
 } as const;
 
 export const statsSection = {
@@ -396,23 +429,41 @@ export const statsSection = {
   sub: "Figures below are from published research, cited so you can check them.",
 } as const;
 
-export const roi = {
-  eyebrow: "The math",
-  heading: "What a review is actually worth",
-  sub: "Move the sliders to match your business. These are estimates from your own inputs — not a forecast, and not a promise.",
-  inputs: {
-    jobsLabel: "Jobs you finish per week",
-    rateLabel: "Customers who leave a review",
-    rateHelp:
-      "Set this to whatever you believe. We default to 30% because a same-day text asking once tends to land far better than an email a week later — but your trade and your customers decide the real number.",
+export const results = {
+  eyebrow: "Results",
+  heading: "More reviews. Better reputation. More business.",
+  sub: "Every job that ends becomes a request, every request that lands becomes a review, and the rating people see when they search for you moves up.",
+  cta: "Start for $97/mo",
+
+  dashboard: {
+    label: "Overview",
+    business: "Reyes Auto Care",
+    live: "Live",
+    range: "Last 6 months",
+    kpis: [
+      { label: "Google rating", value: "4.8", delta: "0.6", note: "vs. last 6 mo", stars: true },
+      { label: "Total reviews", value: "94", delta: "63", note: "vs. last 6 mo" },
+      { label: "Review requests sent", value: "305", delta: "28%", note: "vs. last 6 mo" },
+      { label: "Response rate", value: "100%", note: "All reviews replied to" },
+    ],
+    chart: {
+      heading: "Reviews over time",
+      months: ["Dec", "Jan", "Feb", "Mar", "Apr", "May"],
+      values: [31, 44, 58, 71, 84, 94],
+      tooltip: { value: "94", label: "Total reviews" },
+    },
   },
-  outputs: {
-    perMonth: "New reviews per month",
-    sixMonths: "After six months",
-    ratingNote: "Enough to move a 4.2 to a 4.8 in most cases",
+
+  compare: {
+    heading: "How you compare",
+    sub: "vs. other local businesses",
+    rows: [
+      { name: "Your business", rating: 4.8, reviews: 94, you: true },
+      { name: "Valley Plumbing & Drain", rating: 4.5, reviews: 61, you: false },
+      { name: "A-1 Rooter", rating: 4.2, reviews: 38, you: false },
+    ],
+    takeaway: "More reviews means more calls. More calls means more booked jobs.",
   },
-  disclaimer:
-    "Arithmetic on the numbers you entered. Actual results depend on your job volume, your customers, and how good the work is.",
 } as const;
 
 export const fit = {
@@ -533,86 +584,31 @@ export const quickWins = {
 
 export const features = {
   eyebrow: "What's included",
-  heading: "What you're actually getting.",
-  sub: "Every part of it, running from the day you're set up. Nothing here is an add-on.",
+  heading: "Everything is included.",
+  sub: "Four things, all running from the day you're set up.",
   items: [
     {
       icon: "MessageSquare",
-      title: "Requests that sound like you",
-      body: "Personalized with the customer's name and the job you did, sent from your business name. Not a template blast.",
+      title: "Automatic review requests",
+      body: "Every completed job triggers a personalized request, sent from your business name.",
     },
     {
       icon: "Plug",
       title: "CRM integration",
-      body: "ServiceTitan, Jobber, Housecall Pro and most others. Mark the job complete and the request fires on its own.",
-    },
-    {
-      icon: "ShieldCheck",
-      title: "Private feedback routing",
-      body: "Ok and Bad go to your inbox instead of your public profile. Excellent and Good go to Google.",
-    },
-    {
-      icon: "Repeat",
-      title: "Polite follow-up",
-      body: "One nudge if they don't respond, then it stops. Nobody gets pestered into a bad review.",
+      body: "ServiceTitan, Jobber, Housecall Pro and most others. No CRM? Text the number instead.",
     },
     {
       icon: "Sparkles",
-      title: "Reply assistance",
-      body: "Drafted responses to every review, in your voice, for you to approve. Google counts replies too.",
-    },
-    {
-      icon: "ShieldAlert",
-      title: "Removal requests",
-      body: "Reviews that break Google's rules — fake ones, competitor attacks, off-topic rants — get reported and chased. Google makes the call, but they do come down.",
-    },
-    {
-      icon: "History",
-      title: "Past-customer reactivation",
-      body: "We start by asking everyone you've served recently, not just new jobs. That's where the first wave comes from.",
+      title: "Review management",
+      body: "Replies drafted in your voice, and removal requests for anything that breaks Google's rules.",
     },
     {
       icon: "BarChart3",
-      title: "The dashboard",
-      body: "Rating, how many reviews came in, where each one came from, and how your count compares locally.",
-    },
-    {
-      icon: "CreditCard",
-      title: "NFC review cards",
-      body: "Tap-to-review cards for the truck and the front counter, for the customers who'd rather do it there and then.",
+      title: "Reputation dashboard",
+      body: "Your rating, your review growth, and where you sit against the shops nearby.",
     },
   ],
-} as const;
-
-export const pricing = {
-  eyebrow: "Pricing",
-  heading: "One plan. Everything in it.",
-  sub: "You are paying for software, not for me. I build it, run it, and keep it running for free until you hit the goal — the $97 covers the platform underneath it.",
-  planName: "Review System",
-  includedHeading: "Included",
-  included: [
-    "Unlimited review requests",
-    "Text and email sequences",
-    "Private feedback routing",
-    "Connects to most CRMs",
-    "Reply assistance",
-    "Past-customer reactivation",
-    "Review count benchmarking",
-    "Removal requests for rule-breaking reviews",
-    "NFC review cards",
-    "Unlimited users",
-    "Setup done for you",
-  ],
-  notIncludedHeading: "What you won't find",
-  notIncluded: [
-    "Setup fees",
-    "Per-seat charges",
-    "A contract",
-    "A management fee, until you hit the goal",
-  ],
-  /** Stated plainly rather than buried — the free period does end. */
-  afterHeading: "When the free period ends",
-  afterBody: `You'll have hit ${offer.goal}. Keep me running it for $${offer.managed}/mo, keep the software at $${offer.software}/mo and run it yourself, or stop. Your reviews stay on your profile either way.`,
+  footnote: "No add-ons. No per-seat pricing. No setup fee.",
 } as const;
 
 /** Additional FAQ entries appended to the originals. */

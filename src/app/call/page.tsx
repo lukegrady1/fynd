@@ -2,27 +2,25 @@ import type { Metadata } from "next";
 import { meta, finalCta as finalCtaCopy, hero } from "@/content/copy";
 import { parseParams, type SearchParams } from "@/lib/params";
 import { calendarEmbedUrl } from "@/lib/ghl";
-
 import { PageTracking } from "@/components/sections/review/PageTracking";
 import { FunnelHeader, FunnelFooter } from "@/components/sections/review/PageChrome";
-import { StickyOfferBar } from "@/components/sections/review/StickyOfferBar";
+import { StickyCta } from "@/components/sections/review/StickyCta";
 import { ReviewHero } from "@/components/sections/review/ReviewHero";
-import { DemoVideo } from "@/components/sections/review/DemoVideo";
-import { Testimonials } from "@/components/sections/review/Testimonials";
-import { Mechanism } from "@/components/sections/review/Mechanism";
-import { ProofSection } from "@/components/sections/review/ProofSection";
-import { RoiCalculator } from "@/components/sections/review/RoiCalculator";
-import { FitSection } from "@/components/sections/review/FitSection";
-import { TrustBar, CaseStudies } from "@/components/sections/review/SocialProof";
+import { TrustStrip } from "@/components/sections/review/TrustStrip";
 import { ProblemSection, WhyReviews } from "@/components/sections/review/ProblemSection";
-import { QuickWins } from "@/components/sections/review/QuickWins";
-import { FeatureGrid } from "@/components/sections/review/FeatureGrid";
-import { CompetitorCompare } from "@/components/sections/review/CompetitorCompare";
-import { StatsGrid } from "@/components/sections/review/StatsGrid";
+import { Mechanism } from "@/components/sections/review/Mechanism";
+import { ResultsSection } from "@/components/sections/review/ResultsSection";
+import { DemoVideo } from "@/components/sections/review/DemoVideo";
 import { PricingSection } from "@/components/sections/review/PricingSection";
-import { CalendarModule } from "@/components/sections/review/CalendarModule";
+import { FeatureGrid } from "@/components/sections/review/FeatureGrid";
+import { StatsGrid } from "@/components/sections/review/StatsGrid";
+import { CaseStudies, TrustBar } from "@/components/sections/review/SocialProof";
+import { Testimonials } from "@/components/sections/review/Testimonials";
+import { FitSection } from "@/components/sections/review/FitSection";
+import { QuickWins } from "@/components/sections/review/QuickWins";
 import { ObjectionFaq } from "@/components/sections/review/ObjectionFaq";
 import { FinalCta } from "@/components/sections/review/FinalCta";
+import { CalendarModule } from "@/components/sections/review/CalendarModule";
 
 export const metadata: Metadata = {
   title: meta.call.title,
@@ -49,41 +47,28 @@ export default async function CallPage({
       <PageTracking page="call" cid={params.cid} />
       <FunnelHeader tone="dark" />
 
-      <main className="flex-1 pb-24">
-        <ReviewHero
-          biz={params.biz}
-          variant="call"
-          targetId="convert"
-        />
-        <TrustBar />
-
-        {/* Booking is low-commitment, so the calendar comes before the
-            explanation rather than after it. */}
-        <CalendarModule
-          embedUrl={embedUrl}
-        />
+      <main className="flex-1">
+        {/* ── Chapter one: dark. Outcome, problem, mechanism, results. ── */}
+        <ReviewHero biz={params.biz} variant="call" targetId="convert" />
+        <TrustStrip />
+        <ProblemSection />
         <Mechanism />
         <DemoVideo />
+        <ResultsSection ctaLabel={hero.call.cta} targetId="convert" />
 
-        {/* Is it complete, fast, and right for me? */}
+        {/* ── Chapter two: light. The offer and what you get. ── */}
+        <CalendarModule embedUrl={embedUrl} />
+        <PricingSection ctaLabel={hero.call.cta} targetId="convert" />
         <FeatureGrid />
-        <QuickWins />
-        <FitSection />
-
-        {/* Does it work, and what is it worth? */}
-        <CompetitorCompare ctaLabel={hero.call.cta} targetId="convert" />
-        <ProofSection />
-        <RoiCalculator />
+        <TrustBar />
         <CaseStudies />
         <Testimonials />
         <StatsGrid />
 
-        {/* Why it matters — the last argument for anyone still reading. */}
-        <ProblemSection />
+        {/* ── Chapter three: dark. Fit, setup, objections, close. ── */}
+        <FitSection />
+        <QuickWins />
         <WhyReviews />
-
-        {/* Close: restate the offer, answer the tail, ask once more. */}
-        <PricingSection ctaLabel={hero.call.cta} targetId="convert" />
         <ObjectionFaq />
         <FinalCta
           heading={finalCtaCopy.headingCall}
@@ -95,10 +80,7 @@ export default async function CallPage({
 
       <FunnelFooter />
 
-      <StickyOfferBar
-        ctaLabel="Pick a time"
-        targetId="convert"
-      />
+      <StickyCta ctaLabel="Pick a time" targetId="convert" />
     </>
   );
 }
