@@ -45,7 +45,7 @@ export function ReviewHero({
       />
 
       <Container className="relative w-full">
-        <div className="grid items-center gap-14 lg:grid-cols-[0.9fr_1fr] lg:gap-12">
+        <div className="grid items-center gap-12 lg:grid-cols-[0.78fr_1fr] lg:gap-10">
           <div>
             <Eyebrow tone="light" variant="pill">
               <span className="flex items-center gap-2">
