@@ -1,9 +1,9 @@
 "use client";
 
-import { Check } from "lucide-react";
-import { hero } from "@/content/copy";
+import { ArrowRight, Check } from "lucide-react";
+import { hero, heroFlow } from "@/content/copy";
 import { track } from "@/lib/analytics";
-import { Container } from "@/components/ui/Layout";
+import { Container, Eyebrow } from "@/components/ui/Layout";
 import { DottedWorldMap } from "@/components/textures/Textures";
 import { HeroFlow } from "./HeroFlow";
 
@@ -45,9 +45,19 @@ export function ReviewHero({
       />
 
       <Container className="relative w-full">
-        <div className="grid items-center gap-14 lg:grid-cols-[1fr_minmax(0,420px)] lg:gap-16">
+        <div className="grid items-center gap-14 lg:grid-cols-[0.9fr_1fr] lg:gap-12">
           <div>
-            <h1 className="text-[30px] font-bold leading-[1.08] tracking-[-0.02em] text-white min-[420px]:text-[34px] sm:text-[44px] lg:text-[52px]">
+            <Eyebrow tone="light" variant="pill">
+              <span className="flex items-center gap-2">
+                <span
+                  aria-hidden="true"
+                  className="h-1.5 w-1.5 rounded-full bg-fynd-green"
+                />
+                {heroFlow.eyebrow}
+              </span>
+            </Eyebrow>
+
+            <h1 className="mt-6 text-[27px] font-bold leading-[1.1] tracking-[-0.02em] text-white min-[420px]:text-[31px] sm:text-[38px] lg:text-[42px]">
               <span className="block">{lead}</span>
               <span className="block text-fynd-green">{accent}</span>
             </h1>
@@ -60,9 +70,13 @@ export function ReviewHero({
               <button
                 type="button"
                 onClick={goTo}
-                className="flex h-14 w-full items-center justify-center rounded-sm bg-fynd-blue px-8 text-body font-semibold text-white shadow-blue transition-all duration-150 ease-fynd hover:-translate-y-px hover:bg-[#3F4DF0] active:scale-[0.99] sm:w-auto"
+                className="group flex h-14 w-full items-center justify-center rounded-sm bg-fynd-blue px-8 text-body font-semibold text-white shadow-blue transition-all duration-150 ease-fynd hover:-translate-y-px hover:bg-[#3F4DF0] active:scale-[0.99] sm:w-auto"
               >
                 {copy.cta}
+                <ArrowRight
+                  aria-hidden="true"
+                  className="ml-2 h-4 w-4 transition-transform duration-150 ease-fynd group-hover:translate-x-[3px]"
+                />
               </button>
 
               <p className="flex items-center gap-2 text-small text-white/60">

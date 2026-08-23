@@ -101,7 +101,7 @@ export function Logo({
               tone === "light" ? "text-white/70" : "text-ink-soft",
             )}
           >
-            Being found everywhere.
+            Be found everywhere.
           </span>
         )}
       </span>

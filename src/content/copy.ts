@@ -68,25 +68,61 @@ export const offerWindow = {
  * that it happens while the owner is already on the next job.
  */
 export const heroFlow = {
-  job: {
-    label: "Appointment done",
-    business: "Marlow Hair Studio",
-    detail: "Cut & color",
-    time: "9:41 AM",
+  eyebrow: "Automated reputation management",
+
+  /** The four numbered cards arranged around the phone. */
+  steps: [
+    {
+      n: "01",
+      icon: "check",
+      tone: "blue",
+      title: "Appointment done",
+      body: "Mark it complete in your booking software. That's it.",
+    },
+    {
+      n: "02",
+      icon: "send",
+      tone: "blue",
+      title: "Review request sent",
+      body: "Within the hour, your client gets a personalized text.",
+    },
+    {
+      n: "03",
+      icon: "star",
+      tone: "orange",
+      title: "New Google review",
+      body: "One tap takes them to Google. The review shows up on your profile.",
+    },
+    {
+      n: "04",
+      icon: "reply",
+      tone: "green",
+      title: "Automatically managed",
+      body: "Fynd keeps your reviews organized and drafts replies in your voice.",
+    },
+  ],
+
+  /** The small reputation panel beneath the composition. */
+  reputation: {
+    label: "Your reputation",
+    live: "Live",
+    kpis: [
+      {
+        label: "Google rating",
+        value: "4.8",
+        delta: "0.6",
+        note: "vs. last 6 months",
+        stars: true,
+      },
+      {
+        label: "Total reviews",
+        value: "94",
+        delta: "63",
+        note: "vs. last 6 months",
+      },
+    ],
+    spark: [31, 38, 44, 49, 55, 60, 66, 71, 76, 80, 85, 88, 91, 94],
   },
-  review: {
-    label: "New review",
-    quote: "Booked in last minute and they still took their time with me. Love it.",
-    name: "Dana M.",
-    time: "9:43 AM",
-  },
-  reply: {
-    label: "Reply posted",
-    body: "Thanks so much, Dana! We appreciate you!",
-    business: "Marlow Hair Studio",
-    time: "9:48 AM",
-  },
-  autopilot: "All on autopilot",
 } as const;
 
 /** Small strip under the hero. Qualifies the visitor without an essay. */
@@ -117,11 +153,11 @@ export const hero = {
    * naming the business is a stronger opening than any pattern.
    */
   start: {
-    lead: "Get more Google reviews",
-    accent: "without asking for them.",
-    leadWithBiz: "More Google reviews for",
-    accentWithBiz: (biz: string) => `${biz}.`,
-    sub: "Every time a client finishes an appointment, Fynd automatically asks them for a review. Then it keeps your reputation moving while you work.",
+    lead: "Every appointment you finish",
+    accent: "should earn you a review.",
+    leadWithBiz: "Every appointment at",
+    accentWithBiz: (biz: string) => `${biz} should earn a review.`,
+    sub: "Fynd automatically asks your clients for a Google review after every appointment, then keeps your reputation growing while you stay focused on the work.",
     cta: "Start for $97/mo",
     reassure: "No contract. Cancel anytime.",
   },
