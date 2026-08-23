@@ -69,21 +69,21 @@ export const offerWindow = {
  */
 export const heroFlow = {
   job: {
-    label: "Job completed",
-    business: "Reyes Auto Care",
-    detail: "Oil change",
+    label: "Appointment done",
+    business: "Marlow Hair Studio",
+    detail: "Cut & color",
     time: "9:41 AM",
   },
   review: {
     label: "New review",
-    quote: "Great service, on time and super friendly!",
+    quote: "Booked in last minute and they still took their time with me. Love it.",
     name: "Dana M.",
     time: "9:43 AM",
   },
   reply: {
     label: "Reply posted",
     body: "Thanks so much, Dana! We appreciate you!",
-    business: "Reyes Auto Care",
+    business: "Marlow Hair Studio",
     time: "9:48 AM",
   },
   autopilot: "All on autopilot",
@@ -91,17 +91,17 @@ export const heroFlow = {
 
 /** Small strip under the hero. Qualifies the visitor without an essay. */
 export const trustStrip = {
-  lead: "Built for businesses where the job ends and the customer leaves.",
+  lead: "Built for studios and salons where clients book, come in, and leave happy.",
   industries: [
-    "Plumbing",
-    "HVAC",
-    "Auto",
-    "Electrical",
-    "Roofing",
-    "Cleaning",
-    "Landscaping",
+    "Hair salons",
+    "Barbers",
+    "Massage therapy",
+    "Pilates studios",
+    "Yoga",
+    "Nails",
+    "Skincare",
   ],
-  crms: "Works with ServiceTitan, Jobber, Housecall Pro and most CRMs",
+  crms: "Works with most booking software — or none at all",
 } as const;
 
 export const hero = {
@@ -121,7 +121,7 @@ export const hero = {
     accent: "without asking for them.",
     leadWithBiz: "More Google reviews for",
     accentWithBiz: (biz: string) => `${biz}.`,
-    sub: "Every time you finish a job, Fynd automatically asks your customers for a review. Then it keeps your reputation moving while you work.",
+    sub: "Every time a client finishes an appointment, Fynd automatically asks them for a review. Then it keeps your reputation moving while you work.",
     cta: "Start for $97/mo",
     reassure: "No contract. Cancel anytime.",
   },
@@ -234,11 +234,11 @@ export const faq = {
     },
     {
       q: "How long until I see reviews?",
-      a: "Typically the first ones land inside a week. It depends on your job volume — if you finish 20 jobs a week, you'll see movement faster than someone finishing 3. Most accounts see a visible rating change in the first month.",
+      a: "Typically the first ones land inside a week. It depends how many clients you see — a salon running 40 appointments a week moves faster than a solo therapist doing 10. Most accounts see a visible rating change in the first month.",
     },
     {
       q: "Do I have to do anything?",
-      a: "The manual version takes five seconds: text a number to a dedicated line when the job's done. The automatic version takes zero — we connect to most CRMs, including ServiceTitan, Jobber and Housecall Pro, and requests fire when you mark a job complete. If yours isn't a direct integration it almost certainly works over Zapier. Either way, you never write the message.",
+      a: "The manual version takes five seconds: text the client's number to a dedicated line as they leave. The automatic version takes zero — we connect to most booking platforms, and requests fire when you mark the appointment complete. If yours isn't a direct integration it almost certainly works over Zapier. Either way, you never write the message.",
     },
     {
       q: "Am I locked in?",
@@ -246,7 +246,7 @@ export const faq = {
     },
     {
       q: `Why would you work for free?`,
-      a: `Because I need proof in your trade more than I need your money right now. A real before-and-after from a business like yours is worth more to me than a few hundred dollars, and the fastest way to get one is to do the work properly and let the result speak. The $${offer.software} covers the platform the system runs on — messaging, the dashboard, the integrations. That's a real cost I can't absorb. My time is the part I'm not charging for.`,
+      a: `Because I need proof in your industry more than I need your money right now. A real before-and-after from a business like yours is worth more to me than a few hundred dollars, and the fastest way to get one is to do the work properly and let the result speak. The $${offer.software} covers the platform the system runs on — messaging, the dashboard, the integrations. That's a real cost I can't absorb. My time is the part I'm not charging for.`,
     },
     {
       q: `What happens when I hit the goal?`,
@@ -254,7 +254,7 @@ export const faq = {
     },
     {
       q: `What's the catch?`,
-      a: `Two, and they're both real. First, I only take ${offer.capacity.perMonth} accounts a month, because I'm doing the setup and the ongoing work by hand — if that's full when you call, I'll say so. Second, this only works if you're actually finishing jobs for people who are happy. I can automate the asking. I can't fix the work.`,
+      a: `Two, and they're both real. First, I only take ${offer.capacity.perMonth} accounts a month, because I'm doing the setup and the ongoing work by hand — if that's full when you call, I'll say so. Second, this only works if your clients are actually leaving happy. I can automate the asking. I can't fix the service.`,
     },
   ],
 } as const;
@@ -262,7 +262,7 @@ export const faq = {
 export const finalCta = {
   headingStart: "More reviews, starting this week.",
   headingCall: "Fifteen minutes, no pitch deck.",
-  subStart: "Set it up once. It runs after every job.",
+  subStart: "Set it up once. It runs after every appointment.",
   subCall: "I'll show you where you stand and what it would take.",
   ctaStart: "Start for $97/mo",
   ctaCall: "Pick a time",
@@ -329,12 +329,12 @@ export const illustrative = {
 
 export const mechanism = {
   eyebrow: "The mechanism",
-  heading: "Here's what happens after every job.",
-  sub: "You finish the job. Fynd handles the rest. So you can get back to work.",
+  heading: "Here's what happens after every appointment.",
+  sub: "Your client checks out. Fynd handles the rest, so you can get on with the next one.",
 
   /** The message your customer receives, rendered as a real thread. */
   sms: {
-    business: "Reyes Auto Care",
+    business: "Marlow Hair Studio",
     statusTime: "9:41",
     outbound: {
       body: "Hi Dana — thanks for coming in today. Mind leaving us a quick review? Takes about 10 seconds.",
@@ -350,13 +350,13 @@ export const mechanism = {
   steps: [
     {
       icon: "wrench",
-      title: "You finish the job",
-      body: "Mark the job complete in your CRM. That's all you have to do.",
+      title: "The appointment ends",
+      body: "Mark it complete in your booking software. That's all you have to do.",
     },
     {
       icon: "send",
       title: "Fynd sends the request",
-      body: "Within the hour, your customer gets a personalized text from your business.",
+      body: "Within the hour, your client gets a personalized text from your studio.",
     },
     {
       icon: "star",
@@ -381,12 +381,12 @@ export const mechanism = {
       {
         icon: "user",
         title: "Personalized",
-        body: "Every message uses the customer's name and the job they had done.",
+        body: "Every message uses the client's name and the service they booked.",
       },
       {
         icon: "shield",
         title: "Every customer gets asked",
-        body: "Same message, after every job. Nobody is left off the list.",
+        body: "Same message, after every appointment. Nobody is left off the list.",
       },
       {
         icon: "lock",
@@ -432,12 +432,12 @@ export const statsSection = {
 export const results = {
   eyebrow: "Results",
   heading: "More reviews. Better reputation. More business.",
-  sub: "Every job that ends becomes a request, every request that lands becomes a review, and the rating people see when they search for you moves up.",
+  sub: "Every appointment that ends becomes a request, every request that lands becomes a review, and the rating people see when they look you up moves up.",
   cta: "Start for $97/mo",
 
   dashboard: {
     label: "Overview",
-    business: "Reyes Auto Care",
+    business: "Marlow Hair Studio",
     live: "Live",
     range: "Last 6 months",
     kpis: [
@@ -456,13 +456,13 @@ export const results = {
 
   compare: {
     heading: "How you compare",
-    sub: "vs. other local businesses",
+    sub: "vs. other local salons",
     rows: [
       { name: "Your business", rating: 4.8, reviews: 94, you: true },
-      { name: "Valley Plumbing & Drain", rating: 4.5, reviews: 61, you: false },
-      { name: "A-1 Rooter", rating: 4.2, reviews: 38, you: false },
+      { name: "The Loft Salon", rating: 4.5, reviews: 61, you: false },
+      { name: "Bloom Beauty Bar", rating: 4.2, reviews: 38, you: false },
     ],
-    takeaway: "More reviews means more calls. More calls means more booked jobs.",
+    takeaway: "More reviews means more bookings. More bookings means a fuller calendar.",
   },
 } as const;
 
@@ -471,27 +471,31 @@ export const fit = {
   heading: "Does this work with what you already use?",
 
   integrations: {
-    heading: "Connects to most CRMs",
-    sub: "Mark a job complete and the request fires. Nothing else to remember.",
+    heading: "Connects to your booking software",
+    sub: "Mark the appointment complete and the request fires. Nothing else to remember.",
+    /**
+     * TODO(luke): name the real integrations. The salon and studio platforms
+     * are Mindbody, Vagaro, Boulevard, Booksy, Fresha, GlossGenius and Square
+     * Appointments — tell me which are genuinely wired up and they become
+     * named rows. None are listed here because a false integration claim is
+     * the fastest way to lose a booking a client made on the strength of it.
+     */
     items: [
-      { name: "ServiceTitan", status: "Direct integration" },
-      { name: "Jobber", status: "Direct integration" },
-      { name: "Housecall Pro", status: "Direct integration" },
-      { name: "Most other CRMs", status: "Direct or via Zapier" },
+      { name: "Most booking platforms", status: "Direct or via Zapier" },
       { name: "Not sure what you're on?", status: "Tell me and I'll check" },
     ],
     fallback:
-      "No CRM? Text the customer's number to your Fynd line when you pack up. That's the whole workflow.",
+      "No booking software? Text the client's number to your Fynd line as they walk out. That's the whole workflow.",
   },
 
 
-  trades: {
+  verticals: {
     heading: "Who this is built for",
-    sub: "Anything where you finish a job and leave.",
+    sub: "Anywhere a client books time with you and leaves happy.",
     items: [
-      "Plumbing", "HVAC", "Electrical", "Roofing", "Auto repair", "Auto detailing",
-      "Pressure washing", "Landscaping", "Barbers & salons", "Pest control",
-      "Garage doors", "Cleaning services",
+      "Hair salons", "Barbershops", "Massage therapy", "Pilates studios",
+      "Yoga studios", "Nail salons", "Med spas", "Skincare & facials",
+      "Lash & brow", "Personal training", "Physical therapy", "Chiropractic",
     ],
     other: "Not listed? It probably still works. Ask me on the call.",
   },
@@ -519,11 +523,11 @@ export const problem = {
   items: [
     {
       title: "Nobody's asking",
-      body: "The job ends, the customer leaves happy, and that's it. Almost every review you never got was one you never asked for.",
+      body: "The appointment ends, they tell you they love it, and that's where it stops. Almost every review you never got was one you never asked for.",
     },
     {
       title: "You don't have time to chase",
-      body: "You meant to text them. Then the next job started. Asking works, but only if it happens the same day, every day, without you.",
+      body: "You meant to text them. Then your next client walked in. Asking works, but only if it happens the same day, every day, without you.",
     },
     {
       title: "The happy ones never post",
@@ -567,7 +571,7 @@ export const quickWins = {
     {
       when: "Step one",
       title: "You fill out the form",
-      body: "Your Google Business Profile, how you track jobs, and who your customers should hear from.",
+      body: "Your Google Business Profile, what you book clients in, and who they should hear from.",
     },
     {
       when: "Step two",
@@ -590,12 +594,12 @@ export const features = {
     {
       icon: "MessageSquare",
       title: "Automatic review requests",
-      body: "Every completed job triggers a personalized request, sent from your business name.",
+      body: "Every completed appointment triggers a personalized request, sent from your studio's name.",
     },
     {
       icon: "Plug",
-      title: "CRM integration",
-      body: "ServiceTitan, Jobber, Housecall Pro and most others. No CRM? Text the number instead.",
+      title: "Booking software integration",
+      body: "Connects to most booking platforms. No software? Text the client's number instead.",
     },
     {
       icon: "Sparkles",
@@ -605,7 +609,7 @@ export const features = {
     {
       icon: "BarChart3",
       title: "Reputation dashboard",
-      body: "Your rating, your review growth, and where you sit against the shops nearby.",
+      body: "Your rating, your review growth, and where you sit against the studios nearby.",
     },
   ],
   footnote: "No add-ons. No per-seat pricing. No setup fee.",
@@ -619,7 +623,7 @@ export const faqExtra = [
   },
   {
     q: "Who is this actually for?",
-    a: "Local businesses where you finish a job and leave — trades, auto, home services, personal services. If your customers find you on Google Maps and you'd struggle to name the last person who reviewed you, it fits.",
+    a: "Studios and salons where clients book time with you — hair, barbering, massage, pilates, yoga, nails, skincare. If new clients find you on Google and you'd struggle to name the last person who reviewed you, it fits.",
   },
   {
     q: "What if I have more than one location?",
@@ -631,7 +635,7 @@ export const faqExtra = [
   },
   {
     q: "What about repeat customers?",
-    a: "Someone who's already reviewed you doesn't get asked again. Regulars on recurring work get asked once, not after every visit.",
+    a: "Someone who's already reviewed you doesn't get asked again. Your weekly regulars get asked once, not after every appointment.",
   },
   {
     q: "Can I ask customers from before I signed up?",

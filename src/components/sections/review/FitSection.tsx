@@ -23,7 +23,7 @@ export function FitSection() {
             <Integrations />
           </Reveal>
           <Reveal delay={0.06}>
-            <Trades />
+            <Verticals />
           </Reveal>
         </div>
       </Container>
@@ -69,8 +69,8 @@ function Integrations() {
   );
 }
 
-function Trades() {
-  const { heading, sub, items, other } = fit.trades;
+function Verticals() {
+  const { heading, sub, items, other } = fit.verticals;
 
   return (
     <div>
