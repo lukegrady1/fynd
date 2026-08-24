@@ -406,27 +406,29 @@ export const pricing = {
 /**
  * The before/after Google Business Profile.
  *
- * Illustrative figures on a mockup, not a specific client's result — the
- * business name is the same one used in every other mockup on the page.
+ * These are real screenshots of a real profile, not a mockup — which is why
+ * this section is worth more than everything else on the page put together,
+ * and why the numbers and the elapsed time both have to be true. Replace the
+ * files, the figures and `elapsed` together; never one without the others.
  */
 export const profileSwap = {
   eyebrow: "Before / after",
   heading: "What sixty days of asking every client looks like.",
   elapsed: "~60 days",
-  business: "Marlow Hair Studio",
-  category: "Hair salon",
-  actions: ["Directions", "Save", "Call"],
+  business: "Salt Salon",
   before: {
     label: "Before",
-    rating: "4.2",
-    reviews: "51 reviews",
-    note: "Ratings drift down when only unhappy clients bother.",
+    src: "/old-gbp.png",
+    width: 398,
+    height: 426,
+    alt: "Salt Salon's Google Business Profile before Fynd: 4.6 stars from 93 reviews.",
   },
   after: {
     label: "After",
-    rating: "4.8",
-    reviews: "118 reviews",
-    note: "Every client asked, every week, without you lifting a finger.",
+    src: "/new-gbp.png",
+    width: 1913,
+    height: 2048,
+    alt: "Salt Salon's Google Business Profile after Fynd: 4.9 stars from 174 reviews.",
   },
 } as const;
 

@@ -1,21 +1,22 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { Star } from "lucide-react";
+import Image from "next/image";
 import { profileSwap } from "@/content/copy";
 
 /**
- * One Google Business Profile card that swaps from a dim 4.2 to a bright 4.8
- * when it scrolls into view.
+ * The real before/after Google Business Profile, crossfading when it scrolls
+ * into view.
  *
- * Both states occupy the same grid cell rather than being absolutely
- * positioned, so the card is as tall as the taller state and the swap causes
- * no layout shift.
+ * Both screenshots share one grid cell rather than being absolutely
+ * positioned, so the frame is as tall as the taller image and the swap causes
+ * no layout shift. They are the same aspect ratio (0.934), so nothing shifts
+ * or letterboxes mid-fade.
  *
  * Progressive enhancement, same rule as Reveal: the markup renders the AFTER
- * state, so with JavaScript off the reader sees the finished profile rather
- * than a permanently dim one. The before-state and the transition only exist
- * behind `@media (scripting: enabled)` in globals.css.
+ * screenshot, so with JavaScript off the reader sees the finished profile
+ * rather than a permanently stale one. The before state and the transition
+ * only exist behind `@media (scripting: enabled)` in globals.css.
  */
 export function ProfileSwap() {
   const ref = useRef<HTMLDivElement>(null);
@@ -29,14 +30,15 @@ export function ProfileSwap() {
       return;
     }
 
+    let timer: ReturnType<typeof setTimeout> | undefined;
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (!entry.isIntersecting) return;
         observer.disconnect();
-        // A beat on the "before" state, or the swap has happened before the
-        // reader has registered what they are looking at.
-        const timer = setTimeout(() => el.classList.add("is-swapped"), 900);
-        el.dataset.timer = String(timer);
+        // A beat on "before", or the change lands before the reader has
+        // registered what they were looking at.
+        timer = setTimeout(() => el.classList.add("is-swapped"), 900);
       },
       { rootMargin: "0px 0px -120px 0px" },
     );
@@ -44,15 +46,15 @@ export function ProfileSwap() {
     observer.observe(el);
     return () => {
       observer.disconnect();
-      if (el.dataset.timer) clearTimeout(Number(el.dataset.timer));
+      if (timer) clearTimeout(timer);
     };
   }, []);
 
   return (
-    <div ref={ref} className="js-swap relative">
-      <div className="grid overflow-hidden rounded-lg border border-white/10 bg-navy-card">
-        <ProfileCard state="before" />
-        <ProfileCard state="after" />
+    <div ref={ref} className="js-swap mx-auto w-full max-w-[390px]">
+      <div className="relative grid overflow-hidden rounded-lg border border-white/10 bg-navy-card shadow-2xl shadow-black/30">
+        <Shot state="before" />
+        <Shot state="after" />
       </div>
 
       <p className="swap-elapsed mt-4 flex items-center justify-center gap-2 text-small text-white/70">
@@ -70,97 +72,31 @@ export function ProfileSwap() {
   );
 }
 
-function ProfileCard({ state }: { state: "before" | "after" }) {
-  const data = profileSwap[state];
+function Shot({ state }: { state: "before" | "after" }) {
+  const shot = profileSwap[state];
   const after = state === "after";
 
   return (
     <div
-      className={`col-start-1 row-start-1 p-5 lg:p-6 ${
-        after ? "swap-after" : "swap-before"
-      }`}
+      className={`col-start-1 row-start-1 ${after ? "swap-after" : "swap-before"}`}
     >
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <p className="text-h3 text-white">{profileSwap.business}</p>
-          <p className="mt-0.5 text-small text-white/55">
-            {profileSwap.category}
-          </p>
-        </div>
-        <span
-          className={`shrink-0 rounded-full px-2.5 py-1 text-micro font-semibold uppercase tracking-[0.1em] ${
-            after
-              ? "bg-fynd-green/15 text-fynd-green"
-              : "bg-white/8 text-white/50"
-          }`}
-        >
-          {data.label}
-        </span>
-      </div>
-
-      <p className="mt-5 flex items-center gap-3">
-        <span
-          className={`text-[40px] font-bold leading-none tabular-nums ${
-            after ? "text-white" : "text-white/45"
-          }`}
-        >
-          {data.rating}
-        </span>
-        <span className="flex flex-col gap-1">
-          <Stars rating={Number(data.rating)} dim={!after} />
-          <span
-            className={`text-small tabular-nums ${
-              after ? "text-white/75" : "text-white/40"
-            }`}
-          >
-            {data.reviews}
-          </span>
-        </span>
-      </p>
-
-      <ul className="mt-5 flex flex-wrap gap-2">
-        {profileSwap.actions.map((action) => (
-          <li
-            key={action}
-            className={`rounded-full border px-3 py-1 text-small ${
-              after
-                ? "border-white/15 text-white/75"
-                : "border-white/8 text-white/35"
-            }`}
-          >
-            {action}
-          </li>
-        ))}
-      </ul>
-
-      <p
-        className={`mt-5 border-t pt-4 text-small ${
-          after ? "border-white/10 text-white/70" : "border-white/5 text-white/40"
+      <Image
+        src={shot.src}
+        alt={shot.alt}
+        width={shot.width}
+        height={shot.height}
+        sizes="390px"
+        className="h-auto w-full"
+      />
+      <span
+        className={`absolute right-3 top-3 rounded-full px-2.5 py-1 text-micro font-semibold uppercase tracking-[0.1em] ${
+          after
+            ? "bg-fynd-green text-navy"
+            : "bg-navy/80 text-white/70 ring-1 ring-white/15"
         }`}
       >
-        {data.note}
-      </p>
+        {shot.label}
+      </span>
     </div>
-  );
-}
-
-/** Whole and half stars, so 4.2 doesn't round up to a clean five. */
-function Stars({ rating, dim }: { rating: number; dim: boolean }) {
-  return (
-    <span className="flex gap-0.5" aria-hidden="true">
-      {Array.from({ length: 5 }).map((_, i) => {
-        const filled = rating - i >= 0.75;
-        const half = !filled && rating - i >= 0.25;
-        return (
-          <Star
-            key={i}
-            strokeWidth={1.5}
-            className={`h-4 w-4 ${
-              dim ? "text-white/30" : "text-fynd-orange"
-            } ${filled ? "fill-current" : half ? "fill-current opacity-60" : ""}`}
-          />
-        );
-      })}
-    </span>
   );
 }
