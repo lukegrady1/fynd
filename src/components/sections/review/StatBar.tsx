@@ -9,9 +9,9 @@ import type { Stat } from "@/content/stats";
  * readable row. The track is rendered twice so the loop has no visible seam;
  * the duplicate is aria-hidden so a screen reader hears each stat once.
  *
- * Renders nothing until content/stats.ts holds entries, and every entry must
- * carry a named source — see the note at the top of that file. A trust bar
- * built on figures nobody can point at is the opposite of a trust bar.
+ * Renders nothing until content/stats.ts holds entries. Each entry can carry
+ * a source, shown beside the figure; see the note at the top of that file for
+ * why the current three still need theirs.
  */
 export function StatBar() {
   const items = suppliedStats();
@@ -42,7 +42,9 @@ function StatPill({ stat }: { stat: Stat }) {
         {stat.value}
       </span>
       <span className="text-body text-white/80">{stat.body}</span>
-      <span className="text-small text-white/40">{stat.source}</span>
+      {stat.source && (
+        <span className="text-small text-white/40">{stat.source}</span>
+      )}
     </li>
   );
 }

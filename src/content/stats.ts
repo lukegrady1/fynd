@@ -1,17 +1,22 @@
 /**
- * Third-party market statistics.
+ * Third-party market statistics for the trust bar.
  *
- * EMPTY ON PURPOSE. Numbers like "92% of consumers read reviews" circulate
- * widely, but printing an unverifiable figure as fact on a page you sell from
- * is a real risk — especially to the sort of owner who will look it up.
+ * `source` is optional but strongly wanted. These three came in without
+ * citations, and the figures below are the ones that circulate rather than
+ * ones this repo has verified against a report. Before launch, check each
+ * against the primary source and fill `source` in — the bar renders it next
+ * to the stat automatically, and a cited number is worth several uncited ones
+ * to the kind of owner who will go and look it up.
  *
- * Every entry needs a `source` naming the study and year. If you cannot name
- * the source, do not add the stat. The section renders nothing while this is
- * empty, and appears automatically once entries exist.
+ * Likely primary sources, to verify rather than to copy:
+ *  - 92% reading reviews  -> BrightLocal, Local Consumer Review Survey
+ *  - 72% won't act        -> widely repeated in marketing write-ups; the
+ *                            original study is not obvious, so this is the
+ *                            one most worth pinning down or dropping.
+ *  - 54% more revenue     -> Womply, review/revenue study
  *
- * The usual citation for local-review statistics is BrightLocal's annual
- * Local Consumer Review Survey. Pull the current year's figures from the
- * report itself rather than from a competitor's landing page.
+ * Do not invent a citation to fill the field. An attributed figure that turns
+ * out to be misattributed is worse than an unattributed one.
  */
 
 export type Stat = {
@@ -19,10 +24,23 @@ export type Stat = {
   value: string;
   /** e.g. "of consumers read reviews before choosing a local business." */
   body: string;
-  /** e.g. "BrightLocal, Local Consumer Review Survey 2025" — required. */
-  source: string;
+  /** e.g. "BrightLocal, Local Consumer Review Survey 2025". */
+  source?: string;
 };
 
-export const stats: Stat[] = [];
+export const stats: Stat[] = [
+  {
+    value: "92%",
+    body: "Of consumers read online reviews before choosing a local business.",
+  },
+  {
+    value: "72%",
+    body: "Of customers won't take action until they read a positive review.",
+  },
+  {
+    value: "54%",
+    body: "More revenue is earned by businesses with 40+ reviews than by their competitors.",
+  },
+];
 
-export const suppliedStats = () => stats.filter((s) => s.value && s.source);
+export const suppliedStats = () => stats.filter((s) => s.value && s.body);

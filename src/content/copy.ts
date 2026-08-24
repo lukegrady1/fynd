@@ -94,27 +94,6 @@ export const heroFlow = {
     },
   ],
 
-  /** Reputation panel — now rendered inside the mechanism, not the hero. */
-  reputation: {
-    label: "Your reputation",
-    live: "Live",
-    kpis: [
-      {
-        label: "Google rating",
-        value: "4.8",
-        delta: "0.6",
-        note: "vs. last 6 months",
-        stars: true,
-      },
-      {
-        label: "Total reviews",
-        value: "118",
-        delta: "67",
-        note: "vs. last 6 months",
-      },
-    ],
-    spark: [51, 57, 63, 69, 75, 81, 87, 93, 98, 104, 109, 113, 116, 118],
-  },
 } as const;
 
 /** Small strip under the hero. Qualifies the visitor without an essay. */
@@ -317,7 +296,7 @@ export const meta = {
    ========================================================================== */
 
 export const mechanism = {
-  eyebrow: "The mechanism",
+  eyebrow: "Solution",
   heading: "With Fynd, managing your reputation",
   headingAccent: "becomes effortless.",
   sub: "Your client checks out. Fynd handles the rest, so you can get on with the next one.",
