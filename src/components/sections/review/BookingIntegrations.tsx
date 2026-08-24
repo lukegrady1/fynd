@@ -281,15 +281,27 @@ function PlatformLogo({ platform }: { platform: Platform }) {
     );
   }
 
-  return (
+  const image = (
     <Image
       src={platform.logo}
       alt={platform.name}
-      width={160}
-      height={50}
+      width={280}
+      height={84}
+      sizes="120px"
       onError={() => setMissing(true)}
-      className="max-h-8 w-auto max-w-full object-contain"
+      className="max-h-7 w-auto max-w-full object-contain"
     />
+  );
+
+  // A dark-on-light mark would vanish against navy, so it sits on a light
+  // chip — what the brand's own guidelines would ask for — rather than being
+  // recoloured to fit.
+  return "light" in platform && platform.light ? (
+    <span className="flex w-full items-center justify-center rounded-sm bg-white px-2.5 py-1.5">
+      {image}
+    </span>
+  ) : (
+    image
   );
 }
 

@@ -473,11 +473,14 @@ export const results = {
  * The integrations section — the radial network of booking platforms around
  * the Fynd mark.
  *
- * `logo` points at a file in /public/integrations. Until the official asset
- * for a platform is in place the card falls back to the platform name set as
- * a wordmark, so the section is complete either way and upgrades on its own
- * as files land. Do not substitute a redrawn or generated logo for a real
+ * `logo` points at a file in /public/integrations. If the file is missing the
+ * card falls back to the platform name set as a wordmark rather than showing
+ * a broken image. Do not substitute a redrawn or generated logo for a real
  * one — a slightly-wrong logo is more noticeable than no logo.
+ *
+ * `light: true` marks a logo that is dark-on-light and would disappear
+ * against navy. Those get a light chip behind them, which is what a brand's
+ * own guidelines would ask for, rather than being recoloured here.
  *
  * Ring positions are computed from the list length in the component, not
  * stored here — hand-tuned coordinates collided as soon as the list grew.
@@ -493,19 +496,19 @@ export const integrations = {
   badge: "Integrates with your existing workflow",
 
   platforms: [
-    { name: "Goldie", logo: "/integrations/goldie.svg" },
-    { name: "Vagaro", logo: "/integrations/vagaro.svg" },
-    { name: "Mindbody", logo: "/integrations/mindbody.svg" },
-    { name: "Fresha", logo: "/integrations/fresha.svg" },
-    { name: "Timely", logo: "/integrations/timely.svg" },
-    { name: "Booker", logo: "/integrations/booker.svg" },
-    { name: "Appointy", logo: "/integrations/appointy.svg" },
-    { name: "Setmore", logo: "/integrations/setmore.svg" },
-    { name: "MyTime", logo: "/integrations/mytime.svg" },
-    { name: "Square", logo: "/integrations/square.svg" },
-    { name: "StyleSeat", logo: "/integrations/styleseat.svg" },
-    { name: "Booksy", logo: "/integrations/booksy.svg" },
-    { name: "Acuity", logo: "/integrations/acuity.svg" },
+    { name: "Goldie", logo: "/integrations/goldie.png" },
+    { name: "Vagaro", logo: "/integrations/vagaro.png" },
+    { name: "Mindbody", logo: "/integrations/mindbody.png" },
+    { name: "Fresha", logo: "/integrations/fresha.png", light: true },
+    { name: "Timely", logo: "/integrations/timely.png" },
+    { name: "Booker", logo: "/integrations/booker.png" },
+    { name: "Appointy", logo: "/integrations/appointy.png" },
+    { name: "Setmore", logo: "/integrations/setmore.png" },
+    { name: "MyTime", logo: "/integrations/mytime.png" },
+    { name: "Square", logo: "/integrations/square.png" },
+    { name: "StyleSeat", logo: "/integrations/styleseat.png" },
+    { name: "Booksy", logo: "/integrations/booksy.png" },
+    { name: "Acuity", logo: "/integrations/acuity.png" },
   ],
 
   fallback: {
