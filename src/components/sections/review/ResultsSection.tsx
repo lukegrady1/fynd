@@ -10,10 +10,17 @@ import { ProfileSwap } from "./ProfileSwap";
 import { Reveal } from "./Reveal";
 
 /**
- * Results: the dashboard and the competitor comparison side by side, because
- * they answer the same question — what does this do to my reputation.
+ * Results, in four centred tiers: the claim, the proof, the product, the ask.
  *
- * Stays on navy so the hero, mechanism and results read as one dark chapter
+ * The proof is a real client's profile and the two panels under it are
+ * mockups, so they are deliberately not given equal billing — the screenshots
+ * sit alone at full width and the panels read as supporting detail beneath.
+ *
+ * The CTA is last. It used to live in a narrow left column, which left a
+ * mostly empty gutter on desktop and, worse, put the button above the section
+ * heading on mobile — asking before saying what the section is.
+ *
+ * Stays on navy so the hero, solution and results read as one dark chapter
  * rather than alternating light/dark blocks.
  */
 export function ResultsSection({
@@ -34,41 +41,42 @@ export function ResultsSection({
   return (
     <section className="bg-navy py-16 text-white lg:py-28">
       <Container>
-        <div className="grid gap-12 lg:grid-cols-[300px_1fr] lg:gap-16">
-          <Reveal className="lg:self-start">
-            <Eyebrow tone="light" variant="pill">
-              {results.eyebrow}
-            </Eyebrow>
+        <Reveal className="mx-auto max-w-[660px] text-center">
+          <Eyebrow tone="light" variant="pill">
+            {results.eyebrow}
+          </Eyebrow>
+          <h2 className="mt-5 text-h1 text-white">{profileSwap.heading}</h2>
+        </Reveal>
 
-            {ctaLabel && targetId && (
-              <button
-                type="button"
-                onClick={handleClick}
-                className="mt-8 flex h-14 w-full items-center justify-center rounded-sm bg-fynd-blue px-7 text-body font-semibold text-white transition-all duration-150 ease-fynd hover:-translate-y-px hover:bg-[#3F4DF0] active:scale-[0.99] sm:w-auto"
-              >
-                {ctaLabel}
-              </button>
-            )}
-          </Reveal>
-
-          <div className="grid gap-6 xl:grid-cols-[1fr_320px]">
-            {/* The before/after profile leads: it answers "what changes for
-                me" in one glance, which the dashboard below then breaks down. */}
-            <Reveal className="xl:col-span-2">
-              <h2 className="text-h1 text-white">{profileSwap.heading}</h2>
-              <div className="mt-8 max-w-[880px]">
-                <ProfileSwap />
-              </div>
-            </Reveal>
-
-            <Reveal>
-              <Dashboard />
-            </Reveal>
-            <Reveal delay={0.08}>
-              <Compare />
-            </Reveal>
-          </div>
+        {/* The real profile, alone and widest — nothing competes with it.
+            ProfileSwap staggers its own reveal, so no wrapper here. */}
+        <div className="mx-auto mt-12 max-w-[880px]">
+          <ProfileSwap />
         </div>
+
+        {/* What it looks like from the inside. Mockups, so they sit below. */}
+        <div className="mt-16 grid gap-6 lg:grid-cols-[1fr_340px] lg:gap-8">
+          <Reveal>
+            <Dashboard />
+          </Reveal>
+          {/* self-start: stretched to the dashboard's height it opened a
+              300px gap above its own closing line. */}
+          <Reveal delay={0.08} className="lg:self-start">
+            <Compare />
+          </Reveal>
+        </div>
+
+        {ctaLabel && targetId && (
+          <Reveal className="mt-14 flex justify-center">
+            <button
+              type="button"
+              onClick={handleClick}
+              className="flex h-14 w-full items-center justify-center rounded-sm bg-fynd-blue px-8 text-body font-semibold text-white transition-all duration-150 ease-fynd hover:-translate-y-px hover:bg-[#3F4DF0] active:scale-[0.99] sm:w-auto"
+            >
+              {ctaLabel}
+            </button>
+          </Reveal>
+        )}
       </Container>
     </section>
   );
@@ -154,7 +162,9 @@ function LineChart() {
     return [x, y] as const;
   });
 
-  const line = pts.map(([x, y], i) => `${i === 0 ? "M" : "L"}${x},${y}`).join(" ");
+  const line = pts
+    .map(([x, y], i) => `${i === 0 ? "M" : "L"}${x},${y}`)
+    .join(" ");
   const area = `${line} L${pts[pts.length - 1][0]},${h - padB} L${padL},${h - padB} Z`;
 
   return (
