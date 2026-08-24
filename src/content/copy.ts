@@ -52,8 +52,6 @@ export const offerWindow = {
  * that it happens while the owner is already on the next job.
  */
 export const heroFlow = {
-  eyebrow: "Automated reputation management",
-
   /**
    * One sentence told left to right: something happens, Fynd handles it, and
    * the business is better off. The right-hand column is deliberately business

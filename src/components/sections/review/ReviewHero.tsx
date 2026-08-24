@@ -1,9 +1,9 @@
 "use client";
 
 import { ArrowRight, Check } from "lucide-react";
-import { hero, heroFlow } from "@/content/copy";
+import { hero } from "@/content/copy";
 import { track } from "@/lib/analytics";
-import { Container, Eyebrow } from "@/components/ui/Layout";
+import { Container } from "@/components/ui/Layout";
 import { DottedWorldMap } from "@/components/textures/Textures";
 import { HeroCollage } from "./HeroCollage";
 import { HeroProof } from "./HeroProof";
@@ -48,17 +48,7 @@ export function ReviewHero({
       <Container className="relative w-full">
         <div className="grid items-center gap-12 xl:grid-cols-[0.85fr_1.15fr] xl:gap-10">
           <div>
-            <Eyebrow tone="light" variant="pill">
-              <span className="flex items-center gap-2">
-                <span
-                  aria-hidden="true"
-                  className="h-1.5 w-1.5 rounded-full bg-fynd-green"
-                />
-                {heroFlow.eyebrow}
-              </span>
-            </Eyebrow>
-
-            <h1 className="mt-6 text-[27px] font-bold leading-[1.1] tracking-[-0.02em] text-white min-[420px]:text-[31px] sm:text-[38px] lg:text-[42px]">
+            <h1 className="text-[27px] font-bold leading-[1.1] tracking-[-0.02em] text-white min-[420px]:text-[31px] sm:text-[38px] lg:text-[42px]">
               <span className="block">{lead}</span>
               <span className="block text-fynd-green">{accent}</span>
             </h1>
