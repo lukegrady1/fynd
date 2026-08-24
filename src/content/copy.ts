@@ -40,7 +40,7 @@ export const offer = {
  * first arrival, persisted so a reload does not restart it.
  */
 export const offerWindow = {
-  label: "This week's price",
+  label: "Limited time offer",
   /** Suffix after the running clock, e.g. "6d 14:22:07 left". */
   suffix: "left",
   resets: "Resets Sunday",
