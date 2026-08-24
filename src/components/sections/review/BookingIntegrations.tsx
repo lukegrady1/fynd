@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState, type RefObject } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Check } from "lucide-react";
@@ -12,53 +12,62 @@ import { Reveal } from "./Reveal";
 
 type Platform = (typeof integrations.platforms)[number];
 
+/** Widest the ring is ever drawn. Paired with the wrapper's own max width. */
+const RING_MAX = 820;
+
 /**
- * How many platforms orbit the mark at each width.
+ * Smallest a platform card is allowed to get before the ring sheds one.
  *
- * The ring is geometry, not styling: thirteen cards need roughly 800px to sit
- * apart, four need almost none. So the count steps down with the viewport and
- * whatever does not fit drops into the grid underneath — the same platforms,
- * a form that survives a narrow screen.
- *
- * Ordered widest first; the first match wins.
+ * Below roughly this the wordmarks stop being logos and start being smudges.
+ * It is the only tuning knob here: everything else falls out of the geometry.
  */
-const RING_STEPS = [
-  { min: 1280, count: 13 },
-  { min: 1024, count: 10 },
-  { min: 768, count: 8 },
-  { min: 640, count: 6 },
-] as const;
+const MIN_CARD_PX = 92;
 
 /** Server render and no-JS both get this, so the narrow case is the safe one. */
 const BASE_RING = 4;
+const MIN_RING = 4;
 
-const useRingCount = () => {
-  const store = useMemo(() => {
-    const queries = RING_STEPS.map((step) => ({
-      count: step.count,
-      mql:
-        typeof window === "undefined"
-          ? null
-          : window.matchMedia(`(min-width: ${step.min}px)`),
-    }));
+/**
+ * Width of the ring's own column, in px.
+ *
+ * A media query cannot answer this. The ring sits in a 0.66fr column on
+ * desktop and spans the full container below `lg`, so the *same* viewport
+ * hands it two very different boxes — at 1023px it gets 820px of room, at
+ * 1024px it gets 623px. Sizing the ring off the viewport meant it grew
+ * platforms as its box shrank. Measure the element instead.
+ */
+const useBoxWidth = (ref: RefObject<HTMLElement | null>) => {
+  const [width, setWidth] = useState<number | null>(null);
 
-    return {
-      subscribe: (onChange: () => void) => {
-        queries.forEach((q) => q.mql?.addEventListener("change", onChange));
-        return () =>
-          queries.forEach((q) => q.mql?.removeEventListener("change", onChange));
-      },
-      getSnapshot: () =>
-        queries.find((q) => q.mql?.matches)?.count ?? BASE_RING,
-      getServerSnapshot: () => BASE_RING,
-    };
-  }, []);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
 
-  return useSyncExternalStore(
-    store.subscribe,
-    store.getSnapshot,
-    store.getServerSnapshot,
-  );
+    const observer = new ResizeObserver(([entry]) => {
+      setWidth(entry.contentRect.width);
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [ref]);
+
+  return width;
+};
+
+/**
+ * The largest ring this box can hold.
+ *
+ * Card width is a fixed fraction of the box at every count, so "does thirteen
+ * fit?" reduces to "is thirteen cards' share of this box still readable?".
+ * Walking down one platform at a time — rather than in the old 13/10/8/6/4
+ * jumps — is what makes it read as the desktop drawing scaling down: the
+ * cards stay the same physical size all the way, and the ring quietly hands
+ * its tail to the grid underneath one logo at a time.
+ */
+const fitCount = (boxWidth: number, total: number) => {
+  for (let n = total; n > MIN_RING; n -= 1) {
+    if ((boxWidth * cardWidth(n)) / 100 >= MIN_CARD_PX) return n;
+  }
+  return MIN_RING;
 };
 
 /* ------------------------------------------------------------------ */
@@ -77,7 +86,13 @@ const useRingCount = () => {
  */
 export function BookingIntegrations() {
   const { heading, fallback } = integrations;
-  const ringCount = useRingCount();
+
+  const columnRef = useRef<HTMLDivElement>(null);
+  const boxWidth = useBoxWidth(columnRef);
+  const ringCount =
+    boxWidth === null
+      ? BASE_RING
+      : fitCount(Math.min(boxWidth, RING_MAX), integrations.platforms.length);
 
   const inRing = integrations.platforms.slice(0, ringCount);
   const rest = integrations.platforms.slice(ringCount);
@@ -111,7 +126,7 @@ export function BookingIntegrations() {
             </p>
           </Reveal>
 
-          <div className="w-full">
+          <div ref={columnRef} className="w-full">
             <Ring platforms={inRing} />
 
             {rest.length > 0 && (
@@ -119,11 +134,16 @@ export function BookingIntegrations() {
                 <p className="text-center text-small text-white/50">
                   {integrations.moreHeading}
                 </p>
-                <ul className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
+                {/* Wrapped and centred rather than a plain grid: the number
+                    of leftovers now changes one at a time with the width, so
+                    this list is regularly 1, 2 or 7 long. A grid strands the
+                    odd one at the left edge; centring makes every count — a
+                    lone card included — look deliberate. */}
+                <ul className="mt-4 flex flex-wrap justify-center gap-3">
                   {rest.map((platform) => (
                     <li
                       key={platform.name}
-                      className="flex min-h-[68px] items-center justify-center rounded-md border border-white/10 bg-navy-card p-3"
+                      className="flex min-h-[68px] w-[calc(50%-0.375rem)] max-w-[220px] items-center justify-center rounded-md border border-white/10 bg-navy-card p-3 sm:w-[calc(33.333%-0.5rem)]"
                     >
                       <PlatformLogo platform={platform} />
                     </li>
@@ -150,40 +170,10 @@ export function BookingIntegrations() {
             />
           </Link>
         </Reveal>
-
-        <div className="mt-12 grid gap-8 border-t border-white/10 pt-12 sm:grid-cols-2 xl:grid-cols-4">
-          {integrations.features.map((feature, i) => (
-            <Reveal key={feature.title} delay={i * 0.05} className="flex gap-4">
-              <span
-                className={cn(
-                  "flex h-12 w-12 shrink-0 items-center justify-center rounded-md border",
-                  TONES[feature.tone],
-                )}
-              >
-                <FeatureIcon name={feature.icon} />
-              </span>
-              <div className="min-w-0">
-                <p className="text-[15px] font-semibold text-white">
-                  {feature.title}
-                </p>
-                <p className="mt-1 text-small text-white/60">{feature.body}</p>
-              </div>
-            </Reveal>
-          ))}
-        </div>
       </Container>
     </section>
   );
 }
-
-const TONES: Record<string, string> = {
-  blue: "border-fynd-blue/25 bg-fynd-blue/[0.06] text-fynd-blue",
-  green: "border-fynd-green/25 bg-fynd-green/[0.06] text-fynd-green",
-  orange: "border-fynd-orange/25 bg-fynd-orange/[0.06] text-fynd-orange",
-  blue2: "border-fynd-blue2/25 bg-fynd-blue2/[0.06] text-fynd-blue2",
-};
-
-/* ------------------------------------------------------------------ */
 
 /** Radius of the ring, as a percentage of the square graph box. */
 const RING_R = 33;
@@ -215,8 +205,11 @@ function Ring({ platforms }: { platforms: readonly Platform[] }) {
 
   return (
     <div
-      style={{ containerType: "inline-size" }}
-      className="relative mx-auto w-full max-w-[820px]"
+      // maxWidth here rather than a class: `fitCount` clamps the measured
+      // column to the same number, and a drift between the two would size the
+      // cards against a box the ring never actually gets.
+      style={{ containerType: "inline-size", maxWidth: RING_MAX }}
+      className="relative mx-auto w-full"
     >
       <div className="relative aspect-square w-full">
         {[92, 74, 56].map((size, i) => (
@@ -358,49 +351,6 @@ function PlatformLogo({ platform }: { platform: Platform }) {
       onError={() => setMissing(true)}
       className="max-h-full w-auto max-w-full object-contain"
     />
-  );
-}
-
-function FeatureIcon({ name }: { name: string }) {
-  const props = {
-    viewBox: "0 0 24 24",
-    fill: "none",
-    stroke: "currentColor",
-    strokeWidth: 1.75,
-    strokeLinecap: "round" as const,
-    strokeLinejoin: "round" as const,
-    className: "h-5 w-5",
-    "aria-hidden": true as const,
-  };
-
-  if (name === "sync") {
-    return (
-      <svg {...props}>
-        <path d="M20 7h-5V2M4 17h5v5" />
-        <path d="M5.1 9A7 7 0 0 1 17 5l3 2M18.9 15A7 7 0 0 1 7 19l-3-2" />
-      </svg>
-    );
-  }
-  if (name === "shield") {
-    return (
-      <svg {...props}>
-        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z" />
-        <path d="m9 12 2 2 4-4" />
-      </svg>
-    );
-  }
-  if (name === "user") {
-    return (
-      <svg {...props}>
-        <circle cx="12" cy="8" r="4" />
-        <path d="M4 22c0-4 3.6-7 8-7s8 3 8 7" />
-      </svg>
-    );
-  }
-  return (
-    <svg {...props}>
-      <path d="M13 2 3 14h8l-1 8 11-13h-8V2Z" />
-    </svg>
   );
 }
 

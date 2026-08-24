@@ -526,33 +526,6 @@ export const integrations = {
     body: "We probably connect with it anyway — and if you don't use one at all, that's fine too.",
     ctaLabel: "Ask on a quick call",
   },
-
-  features: [
-    {
-      icon: "bolt",
-      tone: "blue",
-      title: "Automatic triggers",
-      body: "Requests go out on their own once the appointment is done.",
-    },
-    {
-      icon: "sync",
-      tone: "green",
-      title: "Customer sync",
-      body: "Appointment and client details stay up to date both ways.",
-    },
-    {
-      icon: "shield",
-      tone: "orange",
-      title: "Secure and reliable",
-      body: "Verified connections built around the workflow you already have.",
-    },
-    {
-      icon: "user",
-      tone: "blue2",
-      title: "Easy to connect",
-      body: "Set it up once and Fynd handles the rest from there.",
-    },
-  ],
 } as const;
 
 /* ==========================================================================
