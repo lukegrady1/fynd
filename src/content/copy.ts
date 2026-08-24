@@ -186,7 +186,6 @@ export const checkout = {
    * are still used.
    */
   secure: "Secure checkout by Stripe",
-  billing: "First charge today, then monthly.",
   cancelledNote: {
     lead: "No charge was made. Still deciding?",
     linkLabel: "Book a call instead",
@@ -395,7 +394,7 @@ export const pricing = {
   addOn: {
     label: "NFC review card",
     price: `$${offer.nfcCard}`,
-    note: "One-off. Tap it on a phone and the review page opens.",
+    note: "One-time purchase. Tap it on a phone and the review page opens.",
   },
   reassure:
     "We build it, connect it to your booking software, and switch it on.",

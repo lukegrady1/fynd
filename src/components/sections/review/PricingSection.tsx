@@ -98,7 +98,7 @@ export function PricingSection(
             {props.mode === "checkout" && (
               <p className="mt-4 flex items-center justify-center gap-1.5 text-small text-ink-soft">
                 <Lock aria-hidden="true" className="h-3.5 w-3.5 shrink-0" />
-                {checkout.secure} &middot; {checkout.billing}
+                {checkout.secure}
               </p>
             )}
           </div>
