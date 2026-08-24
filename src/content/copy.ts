@@ -411,7 +411,7 @@ export const pricing = {
 export const profileSwap = {
   eyebrow: "Before / after",
   heading: "What sixty days of asking every client looks like.",
-  elapsed: "~60 days",
+  elapsed: "60 days",
   business: "Salt Salon",
   before: {
     label: "Before",
@@ -435,34 +435,56 @@ export const results = {
   sub: "Every appointment that ends becomes a request, every request that lands becomes a review, and the rating people see when they look you up moves up.",
   cta: `Start for $${offer.price}/month`,
 
-  dashboard: {
-    label: "Overview",
-    business: "Marlow Hair Studio",
-    live: "Live",
-    range: "Last 6 months",
-    kpis: [
-      { label: "Google rating", value: "4.8", delta: "0.6", note: "vs. last 6 mo", stars: true },
-      { label: "Total reviews", value: "118", delta: "67", note: "vs. last 6 mo" },
-      { label: "Review requests sent", value: "305", delta: "28%", note: "vs. last 6 mo" },
-      { label: "Response rate", value: "100%", note: "All reviews replied to" },
+  /**
+   * The three headline outcomes.
+   *
+   * REAL NUMBERS ONLY — the same rule as content/clients.ts, and the reason
+   * the invented dashboard that used to sit here is gone. A prospect who
+   * spots one fabricated figure discounts the real screenshots above it too,
+   * so the mockup was costing more credibility than it bought.
+   *
+   * `basis` renders verbatim under every figure and is not decoration: it is
+   * what keeps the claim tied to its evidence. Write "average across 30
+   * businesses" only once there are thirty of them; while there is one
+   * documented client it names that client. A result with `value: null`
+   * renders nothing, and all three null hides the block.
+   *
+   * Today: reviews and rating are Salt Salon's real before/after — 4.6 from
+   * 93 reviews to 4.9 from 174 in sixty days, the same profile in the
+   * screenshots above, so 81 more reviews is +87%. Hours is arithmetic, not
+   * a measurement, and its basis line shows the whole sum: 2 x 40 x 52 is
+   * 4,160 minutes, or 69.3 hours, rounded to 70. Keep the basis and the
+   * figure in step — if the factors change, redo the sum rather than nudging
+   * the headline number on its own.
+   */
+  keyResults: {
+    heading: "Three things change once it's running.",
+    items: [
+      {
+        icon: "trending",
+        tone: "blue",
+        value: "+87%",
+        label: "more reviews",
+        basis: "Salt Salon, first 60 days",
+        body: "Every finished appointment gets asked, the same day, without anyone remembering to.",
+      },
+      {
+        icon: "star",
+        tone: "green",
+        value: "4.6 → 4.9",
+        label: "Google rating",
+        basis: "Salt Salon, first 60 days",
+        body: "You get reviews from everyone you serve, not just the rare unhappy one who bothers to post.",
+      },
+      {
+        icon: "clock",
+        tone: "orange",
+        value: "70 hours",
+        label: "a year back",
+        basis: "2 min × 40 clients × 52 weeks",
+        body: "The texting, the chasing and the replies all happen without you. Spend the time back on the work you'd rather be doing.",
+      },
     ],
-    chart: {
-      heading: "Reviews over time",
-      months: ["Dec", "Jan", "Feb", "Mar", "Apr", "May"],
-      values: [51, 64, 77, 90, 104, 118],
-      tooltip: { value: "118", label: "Total reviews" },
-    },
-  },
-
-  compare: {
-    heading: "How you compare",
-    sub: "vs. other local salons",
-    rows: [
-      { name: "Your business", rating: 4.8, reviews: 118, you: true },
-      { name: "The Loft Salon", rating: 4.5, reviews: 61, you: false },
-      { name: "Bloom Beauty Bar", rating: 4.2, reviews: 38, you: false },
-    ],
-    takeaway: "More reviews means more bookings. More bookings means a fuller calendar.",
   },
 } as const;
 
