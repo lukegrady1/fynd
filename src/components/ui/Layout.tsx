@@ -95,7 +95,7 @@ export function Eyebrow({
 }
 
 /**
- * Section heading in the brand's two-line form — the payoff word in Fyne Green.
+ * Section heading in the brand's two-line form — the payoff word in Fynd Green.
  * On white backgrounds green text is darkened to #0F8F6E for contrast, unless
  * the type is large display weight.
  */

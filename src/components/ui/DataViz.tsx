@@ -61,7 +61,7 @@ export function ScoreGauge({
   );
 }
 
-/** Positive deltas are green; negative uses Fyne Orange — never red. */
+/** Positive deltas are green; negative uses Fynd Orange — never red. */
 export function Delta({
   value,
   direction = "up",

@@ -54,39 +54,47 @@ export const offerWindow = {
 export const heroFlow = {
   eyebrow: "Automated reputation management",
 
-  /** The four numbered cards arranged around the phone. */
-  steps: [
+  /**
+   * One sentence told left to right: something happens, Fynd handles it, and
+   * the business is better off. The right-hand column is deliberately business
+   * outcomes rather than product features — "we manage it automatically" is a
+   * description of us, "you rank higher" is a reason to care.
+   */
+  trigger: {
+    title: "Appointment done",
+    body: "Mark it complete in your booking software. That's your only step.",
+  },
+
+  brand: {
+    label: "Fynd",
+    body: "Asks every client, routes the feedback, drafts the replies.",
+  },
+
+  outcomes: [
     {
       n: "01",
-      icon: "check",
+      icon: "trending",
       tone: "blue",
-      title: "Appointment done",
-      body: "Mark it complete in your booking software. That's it.",
+      title: "Rank higher on Google",
+      body: "Volume and recency are what Google rewards.",
     },
     {
       n: "02",
-      icon: "send",
-      tone: "blue",
-      title: "Review request sent",
-      body: "Within the hour, your client gets a personalized text.",
+      icon: "search",
+      tone: "green",
+      title: "Get found by more customers",
+      body: "A stronger profile surfaces in more searches.",
     },
     {
       n: "03",
-      icon: "star",
+      icon: "shield",
       tone: "orange",
-      title: "New Google review",
-      body: "One tap takes them to Google. The review shows up on your profile.",
-    },
-    {
-      n: "04",
-      icon: "reply",
-      tone: "green",
-      title: "Automatically managed",
-      body: "Fyne keeps your reviews organized and drafts replies in your voice.",
+      title: "Build trust",
+      body: "The rating people see is your whole first impression.",
     },
   ],
 
-  /** The small reputation panel beneath the composition. */
+  /** Reputation panel — now rendered inside the mechanism, not the hero. */
   reputation: {
     label: "Your reputation",
     live: "Live",
@@ -136,9 +144,9 @@ export const hero = {
    * naming the business is a stronger opening than any pattern.
    */
   start: {
-    lead: "With Fyne, managing your reputation",
+    lead: "With Fynd, managing your reputation",
     accent: "becomes effortless.",
-    leadWithBiz: "With Fyne, managing the reputation at",
+    leadWithBiz: "With Fynd, managing the reputation at",
     accentWithBiz: (biz: string) => `${biz} becomes effortless.`,
     sub: "Gaining trust one review at a time — so you rank higher on Google, get found by more customers, and never think about it again.",
     cta: `Start for $${offer.price}/month`,
@@ -149,9 +157,9 @@ export const hero = {
    * answered in the green line rather than left for the reader to worry about.
    */
   call: {
-    lead: "With Fyne, managing your reputation",
+    lead: "With Fynd, managing your reputation",
     accent: "becomes effortless.",
-    leadWithBiz: "With Fyne, managing the reputation at",
+    leadWithBiz: "With Fynd, managing the reputation at",
     accentWithBiz: (biz: string) => `${biz} becomes effortless.`,
     sub: "Gaining trust one review at a time. Fifteen minutes on the phone and I'll show you where your reputation stands, what it's costing you in rank, and exactly how the system fixes it.",
     cta: "Pick a time to talk",
@@ -311,12 +319,12 @@ export const confirmed = {
 
 export const meta = {
   start: {
-    title: "Start — Fyne Review System",
+    title: "Start — Fynd Review System",
     description:
       "Automated Google review requests for local service businesses. $97/mo, no contract.",
   },
   call: {
-    title: "Book a call — Fyne Review System",
+    title: "Book a call — Fynd Review System",
     description:
       "Fifteen minutes to see where your rating stands and what the review system would do for your business.",
   },
@@ -337,8 +345,8 @@ export const illustrative = {
 
 export const mechanism = {
   eyebrow: "The mechanism",
-  heading: "Here's how Fyne closes that gap.",
-  sub: "Your client checks out. Fyne handles the rest, so you can get on with the next one.",
+  heading: "Here's how Fynd closes that gap.",
+  sub: "Your client checks out. Fynd handles the rest, so you can get on with the next one.",
 
   /** The message your customer receives, rendered as a real thread. */
   sms: {
@@ -363,7 +371,7 @@ export const mechanism = {
     },
     {
       icon: "send",
-      title: "Fyne sends the request",
+      title: "Fynd sends the request",
       body: "Within the hour, your client gets a personalized text from your studio.",
     },
     {
@@ -373,8 +381,8 @@ export const mechanism = {
     },
     {
       icon: "reply",
-      title: "Fyne manages it for you",
-      body: "Fyne keeps your reviews organized and replies in your voice.",
+      title: "Fynd manages it for you",
+      body: "Fynd keeps your reviews organized and replies in your voice.",
     },
   ],
 
@@ -526,13 +534,13 @@ export const fit = {
    Structural expansion — problem → stakes → speed → features → plan.
 
    The section *order* follows what converts on comparable pages in this
-   category. All wording here is original, written for Fyne's voice.
+   category. All wording here is original, written for Fynd's voice.
    ========================================================================== */
 
 export const trust = {
   /** Only shown when real values exist in content/clients.ts. */
   statsHeading: "Where things stand",
-  logosHeading: "Businesses running Fyne",
+  logosHeading: "Businesses running Fynd",
 } as const;
 
 export const problem = {
@@ -595,7 +603,7 @@ export const quickWins = {
     {
       when: "Step two",
       title: "I build it",
-      body: "Your portal, your message in your voice, the routing rules and your Fyne number. Nothing for you to set up.",
+      body: "Your portal, your message in your voice, the routing rules and your Fynd number. Nothing for you to set up.",
     },
     {
       when: "Step three",

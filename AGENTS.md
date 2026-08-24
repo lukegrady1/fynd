@@ -10,9 +10,9 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 <!-- BEGIN:fynd-project-rules -->
 
-# Fyne
+# Fynd
 
-Marketing site for Fyne — a platform that helps small businesses get Google reviews
+Marketing site for Fynd — a platform that helps small businesses get Google reviews
 and get found across search, maps, directories, and AI search.
 
 Stack: Next.js (App Router) · TypeScript · Tailwind CSS v4 · lucide-react.
@@ -29,7 +29,7 @@ the `@theme` block is the translated, authoritative version.
 
 Key conventions:
 - **Body copy is Medium (500)**, not Regular. Regular is for small/caption text only.
-- Headlines split across two lines with the payoff word in Fyne Green
+- Headlines split across two lines with the payoff word in Fynd Green
   (`SplitHeading`, or the `line1`/`line2` props on `Hero` / `CtaCloser`).
 - Green and orange fail contrast on white for small text. For green text on
   white use `#0F8F6E` (`text-fynd-green-text`). Never use red — orange covers errors.
@@ -81,9 +81,9 @@ before pointing anything live at it. See `progress.md` for the full state.
 
 ### Traps worth knowing
 
-- `--text-muted` (#8A93A6) **fails WCAG AA** on white (3.09:1) and Fyne Gray
-  (2.80:1). Use `text-ink-soft` (#5A6478) for anything readable. Fyne Green and
-  Fyne Orange have the same problem as small text on white.
+- `--text-muted` (#8A93A6) **fails WCAG AA** on white (3.09:1) and Fynd Gray
+  (2.80:1). Use `text-ink-soft` (#5A6478) for anything readable. Fynd Green and
+  Fynd Orange have the same problem as small text on white.
 - Scroll reveals (`Reveal`, `.js-reveal`) are progressive enhancement: markup
   renders visible, the hidden start state sits behind
   `@media (scripting: enabled)`. Don't swap in a motion library that SSRs

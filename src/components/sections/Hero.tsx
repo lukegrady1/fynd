@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 /**
  * Signature pattern 1 — dark hero.
  * Deep Navy + dotted world map with colored pins. H1 in two lines, the payoff
- * line in Fyne Green. Subcopy max 520px. Primary + outline-white buttons.
+ * line in Fynd Green. Subcopy max 520px. Primary + outline-white buttons.
  */
 export function Hero({
   eyebrow,

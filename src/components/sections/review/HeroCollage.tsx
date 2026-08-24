@@ -1,63 +1,34 @@
 import { heroFlow, mechanism } from "@/content/copy";
 
 /**
- * The hero composition: a phone showing the review text, four numbered steps
- * orbiting it on glowing connectors, and the reputation panel below.
+ * The hero composition, read left to right: the trigger, then Fynd, then what
+ * the business gets out of it.
  *
- * It renders at every width and scales as a single piece. Laid out on an
- * 820x720 design canvas with percentage offsets inside an aspect-ratio box, so
- * the geometry is resolution-independent; type and padding are in container
- * query units (cqw), so a glyph occupies the same fraction of the composition
- * at 350px as it does at 820px. The connector SVG shares the canvas viewBox
- * and therefore stays welded to the cards at any size.
+ * The phone is the white block in the middle deliberately — it is the only
+ * light surface in a dark section, so the eye lands there first and the arrow
+ * pointing into it makes the direction of the sentence unmistakable. The
+ * right-hand column is outcomes, not features.
  *
- * Below xl the hero is a single column and this sits under the copy, where it
- * gets the full container width. Note that the baked-in labels are genuinely
- * small on a phone — the composition reads as a diagram of the flow there, not
- * as something to be read word by word. The same four steps are spelled out at
- * readable size in the Mechanism section further down the page.
+ * Laid out on an 820x560 design canvas with percentage offsets inside an
+ * aspect-ratio box, and type in container-query units, so the whole thing
+ * scales as one piece at any width. The connector SVG shares the canvas
+ * viewBox and stays welded to the cards.
  *
- * All copy comes from content/copy.ts, so the studio/salon positioning stays
- * in one place.
+ * All copy comes from content/copy.ts.
  */
 
-const CANVAS = { w: 820, h: 720 };
+const CANVAS = { w: 820, h: 700 };
 
-/**
- * Connector geometry, in canvas coordinates. The right-hand rail is a fixed
- * height flex column of three equal cards, so its card centres are arithmetic
- * (140 / 360 / 580) rather than measured — the wires stay attached no matter
- * how the copy wraps.
- */
-const WIRES = [
-  "M197 305 C222 305 240 300 240 258",
-  "M510 200 C548 200 548 145 578 145",
-  "M510 340 C548 340 548 360 578 360",
-  "M510 385 C548 385 548 580 578 580",
-  "M390 416 V434",
-] as const;
+/** Card centres on the right rail are arithmetic — see the rail below. */
+const OUTCOME_Y = [118, 350, 582] as const;
 
-const NODES = [
-  [240, 258],
-  [578, 145],
-  [578, 360],
-  [578, 580],
-  [390, 434],
-] as const;
-
-/**
- * Design sizes from the 820px canvas, expressed in container-query units so
- * every glyph and gutter scales with the composition instead of the viewport.
- * 1cqw = 8.2px at full size, so e.g. 14px design type is 14/820*100 = 1.71cqw.
- */
 const fluid = {
   "--hc-micro": "1.22cqw",
   "--hc-body": "1.71cqw",
   "--hc-title": "2.2cqw",
-  "--hc-kpi": "3.66cqw",
-  "--hc-pad": "2.44cqw",
-  "--hc-gap": "1.5cqw",
-  "--hc-icon": "5.85cqw",
+  "--hc-pad": "2cqw",
+  "--hc-gap": "1.2cqw",
+  "--hc-icon": "4.8cqw",
 } as React.CSSProperties;
 
 export function HeroCollage({ business }: { business?: string }) {
@@ -66,28 +37,20 @@ export function HeroCollage({ business }: { business?: string }) {
       style={{ containerType: "inline-size" }}
       className="relative -mx-4 w-[calc(100%+2rem)] max-w-[820px] sm:mx-auto sm:w-full"
     >
-      <div style={fluid} className="relative aspect-[820/720] w-full">
+      <div style={fluid} className="relative aspect-[820/700] w-full">
         <Glow />
         <Connectors />
 
-        {/* 01 — left */}
-        <StepCard
-          step={heroFlow.steps[0]}
-          className="absolute left-0 top-[26.4%] w-[24%]"
-        />
-
+        <Trigger />
         <Phone business={business} />
 
-        {/* 02 / 03 / 04 — the right rail. Fixed height with three flex-1
-            children, so the cards share the space evenly and can never
-            overlap each other however the copy wraps. */}
-        <div className="absolute right-0 top-[5%] flex h-[90%] w-[29.5%] flex-col gap-[1.7%]">
-          {heroFlow.steps.slice(1).map((step) => (
-            <StepCard key={step.n} step={step} className="flex-1" />
+        {/* The three outcomes. Fixed-height rail with flex-1 children, so the
+            centres stay at OUTCOME_Y however the copy wraps. */}
+        <div className="absolute right-0 top-[1%] flex h-[98%] w-[28%] flex-col gap-[1.6%]">
+          {heroFlow.outcomes.map((outcome) => (
+            <OutcomeCard key={outcome.n} outcome={outcome} />
           ))}
         </div>
-
-        <Reputation />
       </div>
     </div>
   );
@@ -95,18 +58,19 @@ export function HeroCollage({ business }: { business?: string }) {
 
 /* ------------------------------------------------------------------ */
 
-/** Soft coloured light behind the composition, in brand hues. */
 function Glow() {
   return (
     <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-      <span className="absolute left-[38%] top-[10%] h-[58%] w-[51%] rounded-full bg-fynd-blue/12 blur-[110px]" />
-      <span className="absolute right-[5%] top-[34%] h-[44%] w-[39%] rounded-full bg-fynd-green/10 blur-[110px]" />
-      <span className="absolute bottom-[5%] left-[35%] h-[36%] w-[32%] rounded-full bg-fynd-blue2/10 blur-[90px]" />
+      <span className="absolute left-[34%] top-[8%] h-[70%] w-[46%] rounded-full bg-fynd-blue/12 blur-[110px]" />
+      <span className="absolute right-[4%] top-[30%] h-[50%] w-[36%] rounded-full bg-fynd-green/10 blur-[110px]" />
     </div>
   );
 }
 
-/** The wiring between the phone and the four cards. Decorative. */
+/**
+ * Wiring. The arrow into the phone is the one piece that carries meaning
+ * rather than decoration, so it gets a head and a heavier stroke.
+ */
 function Connectors() {
   return (
     <svg
@@ -116,10 +80,21 @@ function Connectors() {
       className="pointer-events-none absolute inset-0 z-0 h-full w-full"
     >
       <defs>
-        <linearGradient id="hc-wire" x1="0" y1="0" x2="1" y2="1">
+        <linearGradient id="hc-wire" x1="0" y1="0" x2="1" y2="0">
           <stop offset="0%" stopColor="var(--color-fynd-blue)" />
           <stop offset="100%" stopColor="var(--color-fynd-green)" />
         </linearGradient>
+        <marker
+          id="hc-arrow"
+          viewBox="0 0 10 10"
+          refX="8"
+          refY="5"
+          markerWidth="5"
+          markerHeight="5"
+          orient="auto-start-reverse"
+        >
+          <path d="M0 0 L10 5 L0 10 z" fill="var(--color-fynd-blue)" />
+        </marker>
         <filter id="hc-glow">
           <feGaussianBlur stdDeviation="3" result="b" />
           <feMerge>
@@ -129,10 +104,25 @@ function Connectors() {
         </filter>
       </defs>
 
-      {WIRES.map((d) => (
+      {/* trigger -> Fynd.
+          No glow filter on this one. The path is perfectly horizontal, so its
+          bounding box has zero height, and an SVG filter region defaults to a
+          percentage of that box — the filter resolves to an empty region and
+          the line disappears entirely. The curved wires below have real bbox
+          height, so the glow is safe there. */}
+      <path
+        d="M204 300 H276"
+        stroke="var(--color-fynd-blue)"
+        strokeWidth="3.5"
+        strokeLinecap="round"
+        markerEnd="url(#hc-arrow)"
+      />
+
+      {/* Fynd -> each outcome */}
+      {OUTCOME_Y.map((y) => (
         <path
-          key={d}
-          d={d}
+          key={y}
+          d={`M533 315 C563 315 563 ${y} 586 ${y}`}
           stroke="url(#hc-wire)"
           strokeWidth="2"
           opacity="0.85"
@@ -140,21 +130,40 @@ function Connectors() {
         />
       ))}
 
-      {NODES.map(([cx, cy], i) => (
-        <g key={`${cx}-${cy}`}>
-          {/* Slow outward pulse — the only motion in the composition. */}
-          <circle
-            cx={cx}
-            cy={cy}
-            r="4"
-            fill="var(--color-fynd-green)"
-            className="hc-node"
-            style={{ animationDelay: `${i * 0.6}s`, transformOrigin: `${cx}px ${cy}px` }}
-          />
-          <circle cx={cx} cy={cy} r="4" fill="var(--color-fynd-green)" />
-        </g>
+      {OUTCOME_Y.map((y) => (
+        <circle key={`n${y}`} cx={586} cy={y} r="4" fill="var(--color-fynd-green)" />
       ))}
+      <circle cx={204} cy={300} r="4" fill="var(--color-fynd-blue)" />
     </svg>
+  );
+}
+
+function Trigger() {
+  const { trigger } = heroFlow;
+
+  return (
+    <div className="absolute left-0 top-[30%] z-10 w-[24%] rounded-lg border border-white/10 bg-white/[0.04] p-[var(--hc-pad)] shadow-2xl shadow-black/20 backdrop-blur-xl">
+      <span className="flex h-[var(--hc-icon)] w-[var(--hc-icon)] items-center justify-center rounded-full bg-gradient-to-br from-fynd-blue to-fynd-blue2 text-white shadow-lg shadow-fynd-blue/30">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="3"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="h-[50%] w-[50%]"
+          aria-hidden="true"
+        >
+          <path d="m5 12 4 4L19 6" />
+        </svg>
+      </span>
+      <p className="mt-[var(--hc-gap)] text-[length:var(--hc-title)] font-semibold leading-tight text-white">
+        {trigger.title}
+      </p>
+      <p className="mt-[var(--hc-gap)] text-[length:var(--hc-body)] leading-relaxed text-white/60">
+        {trigger.body}
+      </p>
+    </div>
   );
 }
 
@@ -162,9 +171,9 @@ function Phone({ business }: { business?: string }) {
   const { sms } = mechanism;
 
   return (
-    <div className="absolute left-[29.9%] top-[3.5%] z-20 h-[54%] w-[32.3%]">
+    <div className="absolute left-[35%] top-[10%] z-20 h-[70%] w-[30%]">
       <div className="relative h-full w-full -rotate-[2deg] rounded-[9%/5.5%] border-[6px] border-navy bg-navy shadow-[0_30px_100px_rgba(0,0,0,0.55)]">
-        <div className="absolute inset-[2px] overflow-hidden rounded-[8%/5%] bg-white">
+        <div className="absolute inset-[2px] flex flex-col overflow-hidden rounded-[8%/5%] bg-white">
           <div className="relative flex h-[7%] items-center justify-between px-[7%] text-[length:var(--hc-micro)] font-semibold text-ink">
             <span className="tabular-nums">{sms.statusTime}</span>
             <span
@@ -183,7 +192,11 @@ function Phone({ business }: { business?: string }) {
             </p>
           </div>
 
-          <div className="flex flex-col gap-[5%] px-[7%] py-[6%]">
+          {/* Explicit bg-white: the phone body is rotated, and axe stops
+              resolving background through the transform and falls back to the
+              navy section behind it, so small ink-soft text reads as a
+              contrast failure it is not. */}
+          <div className="flex flex-col gap-[5%] bg-white px-[7%] py-[6%]">
             <p className="max-w-[85%] rounded-[16px] rounded-tl-[4px] bg-fynd-gray px-[7%] py-[5%] text-[length:var(--hc-micro)] leading-snug text-ink">
               {sms.outbound.body}
             </p>
@@ -206,172 +219,58 @@ function Phone({ business }: { business?: string }) {
               {sms.outbound.time}
             </p>
           </div>
+
+          {/* Fynd's name on the white block, so the middle of the sentence
+              reads as us rather than as a generic phone. */}
+          <p className="mt-auto border-t border-line px-[7%] py-[4%] text-center text-[length:var(--hc-micro)] font-semibold uppercase tracking-[0.14em] text-fynd-blue">
+            {heroFlow.brand.label}
+          </p>
         </div>
       </div>
     </div>
   );
 }
 
-function StepCard({
-  step,
-  className,
+function OutcomeCard({
+  outcome,
 }: {
-  step: (typeof heroFlow.steps)[number];
-  className: string;
+  outcome: (typeof heroFlow.outcomes)[number];
 }) {
   const tones: Record<string, { icon: string; n: string }> = {
     blue: { icon: "bg-fynd-blue/20 text-fynd-blue", n: "text-fynd-blue" },
-    orange: { icon: "bg-fynd-orange/20 text-fynd-orange", n: "text-fynd-orange" },
     green: { icon: "bg-fynd-green/20 text-fynd-green", n: "text-fynd-green" },
+    orange: {
+      icon: "bg-fynd-orange/20 text-fynd-orange",
+      n: "text-fynd-orange",
+    },
   };
-  const tone = tones[step.tone] ?? tones.blue;
+  const tone = tones[outcome.tone] ?? tones.blue;
 
   return (
-    <div
-      className={`z-10 overflow-hidden rounded-lg border border-white/10 bg-white/[0.04] p-[var(--hc-pad)] shadow-2xl shadow-black/20 backdrop-blur-xl ${className}`}
-    >
+    <div className="z-10 flex-1 overflow-hidden rounded-lg border border-white/10 bg-white/[0.04] p-[var(--hc-pad)] shadow-2xl shadow-black/20 backdrop-blur-xl">
       <div className="flex items-start justify-between gap-2">
         <span
-          className={`flex h-[var(--hc-icon)] w-[var(--hc-icon)] shrink-0 items-center justify-center rounded-full ${
-            step.n === "01"
-              ? "bg-gradient-to-br from-fynd-blue to-fynd-blue2 text-white shadow-lg shadow-fynd-blue/30"
-              : tone.icon
-          }`}
+          className={`flex h-[var(--hc-icon)] w-[var(--hc-icon)] shrink-0 items-center justify-center rounded-full ${tone.icon}`}
         >
-          <StepIcon name={step.icon} />
+          <OutcomeIcon name={outcome.icon} />
         </span>
         <span
           className={`text-[length:var(--hc-body)] font-semibold tabular-nums ${tone.n}`}
         >
-          {step.n}
+          {outcome.n}
         </span>
       </div>
-
       <p className="mt-[var(--hc-gap)] text-[length:var(--hc-title)] font-semibold leading-tight text-white">
-        {step.title}
+        {outcome.title}
       </p>
       <p className="mt-[var(--hc-gap)] text-[length:var(--hc-body)] leading-relaxed text-white/60">
-        {step.body}
+        {outcome.body}
       </p>
     </div>
   );
 }
 
-function Reputation() {
-  const { reputation } = heroFlow;
-
-  return (
-    <div className="absolute bottom-[1.1%] left-[5%] top-[61%] z-10 flex w-[57%] flex-col justify-between overflow-hidden rounded-lg border border-white/10 bg-white/[0.04] p-[var(--hc-gap)] shadow-2xl shadow-black/20 backdrop-blur-xl">
-      <p className="flex items-center gap-2">
-        <span className="text-[length:var(--hc-title)] font-semibold text-white">
-          {reputation.label}
-        </span>
-        <span className="flex items-center gap-1.5 rounded-full bg-fynd-green/10 px-2 py-0.5">
-          <span
-            aria-hidden="true"
-            className="h-1.5 w-1.5 rounded-full bg-fynd-green"
-          />
-          <span className="text-[length:var(--hc-micro)] font-semibold text-fynd-green">
-            {reputation.live}
-          </span>
-        </span>
-      </p>
-
-      <div className="mt-[var(--hc-gap)] grid grid-cols-2 gap-[var(--hc-gap)]">
-        {reputation.kpis.map((kpi) => (
-          <div key={kpi.label} className="rounded-md bg-navy/40 p-[var(--hc-gap)]">
-            <p className="text-[length:var(--hc-body)] text-white/55">
-              {kpi.label}
-            </p>
-            <p className="mt-1.5 flex items-center gap-2">
-              <span className="text-[length:var(--hc-kpi)] font-bold leading-none tabular-nums tracking-tight text-white">
-                {kpi.value}
-              </span>
-              {"stars" in kpi && kpi.stars && (
-                <span aria-hidden="true" className="flex gap-0.5 text-fynd-green">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <Star key={i} filled className="h-2.5 w-2.5" />
-                  ))}
-                </span>
-              )}
-            </p>
-            <p className="mt-[var(--hc-gap)] text-[length:var(--hc-micro)] text-white/55">
-              <span className="font-semibold text-fynd-green">
-                &uarr; {kpi.delta}
-              </span>{" "}
-              {kpi.note}
-            </p>
-          </div>
-        ))}
-      </div>
-
-      <Sparkline />
-    </div>
-  );
-}
-
-/** Drawn from the real series in copy.ts so the chart can't drift from it. */
-function Sparkline() {
-  const values = heroFlow.reputation.spark;
-  const w = 400;
-  const h = 76;
-  const min = Math.min(...values);
-  const max = Math.max(...values);
-  const span = max - min || 1;
-
-  const pts = values.map((v, i) => {
-    const x = 5 + (i / (values.length - 1)) * (w - 10);
-    const y = h - ((v - min) / span) * (h - 16) - 8;
-    return [x, y] as const;
-  });
-
-  const d = pts
-    .map(([x, y], i) => `${i === 0 ? "M" : "L"}${x.toFixed(1)},${y.toFixed(1)}`)
-    .join(" ");
-
-  return (
-    <svg
-      viewBox={`0 0 ${w} ${h}`}
-      className="mt-[var(--hc-gap)] h-auto w-full shrink-0"
-      role="img"
-      aria-label={`Total reviews rising from ${min} to ${max} over the last six months`}
-    >
-      <defs>
-        <linearGradient id="hc-chart" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stopColor="var(--color-fynd-green2)" />
-          <stop offset="100%" stopColor="var(--color-fynd-green)" />
-        </linearGradient>
-      </defs>
-
-      {/* pathLength normalises the dash math regardless of point count */}
-      <path
-        d={d}
-        fill="none"
-        stroke="url(#hc-chart)"
-        strokeWidth="3"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        pathLength={1}
-        className="hc-chart-line"
-      />
-      {pts.map(([x, y], i) => (
-        <circle
-          key={i}
-          cx={x}
-          cy={y}
-          r="3.5"
-          fill="var(--color-fynd-green)"
-          className="hc-chart-dot"
-          style={{ animationDelay: `${0.5 + i * 0.075}s` }}
-        />
-      ))}
-    </svg>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-
-function StepIcon({ name }: { name: string }) {
+function OutcomeIcon({ name }: { name: string }) {
   const common = {
     viewBox: "0 0 24 24",
     fill: "none",
@@ -383,43 +282,37 @@ function StepIcon({ name }: { name: string }) {
     "aria-hidden": true as const,
   };
 
-  if (name === "send") {
+  if (name === "search") {
     return (
       <svg {...common}>
-        <path d="m22 2-7 20-4-9-9-4Z" />
-        <path d="M22 2 11 13" />
+        <circle cx="11" cy="11" r="7" />
+        <path d="m20 20-3.5-3.5" />
       </svg>
     );
   }
-  if (name === "star") return <Star filled className="h-[50%] w-[50%]" />;
-  if (name === "reply") {
+  if (name === "shield") {
     return (
       <svg {...common}>
-        <path d="M8 10h.01M12 10h.01M16 10h.01" />
-        <path d="M21 12c0 4.418-4.03 8-9 8a10.6 10.6 0 0 1-4-.76L3 21l1.37-3.2A7.5 7.5 0 0 1 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8Z" />
+        <path d="M12 3l7 3v5c0 4.5-3 8.3-7 10-4-1.7-7-5.5-7-10V6z" />
+        <path d="m9 12 2 2 4-4" />
       </svg>
     );
   }
   return (
-    <svg {...common} strokeWidth={2.5}>
-      <path d="m5 12 4 4L19 6" />
+    <svg {...common}>
+      <path d="M3 17l6-6 4 4 7-7" />
+      <path d="M14 8h6v6" />
     </svg>
   );
 }
 
-function Star({
-  filled = false,
-  className = "h-4 w-4",
-}: {
-  filled?: boolean;
-  className?: string;
-}) {
+function Star({ className = "h-4 w-4" }: { className?: string }) {
   return (
     <svg
       aria-hidden="true"
       viewBox="0 0 24 24"
       className={className}
-      fill={filled ? "currentColor" : "none"}
+      fill="none"
       stroke="currentColor"
       strokeWidth="1.8"
       strokeLinejoin="round"

@@ -19,7 +19,7 @@ export function FunnelHeader({
     <header className={dark ? "bg-navy" : "border-b border-line bg-white"}>
       <Container>
         <div className="flex h-16 items-center">
-          <Link href="/" aria-label="Fyne — home">
+          <Link href="/" aria-label="Fynd — home">
             <Logo tone={dark ? "light" : "dark"} priority />
           </Link>
         </div>
@@ -72,10 +72,10 @@ export function FunnelFooter({ children }: { children?: ReactNode }) {
 
         <div className="mt-10 flex flex-col gap-3 border-t border-white/10 pt-6">
           <p className="text-small text-white/72">
-            © {new Date().getFullYear()} Fyne. All rights reserved.
+            © {new Date().getFullYear()} Fynd. All rights reserved.
           </p>
           <p className="text-[13px] font-normal leading-relaxed text-white/55">
-            Google and Google Maps are trademarks of Google LLC. Fyne is not
+            Google and Google Maps are trademarks of Google LLC. Fynd is not
             affiliated with, endorsed by, or sponsored by Google. Review
             requests are sent only to customers of the subscribing business.
             Message and data rates may apply; reply STOP to opt out of messages

@@ -4,14 +4,14 @@
  */
 
 export const brand = {
-  name: "Fyne",
+  name: "Fynd",
   lockupTagline: "BEING FOUND EVERYWHERE.",
   headline: { line1: "Be found.", line2: "Everywhere." },
   supporting: "One platform. Total presence.",
   positioning:
     "AI-powered local visibility across search, maps, directories, and AI.",
   description:
-    "Fyne helps businesses get found—everywhere. Our AI-powered platform maximizes your local visibility across Google, Maps, AI search, directories, and more. One platform. Total presence.",
+    "Fynd helps businesses get found—everywhere. Our AI-powered platform maximizes your local visibility across Google, Maps, AI search, directories, and more. One platform. Total presence.",
 } as const;
 
 export const colors = {

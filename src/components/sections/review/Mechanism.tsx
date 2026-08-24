@@ -12,6 +12,7 @@ import type { ReactNode } from "react";
 import { mechanism } from "@/content/copy";
 import { Container, Eyebrow } from "@/components/ui/Layout";
 import { Bubble, PhoneFrame } from "./PhoneFrame";
+import { ReputationPanel } from "./ReputationPanel";
 import { Reveal } from "./Reveal";
 
 /**
@@ -138,6 +139,8 @@ export function Mechanism() {
                 ))}
               </ul>
             </div>
+
+            <ReputationPanel className="mt-5" />
           </Reveal>
         </div>
       </Container>

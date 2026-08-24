@@ -6,7 +6,7 @@ const MARK_W = 1831;
 const MARK_H = 2048;
 
 /**
- * The Fyne mark, from the supplied artwork at /transparent-fynd.PNG.
+ * The Fynd mark, from the supplied artwork at /transparent-fynd.PNG.
  *
  * The source is a transparent PNG, so it sits on navy and on white without a
  * variant. It is taller than it is wide (0.894:1), so callers set a height and
@@ -61,7 +61,7 @@ export function Wordmark({
         className,
       )}
     >
-      Fyne
+      Fynd
     </span>
   );
 }

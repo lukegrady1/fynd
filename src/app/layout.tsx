@@ -13,14 +13,14 @@ const poppins = Poppins({
 
 export const metadata: Metadata = {
   title: {
-    default: "Fyne — Be found. Everywhere.",
-    template: "%s | Fyne",
+    default: "Fynd — Be found. Everywhere.",
+    template: "%s | Fynd",
   },
   description: brand.description,
   openGraph: {
-    title: "Fyne — Be found. Everywhere.",
+    title: "Fynd — Be found. Everywhere.",
     description: brand.description,
-    siteName: "Fyne",
+    siteName: "Fynd",
     type: "website",
   },
 };

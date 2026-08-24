@@ -12,7 +12,7 @@ import {
 import { PageTracking } from "@/components/sections/review/PageTracking";
 
 export const metadata: Metadata = {
-  title: "You're booked — Fyne",
+  title: "You're booked — Fynd",
   robots: { index: false, follow: false },
 };
 
