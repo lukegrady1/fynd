@@ -497,21 +497,29 @@ export const integrations = {
   sub: "Fynd connects to the tools you already rely on, so the request fires the moment an appointment is marked complete.",
   badge: "Integrates with your existing workflow",
 
+  /**
+   * Order is popularity, most first — the ring fills from the top of this
+   * list and everything past the cut renders in the grid underneath. Reorder
+   * freely; nothing else needs to change.
+   */
   platforms: [
-    { name: "Goldie", logo: "/integrations/goldie.png" },
     { name: "Vagaro", logo: "/integrations/vagaro.png" },
     { name: "Mindbody", logo: "/integrations/mindbody.png" },
     { name: "Fresha", logo: "/integrations/fresha.png" },
+    { name: "Booksy", logo: "/integrations/booksy.png" },
+    { name: "Square", logo: "/integrations/square.png" },
+    { name: "Acuity", logo: "/integrations/acuity.png" },
+    { name: "StyleSeat", logo: "/integrations/styleseat.png" },
+    { name: "Setmore", logo: "/integrations/setmore.png" },
     { name: "Timely", logo: "/integrations/timely.png" },
     { name: "Booker", logo: "/integrations/booker.png" },
-    { name: "Appointy", logo: "/integrations/appointy.png" },
-    { name: "Setmore", logo: "/integrations/setmore.png" },
+    { name: "Goldie", logo: "/integrations/goldie.png" },
     { name: "MyTime", logo: "/integrations/mytime.png" },
-    { name: "Square", logo: "/integrations/square.png" },
-    { name: "StyleSeat", logo: "/integrations/styleseat.png" },
-    { name: "Booksy", logo: "/integrations/booksy.png" },
-    { name: "Acuity", logo: "/integrations/acuity.png" },
+    { name: "Appointy", logo: "/integrations/appointy.png" },
   ],
+
+  /** Heading for the platforms that did not fit in the ring. */
+  moreHeading: "Plus everything else you might be on",
 
   fallback: {
     lead: "Don't see your booking software?",

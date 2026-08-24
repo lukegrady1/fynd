@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState, useSyncExternalStore } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Check } from "lucide-react";
@@ -13,50 +13,81 @@ import { Reveal } from "./Reveal";
 type Platform = (typeof integrations.platforms)[number];
 
 /**
- * Ring geometry, as percentages of the graph box.
+ * How many platforms orbit the mark at each width.
  *
- * Computed rather than authored: at 13 platforms the bottom of the arc is the
- * tight spot, and hand-placed coordinates put three pairs of cards on top of
- * each other. Even angular spacing at this radius leaves roughly 14px between
- * neighbours there, and adding a platform re-spaces the ring automatically.
+ * The ring is geometry, not styling: thirteen cards need roughly 800px to sit
+ * apart, four need almost none. So the count steps down with the viewport and
+ * whatever does not fit drops into the grid underneath — the same platforms,
+ * a form that survives a narrow screen.
+ *
+ * Ordered widest first; the first match wins.
  */
-const RING_RX = 40.5;
-const RING_RY = 44;
-const CARD_W = 132;
+const RING_STEPS = [
+  { min: 1280, count: 13 },
+  { min: 1024, count: 10 },
+  { min: 768, count: 8 },
+  { min: 640, count: 6 },
+] as const;
 
-const ringPosition = (index: number, total: number) => {
-  const angle = -Math.PI / 2 + (index * 2 * Math.PI) / total;
-  return {
-    x: 50 + RING_RX * Math.cos(angle),
-    y: 50 + RING_RY * Math.sin(angle),
-  };
+/** Server render and no-JS both get this, so the narrow case is the safe one. */
+const BASE_RING = 4;
+
+const useRingCount = () => {
+  const store = useMemo(() => {
+    const queries = RING_STEPS.map((step) => ({
+      count: step.count,
+      mql:
+        typeof window === "undefined"
+          ? null
+          : window.matchMedia(`(min-width: ${step.min}px)`),
+    }));
+
+    return {
+      subscribe: (onChange: () => void) => {
+        queries.forEach((q) => q.mql?.addEventListener("change", onChange));
+        return () =>
+          queries.forEach((q) => q.mql?.removeEventListener("change", onChange));
+      },
+      getSnapshot: () =>
+        queries.find((q) => q.mql?.matches)?.count ?? BASE_RING,
+      getServerSnapshot: () => BASE_RING,
+    };
+  }, []);
+
+  return useSyncExternalStore(
+    store.subscribe,
+    store.getSnapshot,
+    store.getServerSnapshot,
+  );
 };
+
+/* ------------------------------------------------------------------ */
 
 /**
  * Booking-platform integrations, drawn as a ring around the Fynd mark.
  *
- * The radial graph is desktop only. Thirteen absolutely-positioned cards need
- * roughly 700px of width to avoid overlapping, so below lg the same platforms
- * render as a plain grid — which is also the more useful form on a phone,
- * where the reader is scanning for their own platform rather than admiring a
- * diagram.
+ * Everything inside the ring is sized in container-query units, so the whole
+ * diagram scales with its column instead of switching between a desktop
+ * drawing and a mobile one. Card width is derived from the chord between
+ * neighbours at the current count, which is what keeps four large cards and
+ * thirteen small ones both correct.
  *
- * Logos degrade: if the file for a platform is not in /public/integrations
- * yet, the card shows the platform name set as a wordmark instead of a broken
- * image, and starts showing the real mark the moment the file appears.
+ * Logos degrade: if a file is missing the card shows the platform name as a
+ * wordmark rather than a broken image.
  */
 export function BookingIntegrations() {
   const { heading, fallback } = integrations;
+  const ringCount = useRingCount();
+
+  const inRing = integrations.platforms.slice(0, ringCount);
+  const rest = integrations.platforms.slice(ringCount);
 
   return (
     <section className="relative isolate overflow-hidden bg-navy py-16 text-white lg:py-24">
       <Glow />
 
       <Container className="relative">
-        {/* The ring needs more width than the 1200px container allows, so the
-            grid bleeds its right edge toward the viewport. Bleeding right only
-            keeps the heading aligned with every other section on the page. */}
-        <div className="grid items-center gap-14 lg:mr-[calc(50%-50vw+1rem)] lg:grid-cols-[0.34fr_0.66fr] lg:gap-10">
+        <div className="grid items-center gap-12 lg:mr-[calc(50%-50vw+1rem)] lg:grid-cols-[0.34fr_0.66fr] lg:gap-10">
           <Reveal>
             <Eyebrow tone="light" variant="pill">
               {integrations.eyebrow}
@@ -80,26 +111,26 @@ export function BookingIntegrations() {
             </p>
           </Reveal>
 
-          {/* Desktop: the ring. */}
-          <div className="relative hidden min-h-[700px] lg:block">
-            <Network />
-          </div>
+          <div className="w-full">
+            <Ring platforms={inRing} />
 
-          {/* Below lg: the same platforms, scannable. */}
-          <div className="lg:hidden">
-            <div className="flex justify-center">
-              <Hub compact />
-            </div>
-            <ul className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3">
-              {integrations.platforms.map((platform) => (
-                <li
-                  key={platform.name}
-                  className="flex min-h-[76px] items-center justify-center rounded-md border border-white/10 bg-navy-card p-4"
-                >
-                  <PlatformLogo platform={platform} />
-                </li>
-              ))}
-            </ul>
+            {rest.length > 0 && (
+              <div className="mt-10">
+                <p className="text-center text-small text-white/50">
+                  {integrations.moreHeading}
+                </p>
+                <ul className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
+                  {rest.map((platform) => (
+                    <li
+                      key={platform.name}
+                      className="flex min-h-[68px] items-center justify-center rounded-md border border-white/10 bg-navy-card p-3"
+                    >
+                      <PlatformLogo platform={platform} />
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
         </div>
 
@@ -154,102 +185,136 @@ const TONES: Record<string, string> = {
 
 /* ------------------------------------------------------------------ */
 
-function Glow() {
-  return (
-    <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-      <span className="absolute left-[62%] top-[24%] h-[520px] w-[520px] -translate-x-1/2 rounded-full bg-fynd-blue/[0.07] blur-[150px]" />
-      <span className="absolute right-[6%] top-[38%] h-[420px] w-[420px] rounded-full bg-fynd-green/[0.05] blur-[140px]" />
-    </div>
-  );
-}
+/** Radius of the ring, as a percentage of the square graph box. */
+const RING_R = 33;
 
-/** The ring: dashed orbits, connectors from the hub, and the platform cards. */
-function Network() {
-  return (
-    <div className="absolute inset-0">
-      {[560, 440, 330].map((size, i) => (
-        <span
-          key={size}
-          aria-hidden="true"
-          style={{ width: size, height: size }}
-          className={cn(
-            "pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed",
-            [
-              "border-fynd-blue/10",
-              "border-fynd-green/12",
-              "border-fynd-blue/16",
-            ][i],
-          )}
-        />
-      ))}
+/**
+ * Card width for a given count, in container-query units.
+ *
+ * Derived from the chord between neighbouring cards — 2R·sin(π/n) — at 88% so
+ * there is always a visible gap. The cap is not cosmetic: a card is centred on
+ * the ring, so RING_R + width/2 must stay inside the box or the left and right
+ * cards clip against the edges. 2·(50 − RING_R) is that limit, less a little.
+ */
+const MAX_CARD_W = 2 * (50 - RING_R) - 1;
 
-      <svg
-        aria-hidden="true"
-        viewBox="0 0 100 100"
-        preserveAspectRatio="none"
-        className="pointer-events-none absolute inset-0 h-full w-full"
-      >
-        <defs>
-          <linearGradient id="bi-wire-blue">
-            <stop offset="0%" stopColor="var(--color-fynd-blue)" />
-            <stop offset="100%" stopColor="var(--color-fynd-blue2)" />
-          </linearGradient>
-          <linearGradient id="bi-wire-green">
-            <stop offset="0%" stopColor="var(--color-fynd-blue)" />
-            <stop offset="100%" stopColor="var(--color-fynd-green)" />
-          </linearGradient>
-        </defs>
+const cardWidth = (count: number) =>
+  Math.min(MAX_CARD_W, 0.88 * 2 * RING_R * Math.sin(Math.PI / count));
 
-        {integrations.platforms.map((platform, i) => {
-          const { x, y } = ringPosition(i, integrations.platforms.length);
-          return (
-            <line
-              key={platform.name}
-              x1={50}
-              y1={50}
-              x2={x}
-              y2={y}
-              stroke={`url(#bi-wire-${i % 3 === 0 ? "green" : "blue"})`}
-              strokeWidth="0.16"
-              strokeDasharray={i % 2 ? "0.5 0.35" : undefined}
-              opacity="0.7"
-            />
-          );
-        })}
-      </svg>
+const ringPosition = (index: number, total: number) => {
+  const angle = -Math.PI / 2 + (index * 2 * Math.PI) / total;
+  return {
+    x: 50 + RING_R * Math.cos(angle),
+    y: 50 + RING_R * Math.sin(angle),
+  };
+};
 
-      <div className="absolute left-1/2 top-1/2 z-20 -translate-x-1/2 -translate-y-1/2">
-        <Hub />
-      </div>
+function Ring({ platforms }: { platforms: readonly Platform[] }) {
+  const count = platforms.length;
+  const w = cardWidth(count);
 
-      {integrations.platforms.map((platform, i) => {
-        const { x, y } = ringPosition(i, integrations.platforms.length);
-        return (
-          <div
-            key={platform.name}
-            style={{ left: `${x}%`, top: `${y}%`, width: CARD_W }}
-            className="group absolute z-10 flex h-[72px] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-md border border-white/12 bg-navy-card/90 p-2.5 shadow-lg shadow-black/20 backdrop-blur-sm transition-colors duration-200 ease-fynd hover:border-fynd-green/40 hover:bg-navy-card"
-          >
-            <span
-              aria-hidden="true"
-              className="absolute left-1/2 top-full h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-fynd-blue shadow-[0_0_12px_rgba(76,91,255,0.9)] transition-colors duration-200 group-hover:bg-fynd-green"
-            />
-            <PlatformLogo platform={platform} />
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
-function Hub({ compact = false }: { compact?: boolean }) {
   return (
     <div
-      className={cn(
-        "relative flex items-center justify-center rounded-full bg-navy",
-        compact ? "h-32 w-32" : "h-[200px] w-[200px]",
-      )}
+      style={{ containerType: "inline-size" }}
+      className="relative mx-auto w-full max-w-[820px]"
     >
+      <div className="relative aspect-square w-full">
+        {[92, 74, 56].map((size, i) => (
+          <span
+            key={size}
+            aria-hidden="true"
+            style={{ width: `${size}cqw`, height: `${size}cqw` }}
+            className={cn(
+              "pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed",
+              ["border-fynd-blue/10", "border-fynd-green/12", "border-fynd-blue/16"][i],
+            )}
+          />
+        ))}
+
+        <svg
+          aria-hidden="true"
+          viewBox="0 0 100 100"
+          className="pointer-events-none absolute inset-0 h-full w-full"
+        >
+          <defs>
+            {/* userSpaceOnUse, not the default objectBoundingBox: the wire to
+                the card at the top of the ring is perfectly vertical, so its
+                bounding box has zero width, and a gradient measured against a
+                zero-width box makes the line vanish entirely. */}
+            {(["blue", "green"] as const).map((tone) => (
+              <linearGradient
+                key={tone}
+                id={`bi-wire-${tone}`}
+                gradientUnits="userSpaceOnUse"
+                x1="0"
+                y1="0"
+                x2="100"
+                y2="100"
+              >
+                <stop offset="0%" stopColor="var(--color-fynd-blue)" />
+                <stop
+                  offset="100%"
+                  stopColor={
+                    tone === "green"
+                      ? "var(--color-fynd-green)"
+                      : "var(--color-fynd-blue2)"
+                  }
+                />
+              </linearGradient>
+            ))}
+          </defs>
+
+          {platforms.map((platform, i) => {
+            const { x, y } = ringPosition(i, count);
+            return (
+              <line
+                key={platform.name}
+                x1={50}
+                y1={50}
+                x2={x}
+                y2={y}
+                stroke={`url(#bi-wire-${i % 3 === 0 ? "green" : "blue"})`}
+                strokeWidth="0.16"
+                strokeDasharray={i % 2 ? "0.5 0.35" : undefined}
+                opacity="0.7"
+              />
+            );
+          })}
+        </svg>
+
+        <div className="absolute left-1/2 top-1/2 z-20 -translate-x-1/2 -translate-y-1/2">
+          <Hub />
+        </div>
+
+        {platforms.map((platform, i) => {
+          const { x, y } = ringPosition(i, count);
+          return (
+            <div
+              key={platform.name}
+              style={{
+                left: `${x}%`,
+                top: `${y}%`,
+                width: `${w}cqw`,
+                height: `${w * 0.46}cqw`,
+              }}
+              className="group absolute z-10 flex -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-md border border-white/12 bg-navy-card/90 p-[1.6cqw] shadow-lg shadow-black/20 backdrop-blur-sm transition-colors duration-200 ease-fynd hover:border-fynd-green/40 hover:bg-navy-card"
+            >
+              <span
+                aria-hidden="true"
+                className="absolute left-1/2 top-full h-[1.4cqw] w-[1.4cqw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-fynd-blue shadow-[0_0_12px_rgba(76,91,255,0.9)] transition-colors duration-200 group-hover:bg-fynd-green"
+              />
+              <PlatformLogo platform={platform} />
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function Hub() {
+  return (
+    <div className="relative flex h-[26cqw] w-[26cqw] items-center justify-center rounded-full bg-navy">
       <span
         aria-hidden="true"
         className="absolute inset-0 rounded-full bg-gradient-to-br from-fynd-blue via-fynd-blue2 to-fynd-green p-[2px] shadow-[0_0_46px_rgba(76,91,255,0.25)]"
@@ -260,51 +325,39 @@ function Hub({ compact = false }: { compact?: boolean }) {
         aria-hidden="true"
         className="absolute inset-[18%] rounded-full bg-fynd-blue/[0.06] blur-xl"
       />
-      <LogoMark
-        className={cn("relative z-10", compact ? "h-14" : "h-20")}
-        sizes={compact ? "56px" : "80px"}
-      />
+      <LogoMark className="relative z-10 h-[11cqw] w-auto" sizes="120px" />
     </div>
   );
 }
 
 /**
- * Renders the official mark, or the platform name if that file is not in
- * /public/integrations yet. Falling back on the error event rather than on a
- * hardcoded list means dropping the file in is the only step needed.
+ * The official mark, or the platform name if that file is not in
+ * /public/integrations. Falling back on the error event rather than a
+ * hardcoded list means dropping a file in is the only step needed.
  */
 function PlatformLogo({ platform }: { platform: Platform }) {
   const [missing, setMissing] = useState(false);
 
   if (missing) {
     return (
-      <span className="text-center text-[15px] font-semibold tracking-[-0.01em] text-white/85">
+      <span className="text-center text-[13px] font-semibold tracking-[-0.01em] text-white/85">
         {platform.name}
       </span>
     );
   }
 
-  const image = (
+  return (
     <Image
       src={platform.logo}
       alt={platform.name}
       width={280}
       height={84}
-      sizes="120px"
+      // A bounded hint. Without one the browser can pick the 3840px candidate
+      // for a card barely 150px wide.
+      sizes="180px"
       onError={() => setMissing(true)}
-      className="max-h-9 w-auto max-w-full object-contain"
+      className="max-h-full w-auto max-w-full object-contain"
     />
-  );
-
-  // A dark-on-light mark would vanish against navy, so it sits on a light
-  // chip — what the brand's own guidelines would ask for — rather than being
-  // recoloured to fit.
-  return "light" in platform && platform.light ? (
-    <span className="flex w-full items-center justify-center rounded-sm bg-white px-2 py-1.5">
-      {image}
-    </span>
-  ) : (
-    image
   );
 }
 
@@ -348,5 +401,14 @@ function FeatureIcon({ name }: { name: string }) {
     <svg {...props}>
       <path d="M13 2 3 14h8l-1 8 11-13h-8V2Z" />
     </svg>
+  );
+}
+
+function Glow() {
+  return (
+    <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+      <span className="absolute left-[62%] top-[24%] h-[520px] w-[520px] -translate-x-1/2 rounded-full bg-fynd-blue/[0.07] blur-[150px]" />
+      <span className="absolute right-[6%] top-[38%] h-[420px] w-[420px] rounded-full bg-fynd-green/[0.05] blur-[140px]" />
+    </div>
   );
 }
