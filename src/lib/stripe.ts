@@ -13,13 +13,6 @@ export type CheckoutRequest = {
   /** GHL contact id, carried into Stripe metadata. */
   cid: string | null;
   plan: "review-system";
-  /**
-   * True when the visitor bought inside the free-management window. This
-   * picks the Stripe price, and it is the reason the countdown on the pricing
-   * section is allowed to exist: when the window closes the number shown AND
-   * the number charged both move to the managed rate.
-   */
-  managementFree: boolean;
   origin: string;
 };
 
@@ -28,15 +21,7 @@ export type CheckoutResult =
   | { status: "unconfigured"; missing: string[] }
   | { status: "error"; message: string };
 
-const requiredEnv = [
-  "STRIPE_SECRET_KEY",
-  "STRIPE_PRICE_REVIEW_97",
-  "STRIPE_PRICE_REVIEW_197",
-] as const;
-
-/** The price the session must charge, derived server-side. */
-export const priceEnvFor = (managementFree: boolean) =>
-  managementFree ? "STRIPE_PRICE_REVIEW_97" : "STRIPE_PRICE_REVIEW_197";
+const requiredEnv = ["STRIPE_SECRET_KEY", "STRIPE_PRICE_REVIEW_97"] as const;
 
 export const missingStripeEnv = () =>
   requiredEnv.filter((key) => !process.env[key]);
@@ -63,14 +48,8 @@ export const createCheckoutSession = async (
   //   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
   //   const session = await stripe.checkout.sessions.create({
   //     mode: "subscription",
-  //     line_items: [
-  //       { price: process.env[priceEnvFor(req.managementFree)]!, quantity: 1 },
-  //     ],
-  //     metadata: {
-  //       ghl_contact_id: req.cid ?? "",
-  //       source: "start-page",
-  //       management_free: String(req.managementFree),
-  //     },
+  //     line_items: [{ price: process.env.STRIPE_PRICE_REVIEW_97!, quantity: 1 }],
+  //     metadata: { ghl_contact_id: req.cid ?? "", source: "start-page" },
   //     subscription_data: {
   //       metadata: { ghl_contact_id: req.cid ?? "", source: "start-page" },
   //     },
@@ -82,10 +61,6 @@ export const createCheckoutSession = async (
   //
   // The webhook half lives in src/app/api/stripe/webhook/route.ts and must
   // verify the signature with STRIPE_WEBHOOK_SECRET before calling notifyGhl.
-  //
-  // TODO(luke): STRIPE_PRICE_REVIEW_197 must be a real recurring price equal
-  // to `offer.managed`. Until both prices exist, the countdown on the pricing
-  // section is showing a change that checkout cannot actually make.
 
   return {
     status: "error",

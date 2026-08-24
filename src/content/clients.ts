@@ -21,7 +21,7 @@ export type TrustStat = {
 };
 
 export const trustStats: TrustStat[] = [
-  { label: "Businesses running Fynd", value: null },
+  { label: "Businesses running Fyne", value: null },
   { label: "Reviews collected", value: null },
   { label: "Average rating lift", value: null },
 ];

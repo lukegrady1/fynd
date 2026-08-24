@@ -10,7 +10,7 @@ import { PageTracking } from "@/components/sections/review/PageTracking";
 import { Check } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "You're in — Fynd",
+  title: "You're in — Fyne",
   robots: { index: false, follow: false },
 };
 

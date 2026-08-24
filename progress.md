@@ -1,4 +1,4 @@
-# Progress — Fynd
+# Progress — Fyne
 
 ## Done
 
@@ -14,10 +14,10 @@ Built from `review-system-landing-pages.md`. ~85% shared; the only structural
 difference is the conversion module (§3.7).
 
 Decisions taken with Luke:
-- **Fynd tokens**, not the spec's §2 palette. The spec says to skip §2 when brand
-  tokens already exist. Mapping: ink→Navy, mist→Fynd Gray, star→Fynd Green,
-  action→Fynd Blue, alert→Fynd Orange. Poppins throughout (no IBM Plex).
-- **"Fynd"** as the name in copy, footer, and metadata (not Grady Digital).
+- **Fyne tokens**, not the spec's §2 palette. The spec says to skip §2 when brand
+  tokens already exist. Mapping: ink→Navy, mist→Fyne Gray, star→Fyne Green,
+  action→Fyne Blue, alert→Fyne Orange. Poppins throughout (no IBM Plex).
+- **"Fyne"** as the name in copy, footer, and metadata (not Grady Digital).
 - **Pages + stubs**: pages complete; Stripe/GHL behind typed boundaries.
 
 Design direction: *proof-led artifacts*. The generic three-card "how it works"
@@ -147,11 +147,11 @@ These are the `TODO(integration)` markers in the codebase.
 
 - **Env vars**: `.env.example` lists all eight. Set them in Vercel's environment
   variables, never in the repo. `.env.local` is gitignored.
-- **`--text-muted` (#8A93A6) fails WCAG AA on white (3.09:1) and on Fynd Gray
+- **`--text-muted` (#8A93A6) fails WCAG AA on white (3.09:1) and on Fyne Gray
   (2.80:1).** It's a design.md token but it cannot carry readable text — that's
   what cost the first accessibility run its 100. Use `text-ink-soft` (#5A6478,
-  5.95:1) for anything a person needs to read. Same trap with Fynd Orange and
-  Fynd Green as small text on white.
+  5.95:1) for anything a person needs to read. Same trap with Fyne Orange and
+  Fyne Green as small text on white.
 - **`cn()` registers custom font sizes with tailwind-merge.** Add any new named
   size (`text-body`, `text-h3`, …) to the list in `src/lib/utils.ts`, or
   tailwind-merge reads it as a colour class and silently strips `text-white`.

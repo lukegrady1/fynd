@@ -2,24 +2,22 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Check, Clock, Lock } from "lucide-react";
+import { Check, Clock, Lock, Nfc } from "lucide-react";
 import { checkout, offer, offerWindow, pricing } from "@/content/copy";
 import { track } from "@/lib/analytics";
-import { useOfferWindow } from "@/lib/use-offer-window";
+import { useOfferWeek } from "@/lib/use-offer-window";
 import { Container, Eyebrow } from "@/components/ui/Layout";
 import { Reveal } from "./Reveal";
 
 /**
  * Pricing — and, on /start, the only conversion module on the page.
  *
- * The urgency here is real, which is the whole reason it is allowed to exist:
- * while the claim window is open management is free and checkout charges the
- * software rate; once it closes the displayed price becomes the managed rate
- * AND the checkout call is told to charge that instead. A timer whose expiry
- * changed nothing would be the exact pattern the build spec forbids.
+ * One number: $197 struck through, $97 charged, everything included. The
+ * software/management split is gone from the site; that framing is an SMS-only
+ * pitch now.
  *
- * The window starts on first arrival and is persisted, so a reload does not
- * hand out a fresh five minutes — see lib/use-offer-window.ts.
+ * The clock beside the price counts to Sunday and then rolls over. It does not
+ * change the price — see the note in lib/use-offer-window.ts.
  */
 export function PricingSection(
   props:
@@ -36,18 +34,6 @@ export function PricingSection(
         targetId: string;
       },
 ) {
-  const claim = useOfferWindow();
-
-  /**
-   * `unknown` is the server render and the first client paint, before the
-   * persisted start time can be read. Treat it as open: that is correct for
-   * every first-time visitor, and it means a no-JS visitor — who can never
-   * have a running timer — sees the better price rather than the worse one.
-   */
-  const managementFree = claim.state !== "closed";
-  const price = managementFree ? offer.software : offer.managed;
-  const state = managementFree ? pricing.open : pricing.closed;
-
   return (
     <section
       id={props.mode === "checkout" ? "convert" : undefined}
@@ -71,13 +57,20 @@ export function PricingSection(
           )}
 
           <div className="mt-8 rounded-lg border-2 border-fynd-blue bg-white p-6 text-left lg:p-8">
-            <ClaimChip open={managementFree} label={claimLabel(claim)} />
+            <WeekClock />
 
-            <p className="mt-4 text-body text-ink-soft">{state.urgency}</p>
+            <p className="mt-5 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+              <s className="text-h3 font-semibold tabular-nums text-ink-muted decoration-2">
+                <span className="sr-only">{pricing.strikeLabel} </span>$
+                {offer.regular}
+              </s>
+              <span className="text-[56px] font-bold leading-none tabular-nums text-ink">
+                ${offer.price}
+              </span>
+              <span className="text-h3 font-medium text-ink-soft">/mo</span>
+            </p>
 
-            <Price price={price} managementFree={managementFree} />
-
-            <p className="mt-2 text-small text-ink-soft">{state.nowLabel}</p>
+            <p className="mt-2 text-small text-ink-soft">{pricing.nowLabel}</p>
 
             <ul className="mt-6 flex flex-col gap-2.5">
               {pricing.clears.map((item) => (
@@ -95,19 +88,12 @@ export function PricingSection(
             </ul>
 
             {props.mode === "checkout" ? (
-              <CheckoutButton
-                cid={props.cid}
-                managementFree={managementFree}
-                label={state.cta}
-              />
+              <CheckoutButton cid={props.cid} label={pricing.cta} />
             ) : (
-              <ScrollButton
-                label={props.ctaLabel}
-                targetId={props.targetId}
-              />
+              <ScrollButton label={props.ctaLabel} targetId={props.targetId} />
             )}
 
-            <p className="mt-4 text-small text-ink-soft">{state.note}</p>
+            <AddOn />
 
             {props.mode === "checkout" && (
               <p className="mt-4 flex items-center justify-center gap-1.5 text-small text-ink-soft">
@@ -126,57 +112,40 @@ export function PricingSection(
 
 /* ------------------------------------------------------------------ */
 
-const claimLabel = (claim: ReturnType<typeof useOfferWindow>) =>
-  claim.state === "open"
-    ? `${offerWindow.label} — ${claim.label}`
-    : claim.state === "closed"
-      ? offerWindow.closedLabel
-      : offerWindow.label;
+/** Renders nothing until the client knows the time, so no number flashes. */
+function WeekClock() {
+  const week = useOfferWeek();
+  if (week.state === "unknown") return null;
 
-function ClaimChip({ open, label }: { open: boolean; label: string }) {
   return (
-    <span
-      className={
-        open
-          ? "inline-flex items-center gap-2 rounded-sm border border-fynd-orange/40 bg-fynd-orange/8 px-3 py-1.5 text-small font-semibold tabular-nums text-ink"
-          : "inline-flex items-center gap-2 rounded-sm border border-line bg-fynd-gray px-3 py-1.5 text-small font-semibold text-ink-soft"
-      }
-    >
+    <span className="inline-flex items-center gap-2 rounded-sm border border-fynd-orange/40 bg-fynd-orange/8 px-3 py-1.5 text-small font-semibold text-ink">
       <Clock
         aria-hidden="true"
         strokeWidth={2}
-        className={
-          open ? "h-4 w-4 shrink-0 text-fynd-orange" : "h-4 w-4 shrink-0 opacity-60"
-        }
+        className="h-4 w-4 shrink-0 text-fynd-orange"
       />
-      {label}
+      <span>{offerWindow.label}</span>
+      <span className="tabular-nums">
+        {week.label} {offerWindow.suffix}
+      </span>
     </span>
   );
 }
 
-/**
- * The struck-through figure is the genuine managed rate, not a decorative
- * anchor — it is what this same button charges once the window closes.
- */
-function Price({
-  price,
-  managementFree,
-}: {
-  price: number;
-  managementFree: boolean;
-}) {
+/** The NFC card. A one-off, so it sits apart from the monthly figure. */
+function AddOn() {
   return (
-    <p className="mt-5 flex flex-wrap items-baseline gap-x-3 gap-y-1">
-      {managementFree && (
-        <s className="text-h3 font-semibold tabular-nums text-ink-muted decoration-2">
-          <span className="sr-only">{pricing.open.strikeLabel} </span>$
-          {offer.managed}
-        </s>
-      )}
-      <span className="text-[56px] font-bold leading-none tabular-nums text-ink">
-        ${price}
+    <p className="mt-4 flex items-start gap-2.5 rounded-md border border-line bg-fynd-gray px-3.5 py-3">
+      <Nfc
+        aria-hidden="true"
+        strokeWidth={1.75}
+        className="mt-0.5 h-4 w-4 shrink-0 text-fynd-blue"
+      />
+      <span className="text-small text-ink">
+        <span className="font-semibold">{pricing.addOn.label}</span>{" "}
+        <span className="tabular-nums">{pricing.addOn.price}</span>
+        <span className="block text-ink-soft">{pricing.addOn.note}</span>
       </span>
-      <span className="text-h3 font-medium text-ink-soft">/mo</span>
     </p>
   );
 }
@@ -202,34 +171,20 @@ function ScrollButton({
   );
 }
 
-function CheckoutButton({
-  cid,
-  managementFree,
-  label,
-}: {
-  cid?: string;
-  managementFree: boolean;
-  label: string;
-}) {
+function CheckoutButton({ cid, label }: { cid?: string; label: string }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleCheckout = async () => {
     setLoading(true);
     setError(null);
-    track("checkout_started", { section: "pricing", managementFree });
+    track("checkout_started", { section: "pricing" });
 
     try {
       const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        // The server decides the real price from this flag — the displayed
-        // number and the charged number have to come from the same source.
-        body: JSON.stringify({
-          cid: cid ?? null,
-          plan: "review-system",
-          managementFree,
-        }),
+        body: JSON.stringify({ cid: cid ?? null, plan: "review-system" }),
       });
 
       const data = (await res.json()) as { url?: string; error?: string };

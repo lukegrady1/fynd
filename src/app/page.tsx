@@ -7,7 +7,7 @@ import { CtaCloser } from "@/components/sections/CtaCloser";
 import { Card } from "@/components/ui/Card";
 import { KpiBlock, ScoreGauge } from "@/components/ui/DataViz";
 import { brand } from "@/lib/brand";
-import { StatsGrid } from "@/components/sections/review/StatsGrid";
+import { StatBar } from "@/components/sections/review/StatBar";
 import { Testimonials } from "@/components/sections/review/Testimonials";
 
 export default function Home() {
@@ -41,7 +41,7 @@ export default function Home() {
         <PillarRow />
         <DashboardProof />
 
-        <StatsGrid />
+        <StatBar />
 
         {/* Data-driven: renders nothing until real quotes exist in
             content/testimonials.ts. This band previously held three invented

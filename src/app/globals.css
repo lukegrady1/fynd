@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 /* ==========================================================================
-   Fynd design system — tokens are the source of truth (see design.md).
+   Fyne design system — tokens are the source of truth (see design.md).
    Do not introduce colors, fonts, radii, or shadows that aren't defined here.
    ========================================================================== */
 
@@ -314,6 +314,50 @@
   .hc-node { animation: none; opacity: 0; }
   .hc-chart-line { stroke-dashoffset: 0; animation: none; }
   .hc-chart-dot { opacity: 1; animation: none; }
+}
+
+/* Trust-bar marquee. Two identical tracks slide one full track-width, so the
+   loop is seamless; pausing on hover lets someone actually read a stat. */
+.marquee {
+  display: flex;
+  overflow: hidden;
+  width: 100%;
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 6rem,
+    #000 calc(100% - 6rem),
+    transparent
+  );
+}
+
+.marquee-track {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  min-width: 100%;
+  animation: marquee-slide 46s linear infinite;
+}
+
+.marquee:hover .marquee-track,
+.marquee:focus-within .marquee-track {
+  animation-play-state: paused;
+}
+
+@keyframes marquee-slide {
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee {
+    overflow-x: auto;
+    mask-image: none;
+  }
+  .marquee-track {
+    animation: none;
+  }
 }
 
 /* Respect reduced motion: keep opacity fades, drop transforms. */

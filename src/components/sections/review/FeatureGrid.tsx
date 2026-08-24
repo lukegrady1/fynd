@@ -91,7 +91,7 @@ function FeatureIcon({ name }: { name: string }) {
   );
 }
 
-/** The Fynd dashboard, drawn with the real data-viz components. */
+/** The Fyne dashboard, drawn with the real data-viz components. */
 function DashboardMockup({ business }: { business?: string }) {
   return (
     <DeviceShell statusTime="9:41">

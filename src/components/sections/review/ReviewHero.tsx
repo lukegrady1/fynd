@@ -3,7 +3,6 @@
 import { ArrowRight, Check } from "lucide-react";
 import { hero, heroFlow } from "@/content/copy";
 import { track } from "@/lib/analytics";
-import { useLivePrice } from "@/lib/use-offer-window";
 import { Container, Eyebrow } from "@/components/ui/Layout";
 import { DottedWorldMap } from "@/components/textures/Textures";
 import { HeroCollage } from "./HeroCollage";
@@ -28,10 +27,8 @@ export function ReviewHero({
   const lead = biz ? copy.leadWithBiz : copy.lead;
   const accent = biz ? copy.accentWithBiz(biz) : copy.accent;
 
-  const label = useLivePrice().label(copy.cta);
-
   const goTo = () => {
-    track("cta_click", { cta: label, section: "hero" });
+    track("cta_click", { cta: copy.cta, section: "hero" });
     document
       .getElementById(targetId)
       ?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -76,7 +73,7 @@ export function ReviewHero({
                 onClick={goTo}
                 className="group flex h-14 w-full items-center justify-center rounded-sm bg-fynd-blue px-8 text-body font-semibold text-white shadow-blue transition-all duration-150 ease-fynd hover:-translate-y-px hover:bg-[#3F4DF0] active:scale-[0.99] sm:w-auto"
               >
-                {label}
+                {copy.cta}
                 <ArrowRight
                   aria-hidden="true"
                   className="ml-2 h-4 w-4 transition-transform duration-150 ease-fynd group-hover:translate-x-[3px]"

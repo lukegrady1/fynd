@@ -5,7 +5,6 @@ import { results } from "@/content/copy";
 import { colors } from "@/lib/brand";
 import { cn } from "@/lib/utils";
 import { track } from "@/lib/analytics";
-import { useLivePrice } from "@/lib/use-offer-window";
 import { Container, Eyebrow } from "@/components/ui/Layout";
 import { Reveal } from "./Reveal";
 
@@ -23,11 +22,9 @@ export function ResultsSection({
   ctaLabel?: string;
   targetId?: string;
 }) {
-  const label = useLivePrice().label(ctaLabel ?? results.cta);
-
   const handleClick = () => {
     if (!targetId) return;
-    track("cta_click", { cta: label, section: "results" });
+    track("cta_click", { cta: ctaLabel ?? results.cta, section: "results" });
     document
       .getElementById(targetId)
       ?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -41,10 +38,6 @@ export function ResultsSection({
             <Eyebrow tone="light" variant="pill">
               {results.eyebrow}
             </Eyebrow>
-            <h2 className="mt-5 text-h1 text-white lg:text-[38px] lg:leading-[1.12]">
-              {results.heading}
-            </h2>
-            <p className="mt-4 text-body text-white/72">{results.sub}</p>
 
             {ctaLabel && targetId && (
               <button
@@ -52,7 +45,7 @@ export function ResultsSection({
                 onClick={handleClick}
                 className="mt-8 flex h-14 w-full items-center justify-center rounded-sm bg-fynd-blue px-7 text-body font-semibold text-white transition-all duration-150 ease-fynd hover:-translate-y-px hover:bg-[#3F4DF0] active:scale-[0.99] sm:w-auto"
               >
-                {label}
+                {ctaLabel}
               </button>
             )}
           </Reveal>

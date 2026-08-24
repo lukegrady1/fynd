@@ -103,12 +103,3 @@ export const resolveDeadline = (
 
 /** True when the deadline in force is still in the future. */
 export const isLive = (d: Deadline, now: number = Date.now()) => d.at > now;
-
-export const priceBlock = {
-  /** What the client pays today — the software, at cost. */
-  software: offer.software,
-  /** What management costs once the free window closes. */
-  managed: offer.managed,
-  formattedSoftware: `$${offer.software}`,
-  formattedManaged: `$${offer.managed}`,
-} as const;

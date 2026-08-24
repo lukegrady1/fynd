@@ -35,7 +35,7 @@ export function Card({
 
 /**
  * Testimonial card — light gray fill, decorative quote glyph, avatar row,
- * and a 5-star rating in Fynd Green.
+ * and a 5-star rating in Fyne Green.
  */
 export function TestimonialCard({
   quote,

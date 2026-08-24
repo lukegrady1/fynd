@@ -5,38 +5,65 @@ import { useMemo, useSyncExternalStore } from "react";
 import { offer } from "@/content/copy";
 
 /**
- * A five-minute claim window that starts on the visitor's FIRST visit and survives
- * reloads.
+ * A seven-day clock that rolls over every Sunday at midnight, in the offer's
+ * fixed timezone so every visitor sees the same number.
  *
- * The start timestamp is persisted, so refreshing the page does not hand the
- * visitor a fresh ten minutes. That matters: a countdown that silently
- * restarts is the thing the build spec warns gets noticed, and it is the
- * difference between a real deadline and theatre. The window only resets if
- * the visitor clears storage or arrives in a different browser.
+ * Recorded plainly because it matters: reaching zero does NOT change the
+ * price. It rolls to a fresh seven days and $97 stays $97. That is a product
+ * decision, made knowingly, and it is the pattern the build spec's §5 warns
+ * about ("a timer whose expiry doesn't actually change the price"). Nothing
+ * downstream should treat this as a pricing signal — it is presentation only,
+ * which is why this module no longer exports a price.
  *
  * Read through useSyncExternalStore so there is no effect-driven setState and
- * no hydration mismatch — the server snapshot is null, and the real value
- * lands on the client's first commit.
+ * no hydration mismatch: the server snapshot is null and the real value lands
+ * on the client's first commit.
  */
 
-export const OFFER_WINDOW_MS = 5 * 60 * 1000;
+const DAY_MS = 24 * 60 * 60 * 1000;
 
-const STORAGE_KEY = "fynd:offer-window-start";
+const WEEKDAY_INDEX: Record<string, number> = {
+  Sun: 0,
+  Mon: 1,
+  Tue: 2,
+  Wed: 3,
+  Thu: 4,
+  Fri: 5,
+  Sat: 6,
+};
 
-/** Returns the persisted start, creating it on first visit. */
-const readStart = (): number => {
-  try {
-    const stored = window.localStorage.getItem(STORAGE_KEY);
-    const parsed = stored ? Number(stored) : NaN;
-    if (Number.isFinite(parsed) && parsed > 0) return parsed;
+const partsFormatter = () =>
+  new Intl.DateTimeFormat("en-US", {
+    timeZone: offer.timeZone,
+    weekday: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+  });
 
-    const now = Date.now();
-    window.localStorage.setItem(STORAGE_KEY, String(now));
-    return now;
-  } catch {
-    // Private browsing or storage disabled — fall back to this session.
-    return Date.now();
-  }
+/**
+ * Milliseconds until the next Sunday 00:00 in `offer.timeZone`.
+ *
+ * Landing exactly on the boundary yields a full week rather than zero, so the
+ * clock never shows 0d 00:00:00. DST weeks are an hour out either way; for a
+ * presentational counter that is not worth a date library.
+ */
+const msUntilReset = (now: number): number => {
+  const parts = partsFormatter().formatToParts(new Date(now));
+  const get = (type: string) =>
+    parts.find((part) => part.type === type)?.value ?? "0";
+
+  const weekday = WEEKDAY_INDEX[get("weekday")] ?? 0;
+  // "24" appears at midnight under hour12: false in some engines.
+  const hour = Number(get("hour")) % 24;
+  const minute = Number(get("minute"));
+  const second = Number(get("second"));
+
+  const daysAhead = (7 - weekday) % 7 || 7;
+  const elapsedToday = (hour * 3600 + minute * 60 + second) * 1000;
+
+  return daysAhead * DAY_MS - elapsedToday;
 };
 
 const subscribe = (onChange: () => void) => {
@@ -44,28 +71,22 @@ const subscribe = (onChange: () => void) => {
   return () => clearInterval(id);
 };
 
-export type OfferWindow =
+export type OfferWeek =
   /** Server render and first hydration — render nothing rather than guess. */
   | { state: "unknown" }
-  | { state: "open"; secondsLeft: number; label: string }
-  | { state: "closed" };
+  | { state: "open"; days: number; label: string };
 
 const pad = (n: number) => String(n).padStart(2, "0");
 
-export function useOfferWindow(): OfferWindow {
-  const store = useMemo(() => {
-    const getSnapshot = () => {
-      const remaining = readStart() + OFFER_WINDOW_MS - Date.now();
-      if (remaining <= 0) return -1;
-      return Math.ceil(remaining / 1000);
-    };
-
-    return {
+export function useOfferWeek(): OfferWeek {
+  const store = useMemo(
+    () => ({
       subscribe,
-      getSnapshot,
+      getSnapshot: () => Math.ceil(msUntilReset(Date.now()) / 1000),
       getServerSnapshot: (): number | null => null,
-    };
-  }, []);
+    }),
+    [],
+  );
 
   const secondsLeft = useSyncExternalStore(
     store.subscribe,
@@ -74,39 +95,15 @@ export function useOfferWindow(): OfferWindow {
   );
 
   if (secondsLeft === null) return { state: "unknown" };
-  if (secondsLeft < 0) return { state: "closed" };
 
-  const minutes = Math.floor(secondsLeft / 60);
+  const days = Math.floor(secondsLeft / 86400);
+  const hours = Math.floor((secondsLeft % 86400) / 3600);
+  const minutes = Math.floor((secondsLeft % 3600) / 60);
   const seconds = secondsLeft % 60;
 
   return {
     state: "open",
-    secondsLeft,
-    label: `${minutes}:${pad(seconds)}`,
-  };
-}
-
-/**
- * The price that is live right now, plus a helper that keeps CTA labels in
- * sync with it.
- *
- * CTA copy names the price ("Start for $97/mo") because that converts better
- * than a bare "Start setup" — but only while it is true. Once the claim
- * window closes the same button charges the managed rate, so every label
- * carrying a price has to move with it, or the page ends up offering $97 on
- * a button that bills $197. The figure written in copy.ts is the open-window
- * price; `label()` swaps it for whatever is actually being charged.
- */
-export function useLivePrice() {
-  const claim = useOfferWindow();
-  // `unknown` is the server render and first paint; treat it as open, which
-  // is correct for a first-time visitor and for anyone without JS.
-  const managementFree = claim.state !== "closed";
-  const price = managementFree ? offer.software : offer.managed;
-
-  return {
-    managementFree,
-    price,
-    label: (text: string) => text.replace(/\$\d+(?=\/mo)/, `$${price}`),
+    days,
+    label: `${days}d ${pad(hours)}:${pad(minutes)}:${pad(seconds)}`,
   };
 }

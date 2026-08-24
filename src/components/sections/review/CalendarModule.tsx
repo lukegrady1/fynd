@@ -5,7 +5,6 @@ import { callPreview, calendar, offer } from "@/content/copy";
 import { track, trackOnce } from "@/lib/analytics";
 import { Check } from "lucide-react";
 import { Container } from "@/components/ui/Layout";
-import { PriceBlock } from "./OfferBits";
 
 /**
  * /call — booking. Matches the checkout card's dimensions so the pages twin.
@@ -27,7 +26,6 @@ export function CalendarModule({ embedUrl }: { embedUrl: string | null }) {
           {/* Offer block stays on this page so nobody arrives at the call
               thinking it's free consulting. */}
           <div className="rounded-lg border border-line bg-white p-6 lg:p-8">
-            <PriceBlock />
             <p className="mt-4 text-small text-ink-soft">
               {calendar.preframe}
             </p>

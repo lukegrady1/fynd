@@ -7,44 +7,28 @@ export const offer = {
   productName: "Review System",
 
   /**
-   * The angle: Luke does the work for free and the client covers the software
-   * at cost. `software` is what they actually pay today; `managed` is what
-   * management costs once the free window closes.
+   * One number, for cold traffic.
    *
-   * There is deliberately no struck-through "was $197" — the discount IS the
-   * free labour, and a crossed-out price on top of it would be a second,
-   * unexplained anchor.
+   * `regular` is the rate the page is discounted from and `price` is what
+   * checkout charges. There is no software/management split on the site any
+   * more — the "we run it free until you hit the goal" angle is an SMS-only
+   * pitch, so nothing on the page should reference it.
    */
-  software: 97,
-  managed: 197,
+  price: 97,
+  regular: 197,
 
-  /**
-   * PLACEHOLDER — Luke to set the real goal that ends the free period.
-   * Whatever goes here has to be something the client can verify themselves,
-   * and something Luke will actually honour.
-   */
-  goal: "100 reviews",
+  /** NFC review card. One-off add-on, not part of the subscription. */
+  nfcCard: 20,
 
-  labels: {
-    management: "Management",
-    software: "Software",
-    free: "Free",
-  },
-
-  /** One-line version of the angle. The long version lives in the FAQ. */
-  angle: "You cover the software. I run the whole thing for free until you hit 100 reviews.",
-  afterLine: "After that, management is $197/mo — and only if you want to keep it.",
   terms: "No contract. Cancel anytime.",
-  lockLine:
-    "Nothing else to pay while the free period runs. No setup fee, no per-seat charge.",
 
   /** Used by the "what's the catch" FAQ answer. */
   capacity: {
     perMonth: 5,
   },
   /**
-   * Fallback deadline used when the `exp` query param is missing or past.
-   * ISO 8601 with an explicit offset. Update alongside the cohort.
+   * Fallback deadline for the /call confirmation page. ISO 8601 with an
+   * explicit offset.
    */
   cohortDeadlineIso: "2026-09-30T18:00:00-04:00",
   /** Formatting timezone — fixed so server and client render the same string. */
@@ -56,15 +40,10 @@ export const offer = {
  * first arrival, persisted so a reload does not restart it.
  */
 export const offerWindow = {
-  label: "Free management",
-  claimBoth: "Book a call or start now to claim it",
-  closedLabel: "Claim window closed",
-  closedHint: "Book a call and I'll see what I can do",
-  /** Replaces `offer.angle` once the window has closed, so no surface is
-      still promising free management after the price has moved. */
-  closedReason:
-    "The free-management window has closed — this is the standard managed rate.",
-  managementLabelClosed: "Management",
+  label: "This week's price",
+  /** Suffix after the running clock, e.g. "6d 14:22:07 left". */
+  suffix: "left",
+  resets: "Resets Sunday",
 } as const;
 
 /**
@@ -103,7 +82,7 @@ export const heroFlow = {
       icon: "reply",
       tone: "green",
       title: "Automatically managed",
-      body: "Fynd keeps your reviews organized and drafts replies in your voice.",
+      body: "Fyne keeps your reviews organized and drafts replies in your voice.",
     },
   ],
 
@@ -157,12 +136,12 @@ export const hero = {
    * naming the business is a stronger opening than any pattern.
    */
   start: {
-    lead: "Every appointment you finish",
-    accent: "should earn you a review.",
-    leadWithBiz: "Every appointment at",
-    accentWithBiz: (biz: string) => `${biz} should earn a review.`,
-    sub: "Fynd automatically asks your clients for a Google review after every appointment, then keeps your reputation growing while you stay focused on the work.",
-    cta: "Start for $97/mo",
+    lead: "With Fyne, managing your reputation",
+    accent: "becomes effortless.",
+    leadWithBiz: "With Fyne, managing the reputation at",
+    accentWithBiz: (biz: string) => `${biz} becomes effortless.`,
+    sub: "Gaining trust one review at a time — so you rank higher on Google, get found by more customers, and never think about it again.",
+    cta: `Start for $${offer.price}/month`,
     reassure: "No contract. Cancel anytime.",
   },
   /**
@@ -170,11 +149,11 @@ export const hero = {
    * answered in the green line rather than left for the reader to worry about.
    */
   call: {
-    lead: "Get more Google reviews",
-    accent: "without asking for them.",
-    leadWithBiz: "More Google reviews for",
-    accentWithBiz: (biz: string) => `${biz}.`,
-    sub: "Fifteen minutes on the phone. I'll tell you how many reviews you're getting now, how many you'd get with every customer asked, and exactly how the system does it. No slides, no pitch.",
+    lead: "With Fyne, managing your reputation",
+    accent: "becomes effortless.",
+    leadWithBiz: "With Fyne, managing the reputation at",
+    accentWithBiz: (biz: string) => `${biz} becomes effortless.`,
+    sub: "Gaining trust one review at a time. Fifteen minutes on the phone and I'll show you where your reputation stands, what it's costing you in rank, and exactly how the system fixes it.",
     cta: "Pick a time to talk",
     reassure: "No contract. Cancel anytime.",
   },
@@ -285,26 +264,15 @@ export const faq = {
       a: "Month to month. Cancel anytime from your dashboard or by texting me. The reviews you've collected are on your Google Business Profile — they're yours and they stay there whether you keep paying or not.",
     },
     {
-      q: `Why would you work for free?`,
-      a: `Because I need proof in your industry more than I need your money right now. A real before-and-after from a business like yours is worth more to me than a few hundred dollars, and the fastest way to get one is to do the work properly and let the result speak. The $${offer.software} covers the platform the system runs on — messaging, the dashboard, the integrations. That's a real cost I can't absorb. My time is the part I'm not charging for.`,
-    },
-    {
-      q: `What happens when I hit the goal?`,
-      a: `I'll tell you, and then you decide. Management becomes $${offer.managed}/mo if you want me to keep running it, or you keep the system at $${offer.software}/mo and run it yourself — the requests keep going out either way. You can also just stop. The reviews are on your profile and they stay there.`,
-    },
-    {
       q: `What's the catch?`,
-      a: `Two, and they're both real. First, I only take ${offer.capacity.perMonth} accounts a month, because I'm doing the setup and the ongoing work by hand — if that's full when you call, I'll say so. Second, this only works if your clients are actually leaving happy. I can automate the asking. I can't fix the service.`,
+      a: `Two, and they're both real. First, setup is done by hand, so there is a limit to how many accounts start in a given week — if this week is full I'll tell you. Second, this only works if your clients are actually leaving happy. I can automate the asking. I can't fix the service.`,
     },
   ],
 } as const;
 
 export const finalCta = {
-  headingStart: "More reviews, starting this week.",
-  headingCall: "Fifteen minutes, no pitch deck.",
-  subStart: "Set it up once. It runs after every appointment.",
-  subCall: "I'll show you where you stand and what it would take.",
-  ctaStart: "Start for $97/mo",
+  heading: "Ready to own your reputation?",
+  ctaStart: `Start for $${offer.price}/month`,
   ctaCall: "Pick a time",
 } as const;
 
@@ -338,17 +306,17 @@ export const confirmed = {
   addToCalendar: "Add to calendar",
   skipHeading: "Already sold?",
   skipBody: "You can skip the call and start now.",
-  skipCta: "Start for $97/mo",
+  skipCta: `Start for $${offer.price}/month`,
 } as const;
 
 export const meta = {
   start: {
-    title: "Start — Fynd Review System",
+    title: "Start — Fyne Review System",
     description:
       "Automated Google review requests for local service businesses. $97/mo, no contract.",
   },
   call: {
-    title: "Book a call — Fynd Review System",
+    title: "Book a call — Fyne Review System",
     description:
       "Fifteen minutes to see where your rating stands and what the review system would do for your business.",
   },
@@ -369,8 +337,8 @@ export const illustrative = {
 
 export const mechanism = {
   eyebrow: "The mechanism",
-  heading: "Here's what happens after every appointment.",
-  sub: "Your client checks out. Fynd handles the rest, so you can get on with the next one.",
+  heading: "Here's how Fyne closes that gap.",
+  sub: "Your client checks out. Fyne handles the rest, so you can get on with the next one.",
 
   /** The message your customer receives, rendered as a real thread. */
   sms: {
@@ -395,7 +363,7 @@ export const mechanism = {
     },
     {
       icon: "send",
-      title: "Fynd sends the request",
+      title: "Fyne sends the request",
       body: "Within the hour, your client gets a personalized text from your studio.",
     },
     {
@@ -405,8 +373,8 @@ export const mechanism = {
     },
     {
       icon: "reply",
-      title: "Fynd manages it for you",
-      body: "Fynd keeps your reviews organized and replies in your voice.",
+      title: "Fyne manages it for you",
+      body: "Fyne keeps your reviews organized and replies in your voice.",
     },
   ],
 
@@ -455,34 +423,23 @@ export const mechanism = {
  */
 export const pricing = {
   eyebrow: "Pricing",
-  heading: "Put the whole thing on autopilot.",
+  heading: "One price. Everything included.",
   planName: offer.productName,
-  clears: ["No contract", "No setup fee", "No per-seat pricing"],
+  strikeLabel: "Regular price",
+  nowLabel: "Everything below, one monthly price",
+  cta: `Start for $${offer.price}/month`,
+  clears: [
+    "Live and sending within 72 hours",
+    "No contract, cancel anytime",
+    "No setup fee, no per-seat pricing",
+  ],
+  addOn: {
+    label: "NFC review card",
+    price: `$${offer.nfcCard}`,
+    note: "One-off. Tap it on a phone and the review page opens.",
+  },
   reassure:
-    "We'll get you set up and your first requests can go out this week.",
-
-  /**
-   * Two real states, not decoration. Inside the window management is free and
-   * the client pays the software cost only; once it closes the price actually
-   * becomes the managed rate and checkout charges that instead. A struck-out
-   * $197 is honest here precisely BECAUSE the timer changes what is charged —
-   * see the note on `offer.managed`.
-   */
-  open: {
-    urgency:
-      "Start before the timer runs out and I'll run the whole system for you at no charge. You cover the software, nothing else.",
-    strikeLabel: "Regular price",
-    nowLabel: "Software only, management free",
-    cta: `Start for $${offer.software}/mo`,
-    note: "Management stays free until you hit the goal — no contract either way.",
-  },
-  closed: {
-    urgency:
-      "The free-management window has closed. You can still start at the standard managed rate, or book a call and I'll see what I can do.",
-    nowLabel: "Software and management",
-    cta: `Start for $${offer.managed}/mo`,
-    note: "Includes management. No contract, cancel anytime.",
-  },
+    "We build it, connect it to your booking software, and switch it on.",
 } as const;
 
 export const statsSection = {
@@ -495,7 +452,7 @@ export const results = {
   eyebrow: "Results",
   heading: "More reviews. Better reputation. More business.",
   sub: "Every appointment that ends becomes a request, every request that lands becomes a review, and the rating people see when they look you up moves up.",
-  cta: "Start for $97/mo",
+  cta: `Start for $${offer.price}/month`,
 
   dashboard: {
     label: "Overview",
@@ -569,13 +526,13 @@ export const fit = {
    Structural expansion — problem → stakes → speed → features → plan.
 
    The section *order* follows what converts on comparable pages in this
-   category. All wording here is original, written for Fynd's voice.
+   category. All wording here is original, written for Fyne's voice.
    ========================================================================== */
 
 export const trust = {
   /** Only shown when real values exist in content/clients.ts. */
   statsHeading: "Where things stand",
-  logosHeading: "Businesses running Fynd",
+  logosHeading: "Businesses running Fyne",
 } as const;
 
 export const problem = {
@@ -638,7 +595,7 @@ export const quickWins = {
     {
       when: "Step two",
       title: "I build it",
-      body: "Your portal, your message in your voice, the routing rules and your Fynd number. Nothing for you to set up.",
+      body: "Your portal, your message in your voice, the routing rules and your Fyne number. Nothing for you to set up.",
     },
     {
       when: "Step three",
