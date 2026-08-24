@@ -360,6 +360,40 @@
   }
 }
 
+/* Before/after profile swap. Markup renders the AFTER state, so with no JS
+   the reader sees the finished profile rather than a permanently dim one. */
+@media (scripting: enabled) {
+  .js-swap .swap-before {
+    opacity: 1;
+    transition: opacity 650ms var(--ease-fynd);
+  }
+  .js-swap .swap-after {
+    opacity: 0;
+    transition: opacity 650ms var(--ease-fynd);
+  }
+  .js-swap.is-swapped .swap-before {
+    opacity: 0;
+  }
+  .js-swap.is-swapped .swap-after {
+    opacity: 1;
+  }
+  .js-swap .swap-elapsed {
+    opacity: 0;
+    transition: opacity 400ms var(--ease-fynd) 300ms;
+  }
+  .js-swap.is-swapped .swap-elapsed {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js-swap .swap-before,
+  .js-swap .swap-after,
+  .js-swap .swap-elapsed {
+    transition: none;
+  }
+}
+
 /* Respect reduced motion: keep opacity fades, drop transforms. */
 @media (prefers-reduced-motion: reduce) {
   html {

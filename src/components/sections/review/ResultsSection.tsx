@@ -1,11 +1,12 @@
 "use client";
 
 import { ChevronDown, TrendingUp } from "lucide-react";
-import { results } from "@/content/copy";
+import { profileSwap, results } from "@/content/copy";
 import { colors } from "@/lib/brand";
 import { cn } from "@/lib/utils";
 import { track } from "@/lib/analytics";
 import { Container, Eyebrow } from "@/components/ui/Layout";
+import { ProfileSwap } from "./ProfileSwap";
 import { Reveal } from "./Reveal";
 
 /**
@@ -51,6 +52,15 @@ export function ResultsSection({
           </Reveal>
 
           <div className="grid gap-6 xl:grid-cols-[1fr_320px]">
+            {/* The before/after profile leads: it answers "what changes for
+                me" in one glance, which the dashboard below then breaks down. */}
+            <Reveal className="xl:col-span-2">
+              <h2 className="text-h1 text-white">{profileSwap.heading}</h2>
+              <div className="mt-8 max-w-[520px]">
+                <ProfileSwap />
+              </div>
+            </Reveal>
+
             <Reveal>
               <Dashboard />
             </Reveal>

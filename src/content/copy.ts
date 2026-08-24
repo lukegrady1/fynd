@@ -108,12 +108,12 @@ export const heroFlow = {
       },
       {
         label: "Total reviews",
-        value: "94",
-        delta: "63",
+        value: "118",
+        delta: "67",
         note: "vs. last 6 months",
       },
     ],
-    spark: [31, 38, 44, 49, 55, 60, 66, 71, 76, 80, 85, 88, 91, 94],
+    spark: [51, 57, 63, 69, 75, 81, 87, 93, 98, 104, 109, 113, 116, 118],
   },
 } as const;
 
@@ -183,29 +183,6 @@ export const callPreview = {
     "If it's not a fit, I'll say so on the call. I'd rather not set up an account I have to unwind.",
   ],
   footer: "No slides. If you want to start after, you can. If not, you keep the numbers.",
-} as const;
-
-/** The signature element: where the counter starts and where it lands. */
-export const ratingDemo = {
-  businessName: "Your business",
-  category: "Local service · Open now",
-  from: { rating: 4.2, reviews: 31 },
-  to: { rating: 4.8, reviews: 94 },
-} as const;
-
-/**
- * The hero profile card. The reference layout centres a map-position readout;
- * this shows review volume instead, because that is what the product moves.
- */
-export const profileCard = {
-  header: "Business Profile",
-  live: "Live",
-  panelLabel: "Google reviews",
-  panelHint: "Last six months",
-  trend: "Climbing",
-  /** Monthly review volume, in px bar heights. Sample shape, not real data. */
-  months: [10, 14, 18, 26, 34, 44],
-  newReview: "New review received",
 } as const;
 
 /** The proof row under the hero CTA. Data lives in content/clients.ts. */
@@ -339,10 +316,6 @@ export const meta = {
    labelling honest about which is which.
    ========================================================================== */
 
-export const illustrative = {
-  badge: "Preview",
-} as const;
-
 export const mechanism = {
   eyebrow: "The mechanism",
   heading: "Here's how Fynd closes that gap.",
@@ -450,10 +423,31 @@ export const pricing = {
     "We build it, connect it to your booking software, and switch it on.",
 } as const;
 
-export const statsSection = {
-  eyebrow: "The numbers",
-  heading: "Why reviews decide who gets called.",
-  sub: "Figures below are from published research, cited so you can check them.",
+/**
+ * The before/after Google Business Profile.
+ *
+ * Illustrative figures on a mockup, not a specific client's result — the
+ * business name is the same one used in every other mockup on the page.
+ */
+export const profileSwap = {
+  eyebrow: "Before / after",
+  heading: "What sixty days of asking every client looks like.",
+  elapsed: "~60 days",
+  business: "Marlow Hair Studio",
+  category: "Hair salon",
+  actions: ["Directions", "Save", "Call"],
+  before: {
+    label: "Before",
+    rating: "4.2",
+    reviews: "51 reviews",
+    note: "Ratings drift down when only unhappy clients bother.",
+  },
+  after: {
+    label: "After",
+    rating: "4.8",
+    reviews: "118 reviews",
+    note: "Every client asked, every week, without you lifting a finger.",
+  },
 } as const;
 
 export const results = {
@@ -469,15 +463,15 @@ export const results = {
     range: "Last 6 months",
     kpis: [
       { label: "Google rating", value: "4.8", delta: "0.6", note: "vs. last 6 mo", stars: true },
-      { label: "Total reviews", value: "94", delta: "63", note: "vs. last 6 mo" },
+      { label: "Total reviews", value: "118", delta: "67", note: "vs. last 6 mo" },
       { label: "Review requests sent", value: "305", delta: "28%", note: "vs. last 6 mo" },
       { label: "Response rate", value: "100%", note: "All reviews replied to" },
     ],
     chart: {
       heading: "Reviews over time",
       months: ["Dec", "Jan", "Feb", "Mar", "Apr", "May"],
-      values: [31, 44, 58, 71, 84, 94],
-      tooltip: { value: "94", label: "Total reviews" },
+      values: [51, 64, 77, 90, 104, 118],
+      tooltip: { value: "118", label: "Total reviews" },
     },
   },
 
@@ -485,7 +479,7 @@ export const results = {
     heading: "How you compare",
     sub: "vs. other local salons",
     rows: [
-      { name: "Your business", rating: 4.8, reviews: 94, you: true },
+      { name: "Your business", rating: 4.8, reviews: 118, you: true },
       { name: "The Loft Salon", rating: 4.5, reviews: 61, you: false },
       { name: "Bloom Beauty Bar", rating: 4.2, reviews: 38, you: false },
     ],
@@ -515,7 +509,6 @@ export const fit = {
       "No booking software. No worries. Book a call and we'll figure out what fits for your business.",
   },
 
-
   verticals: {
     heading: "Who this is built for",
     sub: "Anywhere a client books time with you and leaves happy.",
@@ -527,8 +520,6 @@ export const fit = {
     other: "Not listed? It probably still works. Ask me on the call.",
   },
 } as const;
-
-
 
 /* ==========================================================================
    Structural expansion — problem → stakes → speed → features → plan.
@@ -586,29 +577,6 @@ export const whyReviews = {
     {
       title: "Volume makes price matter less",
       body: "When you're clearly the safest choice, you stop being the cheapest quote and start being the obvious one.",
-    },
-  ],
-} as const;
-
-export const quickWins = {
-  eyebrow: "Speed",
-  heading: "Reviews in days, not weeks.",
-  sub: "No drawn-out onboarding. One form and you're in the queue.",
-  steps: [
-    {
-      when: "Step one",
-      title: "You fill out the form",
-      body: "Your Google Business Profile, what you book clients in, and who they should hear from.",
-    },
-    {
-      when: "Step two",
-      title: "I build it",
-      body: "Your portal, your message in your voice, the routing rules and your Fynd number. Nothing for you to set up.",
-    },
-    {
-      when: "Step three",
-      title: "Requests start going out",
-      body: "We open with the customers you've already served, so there's a backlog of happy people to ask on day one.",
     },
   ],
 } as const;
