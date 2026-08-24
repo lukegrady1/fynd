@@ -56,7 +56,7 @@ export function ResultsSection({
                 me" in one glance, which the dashboard below then breaks down. */}
             <Reveal className="xl:col-span-2">
               <h2 className="text-h1 text-white">{profileSwap.heading}</h2>
-              <div className="mt-8 max-w-[520px]">
+              <div className="mt-8 max-w-[880px]">
                 <ProfileSwap />
               </div>
             </Reveal>
