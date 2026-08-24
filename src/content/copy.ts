@@ -144,11 +144,11 @@ export const hero = {
    * naming the business is a stronger opening than any pattern.
    */
   start: {
-    lead: "With Fynd, managing your reputation",
-    accent: "becomes effortless.",
-    leadWithBiz: "With Fynd, managing the reputation at",
-    accentWithBiz: (biz: string) => `${biz} becomes effortless.`,
-    sub: "Gaining trust one review at a time — so you rank higher on Google, get found by more customers, and never think about it again.",
+    lead: "Every appointment you finish",
+    accent: "should earn you a review.",
+    leadWithBiz: "Every appointment at",
+    accentWithBiz: (biz: string) => `${biz} should earn a review.`,
+    sub: "Fynd asks every client for a Google review automatically — building trust, lifting your reputation, and helping you rank higher in local search while you stay focused on the work.",
     cta: `Start for $${offer.price}/month`,
     reassure: "No contract. Cancel anytime.",
   },
@@ -157,11 +157,11 @@ export const hero = {
    * answered in the green line rather than left for the reader to worry about.
    */
   call: {
-    lead: "With Fynd, managing your reputation",
-    accent: "becomes effortless.",
-    leadWithBiz: "With Fynd, managing the reputation at",
-    accentWithBiz: (biz: string) => `${biz} becomes effortless.`,
-    sub: "Gaining trust one review at a time. Fifteen minutes on the phone and I'll show you where your reputation stands, what it's costing you in rank, and exactly how the system fixes it.",
+    lead: "Get more Google reviews",
+    accent: "without asking for them.",
+    leadWithBiz: "More Google reviews for",
+    accentWithBiz: (biz: string) => `${biz}.`,
+    sub: "Fifteen minutes on the phone. I'll show you where your reputation stands, what it's costing you in rank, and exactly how the system builds the trust back. No slides, no pitch.",
     cta: "Pick a time to talk",
     reassure: "No contract. Cancel anytime.",
   },
@@ -318,7 +318,8 @@ export const meta = {
 
 export const mechanism = {
   eyebrow: "The mechanism",
-  heading: "Here's how Fynd closes that gap.",
+  heading: "With Fynd, managing your reputation",
+  headingAccent: "becomes effortless.",
   sub: "Your client checks out. Fynd handles the rest, so you can get on with the next one.",
 
   /** The message your customer receives, rendered as a real thread. */

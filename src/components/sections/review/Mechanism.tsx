@@ -38,8 +38,12 @@ export function Mechanism() {
           <Eyebrow tone="light" variant="pill">
             {mechanism.eyebrow}
           </Eyebrow>
+          {/* Two lines with the payoff in green, matching the hero's form. */}
           <h2 className="mt-5 text-h1 text-white lg:text-[42px] lg:leading-[1.1]">
-            {mechanism.heading}
+            <span className="block">{mechanism.heading}</span>
+            <span className="block text-fynd-green">
+              {mechanism.headingAccent}
+            </span>
           </h2>
           <p className="measure mt-4 text-body text-white/75">
             {mechanism.sub}
