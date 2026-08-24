@@ -22,7 +22,7 @@ type Platform = (typeof integrations.platforms)[number];
  */
 const RING_RX = 40.5;
 const RING_RY = 44;
-const CARD_W = 118;
+const CARD_W = 132;
 
 const ringPosition = (index: number, total: number) => {
   const angle = -Math.PI / 2 + (index * 2 * Math.PI) / total;
@@ -53,7 +53,10 @@ export function BookingIntegrations() {
       <Glow />
 
       <Container className="relative">
-        <div className="grid items-center gap-14 lg:grid-cols-[0.34fr_0.66fr] lg:gap-10">
+        {/* The ring needs more width than the 1200px container allows, so the
+            grid bleeds its right edge toward the viewport. Bleeding right only
+            keeps the heading aligned with every other section on the page. */}
+        <div className="grid items-center gap-14 lg:mr-[calc(50%-50vw+1rem)] lg:grid-cols-[0.34fr_0.66fr] lg:gap-10">
           <Reveal>
             <Eyebrow tone="light" variant="pill">
               {integrations.eyebrow}
@@ -78,7 +81,7 @@ export function BookingIntegrations() {
           </Reveal>
 
           {/* Desktop: the ring. */}
-          <div className="relative hidden min-h-[680px] lg:block">
+          <div className="relative hidden min-h-[700px] lg:block">
             <Network />
           </div>
 
@@ -225,7 +228,7 @@ function Network() {
           <div
             key={platform.name}
             style={{ left: `${x}%`, top: `${y}%`, width: CARD_W }}
-            className="group absolute z-10 flex h-[68px] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-md border border-white/12 bg-navy-card/90 px-3 shadow-lg shadow-black/20 backdrop-blur-sm transition-colors duration-200 ease-fynd hover:border-fynd-green/40 hover:bg-navy-card"
+            className="group absolute z-10 flex h-[72px] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-md border border-white/12 bg-navy-card/90 p-2.5 shadow-lg shadow-black/20 backdrop-blur-sm transition-colors duration-200 ease-fynd hover:border-fynd-green/40 hover:bg-navy-card"
           >
             <span
               aria-hidden="true"
@@ -289,7 +292,7 @@ function PlatformLogo({ platform }: { platform: Platform }) {
       height={84}
       sizes="120px"
       onError={() => setMissing(true)}
-      className="max-h-7 w-auto max-w-full object-contain"
+      className="max-h-9 w-auto max-w-full object-contain"
     />
   );
 
@@ -297,7 +300,7 @@ function PlatformLogo({ platform }: { platform: Platform }) {
   // chip — what the brand's own guidelines would ask for — rather than being
   // recoloured to fit.
   return "light" in platform && platform.light ? (
-    <span className="flex w-full items-center justify-center rounded-sm bg-white px-2.5 py-1.5">
+    <span className="flex w-full items-center justify-center rounded-sm bg-white px-2 py-1.5">
       {image}
     </span>
   ) : (

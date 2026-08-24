@@ -478,9 +478,11 @@ export const results = {
  * a broken image. Do not substitute a redrawn or generated logo for a real
  * one — a slightly-wrong logo is more noticeable than no logo.
  *
- * `light: true` marks a logo that is dark-on-light and would disappear
- * against navy. Those get a light chip behind them, which is what a brand's
- * own guidelines would ask for, rather than being recoloured here.
+ * `light: true` puts a light chip behind a logo that would otherwise vanish
+ * on navy. Nothing needs it now — every mark is either natively light or has
+ * had its neutral wordmark knocked out to white, with each brand's coloured
+ * icon left untouched. Prefer an official white/reverse asset over a derived
+ * one wherever a platform publishes it.
  *
  * Ring positions are computed from the list length in the component, not
  * stored here — hand-tuned coordinates collided as soon as the list grew.
@@ -499,7 +501,7 @@ export const integrations = {
     { name: "Goldie", logo: "/integrations/goldie.png" },
     { name: "Vagaro", logo: "/integrations/vagaro.png" },
     { name: "Mindbody", logo: "/integrations/mindbody.png" },
-    { name: "Fresha", logo: "/integrations/fresha.png", light: true },
+    { name: "Fresha", logo: "/integrations/fresha.png" },
     { name: "Timely", logo: "/integrations/timely.png" },
     { name: "Booker", logo: "/integrations/booker.png" },
     { name: "Appointy", logo: "/integrations/appointy.png" },
