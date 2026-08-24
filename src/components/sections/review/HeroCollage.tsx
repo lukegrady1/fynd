@@ -1,4 +1,5 @@
 import { heroFlow, mechanism } from "@/content/copy";
+import { cn } from "@/lib/utils";
 
 /**
  * The hero composition, read left to right: the trigger, then Fynd, then what
@@ -33,24 +34,158 @@ const fluid = {
 
 export function HeroCollage({ business }: { business?: string }) {
   return (
+    <>
+      <MobileFlow business={business} />
+
+      <div
+        style={{ containerType: "inline-size" }}
+        className="relative mx-auto hidden w-full max-w-[820px] sm:block"
+      >
+        <div style={fluid} className="relative aspect-[820/700] w-full">
+          <Glow />
+          <Connectors />
+
+          <Trigger className="absolute left-0 top-[30%] z-10 w-[24%]" />
+          <Phone
+            business={business}
+            className="absolute left-[35%] top-[10%] z-20 h-[70%] w-[30%]"
+          />
+
+          {/* The three outcomes. Fixed-height rail with flex-1 children, so the
+              centres stay at OUTCOME_Y however the copy wraps. */}
+          <div className="absolute right-0 top-[1%] flex h-[98%] w-[28%] flex-col gap-[1.6%]">
+            {heroFlow.outcomes.map((outcome) => (
+              <OutcomeCard key={outcome.n} outcome={outcome} />
+            ))}
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+
+/**
+ * The same sentence, told top to bottom — phones only, below `sm`.
+ *
+ * The canvas above is three columns wide by design, and a phone has no
+ * horizontal room to spend: squeezed to 358px the handset lands at ~117px and
+ * the card copy at ~7px. So below `sm` the flow is turned through ninety
+ * degrees — trigger, phone, then a fork out to the three outcomes — which
+ * spends the axis a phone actually has. Nothing here renders at `sm` and up,
+ * and the canvas renders nowhere else, so the two never interact.
+ *
+ * Type is clamped cqw rather than the canvas's raw cqw: each block is a
+ * different fraction of the column, so one scale cannot serve all three, and
+ * an unclamped one would keep shrinking past legibility on a 320px screen.
+ */
+const M_TRIGGER = {
+  "--hc-title": "clamp(15px, 4.4cqw, 19px)",
+  "--hc-body": "clamp(12.5px, 3.7cqw, 15px)",
+  "--hc-pad": "clamp(12px, 3.6cqw, 18px)",
+  "--hc-gap": "clamp(5px, 1.6cqw, 8px)",
+  "--hc-icon": "clamp(30px, 9cqw, 40px)",
+} as React.CSSProperties;
+
+const M_PHONE = {
+  "--hc-micro": "clamp(8px, 2.5cqw, 10px)",
+  "--hc-body": "clamp(10.5px, 3.4cqw, 13px)",
+} as React.CSSProperties;
+
+const M_OUTCOME = {
+  "--hc-title": "clamp(11.5px, 3.4cqw, 15px)",
+  "--hc-body": "clamp(10px, 2.9cqw, 13px)",
+  "--hc-pad": "clamp(8px, 2.4cqw, 12px)",
+  "--hc-gap": "clamp(4px, 1.2cqw, 6px)",
+  "--hc-icon": "clamp(24px, 7cqw, 32px)",
+} as React.CSSProperties;
+
+function MobileFlow({ business }: { business?: string }) {
+  return (
     <div
       style={{ containerType: "inline-size" }}
-      className="relative -mx-4 w-[calc(100%+2rem)] max-w-[820px] sm:mx-auto sm:w-full"
+      className="relative mx-auto w-full max-w-[440px] sm:hidden"
     >
-      <div style={fluid} className="relative aspect-[820/700] w-full">
-        <Glow />
-        <Connectors />
+      <MobileGlow />
 
-        <Trigger />
-        <Phone business={business} />
+      <Trigger className="relative z-10 w-full" style={M_TRIGGER} />
 
-        {/* The three outcomes. Fixed-height rail with flex-1 children, so the
-            centres stay at OUTCOME_Y however the copy wraps. */}
-        <div className="absolute right-0 top-[1%] flex h-[98%] w-[28%] flex-col gap-[1.6%]">
-          {heroFlow.outcomes.map((outcome) => (
-            <OutcomeCard key={outcome.n} outcome={outcome} />
-          ))}
-        </div>
+      <DownArrow />
+
+      <div
+        style={M_PHONE}
+        className="relative z-10 mx-auto w-[62%] max-w-[230px]"
+      >
+        <Phone business={business} className="aspect-[246/490] w-full" />
+      </div>
+
+      <Fork />
+
+      <div style={M_OUTCOME} className="relative z-10 flex gap-2">
+        {heroFlow.outcomes.map((outcome) => (
+          <OutcomeCard key={outcome.n} outcome={outcome} className="min-w-0" />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function MobileGlow() {
+  return (
+    <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+      <span className="absolute left-1/2 top-[12%] h-[46%] w-[70%] -translate-x-1/2 rounded-full bg-fynd-blue/12 blur-[90px]" />
+      <span className="absolute bottom-[2%] left-1/2 h-[26%] w-[76%] -translate-x-1/2 rounded-full bg-fynd-green/10 blur-[90px]" />
+    </div>
+  );
+}
+
+/** Trigger -> phone. The one connector that carries meaning, so it keeps its head. */
+function DownArrow() {
+  return (
+    <div aria-hidden="true" className="relative z-10 flex justify-center py-2">
+      <svg viewBox="0 0 14 44" fill="none" className="h-10 w-3.5">
+        <circle cx="7" cy="3" r="3" fill="var(--color-fynd-blue)" />
+        <path
+          d="M7 6 V30"
+          stroke="var(--color-fynd-blue)"
+          strokeWidth="3"
+          strokeLinecap="round"
+        />
+        <path d="M1.5 30 L7 41.5 L12.5 30 Z" fill="var(--color-fynd-blue)" />
+      </svg>
+    </div>
+  );
+}
+
+/**
+ * Phone -> the three outcomes.
+ *
+ * The crossbar has to land on the outer two card centres, and those move with
+ * the column: three `flex-1` cards separated by two 8px gaps put each centre
+ * `(100% - 1rem) / 6` in from its edge. Insetting the bar by exactly that
+ * keeps it welded to the cards at every width, and drawing it as one element
+ * rather than three keeps the blue-to-green gradient continuous.
+ */
+function Fork() {
+  const inset = "calc((100% - 1rem) / 6)";
+
+  return (
+    <div aria-hidden="true" className="relative z-10 h-11">
+      <span className="absolute left-1/2 top-0 h-5 w-px -translate-x-1/2 bg-fynd-blue/80" />
+
+      <span
+        style={{ left: inset, right: inset }}
+        className="absolute top-5 h-px bg-gradient-to-r from-fynd-blue via-fynd-blue2 to-fynd-green"
+      />
+
+      <div className="absolute inset-x-0 top-5 flex h-6 gap-2">
+        {heroFlow.outcomes.map((outcome) => (
+          <div key={outcome.n} className="relative flex-1">
+            <span className="absolute left-1/2 top-0 h-full w-px -translate-x-1/2 bg-fynd-green/60" />
+            <span className="absolute bottom-0 left-1/2 h-1.5 w-1.5 -translate-x-1/2 translate-y-1/2 rounded-full bg-fynd-green" />
+          </div>
+        ))}
       </div>
     </div>
   );
@@ -138,11 +273,24 @@ function Connectors() {
   );
 }
 
-function Trigger() {
+/** Chrome and copy only — the caller places it. */
+function Trigger({
+  className,
+  style,
+}: {
+  className?: string;
+  style?: React.CSSProperties;
+}) {
   const { trigger } = heroFlow;
 
   return (
-    <div className="absolute left-0 top-[30%] z-10 w-[24%] rounded-lg border border-white/10 bg-white/[0.04] p-[var(--hc-pad)] shadow-2xl shadow-black/20 backdrop-blur-xl">
+    <div
+      style={style}
+      className={cn(
+        "rounded-lg border border-white/10 bg-white/[0.04] p-[var(--hc-pad)] shadow-2xl shadow-black/20 backdrop-blur-xl",
+        className,
+      )}
+    >
       <span className="flex h-[var(--hc-icon)] w-[var(--hc-icon)] items-center justify-center rounded-full bg-gradient-to-br from-fynd-blue to-fynd-blue2 text-white shadow-lg shadow-fynd-blue/30">
         <svg
           viewBox="0 0 24 24"
@@ -167,11 +315,17 @@ function Trigger() {
   );
 }
 
-function Phone({ business }: { business?: string }) {
+function Phone({
+  business,
+  className,
+}: {
+  business?: string;
+  className?: string;
+}) {
   const { sms } = mechanism;
 
   return (
-    <div className="absolute left-[35%] top-[10%] z-20 h-[70%] w-[30%]">
+    <div className={className}>
       <div className="relative h-full w-full -rotate-[2deg] rounded-[9%/5.5%] border-[6px] border-navy bg-navy shadow-[0_30px_100px_rgba(0,0,0,0.55)]">
         <div className="absolute inset-[2px] flex flex-col overflow-hidden rounded-[8%/5%] bg-white">
           <div className="relative flex h-[7%] items-center justify-between px-[7%] text-[length:var(--hc-micro)] font-semibold text-ink">
@@ -233,8 +387,10 @@ function Phone({ business }: { business?: string }) {
 
 function OutcomeCard({
   outcome,
+  className,
 }: {
   outcome: (typeof heroFlow.outcomes)[number];
+  className?: string;
 }) {
   const tones: Record<string, { icon: string; n: string }> = {
     blue: { icon: "bg-fynd-blue/20 text-fynd-blue", n: "text-fynd-blue" },
@@ -247,7 +403,12 @@ function OutcomeCard({
   const tone = tones[outcome.tone] ?? tones.blue;
 
   return (
-    <div className="z-10 flex-1 overflow-hidden rounded-lg border border-white/10 bg-white/[0.04] p-[var(--hc-pad)] shadow-2xl shadow-black/20 backdrop-blur-xl">
+    <div
+      className={cn(
+        "z-10 flex-1 overflow-hidden rounded-lg border border-white/10 bg-white/[0.04] p-[var(--hc-pad)] shadow-2xl shadow-black/20 backdrop-blur-xl",
+        className,
+      )}
+    >
       <div className="flex items-start justify-between gap-2">
         <span
           className={`flex h-[var(--hc-icon)] w-[var(--hc-icon)] shrink-0 items-center justify-center rounded-full ${tone.icon}`}
