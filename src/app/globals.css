@@ -276,6 +276,46 @@
   }
 }
 
+/* Hero collage: the only ambient motion on the page. Deliberately slow and
+   low-contrast — the connectors read as a live system, not as a demo reel.
+   The global prefers-reduced-motion block above neutralises all of it. */
+@keyframes hc-node-pulse {
+  0%   { transform: scale(1);   opacity: 0.5; }
+  70%  { transform: scale(3.2); opacity: 0; }
+  100% { transform: scale(3.2); opacity: 0; }
+}
+
+@keyframes hc-draw {
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes hc-dot-in {
+  to { opacity: 1; }
+}
+
+.hc-node {
+  animation: hc-node-pulse 3.2s ease-out infinite;
+}
+
+.hc-chart-line {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: hc-draw 1.6s ease-out 0.2s forwards;
+}
+
+.hc-chart-dot {
+  opacity: 0;
+  animation: hc-dot-in 0.3s ease-out forwards;
+}
+
+/* No JS is required for the above, but reduced motion must land the end state
+   rather than freezing a half-drawn line at its start. */
+@media (prefers-reduced-motion: reduce) {
+  .hc-node { animation: none; opacity: 0; }
+  .hc-chart-line { stroke-dashoffset: 0; animation: none; }
+  .hc-chart-dot { opacity: 1; animation: none; }
+}
+
 /* Respect reduced motion: keep opacity fades, drop transforms. */
 @media (prefers-reduced-motion: reduce) {
   html {

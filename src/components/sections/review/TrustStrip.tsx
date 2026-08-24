@@ -27,10 +27,6 @@ export function TrustStrip() {
             </li>
           ))}
         </ul>
-
-        <p className="mt-4 text-center text-small text-white/60">
-          {trustStrip.crms}
-        </p>
       </Container>
     </section>
   );

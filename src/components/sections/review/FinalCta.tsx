@@ -2,6 +2,7 @@
 
 import { finalCta } from "@/content/copy";
 import { track } from "@/lib/analytics";
+import { useLivePrice } from "@/lib/use-offer-window";
 import { Container } from "@/components/ui/Layout";
 import { DotGrid } from "@/components/textures/Textures";
 import { PriceBlock } from "./OfferBits";
@@ -21,8 +22,11 @@ export function FinalCta({
   ctaLabel: string;
   targetId: string;
 }) {
+  // The block above states the live price; the button has to agree with it.
+  const label = useLivePrice().label(ctaLabel);
+
   const handleClick = () => {
-    track("cta_click", { cta: ctaLabel, section: "final_cta" });
+    track("cta_click", { cta: label, section: "final_cta" });
     document
       .getElementById(targetId)
       ?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -43,7 +47,7 @@ export function FinalCta({
             onClick={handleClick}
             className="mt-8 flex h-14 w-full items-center justify-center rounded-sm bg-fynd-blue px-8 text-body font-semibold text-white transition-all duration-150 ease-fynd hover:bg-[#3F4DF0] active:scale-[0.99] sm:w-auto"
           >
-            {ctaLabel}
+            {label}
           </button>
 
         </div>

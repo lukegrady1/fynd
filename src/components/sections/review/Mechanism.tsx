@@ -15,9 +15,14 @@ import { Bubble, PhoneFrame } from "./PhoneFrame";
 import { Reveal } from "./Reveal";
 
 /**
- * The mechanism, told as one sequence: the phone holds position on the left
- * while the four steps run down the right, with the ambient details parked in
- * a separate panel so they don't compete with the story.
+ * The mechanism, told as one sequence: the phone on the left, the four steps
+ * down the right, and the ambient details parked in a separate panel below so
+ * they don't compete with the story.
+ *
+ * The two columns start at sm rather than lg. Below that the phone would have
+ * to drop under ~240px to leave the steps a usable measure, and DeviceShell's
+ * internals (notch, status bar, star row) are fixed pixel sizes — so on true
+ * phone widths the steps stack underneath instead.
  *
  * The old routing fork is gone. Explaining that a rating decides where the
  * customer lands turned a compliance liability into a selling point.
@@ -40,9 +45,11 @@ export function Mechanism() {
           </p>
         </Reveal>
 
-        <div className="mt-14 grid gap-12 lg:grid-cols-[300px_1fr] lg:gap-16">
-          {/* The phone holds still while the steps scroll past it. */}
-          <Reveal className="lg:sticky lg:top-24 lg:self-start">
+        <div className="mt-14 grid gap-12 sm:grid-cols-[240px_1fr] sm:gap-8 lg:grid-cols-[300px_1fr] lg:gap-16 xl:grid-cols-[300px_1fr_320px] xl:gap-12">
+          {/* Scrolls with the page. It used to be sticky, but now that it and
+              the step list are the same height there is nothing to hold it
+              against — pinning it just made it drift away from its steps. */}
+          <Reveal className="self-start">
             <PhoneFrame business={sms.business} statusTime={sms.statusTime}>
               <Bubble time={sms.outbound.time}>{sms.outbound.body}</Bubble>
 
@@ -72,59 +79,66 @@ export function Mechanism() {
             </PhoneFrame>
           </Reveal>
 
-          <div className="grid gap-10 xl:grid-cols-[1fr_320px] xl:gap-12">
-            <ol className="relative">
-              {/* Rail linking the steps, stopping short of the last marker. */}
-              <span
-                aria-hidden="true"
-                className="absolute bottom-12 left-[19px] top-5 w-px bg-gradient-to-b from-fynd-green/50 to-fynd-green/10"
-              />
+          {/* self-start so the list keeps its content height — stretched to the
+              row it would drag the connector rail on past the last step. */}
+          <ol className="relative self-start">
+            {/* Rail linking the steps, stopping short of the last marker. */}
+            <span
+              aria-hidden="true"
+              className="absolute bottom-12 left-[19px] top-5 w-px bg-gradient-to-b from-fynd-green/50 to-fynd-green/10"
+            />
 
-              {steps.map((step, i) => (
-                <li key={step.title} className="relative">
-                  <Reveal delay={i * 0.06} className="flex gap-5 pb-10 last:pb-0">
-                    <span className="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-fynd-green/40 bg-navy text-fynd-green">
-                      <StepIcon name={step.icon} />
+            {steps.map((step, i) => (
+              <li key={step.title} className="relative">
+                <Reveal delay={i * 0.06} className="flex gap-5 pb-10 last:pb-0">
+                  <span className="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-fynd-green/40 bg-navy text-fynd-green">
+                    <StepIcon name={step.icon} />
+                  </span>
+                  <div className="min-w-0 pt-1">
+                    <p className="flex items-baseline gap-3">
+                      <span className="text-small font-bold tabular-nums text-fynd-green">
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+                      <span className="text-h3 text-white">{step.title}</span>
+                    </p>
+                    <p className="measure mt-2 text-small text-white/65">
+                      {step.body}
+                    </p>
+                  </div>
+                </Reveal>
+              </li>
+            ))}
+          </ol>
+
+          {/* Full width beneath the two columns until xl, where it becomes the
+              third column. Kept out of the steps column on purpose: stacked
+              there it doubled that column's height, which pushed the steps out
+              of alignment with the phone beside them. */}
+          <Reveal
+            delay={0.1}
+            className="sm:col-span-2 xl:col-span-1 xl:self-start"
+          >
+            <div className="rounded-lg border border-white/10 bg-navy-card p-6">
+              <h3 className="text-h3 text-white">{behindScenes.heading}</h3>
+              <ul className="mt-5 flex flex-col gap-5">
+                {behindScenes.items.map((item) => (
+                  <li key={item.title} className="flex gap-3">
+                    <span className="mt-0.5 shrink-0 text-fynd-green">
+                      <DetailIcon name={item.icon} />
                     </span>
-                    <div className="min-w-0 pt-1">
-                      <p className="flex items-baseline gap-3">
-                        <span className="text-small font-bold tabular-nums text-fynd-green">
-                          {String(i + 1).padStart(2, "0")}
-                        </span>
-                        <span className="text-h3 text-white">{step.title}</span>
+                    <div className="min-w-0">
+                      <p className="text-[15px] font-semibold text-white">
+                        {item.title}
                       </p>
-                      <p className="measure mt-2 text-small text-white/65">
-                        {step.body}
+                      <p className="mt-1 text-small text-white/60">
+                        {item.body}
                       </p>
                     </div>
-                  </Reveal>
-                </li>
-              ))}
-            </ol>
-
-            <Reveal delay={0.1} className="xl:self-start">
-              <div className="rounded-lg border border-white/10 bg-navy-card p-6">
-                <h3 className="text-h3 text-white">{behindScenes.heading}</h3>
-                <ul className="mt-5 flex flex-col gap-5">
-                  {behindScenes.items.map((item) => (
-                    <li key={item.title} className="flex gap-3">
-                      <span className="mt-0.5 shrink-0 text-fynd-green">
-                        <DetailIcon name={item.icon} />
-                      </span>
-                      <div className="min-w-0">
-                        <p className="text-[15px] font-semibold text-white">
-                          {item.title}
-                        </p>
-                        <p className="mt-1 text-small text-white/60">
-                          {item.body}
-                        </p>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </Reveal>
-          </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </Reveal>
         </div>
       </Container>
     </section>

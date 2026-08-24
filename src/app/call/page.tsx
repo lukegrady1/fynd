@@ -58,8 +58,12 @@ export default async function CallPage({
 
         {/* ── Chapter two: light. The offer and what you get. ── */}
         <CalendarModule embedUrl={embedUrl} />
-        <PricingSection ctaLabel={hero.call.cta} targetId="convert" />
-        <FeatureGrid />
+        <PricingSection
+          mode="scroll"
+          ctaLabel={hero.call.cta}
+          targetId="convert"
+        />
+        <FeatureGrid business={params.biz} />
         <TrustBar />
         <CaseStudies />
         <Testimonials />

@@ -60,6 +60,11 @@ export const offerWindow = {
   claimBoth: "Book a call or start now to claim it",
   closedLabel: "Claim window closed",
   closedHint: "Book a call and I'll see what I can do",
+  /** Replaces `offer.angle` once the window has closed, so no surface is
+      still promising free management after the price has moved. */
+  closedReason:
+    "The free-management window has closed — this is the standard managed rate.",
+  managementLabelClosed: "Management",
 } as const;
 
 /**
@@ -137,7 +142,6 @@ export const trustStrip = {
     "Nails",
     "Skincare",
   ],
-  crms: "Works with most booking software — or none at all",
 } as const;
 
 export const hero = {
@@ -217,6 +221,12 @@ export const profileCard = {
   newReview: "New review received",
 } as const;
 
+/** The proof row under the hero CTA. Data lives in content/clients.ts. */
+export const heroProof = {
+  label: "Trusted by local businesses",
+  ratingLabel: (rating: number) => `Rated ${rating} out of 5`,
+} as const;
+
 export const vsl = {
   duration: "2:14",
   caption:
@@ -230,16 +240,10 @@ export const testimonialsSection = {
 
 export const checkout = {
   /**
-   * The card sits right after the mechanism, so it needs a bridge — dropping
-   * a price card on someone with no transition reads as abrupt.
+   * The standalone "Get started" section was removed — pricing is now the
+   * single conversion module on /start, so only the checkout mechanics below
+   * are still used.
    */
-  eyebrow: "Get started",
-  sectionHeading: "That's the whole system.",
-  sectionSub:
-    "If it makes sense for you, you can be set up today. The form takes a few minutes and your first requests go out this week.",
-  /** Price lives in the rows below, so it isn't repeated in the heading. */
-  heading: offer.productName,
-  cta: "Start for $97/mo",
   secure: "Secure checkout by Stripe",
   billing: "First charge today, then monthly.",
   cancelledNote: {
@@ -452,11 +456,33 @@ export const mechanism = {
 export const pricing = {
   eyebrow: "Pricing",
   heading: "Put the whole thing on autopilot.",
-  planName: "Review System",
+  planName: offer.productName,
   clears: ["No contract", "No setup fee", "No per-seat pricing"],
-  cta: "Start for $97/mo",
   reassure:
     "We'll get you set up and your first requests can go out this week.",
+
+  /**
+   * Two real states, not decoration. Inside the window management is free and
+   * the client pays the software cost only; once it closes the price actually
+   * becomes the managed rate and checkout charges that instead. A struck-out
+   * $197 is honest here precisely BECAUSE the timer changes what is charged —
+   * see the note on `offer.managed`.
+   */
+  open: {
+    urgency:
+      "Start before the timer runs out and I'll run the whole system for you at no charge. You cover the software, nothing else.",
+    strikeLabel: "Regular price",
+    nowLabel: "Software only, management free",
+    cta: `Start for $${offer.software}/mo`,
+    note: "Management stays free until you hit the goal — no contract either way.",
+  },
+  closed: {
+    urgency:
+      "The free-management window has closed. You can still start at the standard managed rate, or book a call and I'll see what I can do.",
+    nowLabel: "Software and management",
+    cta: `Start for $${offer.managed}/mo`,
+    note: "Includes management. No contract, cancel anytime.",
+  },
 } as const;
 
 export const statsSection = {
@@ -521,7 +547,7 @@ export const fit = {
       { name: "Not sure what you're on?", status: "Tell me and I'll check" },
     ],
     fallback:
-      "No booking software? Text the client's number to your Fynd line as they walk out. That's the whole workflow.",
+      "No booking software. No worries. Book a call and we'll figure out what fits for your business.",
   },
 
 
@@ -626,6 +652,14 @@ export const features = {
   eyebrow: "What's included",
   heading: "Everything is included.",
   sub: "Four things, all running from the day you're set up.",
+
+  /** Labels for the dashboard mockup beside the list. The business name is
+      not here: it comes from the ?biz= param so the mockup shows the reader
+      their own studio, same as the hero. */
+  mockup: {
+    label: "Overview",
+    range: "last 30 days",
+  },
   items: [
     {
       icon: "MessageSquare",

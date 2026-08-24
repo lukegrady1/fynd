@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { ArrowRight } from "lucide-react";
-import { offer } from "@/content/copy";
 import { track } from "@/lib/analytics";
+import { useLivePrice } from "@/lib/use-offer-window";
 import { cn } from "@/lib/utils";
 
 /**
@@ -52,6 +52,9 @@ export function StickyCta({
     };
   }, [targetId]);
 
+  // Must agree with the pricing section it links to.
+  const { price } = useLivePrice();
+
   const handleClick = () => {
     track("cta_click", { cta: ctaLabel, section: "sticky_pill" });
     document
@@ -77,7 +80,7 @@ export function StickyCta({
         className="flex h-12 items-center gap-3 rounded-full bg-navy px-5 shadow-lg ring-1 ring-white/10 transition-colors duration-150 hover:bg-navy-card"
       >
         <span className="text-small font-bold tabular-nums text-white">
-          ${offer.software}/mo
+          ${price}/mo
         </span>
         <span aria-hidden="true" className="h-4 w-px bg-white/20" />
         <span className="flex items-center gap-1.5 text-small font-semibold text-fynd-green">

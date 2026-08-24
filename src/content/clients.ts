@@ -55,6 +55,30 @@ export type CaseStudy = {
 
 export const caseStudies: CaseStudy[] = [];
 
+/**
+ * The small proof row under the hero CTA: client faces, a star rating, and a
+ * line of reassurance.
+ *
+ * Photos standing in for customers are social proof in exactly the way a
+ * testimonial is, and a star rating is a stat — so both follow the same rule
+ * as everything else in this file. Stock headshots captioned "trusted by local
+ * businesses" would be an invented client list with pictures attached.
+ *
+ * To turn the row on: drop real photos in /public/clients, list them below,
+ * and set `clientRating` to a rating you can point at.
+ */
+export type ClientFace = {
+  /** Used as the alt text — a real person at a real client. */
+  name: string;
+  /** Path under /public, e.g. "/clients/marlow.jpg". */
+  src: string;
+};
+
+export const clientFaces: ClientFace[] = [];
+
+/** Out of 5. null until there is a real rating to cite. */
+export const clientRating: number | null = null;
+
 export const suppliedStats = () => trustStats.filter((s) => s.value !== null);
 export const suppliedLogos = () => clientLogos.filter((l) => l.src !== null);
 export const suppliedCaseStudies = () =>

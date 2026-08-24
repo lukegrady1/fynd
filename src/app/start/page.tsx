@@ -19,7 +19,6 @@ import { FitSection } from "@/components/sections/review/FitSection";
 import { QuickWins } from "@/components/sections/review/QuickWins";
 import { ObjectionFaq } from "@/components/sections/review/ObjectionFaq";
 import { FinalCta } from "@/components/sections/review/FinalCta";
-import { CheckoutModule } from "@/components/sections/review/CheckoutModule";
 
 export const metadata: Metadata = {
   title: meta.start.title,
@@ -53,9 +52,14 @@ export default async function StartPage({
         <ResultsSection ctaLabel={hero.start.cta} targetId="convert" />
 
         {/* ── Chapter two: light. The offer and what you get. ── */}
-        <CheckoutModule cid={params.cid} cancelled={params.cancelled} />
-        <PricingSection ctaLabel={hero.start.cta} targetId="convert" />
-        <FeatureGrid />
+        {/* Pricing is the conversion module here — it owns #convert and runs
+            checkout itself, so there is still exactly one place to buy. */}
+        <PricingSection
+          mode="checkout"
+          cid={params.cid}
+          cancelled={params.cancelled}
+        />
+        <FeatureGrid business={params.biz} />
         <TrustBar />
         <CaseStudies />
         <Testimonials />

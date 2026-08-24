@@ -9,7 +9,7 @@ import {
   ShieldCheck,
   Sparkles,
 } from "lucide-react";
-import { features } from "@/content/copy";
+import { features, mechanism } from "@/content/copy";
 import { Container, Eyebrow } from "@/components/ui/Layout";
 import { DeviceShell } from "./PhoneFrame";
 import { Delta, MetricBar, ScoreGauge } from "@/components/ui/DataViz";
@@ -22,7 +22,7 @@ import { Reveal } from "./Reveal";
  * rendered inside the shared phone shell — not a screenshot, so it can't go
  * stale and costs nothing to load.
  */
-export function FeatureGrid() {
+export function FeatureGrid({ business }: { business?: string }) {
   return (
     <section className="bg-white py-14 lg:py-24">
       <Container>
@@ -52,7 +52,7 @@ export function FeatureGrid() {
           </div>
 
           <Reveal className="lg:sticky lg:top-24">
-            <DashboardMockup />
+            <DashboardMockup business={business} />
           </Reveal>
         </div>
       </Container>
@@ -92,13 +92,15 @@ function FeatureIcon({ name }: { name: string }) {
 }
 
 /** The Fynd dashboard, drawn with the real data-viz components. */
-function DashboardMockup() {
+function DashboardMockup({ business }: { business?: string }) {
   return (
     <DeviceShell statusTime="9:41">
       <div className="border-b border-line px-4 pb-2.5 pt-1.5">
-        <p className="text-[13px] font-semibold text-ink">Overview</p>
+        <p className="text-[13px] font-semibold text-ink">
+          {features.mockup.label}
+        </p>
         <p className="text-[10px] font-normal text-ink-soft">
-          Reyes Auto Care · last 30 days
+          {business ?? mechanism.sms.business} · {features.mockup.range}
         </p>
       </div>
 

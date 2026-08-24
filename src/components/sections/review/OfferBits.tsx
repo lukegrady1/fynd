@@ -1,6 +1,5 @@
 "use client";
 
-import { Clock } from "lucide-react";
 import { useOfferWindow } from "@/lib/use-offer-window";
 import { cn } from "@/lib/utils";
 import { offer, offerWindow } from "@/content/copy";
@@ -8,10 +7,11 @@ import { offer, offerWindow } from "@/content/copy";
 /**
  * Price block.
  *
- * The anchor is the free labour, not a struck-through price: management reads
- * $0 against the software cost they actually pay. A crossed-out "was $197" on
- * top of that would be a second, unexplained anchor — exactly the fake-anchor
- * problem the build spec warns about.
+ * Mirrors the pricing section's two states. While the claim window is open,
+ * management reads $0 against the software cost. Once it closes, management
+ * is priced at its real rate and the reason line changes with it — otherwise
+ * the calendar and the final CTA would still be advertising free management
+ * after the price had already moved.
  */
 export function PriceBlock({
   tone = "light",
@@ -23,15 +23,28 @@ export function PriceBlock({
   className?: string;
 }) {
   const dark = tone === "dark";
+  const claim = useOfferWindow();
+  // `unknown` (server render, first paint, no JS) shows the open state — see
+  // the same reasoning in PricingSection.
+  const managementFree = claim.state !== "closed";
 
   return (
     <div className={className}>
       <dl className="flex flex-col gap-2">
         <Row
           dark={dark}
-          label={offer.labels.management}
-          value={offer.labels.free}
-          accent
+          label={
+            managementFree
+              ? offer.labels.management
+              : offerWindow.managementLabelClosed
+          }
+          value={
+            managementFree
+              ? offer.labels.free
+              : `$${offer.managed - offer.software}`
+          }
+          suffix={managementFree ? undefined : "/mo"}
+          accent={managementFree}
         />
         <span
           aria-hidden="true"
@@ -61,7 +74,7 @@ export function PriceBlock({
             dark ? "text-white/55" : "text-ink-soft",
           )}
         >
-          {offer.angle}
+          {managementFree ? offer.angle : offerWindow.closedReason}
         </p>
       )}
     </div>
@@ -111,60 +124,5 @@ function Row({
         )}
       </dd>
     </div>
-  );
-}
-
-/**
- * The claim countdown. Ten minutes from first arrival, persisted so a reload
- * does not hand out a fresh window — see use-offer-window.ts.
- *
- * Renders nothing on the server and during hydration, because the start time
- * lives in the visitor's browser and guessing it would flash the wrong number.
- */
-export function OfferCountdown({
-  tone = "dark",
-  className,
-}: {
-  tone?: "light" | "dark";
-  className?: string;
-}) {
-  const window = useOfferWindow();
-  if (window.state === "unknown") return null;
-
-  const closed = window.state === "closed";
-
-  return (
-    <span
-      className={cn(
-        "inline-flex items-center gap-2 rounded-sm border px-3 py-1.5 text-small font-semibold tabular-nums",
-        closed
-          ? tone === "dark"
-            ? "border-white/15 bg-white/5 text-white/60"
-            : "border-line bg-white text-ink-soft"
-          : tone === "dark"
-            ? "border-fynd-orange/40 bg-fynd-orange/12 text-fynd-orange"
-            : "border-fynd-orange/40 bg-fynd-orange/8 text-ink",
-        className,
-      )}
-    >
-      <Clock
-        aria-hidden="true"
-        strokeWidth={2}
-        className={cn(
-          "h-4 w-4 shrink-0",
-          closed ? "opacity-60" : "text-fynd-orange",
-        )}
-      />
-      {closed ? (
-        offerWindow.closedLabel
-      ) : (
-        <>
-          <span>{`${offerWindow.label} — ${window.label}`}</span>
-          <span className="hidden font-medium opacity-80 sm:inline">
-            {offerWindow.claimBoth}
-          </span>
-        </>
-      )}
-    </span>
   );
 }

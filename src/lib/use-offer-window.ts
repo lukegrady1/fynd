@@ -2,8 +2,10 @@
 
 import { useMemo, useSyncExternalStore } from "react";
 
+import { offer } from "@/content/copy";
+
 /**
- * A short claim window that starts on the visitor's FIRST visit and survives
+ * A five-minute claim window that starts on the visitor's FIRST visit and survives
  * reloads.
  *
  * The start timestamp is persisted, so refreshing the page does not hand the
@@ -17,7 +19,7 @@ import { useMemo, useSyncExternalStore } from "react";
  * lands on the client's first commit.
  */
 
-export const OFFER_WINDOW_MS = 10 * 60 * 1000;
+export const OFFER_WINDOW_MS = 5 * 60 * 1000;
 
 const STORAGE_KEY = "fynd:offer-window-start";
 
@@ -81,5 +83,30 @@ export function useOfferWindow(): OfferWindow {
     state: "open",
     secondsLeft,
     label: `${minutes}:${pad(seconds)}`,
+  };
+}
+
+/**
+ * The price that is live right now, plus a helper that keeps CTA labels in
+ * sync with it.
+ *
+ * CTA copy names the price ("Start for $97/mo") because that converts better
+ * than a bare "Start setup" — but only while it is true. Once the claim
+ * window closes the same button charges the managed rate, so every label
+ * carrying a price has to move with it, or the page ends up offering $97 on
+ * a button that bills $197. The figure written in copy.ts is the open-window
+ * price; `label()` swaps it for whatever is actually being charged.
+ */
+export function useLivePrice() {
+  const claim = useOfferWindow();
+  // `unknown` is the server render and first paint; treat it as open, which
+  // is correct for a first-time visitor and for anyone without JS.
+  const managementFree = claim.state !== "closed";
+  const price = managementFree ? offer.software : offer.managed;
+
+  return {
+    managementFree,
+    price,
+    label: (text: string) => text.replace(/\$\d+(?=\/mo)/, `$${price}`),
   };
 }
