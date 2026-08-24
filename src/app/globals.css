@@ -316,48 +316,10 @@
   .hc-chart-dot { opacity: 1; animation: none; }
 }
 
-/* Trust-bar marquee. Two identical tracks slide one full track-width, so the
-   loop is seamless; pausing on hover lets someone actually read a stat. */
-.marquee {
-  display: flex;
-  overflow: hidden;
-  width: 100%;
-  mask-image: linear-gradient(
-    to right,
-    transparent,
-    #000 6rem,
-    #000 calc(100% - 6rem),
-    transparent
-  );
-}
-
-.marquee-track {
-  display: flex;
-  flex-shrink: 0;
-  align-items: center;
-  min-width: 100%;
-  animation: marquee-slide 46s linear infinite;
-}
-
-.marquee:hover .marquee-track,
-.marquee:focus-within .marquee-track {
-  animation-play-state: paused;
-}
-
-@keyframes marquee-slide {
-  to {
-    transform: translateX(-100%);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .marquee {
-    overflow-x: auto;
-    mask-image: none;
-  }
-  .marquee-track {
-    animation: none;
-  }
+/* Narrower than .measure — a stat sentence under a big figure reads better
+   at roughly 30 characters than at full body measure. */
+.measure-tight {
+  max-width: 26ch;
 }
 
 /* Before/after profile swap. Markup renders the AFTER state, so with no JS

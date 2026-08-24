@@ -1,50 +1,53 @@
 import { suppliedStats } from "@/content/stats";
 import type { Stat } from "@/content/stats";
+import { Container } from "@/components/ui/Layout";
+import { CountUp } from "./CountUp";
+import { Reveal } from "./Reveal";
 
 /**
- * The trust bar: third-party review statistics, scrolling.
+ * The trust bar: three third-party statistics, all visible at once.
  *
- * Pure CSS marquee rather than a JS ticker — no hydration surface, nothing on
- * the critical path, and `prefers-reduced-motion` simply stops it and leaves a
- * readable row. The track is rendered twice so the loop has no visible seam;
- * the duplicate is aria-hidden so a screen reader hears each stat once.
+ * Three across from sm up, stacked on a phone. The figure carries the row and
+ * the sentence sits under it at body size, so the bar reads as three numbers
+ * first and three claims second.
  *
  * Renders nothing until content/stats.ts holds entries. Each entry can carry
- * a source, shown beside the figure; see the note at the top of that file for
- * why the current three still need theirs.
+ * a source, shown under the sentence; see the note at the top of that file
+ * for why the current three still need theirs.
  */
 export function StatBar() {
   const items = suppliedStats();
   if (items.length === 0) return null;
 
   return (
-    <section className="border-y border-white/10 bg-navy py-5">
-      <div className="marquee">
-        <ul className="marquee-track">
-          {items.map((stat) => (
-            <StatPill key={stat.value + stat.body} stat={stat} />
+    <section className="border-y border-white/10 bg-navy py-12 lg:py-16">
+      <Container>
+        <ul className="grid gap-10 sm:grid-cols-3 sm:gap-8 lg:gap-12">
+          {items.map((stat, i) => (
+            <li key={stat.value + stat.body}>
+              <Reveal delay={i * 0.08}>
+                <StatItem stat={stat} />
+              </Reveal>
+            </li>
           ))}
         </ul>
-        <ul className="marquee-track" aria-hidden="true">
-          {items.map((stat) => (
-            <StatPill key={`dup-${stat.value}${stat.body}`} stat={stat} />
-          ))}
-        </ul>
-      </div>
+      </Container>
     </section>
   );
 }
 
-function StatPill({ stat }: { stat: Stat }) {
+function StatItem({ stat }: { stat: Stat }) {
   return (
-    <li className="flex shrink-0 items-baseline gap-2.5 px-7">
-      <span className="text-h2 font-bold leading-none tabular-nums text-fynd-green">
-        {stat.value}
-      </span>
-      <span className="text-body text-white/80">{stat.body}</span>
+    <div className="text-center">
+      <p className="text-[44px] font-bold leading-none tabular-nums tracking-[-0.02em] text-fynd-green lg:text-[56px]">
+        <CountUp value={stat.value} />
+      </p>
+      <p className="measure-tight mx-auto mt-4 text-body text-white/75">
+        {stat.body}
+      </p>
       {stat.source && (
-        <span className="text-small text-white/40">{stat.source}</span>
+        <p className="mt-2 text-small text-white/40">{stat.source}</p>
       )}
-    </li>
+    </div>
   );
 }
