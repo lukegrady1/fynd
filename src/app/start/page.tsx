@@ -18,7 +18,7 @@ import { PricingSection } from "@/components/sections/review/PricingSection";
 import { FeatureGrid } from "@/components/sections/review/FeatureGrid";
 import { CaseStudies, TrustBar } from "@/components/sections/review/SocialProof";
 import { Testimonials } from "@/components/sections/review/Testimonials";
-import { FitSection } from "@/components/sections/review/FitSection";
+import { BookingIntegrations } from "@/components/sections/review/BookingIntegrations";
 import { ObjectionFaq } from "@/components/sections/review/ObjectionFaq";
 import { FinalCta } from "@/components/sections/review/FinalCta";
 
@@ -67,7 +67,7 @@ export default async function StartPage({
           cancelled={params.cancelled}
         />
         <FeatureGrid business={params.biz} />
-        <FitSection />
+        <BookingIntegrations />
         <ObjectionFaq />
         <FinalCta
           heading={finalCtaCopy.heading}

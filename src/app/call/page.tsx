@@ -18,7 +18,7 @@ import { ResultsSection } from "@/components/sections/review/ResultsSection";
 import { FeatureGrid } from "@/components/sections/review/FeatureGrid";
 import { CaseStudies, TrustBar } from "@/components/sections/review/SocialProof";
 import { Testimonials } from "@/components/sections/review/Testimonials";
-import { FitSection } from "@/components/sections/review/FitSection";
+import { BookingIntegrations } from "@/components/sections/review/BookingIntegrations";
 import { ObjectionFaq } from "@/components/sections/review/ObjectionFaq";
 import { FinalCta } from "@/components/sections/review/FinalCta";
 import { CalendarModule } from "@/components/sections/review/CalendarModule";
@@ -67,7 +67,7 @@ export default async function CallPage({
         {/* ── The ask, then everything behind it. ── */}
         <CalendarModule embedUrl={embedUrl} />
         <FeatureGrid business={params.biz} />
-        <FitSection />
+        <BookingIntegrations />
         <ObjectionFaq />
         <FinalCta
           heading={finalCtaCopy.heading}

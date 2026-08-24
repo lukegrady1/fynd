@@ -469,38 +469,77 @@ export const results = {
   },
 } as const;
 
-export const fit = {
+/**
+ * The integrations section — the radial network of booking platforms around
+ * the Fynd mark.
+ *
+ * `logo` points at a file in /public/integrations. Until the official asset
+ * for a platform is in place the card falls back to the platform name set as
+ * a wordmark, so the section is complete either way and upgrades on its own
+ * as files land. Do not substitute a redrawn or generated logo for a real
+ * one — a slightly-wrong logo is more noticeable than no logo.
+ *
+ * Ring positions are computed from the list length in the component, not
+ * stored here — hand-tuned coordinates collided as soon as the list grew.
+ */
+export const integrations = {
   eyebrow: "Fit",
-  heading: "Does this work with what you already use?",
+  heading: {
+    lead: "Works with the",
+    accent: "booking software",
+    tail: "you already use.",
+  },
+  sub: "Fynd connects to the tools you already rely on, so the request fires the moment an appointment is marked complete.",
+  badge: "Integrates with your existing workflow",
 
-  integrations: {
-    heading: "Connects to your booking software",
-    sub: "Mark the appointment complete and the request fires. Nothing else to remember.",
-    /**
-     * TODO(luke): name the real integrations. The salon and studio platforms
-     * are Mindbody, Vagaro, Boulevard, Booksy, Fresha, GlossGenius and Square
-     * Appointments — tell me which are genuinely wired up and they become
-     * named rows. None are listed here because a false integration claim is
-     * the fastest way to lose a booking a client made on the strength of it.
-     */
-    items: [
-      { name: "Most booking platforms", status: "Direct or via Zapier" },
-      { name: "Not sure what you're on?", status: "Tell me and I'll check" },
-    ],
-    fallback:
-      "No booking software. No worries. Book a call and we'll figure out what fits for your business.",
+  platforms: [
+    { name: "Goldie", logo: "/integrations/goldie.svg" },
+    { name: "Vagaro", logo: "/integrations/vagaro.svg" },
+    { name: "Mindbody", logo: "/integrations/mindbody.svg" },
+    { name: "Fresha", logo: "/integrations/fresha.svg" },
+    { name: "Timely", logo: "/integrations/timely.svg" },
+    { name: "Booker", logo: "/integrations/booker.svg" },
+    { name: "Appointy", logo: "/integrations/appointy.svg" },
+    { name: "Setmore", logo: "/integrations/setmore.svg" },
+    { name: "MyTime", logo: "/integrations/mytime.svg" },
+    { name: "Square", logo: "/integrations/square.svg" },
+    { name: "StyleSeat", logo: "/integrations/styleseat.svg" },
+    { name: "Booksy", logo: "/integrations/booksy.svg" },
+    { name: "Acuity", logo: "/integrations/acuity.svg" },
+  ],
+
+  fallback: {
+    lead: "Don't see your booking software?",
+    body: "We probably connect with it anyway — and if you don't use one at all, that's fine too.",
+    ctaLabel: "Ask on a quick call",
   },
 
-  verticals: {
-    heading: "Who this is built for",
-    sub: "Anywhere a client books time with you and leaves happy.",
-    items: [
-      "Hair salons", "Barbershops", "Massage therapy", "Pilates studios",
-      "Yoga studios", "Nail salons", "Med spas", "Skincare & facials",
-      "Lash & brow", "Personal training", "Physical therapy", "Chiropractic",
-    ],
-    other: "Not listed? It probably still works. Ask me on the call.",
-  },
+  features: [
+    {
+      icon: "bolt",
+      tone: "blue",
+      title: "Automatic triggers",
+      body: "Requests go out on their own once the appointment is done.",
+    },
+    {
+      icon: "sync",
+      tone: "green",
+      title: "Customer sync",
+      body: "Appointment and client details stay up to date both ways.",
+    },
+    {
+      icon: "shield",
+      tone: "orange",
+      title: "Secure and reliable",
+      body: "Verified connections built around the workflow you already have.",
+    },
+    {
+      icon: "user",
+      tone: "blue2",
+      title: "Easy to connect",
+      body: "Set it up once and Fynd handles the rest from there.",
+    },
+  ],
 } as const;
 
 /* ==========================================================================
