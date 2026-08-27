@@ -17,11 +17,25 @@ export const metadata: Metadata = {
     template: "%s | Fynd",
   },
   description: brand.description,
+  /**
+   * The title is what a link preview prints under the image, so it is the
+   * tagline on its own — the site name is already carried by `siteName` and by
+   * the domain every unfurler shows, and repeating it inside the title just
+   * spends the line twice.
+   *
+   * The image itself is src/app/opengraph-image.png; Next emits its URL, type
+   * and dimensions from the file, so there is nothing to declare here.
+   */
   openGraph: {
-    title: "Fynd — Be found. Everywhere.",
+    title: "Be Found Everywhere",
     description: brand.description,
     siteName: "Fynd",
     type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Be Found Everywhere",
+    description: brand.description,
   },
 };
 
