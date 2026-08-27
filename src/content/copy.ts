@@ -432,7 +432,7 @@ export const profileSwap = {
   business: "Salt Salon",
   before: {
     label: "Before",
-    src: "/old-gbp.png",
+    src: "/old-gbp.jpg",
     width: 398,
     height: 426,
     alt: "Salt Salon's Google Business Profile before Fynd: 4.6 stars from 93 reviews.",
