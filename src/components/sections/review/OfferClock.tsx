@@ -31,9 +31,13 @@ export function OfferClock({
   /** "dark" sits on navy, "light" on white or Fynd Gray. */
   tone?: "dark" | "light";
   /**
-   * "sm" is the hero's. Real type and padding steps rather than a transform:
-   * scaling the whole flag down would soften the digits and leave the border
-   * a fractional hairline.
+   * "sm" is small everywhere — the hero's. "md" is that same small scale on a
+   * phone and steps up from `sm`, so the pricing card matches the hero on
+   * mobile without giving up its size on desktop.
+   *
+   * Real type and padding steps rather than a transform: scaling the whole
+   * flag down would soften the digits and leave the border a fractional
+   * hairline.
    */
   size?: "sm" | "md";
   className?: string;
@@ -62,21 +66,20 @@ export function OfferClock({
       <span
         className={cn(
           "flex items-center gap-1.5 whitespace-nowrap bg-fynd-orange uppercase tracking-[0.04em] text-navy sm:tracking-[0.08em]",
-          // leading is explicit on the small one: the label is a bare text
-          // node, so it becomes an anonymous flex item carrying the inherited
-          // 24px line-height. Without this the padding shrinks but the flag
-          // does not.
-          sm
-            ? "px-1.5 py-0.5 text-[10px] leading-[17px]"
-            : "px-2 py-1.5 text-micro sm:px-2.5",
+          // Both sizes start here; only "md" steps up at `sm`. leading is
+          // explicit at every step because the label is a bare text node — it
+          // becomes an anonymous flex item carrying whatever line-height it
+          // inherits, and padding alone cannot shrink it.
+          "px-1.5 py-0.5 text-[10px] leading-[17px]",
+          sm || "sm:px-2.5 sm:py-1.5 sm:text-micro sm:leading-6",
         )}
       >
         <Clock
           aria-hidden="true"
           strokeWidth={2.5}
           className={cn(
-            "hidden min-[360px]:block",
-            sm ? "h-2.5 w-2.5" : "h-3.5 w-3.5",
+            "hidden h-2.5 w-2.5 min-[360px]:block",
+            sm || "sm:h-3.5 sm:w-3.5",
           )}
         />
         {offerWindow.label}
@@ -85,13 +88,11 @@ export function OfferClock({
       {week.state !== "unknown" && (
         <span
           className={cn(
-            "flex items-center gap-1.5",
             // Same reason as the tag: both zones are stretched to the taller
-            // one, so leaving either on the inherited 24px line-height keeps
-            // the whole flag at its old height.
-            sm
-              ? "px-1.5 py-0.5 leading-[17px]"
-              : "px-2.5 py-1.5 sm:gap-2 sm:px-3",
+            // one, so leaving either on the inherited line-height keeps the
+            // whole flag at its old height.
+            "flex items-center gap-1.5 px-1.5 py-0.5 leading-[17px]",
+            sm || "sm:gap-2 sm:px-3 sm:py-1.5 sm:leading-6",
             dark ? "text-white" : "text-ink",
           )}
         >
@@ -123,15 +124,15 @@ function Unit({
   return (
     <span
       className={cn(
-        "font-bold tabular-nums leading-none",
-        sm ? "text-[12px]" : "text-small",
+        "text-[12px] font-bold tabular-nums leading-none",
+        sm || "sm:text-small",
       )}
     >
       {String(value).padStart(2, "0")}
       <span
         className={cn(
-          "ml-px font-semibold",
-          sm ? "text-[9px]" : "text-[11px]",
+          "ml-px text-[9px] font-semibold",
+          sm || "sm:text-[11px]",
           dark ? "text-white/45" : "text-ink-soft",
         )}
       >
