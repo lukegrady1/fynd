@@ -103,7 +103,7 @@ export function LandingPage({
 
       <FunnelFooter />
 
-      <StickyCta ctaLabel="Start setup" targetId="convert" withDemo />
+      <StickyCta ctaLabel="Start now" targetId="convert" withDemo />
     </>
   );
 }
