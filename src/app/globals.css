@@ -261,6 +261,19 @@
   }
 }
 
+/* Trust-strip marquee. The track holds exactly two identical copies of the
+   list, so translating it by half its width lands the second copy precisely
+   where the first began and the loop is seamless. Attached via motion-safe:
+   only — see the note in TrustStrip for the reduced-motion fallback. */
+@keyframes fynd-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
 /* Panel swap in the problem story. Applied via motion-safe: only, so under
    prefers-reduced-motion no animation is attached and nothing starts hidden. */
 @keyframes fynd-panel {
