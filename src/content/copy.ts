@@ -262,8 +262,6 @@ export const welcome = {
   formHeading: "The onboarding form",
   formBody:
     "This is the whole setup. A few minutes now and I can start building.",
-  callHeading: "Want to walk through it instead?",
-  callBody: "Optional. If you'd rather do the form together, grab a time.",
 } as const;
 
 export const confirmed = {

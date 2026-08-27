@@ -7,6 +7,8 @@ import {
   FunnelFooter,
 } from "@/components/sections/review/PageChrome";
 import { PageTracking } from "@/components/sections/review/PageTracking";
+import { OnboardingForm } from "@/components/sections/onboarding/OnboardingForm";
+import { inviteEmail, oauthReadiness } from "@/lib/connect";
 import { Check } from "lucide-react";
 
 export const metadata: Metadata = {
@@ -51,27 +53,26 @@ export default async function WelcomePage({
               ))}
             </ol>
 
-            {/* TODO(integration): embed the GHL onboarding form here —
-                business name, Google Business Profile URL, CRM, who to contact. */}
+            {/* Built in-app rather than embedded from GHL. The GHL v2 Forms
+                API is read-only, and a GHL form cannot reorder its options off
+                an earlier answer or hand off to a platform OAuth screen —
+                which is most of what this flow does. Submissions still reach
+                GHL, via the webhook in `src/lib/ghl.ts`. */}
             <section className="mt-10 rounded-lg border border-line bg-fynd-gray p-6 lg:p-8">
               <h2 className="text-h2 text-ink">{welcome.formHeading}</h2>
               <p className="mt-2 text-body text-ink-soft">{welcome.formBody}</p>
-              <div className="mt-5 min-h-[420px] rounded-sm border border-line bg-white p-5">
-                <p className="text-small text-ink-soft">
-                  Onboarding form not configured — embed the GHL form here.
-                </p>
-              </div>
-            </section>
-
-            {/* TODO(integration): 15-min setup call calendar embed. */}
-            <section className="mt-6 rounded-lg border border-line bg-white p-6 lg:p-8">
-              <h2 className="text-h2 text-ink">{welcome.callHeading}</h2>
-              <p className="mt-2 text-body text-ink-soft">{welcome.callBody}</p>
-              <div className="mt-5 min-h-[420px] rounded-sm border border-line bg-fynd-gray p-5">
-                <p className="text-small text-ink-soft">
-                  Setup-call calendar not configured — set
-                  NEXT_PUBLIC_GHL_CALENDAR_ID.
-                </p>
+              <div className="mt-5">
+                <OnboardingForm
+                  cid={params.cid}
+                  prefill={{
+                    ownerName: params.firstName,
+                    businessName: params.biz,
+                    email: params.email,
+                    phone: params.phone,
+                  }}
+                  oauthReady={oauthReadiness()}
+                  inviteEmail={inviteEmail()}
+                />
               </div>
             </section>
           </div>

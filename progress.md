@@ -71,6 +71,82 @@ Nothing was deleted — it was resequenced.
   calendar. The fear on a booking page is that it will be a pitch; naming the
   agenda is the cheapest friction removal available.
 
+### Onboarding form — `/start/welcome`
+
+Four steps: your details → business type → booking software → connect. Built in
+React rather than embedded from GHL, because a GHL form can do neither of the
+two things this flow is actually for: reordering its options off an earlier
+answer, and handing off to a platform OAuth screen. (The v2 Forms API is also
+read-only — forms can only be authored in the GHL UI.) Submissions still reach
+GHL through the existing webhook in `src/lib/ghl.ts`.
+
+- `src/content/onboarding.ts` — copy, the 17-platform roster, and the
+  per-vertical priority order. Deliberately separate from
+  `integrations.platforms` in `copy.ts`: that list is the marketing ring and
+  needs a logo per entry, this one is the answer set and includes "Other" and
+  "I don't use booking software".
+- `src/lib/onboarding.ts` — ordering, search, and the zod schema shared by the
+  client and the route handler.
+- `src/app/api/onboarding/route.ts` — two payloads on one route, `profile` and
+  `connect`.
+
+Decisions worth keeping:
+
+- **Business type is asked before the platform** purely to reorder the platform
+  list. A barber sees Booksy first; a Pilates studio sees Mindbody and Mariana
+  Tek. It reorders, it never filters — every platform stays reachable, and
+  "Other"/"no software" are pinned last so they can't be promoted above a
+  platform we support.
+- **The profile is saved leaving step 3, before the connect step.** Someone who
+  bounces off a consent screen is still a captured customer. Nothing about the
+  submit is conditional on the connection working, and "I'll do this later" is
+  always available.
+- **No password is ever requested.** `oauth` where a public app is provisioned,
+  otherwise a limited staff invite the owner creates and can revoke.
+- **Errors are `text-ink` with an orange icon and border**, not orange text —
+  Fynd Orange fails AA on white at 14px, and red is out per design.md.
+
+### Onboarding writes — GHL v2 API, not the webhook
+
+`src/lib/ghl-contacts.ts`. Onboarding was the first thing collecting data that
+could not be reconstructed, and routing it through `notifyGhl` meant a customer
+saw "That's everything." over a payload that went in the bin — the stub logs
+only the event name, never the body. It now writes directly:
+
+- `POST /contacts/upsert` — keyed on email, so a resubmit updates one record.
+- `POST /opportunities/` — opens a card in **Fynd Onboarding**
+  (`JusZQJ8z9ceJBLhaypFs`) in the Grady Digital sub-account
+  (`irXA1fnhZypBkW6W0cwF`).
+- The connect step upserts the status and moves the card: `skipped` →
+  *Needs access* (chase these), anything else → *Access pending*.
+
+The profile write is **not** best-effort — a failure returns 502/503 and the
+form shows an error. The `notifyGhl` webhook still fires alongside it for
+workflow triggers and stays best-effort. The connect write is best-effort in
+both channels: the details are already saved by then.
+
+Traps, both of which cost real debugging time:
+
+- **Custom field keys are written WITHOUT the `contact.` prefix.** Reads report
+  `contact.fynd_business_type`; writing that exact string returns 200 and is
+  then silently ignored. Only the bare `fynd_business_type` lands. There is a
+  tripwire in `upsertOnboardingContact` that logs loudly if a contact saves
+  with zero custom fields.
+- **Fields are TEXT, not dropdowns, on purpose.** A GHL picklist that drifted
+  from the roster in `src/content/onboarding.ts` would 422 the upsert and lose
+  the customer. Convert them in the UI only once the roster settles.
+
+Needs `GHL_PIT`, `GHL_LOCATION_ID`, `GHL_ONBOARDING_PIPELINE_ID` and
+`FYND_INVITE_EMAIL` (all in `.env.example`). The PIT is a secret — server-only,
+never `NEXT_PUBLIC_`.
+
+The connect step carries **two** access asks: the booking platform (actioned
+there) and the Google Business Profile (emailed afterwards, `connect.gbpBody`).
+The GBP notice renders on all three paths — it is unrelated to which platform
+they picked. There is no skip link: the only way off step 4 is the confirm
+button, so watch the *Form submitted* stage for people who stalled rather than
+assuming everything there is a fresh arrival.
+
 ## Verified
 
 | Check | Result |
@@ -129,7 +205,7 @@ These are the `TODO(integration)` markers in the codebase.
    10-minute page-load timer; that was declined once as a session-based
    countdown that restarts, which §5 explicitly lists under "do not build".
 8. **Real 4G perf check** — measured on localhost only. Re-run throttled on
-   Vercel before trusting the <1.5s LCP target.
+   Netlify before trusting the <1.5s LCP target.
 9. **Illustrative proof figures** — `proof` and `roi` in `src/content/copy.ts`
    are made up for illustration and labelled as such. Replace with real client
    numbers when they exist, and keep the labelling honest about which is which
@@ -143,9 +219,19 @@ These are the `TODO(integration)` markers in the codebase.
    supply — roughly a third of a competitive page in this category is social
    proof, and it's the part that can't be written, only earned.
 
+- **No platform OAuth app exists.** `resolveConnectMethod` requires a client id,
+  authorize URL and redirect URI (`OAUTH_SQUARE_*`, `OAUTH_ACUITY_*`) before it
+  will show a Connect button, so today **every** platform renders the staff-invite
+  path. `src/app/api/connect/[platform]/route.ts` gets the owner to the consent
+  screen and sets a `state` cookie; **there is no callback handler** — whoever
+  builds it owns the token exchange and must verify `state` against that cookie.
+- **`FYND_INVITE_EMAIL` is unset.** The invite step degrades to "I'll email you
+  the address" rather than printing a placeholder a customer would try to use.
+  Set it and step 2 names the address directly.
+
 ## Notes for whoever picks this up
 
-- **Env vars**: `.env.example` lists all eight. Set them in Vercel's environment
+- **Env vars**: `.env.example` lists them all. Set them in Netlify's environment
   variables, never in the repo. `.env.local` is gitignored.
 - **`--text-muted` (#8A93A6) fails WCAG AA on white (3.09:1) and on Fynd Gray
   (2.80:1).** It's a design.md token but it cannot carry readable text — that's

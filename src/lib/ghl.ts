@@ -16,12 +16,18 @@ export type GhlEvent =
   | "checkout_completed"
   | "calendar_viewed"
   | "vsl_watched_50"
-  | "booking_completed";
+  | "booking_completed"
+  // Onboarding is two writes, not one: the profile is saved the moment it is
+  // complete, and the connection result lands separately (or never, if they
+  // skip). Keeping them distinct means a skipped connection is still a
+  // captured customer with a workflow that can chase the missing half.
+  | "onboarding_submitted"
+  | "onboarding_connect";
 
 export type GhlPayload = {
   event: GhlEvent;
   ghl_contact_id: string | null;
-  page: "start" | "call";
+  page: "start" | "call" | "welcome";
   timestamp: string;
   meta: Record<string, unknown>;
 };
