@@ -12,7 +12,8 @@ import { StickyCta } from "./StickyCta";
 import { ReviewHero } from "./ReviewHero";
 import { TrustStrip } from "./TrustStrip";
 import { StatBar } from "./StatBar";
-import { ProblemSection, WhyReviews } from "./ProblemSection";
+import { WhyReviews } from "./ProblemSection";
+import { ProblemStory } from "./ProblemStory";
 import { Mechanism } from "./Mechanism";
 import { ResultsSection } from "./ResultsSection";
 import { PricingSection } from "./PricingSection";
@@ -75,7 +76,7 @@ export function LandingPage({
           withDemo
         />
         <TrustStrip />
-        <ProblemSection />
+        <ProblemStory />
         <Mechanism />
 
         {/* ── Stakes, then proof. Why it matters now sits ahead of the

@@ -5,9 +5,20 @@ import { Reveal } from "./Reveal";
 /**
  * Problem, then stakes — the two setup sections that earn the rest of the page.
  *
- * Deliberately typographic rather than icon-led: four icons in four circles is
- * the most templated pattern in this category, and the copy is doing the work
- * here anyway. Big muted numerals carry the rhythm instead.
+ * This used to be set typographically, on the argument that four icons in four
+ * circles is the most templated pattern in the category. It is cards now, by
+ * request. The templated version of that pattern is what is being avoided
+ * instead: no icons, a counter rather than a glyph, and one accent colour
+ * across all four rather than a rainbow — these are four faces of the same
+ * pain, and colour-coding them as if they were features reads as celebration.
+ *
+ * Orange throughout because orange is this system's problem colour. It appears
+ * on borders, the rule and the chip background only, never as text: #ff8a1f is
+ * about 2.3:1 on white and fails AA even at display sizes. The numeral is ink.
+ *
+ * Motion is hover plus the existing staggered Reveal, nothing that depends on
+ * JavaScript to become readable, and every transition opts out under
+ * prefers-reduced-motion.
  */
 export function ProblemSection() {
   return (
@@ -19,20 +30,30 @@ export function ProblemSection() {
           <p className="measure mt-3 text-body text-ink-soft">{problem.sub}</p>
         </Reveal>
 
-        <ol className="mt-10 grid gap-x-10 gap-y-8 sm:grid-cols-2">
+        <ol className="mt-10 grid gap-5 sm:grid-cols-2 lg:gap-6">
           {problem.items.map((item, i) => (
-            <li key={item.title}>
-              <Reveal delay={i * 0.05} className="flex gap-4">
-                <span
-                  aria-hidden="true"
-                  className="w-8 shrink-0 text-h2 font-bold leading-none tabular-nums text-ink/15"
-                >
-                  {i + 1}
-                </span>
-                <div className="min-w-0">
-                  <h3 className="text-h3 text-ink">{item.title}</h3>
-                  <p className="mt-1.5 text-body text-ink-soft">{item.body}</p>
-                </div>
+            <li key={item.title} className="flex">
+              {/* h-full down the chain so a short card still matches the tall
+                  one beside it — the grid stretches the li, not the card. */}
+              <Reveal delay={i * 0.06} className="flex w-full">
+                <article className="group relative flex h-full w-full flex-col overflow-hidden rounded-lg border border-line bg-white p-6 transition-all duration-250 ease-fynd hover:-translate-y-1 hover:border-fynd-orange/45 hover:shadow-lg hover:shadow-ink/[0.06] motion-reduce:transition-none motion-reduce:hover:translate-y-0 lg:p-7">
+                  {/* Not cursor-pointer and not a link: the card responds to
+                      the pointer for emphasis, and nothing here is clickable. */}
+                  <span
+                    aria-hidden="true"
+                    className="absolute left-0 top-0 h-[3px] w-10 bg-fynd-orange transition-all duration-300 ease-fynd group-hover:w-24 motion-reduce:transition-none"
+                  />
+
+                  <span
+                    aria-hidden="true"
+                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-fynd-gray text-h3 font-bold tabular-nums text-ink-soft transition-colors duration-250 ease-fynd group-hover:bg-fynd-orange/10 group-hover:text-ink motion-reduce:transition-none"
+                  >
+                    {i + 1}
+                  </span>
+
+                  <h3 className="mt-5 text-h3 text-ink">{item.title}</h3>
+                  <p className="mt-2 text-body text-ink-soft">{item.body}</p>
+                </article>
               </Reveal>
             </li>
           ))}

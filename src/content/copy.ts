@@ -589,6 +589,160 @@ export const trust = {
   logosHeading: "Businesses running Fynd",
 } as const;
 
+/**
+ * The problem, told as one interactive profile instead of four paragraphs.
+ *
+ * The four ideas are the same ones `problem.items` carried — they were good —
+ * but the presentation is inverted: one dominant object the visitor can poke
+ * at, four controls under it, and the explanation held back in a drawer until
+ * they ask for it. Reading four text blocks is passive; watching the same
+ * profile restate the problem four different ways is not.
+ *
+ * ILLUSTRATION, NOT A CLIENT. Marlow Hair Studio is the same fictional salon
+ * as the hero phone, kept deliberately consistent so the page tells one story
+ * rather than inventing a new business per section. Every number below is
+ * internally consistent and must stay that way: 247 - 31 = 216 missed, and
+ * 214 - 31 = 183 behind the competitor. Nothing here is presented as a Fynd
+ * result — the real numbers live in `results`, sourced to Salt Salon.
+ *
+ * The rating is deliberately HIGH (4.8) against a low review count. That is
+ * the section's whole thesis: the work is good, the profile just doesn't show
+ * it. A mediocre rating would argue the opposite.
+ */
+export const problemStory = {
+  eyebrow: "The problem",
+  heading: "You do good work. Your profile doesn't show it.",
+  sub: "Great service doesn't automatically become a great reputation.",
+
+  profile: {
+    label: "Your Google profile",
+    business: "Marlow Hair Studio",
+    category: "Hair salon",
+    rating: "4.8",
+    reviews: 31,
+    appointments: 247,
+    missed: 216,
+  },
+
+  /** Scrolls to the solution section, which is the answer to all four. */
+  ctaLabel: "See how Fynd fixes it",
+  ctaTargetId: "solution",
+  drawerHint: "Read the detail",
+  closeLabel: "Close",
+
+  states: [
+    {
+      n: "01",
+      tab: "Nobody asks",
+      hook: "216 customers never left a review.",
+      linkLabel: "See where they went",
+      counts: {
+        leftLabel: "appointments completed",
+        rightLabel: "Google reviews",
+      },
+      drawer: {
+        title: "Where the review went",
+        when: "Tuesday · 2:00 PM",
+        steps: [
+          { done: true, label: "Appointment completed", note: "Sarah M." },
+          { done: true, label: "Customer left happy", note: "Said she'd be back" },
+          { done: false, label: "Review request", note: "Never sent" },
+          { done: false, label: "Google review", note: "Never posted" },
+        ],
+        punch: ["Nothing went wrong.", "Nobody asked."],
+      },
+    },
+    {
+      n: "02",
+      tab: "You get busy",
+      hook: "7 happy customers. 0 review requests.",
+      linkLabel: "See the day",
+      day: {
+        label: "Today",
+        appointments: [
+          { time: "8:00", service: "Haircut" },
+          { time: "9:00", service: "Colour" },
+          { time: "10:30", service: "Haircut" },
+          { time: "12:00", service: "Balayage" },
+          { time: "1:30", service: "Haircut" },
+          { time: "3:00", service: "Colour" },
+          { time: "4:30", service: "Haircut" },
+        ],
+        sentLabel: "Review requests sent",
+        sent: "0",
+      },
+      drawer: {
+        title: "A normal Tuesday",
+        when: "8:00 AM — 5:30 PM",
+        steps: [
+          { done: true, label: "Appointments finished", note: "Seven" },
+          { done: true, label: "Customers who left happy", note: "Seven" },
+          { done: false, label: "Review requests sent", note: "None" },
+          { done: false, label: "Reviews received", note: "None" },
+        ],
+        punch: [
+          "You meant to text them.",
+          "Then your next client walked in.",
+        ],
+      },
+    },
+    {
+      n: "03",
+      tab: "They forget",
+      hook: "Happy doesn't mean they'll remember.",
+      linkLabel: "See what she did next",
+      message: {
+        fromLabel: "Customer",
+        quote: "Absolutely loved it — I'll definitely be back!",
+        time: "2:14 PM",
+        outcomeLabel: "Google review",
+        outcome: "Never posted",
+      },
+      drawer: {
+        title: "The review she meant to leave",
+        when: "Tuesday, then Wednesday, then never",
+        steps: [
+          { done: true, label: "Told you in person", note: "Five stars, unprompted" },
+          { done: true, label: "Meant to post one", note: "Genuinely" },
+          { done: false, label: "That evening", note: "Forgot" },
+          { done: false, label: "By Thursday", note: "Gone from mind" },
+        ],
+        punch: [
+          "The ones who loved it forget.",
+          "The rare unhappy one always finds the time.",
+        ],
+      },
+    },
+    {
+      n: "04",
+      tab: "They win",
+      hook: "Same rating. 183 fewer reasons to pick you.",
+      linkLabel: "See the gap",
+      search: {
+        query: "Hair salons near me",
+        rows: [
+          { rank: "1", name: "The Loft Salon", rating: "4.8", reviews: 214 },
+          { rank: "2", name: "Marlow Hair Studio", rating: "4.8", reviews: 31, you: true },
+        ],
+      },
+      drawer: {
+        title: "Why they get the call",
+        when: "Every search, all day",
+        steps: [
+          { done: true, label: "Same star rating", note: "4.8 each" },
+          { done: true, label: "Same quality of work", note: "Arguably better" },
+          { done: false, label: "Same number of reviews", note: "183 behind" },
+          { done: false, label: "Picked from the search", note: "Rarely" },
+        ],
+        punch: [
+          "The work isn't the problem.",
+          "Nobody scrolling can tell yet — they only see the number.",
+        ],
+      },
+    },
+  ],
+} as const;
+
 export const problem = {
   eyebrow: "The problem",
   heading: "You do good work. Your profile doesn't show it.",

@@ -261,6 +261,19 @@
   }
 }
 
+/* Panel swap in the problem story. Applied via motion-safe: only, so under
+   prefers-reduced-motion no animation is attached and nothing starts hidden. */
+@keyframes fynd-panel {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 @keyframes fynd-pulse {
   0% {
     transform: scale(1);

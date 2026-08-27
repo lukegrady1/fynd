@@ -31,7 +31,9 @@ export function Mechanism() {
   const { sms, steps, behindScenes } = mechanism;
 
   return (
-    <section className="bg-navy py-16 text-white lg:py-28">
+    // id: the problem story's drawer CTA scrolls here — it is the answer to
+    // all four of its states.
+    <section id="solution" className="scroll-mt-20 bg-navy py-16 text-white lg:py-28">
       <Container>
         <Reveal className="max-w-2xl">
           <Eyebrow tone="light" variant="pill">

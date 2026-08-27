@@ -15,6 +15,8 @@ export type AnalyticsEvent =
   | "vsl_complete"
   | "cta_click"
   | "faq_open"
+  /** Problem-story drawer opened; `state` carries which of the four. */
+  | "problem_drawer_open"
   | "checkout_started"
   | "checkout_completed"
   | "calendar_loaded"
