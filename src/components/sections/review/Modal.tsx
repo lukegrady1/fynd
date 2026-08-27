@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useSheetDrag } from "@/lib/use-sheet-drag";
 
 /**
  * A dialog: centred panel from `sm` up, bottom sheet on phones.
@@ -41,6 +42,7 @@ export function Modal({
   const [shown, setShown] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
   const returnFocusRef = useRef<HTMLElement | null>(null);
+  const drag = useSheetDrag({ open: open, onDismiss: onClose });
 
   useEffect(() => setMounted(true), []);
 
@@ -112,11 +114,16 @@ export function Modal({
       />
 
       <div
-        ref={panelRef}
+        ref={(node) => {
+          panelRef.current = node;
+          drag.rootRef.current = node;
+        }}
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"
         tabIndex={-1}
+        {...drag.handlers}
+        style={drag.style}
         className={cn(
           "relative flex max-h-[88vh] w-full flex-col overflow-hidden rounded-t-lg bg-white shadow-2xl outline-none transition-all duration-300 ease-fynd motion-reduce:transition-none",
           "sm:max-h-[88vh] sm:max-w-[680px] sm:rounded-lg lg:max-w-[900px]",
@@ -125,6 +132,8 @@ export function Modal({
             : "translate-y-full opacity-100 sm:translate-y-0 sm:scale-[0.98] sm:opacity-0",
         )}
       >
+        {/* Grabber. Decorative — the whole sheet is draggable, not just this,
+            and the scrim, the close button and Escape all still dismiss. */}
         <span
           aria-hidden="true"
           className="mx-auto mt-3 h-1 w-10 shrink-0 rounded-full bg-line sm:hidden"

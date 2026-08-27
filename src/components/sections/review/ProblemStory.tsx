@@ -6,6 +6,7 @@ import { ArrowRight, Check, Star, X } from "lucide-react";
 import { problemStory } from "@/content/copy";
 import { track } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
+import { useSheetDrag } from "@/lib/use-sheet-drag";
 import { Container, Eyebrow } from "@/components/ui/Layout";
 import { Reveal } from "./Reveal";
 
@@ -400,6 +401,7 @@ function Drawer({
   const [shown, setShown] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
   const returnFocusRef = useRef<HTMLElement | null>(null);
+  const drag = useSheetDrag({ open: state !== null, onDismiss: onClose });
 
   useEffect(() => setMounted(true), []);
 
@@ -480,11 +482,16 @@ function Drawer({
       />
 
       <div
-        ref={panelRef}
+        ref={(node) => {
+          panelRef.current = node;
+          drag.rootRef.current = node;
+        }}
         role="dialog"
         aria-modal="true"
         aria-labelledby="problem-drawer-title"
         tabIndex={-1}
+        {...drag.handlers}
+        style={drag.style}
         className={cn(
           // Bottom sheet on phones, right drawer from sm up. A sheet that
           // slides in from the side is a desktop idiom; on a phone the thumb
@@ -501,8 +508,8 @@ function Drawer({
             : "translate-x-0 translate-y-full sm:translate-x-full sm:translate-y-0",
         )}
       >
-        {/* Grabber. Purely a signal that this is a sheet — the scrim, the
-            close button and Escape all still dismiss it. */}
+        {/* Grabber. Decorative — the whole sheet is draggable, not just this,
+            and the scrim, the close button and Escape all still dismiss. */}
         <span
           aria-hidden="true"
           className="mx-auto mt-3 h-1 w-10 shrink-0 rounded-full bg-line sm:hidden"
