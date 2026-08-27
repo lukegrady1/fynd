@@ -26,10 +26,27 @@
   /* --- Type --- */
   --font-sans: var(--font-poppins), system-ui, sans-serif;
 
-  --text-h1: 2.5rem; /* 40 */
-  --text-h1--line-height: 3rem; /* 48 */
+  /* Fluid: 30px at 390 -> 40px at 1024, then held. 40px was a fixed size, so
+     on a phone every section heading was larger than the hero h1 above it —
+     the most important line on the page was also the smallest. Clamped rather
+     than stepped at breakpoints so nothing jumps mid-resize.
+
+     Line height is unitless on purpose: a fixed 3rem would stay 48px while the
+     type shrank to 30, opening a gap between the lines of a wrapped heading.
+     1.2 is the ratio the old 48/40 pair already had. */
+  --text-h1: clamp(1.875rem, 1.49rem + 1.58vw, 2.5rem);
+  --text-h1--line-height: 1.2;
   --text-h1--font-weight: 700;
   --text-h1--letter-spacing: -0.01em;
+
+  /* The funnel hero. Fluid like --text-h1 and deliberately a step above it at
+     every width — 34px at 390 against h1's 30, 44px from 960 against its 40 —
+     so the page's opening line always outranks the section headings under it.
+     If you change one ladder, check the other still sits below it. */
+  --text-hero: clamp(2.125rem, 1.7rem + 1.75vw, 2.75rem);
+  --text-hero--line-height: 1.1;
+  --text-hero--font-weight: 700;
+  --text-hero--letter-spacing: -0.02em;
 
   --text-display: 3.5rem; /* 56 */
   --text-display--line-height: 4rem; /* 64 */
@@ -250,6 +267,25 @@
     .js-reveal.is-visible {
       opacity: 1;
       transform: none;
+    }
+
+    /* Slide in from the leading edge rather than rising. Phones only, and
+       deliberately so: below sm a list is one column and each item arrives on
+       its own as you scroll, which is the whole effect. From sm up the same
+       list sits in a two-column grid where a sideways entrance fights the
+       layout, so it keeps the standard rise.
+
+       Specificity does the rest: this is one class, so `.js-reveal.is-visible`
+       (two) still wins on arrival, and the reduced-motion override later in
+       this file wins on source order. */
+    @media (max-width: 639px) {
+      .js-reveal-left {
+        transform: translateX(-32px);
+      }
+
+      .js-reveal-right {
+        transform: translateX(32px);
+      }
     }
   }
 }

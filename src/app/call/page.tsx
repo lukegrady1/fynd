@@ -1,25 +1,33 @@
-import type { Metadata } from "next";
-import { meta } from "@/content/copy";
-import { parseParams, type SearchParams } from "@/lib/params";
-import { LandingPage } from "@/components/sections/review/LandingPage";
+import { redirect } from "next/navigation";
+import type { SearchParams } from "@/lib/params";
 
 /**
- * Same as /start — this URL is already out in text messages, so it keeps
- * working and keeps its prefill params. The calendar it used to be dedicated
- * to is now the #demo module on the shared page.
+ * /call → /demo.
+ *
+ * There is one booking calendar again, so this route has nothing of its own to
+ * show. It is a redirect rather than a deletion because the URL is already in
+ * people's text messages: those links were always meant to reach a booking
+ * page, and a 404 is a worse answer than the right calendar.
+ *
+ * The query string goes with it — ?fn=, ?phone= and ?email= are what prefill
+ * the calendar, and dropping them here would make someone retype their details
+ * on a phone keyboard.
+ *
+ * /call/confirmed is untouched: it is a sibling route, and GHL still redirects
+ * there after a booking.
  */
-export const metadata: Metadata = {
-  title: meta.call.title,
-  description: meta.call.description,
-  robots: { index: false, follow: false },
-};
-
 export default async function CallPage({
   searchParams,
 }: {
   searchParams: Promise<SearchParams>;
 }) {
-  const params = parseParams(await searchParams);
+  const params = new URLSearchParams();
 
-  return <LandingPage params={params} page="call" />;
+  for (const [key, value] of Object.entries(await searchParams)) {
+    if (typeof value === "string") params.set(key, value);
+    else if (Array.isArray(value) && value[0]) params.set(key, value[0]);
+  }
+
+  const query = params.toString();
+  redirect(query ? `/demo?${query}` : "/demo");
 }

@@ -14,6 +14,7 @@ const twMerge = extendTailwindMerge({
         {
           text: [
             "display",
+            "hero",
             "h1",
             "h2",
             "h3",

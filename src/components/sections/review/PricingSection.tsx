@@ -3,11 +3,11 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Check, Lock, Nfc } from "lucide-react";
-import { checkout, offer, pricing } from "@/content/copy";
+import { checkout, demoCta, offer, pricing } from "@/content/copy";
 import { track } from "@/lib/analytics";
 import { Container, Eyebrow } from "@/components/ui/Layout";
 import { Reveal } from "./Reveal";
-import { DemoCta } from "./DemoCta";
+import { useDemoHref } from "./DemoCta";
 import { OfferClock } from "./OfferClock";
 
 /**
@@ -34,7 +34,7 @@ export function PricingSection(
         ctaLabel: string;
         targetId: string;
       }
-  ) & { withDemo?: boolean },
+  ),
 ) {
   return (
     <section
@@ -95,17 +95,6 @@ export function PricingSection(
               <ScrollButton label={props.ctaLabel} targetId={props.targetId} />
             )}
 
-            {/* Light tone: this one sits on the white pricing card, not navy.
-                sm:w-full is not redundant — DemoCta's base is w-full sm:w-auto,
-                so without it the button shrink-wraps inside the card. */}
-            {props.withDemo && (
-              <DemoCta
-                section="pricing"
-                tone="light"
-                className="mt-3 w-full sm:w-full"
-              />
-            )}
-
             <AddOn />
 
             {props.mode === "checkout" && (
@@ -116,7 +105,7 @@ export function PricingSection(
             )}
           </div>
 
-          <p className="mt-5 text-small text-ink-soft">{pricing.reassure}</p>
+          <DemoLine />
         </Reveal>
       </Container>
     </section>
@@ -124,6 +113,38 @@ export function PricingSection(
 }
 
 /* ------------------------------------------------------------------ */
+
+/**
+ * The softer ask, under the card.
+ *
+ * A sentence with one linked noun rather than a second button: inside the card
+ * a competing button undercuts the thing the card is for, and directly beneath
+ * it a full-weight CTA does the same. This reads as an aside, which is what it
+ * is. Opens in a new tab like every other route to /demo, and carries the
+ * prefill params across.
+ */
+function DemoLine() {
+  const demoHref = useDemoHref();
+
+  return (
+    <p className="mt-5 text-small text-ink-soft">
+      {pricing.demoLine.lead}{" "}
+      <a
+        href={demoHref}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={() =>
+          track("cta_click", { cta: demoCta.label, section: "pricing_line" })
+        }
+        className="font-semibold text-fynd-blue underline decoration-fynd-blue/40 underline-offset-4 transition-colors duration-150 hover:decoration-fynd-blue"
+      >
+        {pricing.demoLine.linkLabel}
+        <span className="sr-only"> ({demoCta.newTabHint})</span>
+      </a>
+      {pricing.demoLine.tail}
+    </p>
+  );
+}
 
 /** The NFC card. A one-off, so it sits apart from the monthly figure. */
 function AddOn() {

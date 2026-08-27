@@ -16,10 +16,24 @@ import type { ReactNode } from "react";
 export function Reveal({
   children,
   delay = 0,
+  from,
+  offset = 60,
   className,
 }: {
   children: ReactNode;
   delay?: number;
+  /**
+   * Direction to arrive from, on phones only — see the note in globals.css.
+   * Omit for the default rise.
+   */
+  from?: "left" | "right";
+  /**
+   * How far into the viewport the element has to travel before it fires, in
+   * px from the bottom edge. Raise it when a stack should arrive one at a
+   * time rather than all at once: with the default, four short items are all
+   * inside the viewport together and reveal as a single group.
+   */
+  offset?: number;
   className?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -41,17 +55,17 @@ export function Reveal({
           observer.disconnect();
         }
       },
-      { rootMargin: "0px 0px -60px 0px" },
+      { rootMargin: `0px 0px -${offset}px 0px` },
     );
 
     observer.observe(el);
     return () => observer.disconnect();
-  }, []);
+  }, [offset]);
 
   return (
     <div
       ref={ref}
-      className={cn("js-reveal", className)}
+      className={cn("js-reveal", from && `js-reveal-${from}`, className)}
       style={delay ? { transitionDelay: `${delay}s` } : undefined}
     >
       {children}

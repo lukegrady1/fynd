@@ -56,9 +56,9 @@ export function ReviewHero({
             {/* The offer flag sits above the headline rather than on the
                 button: it is content the reader takes in with the h1, not a
                 sticker on a control, and it leaves both CTAs clean. */}
-            <OfferClock tone="dark" />
+            <OfferClock tone="dark" size="sm" />
 
-            <h1 className="mt-6 text-[27px] font-bold leading-[1.1] tracking-[-0.02em] text-white min-[420px]:text-[31px] sm:text-[38px] lg:text-[42px]">
+            <h1 className="mt-6 text-hero text-white">
               <span className="block">{lead}</span>
               <span className="block text-fynd-green">{accent}</span>
             </h1>

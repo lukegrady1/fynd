@@ -40,7 +40,7 @@ export function Mechanism() {
             {mechanism.eyebrow}
           </Eyebrow>
           {/* Two lines with the payoff in green, matching the hero's form. */}
-          <h2 className="mt-5 text-h1 text-white lg:text-[42px] lg:leading-[1.1]">
+          <h2 className="mt-5 text-h1 text-white">
             <span className="block">{mechanism.heading}</span>
             <span className="block text-fynd-green">
               {mechanism.headingAccent}

@@ -6,9 +6,7 @@ import Link from "next/link";
 import { ArrowRight, Check } from "lucide-react";
 import { demoCta, integrations } from "@/content/copy";
 import { LogoMark } from "@/components/brand/Logo";
-import { Container, Eyebrow } from "@/components/ui/Layout";
 import { cn } from "@/lib/utils";
-import { Reveal } from "./Reveal";
 
 type Platform = (typeof integrations.platforms)[number];
 
@@ -84,9 +82,16 @@ const fitCount = (boxWidth: number, total: number) => {
  * Logos degrade: if a file is missing the card shows the platform name as a
  * wordmark rather than a broken image.
  */
-export function BookingIntegrations() {
-  const { heading, fallback } = integrations;
-
+/**
+ * The ring plus whatever did not fit, sized to whatever column it is given.
+ *
+ * Exported because the "What's included" modal shows the same diagram, and a
+ * second copy would drift — the geometry, the step-down and the leftover grid
+ * all have to agree with the section this came from.
+ *
+ * Expects a dark surface; the cards and wires are drawn for navy.
+ */
+export function IntegrationRing({ className }: { className?: string }) {
   const columnRef = useRef<HTMLDivElement>(null);
   const boxWidth = useBoxWidth(columnRef);
   const ringCount =
@@ -98,81 +103,36 @@ export function BookingIntegrations() {
   const rest = integrations.platforms.slice(ringCount);
 
   return (
-    <section className="relative isolate overflow-hidden bg-navy py-16 text-white lg:py-24">
-      <Glow />
+    <div ref={columnRef} className={cn("w-full", className)}>
+      <Ring platforms={inRing} />
 
-      <Container className="relative">
-        <div className="grid items-center gap-12 lg:mr-[calc(50%-50vw+1rem)] lg:grid-cols-[0.34fr_0.66fr] lg:gap-10">
-          <Reveal>
-            <Eyebrow tone="light" variant="pill">
-              {integrations.eyebrow}
-            </Eyebrow>
-
-            <h2 className="mt-5 max-w-[430px] text-h1 text-white lg:text-[42px] lg:leading-[1.1]">
-              {heading.lead}{" "}
-              <span className="text-fynd-green">{heading.accent}</span>{" "}
-              {heading.tail}
-            </h2>
-
-            <p className="measure mt-5 text-body text-white/70">
-              {integrations.sub}
-            </p>
-
-            <p className="mt-8 inline-flex items-center gap-3 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2.5 text-small font-semibold text-fynd-green">
-              <span className="flex h-5 w-5 items-center justify-center rounded-full border border-fynd-green/60">
-                <Check aria-hidden="true" strokeWidth={3} className="h-3 w-3" />
-              </span>
-              {integrations.badge}
-            </p>
-          </Reveal>
-
-          <div ref={columnRef} className="w-full">
-            <Ring platforms={inRing} />
-
-            {rest.length > 0 && (
-              <div className="mt-10">
-                <p className="text-center text-small text-white/50">
-                  {integrations.moreHeading}
-                </p>
-                {/* Wrapped and centred rather than a plain grid: the number
-                    of leftovers now changes one at a time with the width, so
-                    this list is regularly 1, 2 or 7 long. A grid strands the
-                    odd one at the left edge; centring makes every count — a
-                    lone card included — look deliberate. */}
-                <ul className="mt-4 flex flex-wrap justify-center gap-3">
-                  {rest.map((platform) => (
-                    <li
-                      key={platform.name}
-                      className="flex min-h-[68px] w-[calc(50%-0.375rem)] max-w-[220px] items-center justify-center rounded-md border border-white/10 bg-navy-card p-3 sm:w-[calc(33.333%-0.5rem)]"
-                    >
-                      <PlatformLogo platform={platform} />
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
-        </div>
-
-        <Reveal className="mt-14 flex flex-col items-start gap-3 border-t border-white/10 pt-8 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-body text-white/70">
-            <span className="font-semibold text-white">{fallback.lead}</span>{" "}
-            {fallback.body}
+      {/* Hidden on phones: at that width the ring itself is already down to
+          five or six, so the leftover list is most of the roster sitting in a
+          grid under the diagram — which reads as "here is what did NOT fit"
+          rather than as part of it. The full list is a call away. */}
+      {rest.length > 0 && (
+        <div className="mt-10 hidden sm:block">
+          <p className="text-center text-small text-white/50">
+            {integrations.moreHeading}
           </p>
-          {/* An in-page anchor now that the calendar lives on this page. */}
-          <Link
-            href={`#${demoCta.anchor}`}
-            className="group inline-flex shrink-0 items-center gap-2 text-body font-semibold text-fynd-green underline-offset-4 hover:underline"
-          >
-            {fallback.ctaLabel}
-            <ArrowRight
-              aria-hidden="true"
-              className="h-4 w-4 transition-transform duration-150 ease-fynd group-hover:translate-x-[3px]"
-            />
-          </Link>
-        </Reveal>
-      </Container>
-    </section>
+          {/* Wrapped and centred rather than a plain grid: the number of
+              leftovers changes one at a time with the width, so this list is
+              regularly 1, 2 or 7 long. A grid strands the odd one at the left
+              edge; centring makes every count — a lone card included — look
+              deliberate. */}
+          <ul className="mt-4 flex flex-wrap justify-center gap-3">
+            {rest.map((platform) => (
+              <li
+                key={platform.name}
+                className="flex min-h-[68px] w-[calc(50%-0.375rem)] max-w-[220px] items-center justify-center rounded-md border border-white/10 bg-navy-card p-3 sm:w-[calc(33.333%-0.5rem)]"
+              >
+                <PlatformLogo platform={platform} />
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -355,11 +315,3 @@ function PlatformLogo({ platform }: { platform: Platform }) {
   );
 }
 
-function Glow() {
-  return (
-    <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-      <span className="absolute left-[62%] top-[24%] h-[520px] w-[520px] -translate-x-1/2 rounded-full bg-fynd-blue/[0.07] blur-[150px]" />
-      <span className="absolute right-[6%] top-[38%] h-[420px] w-[420px] rounded-full bg-fynd-green/[0.05] blur-[140px]" />
-    </div>
-  );
-}

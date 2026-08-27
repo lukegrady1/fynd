@@ -66,6 +66,17 @@ export function ProblemSection() {
 /**
  * The stakes. Navy so it lands as a turn in the argument rather than another
  * light section, and set as a rule-separated list rather than cards.
+ *
+ * On phones the four points arrive one at a time, sliding in from the left as
+ * each scrolls up. Laying them out horizontally was the other option and does
+ * not survive the arithmetic: four titles plus a sentence each across 358px is
+ * ~85px per column. So the list stays vertical and the sequence is carried by
+ * the entrance instead.
+ *
+ * `offset` is what makes them arrive separately. At the default 60px all four
+ * are inside the viewport at once and reveal as a single group; firing them
+ * only once they are ~40% up the screen means scrolling walks through them.
+ * The stagger is a backstop for the two that are still on screen together.
  */
 export function WhyReviews() {
   return (
@@ -81,7 +92,9 @@ export function WhyReviews() {
             {whyReviews.items.map((item, i) => (
               <li key={item.title}>
                 <Reveal
-                  delay={i * 0.05}
+                  delay={i * 0.08}
+                  from="left"
+                  offset={220}
                   className="border-b border-white/10 py-5"
                 >
                   <h3 className="text-h3 text-fynd-green">{item.title}</h3>

@@ -1,5 +1,7 @@
 import "server-only";
 
+import { GHL_EMBED_HOST } from "./ghl-embed";
+
 /**
  * GoHighLevel outbound webhook helper.
  *
@@ -88,6 +90,9 @@ export const notifyGhl = async (
 /**
  * Builds the GHL calendar embed URL with prefill so nobody retypes their
  * details on a phone keyboard.
+ *
+ * One calendar. There was briefly a second for a separate /call page; every
+ * ask on the site books the same slot type again.
  */
 export const calendarEmbedUrl = (prefill: {
   firstName?: string;
@@ -97,7 +102,7 @@ export const calendarEmbedUrl = (prefill: {
   const id = process.env.NEXT_PUBLIC_GHL_CALENDAR_ID;
   if (!id) return null;
 
-  const url = new URL(`https://api.leadconnectorhq.com/widget/booking/${id}`);
+  const url = new URL(`https://${GHL_EMBED_HOST}/widget/booking/${id}`);
   url.searchParams.set("prefill", "true");
   if (prefill.firstName) url.searchParams.set("first_name", prefill.firstName);
   if (prefill.phone) url.searchParams.set("phone", prefill.phone);

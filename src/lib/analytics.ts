@@ -17,6 +17,8 @@ export type AnalyticsEvent =
   | "faq_open"
   /** Problem-story drawer opened; `state` carries which of the four. */
   | "problem_drawer_open"
+  /** Feature modal opened; `feature` carries which of the four. */
+  | "feature_modal_open"
   | "checkout_started"
   | "checkout_completed"
   | "calendar_loaded"
@@ -24,7 +26,13 @@ export type AnalyticsEvent =
   | "scroll_depth_50"
   | "scroll_depth_90";
 
-export type PageId = "home" | "start" | "call" | "welcome" | "confirmed";
+export type PageId =
+  | "home"
+  | "demo"
+  | "start"
+  | "call"
+  | "welcome"
+  | "confirmed";
 
 type Props = Record<string, string | number | boolean | undefined>;
 

@@ -1,15 +1,21 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { callPreview, calendar, offer } from "@/content/copy";
+import { useEffect, useId, useState } from "react";
+import Script from "next/script";
+import { calendar, offer } from "@/content/copy";
+import { GHL_EMBED_SCRIPT } from "@/lib/ghl-embed";
 import { track, trackOnce } from "@/lib/analytics";
-import { Check } from "lucide-react";
 import { Container } from "@/components/ui/Layout";
 
 /**
- * /call — booking. Matches the checkout card's dimensions so the pages twin.
+ * The booking calendar, and nothing else.
  *
- * The iframe gets a fixed min-height (700px mobile / 620px desktop) so the
+ * This used to carry a preframe, an agenda card, a heading and a text-instead
+ * note. They are gone: /demo is reached by clicking "Book a Demo" from a page
+ * that has already made the argument, so re-making it here just puts furniture
+ * between someone and the time they came to pick.
+ *
+ * The iframe keeps its fixed min-height (700px mobile / 620px desktop) so the
  * page doesn't jump as the embed loads, with a skeleton underneath.
  */
 export function CalendarModule({
@@ -26,6 +32,16 @@ export function CalendarModule({
 }) {
   const [loaded, setLoaded] = useState(false);
 
+  /**
+   * GHL's form_embed.js resizes the iframe by id, so it needs one, and it has
+   * to survive hydration — useId rather than the Date.now() their snippet
+   * uses, which would differ between server and client render. The id still
+   * leads with the calendar id, which is the part their script keys on.
+   */
+  const reactId = useId().replace(/[^a-zA-Z0-9]/g, "");
+  const calendarId = embedUrl?.split("/").pop()?.split("?")[0] ?? "cal";
+  const frameId = `${calendarId}_${reactId}`;
+
   useEffect(() => {
     trackOnce("calendar_loaded", { configured: Boolean(embedUrl) });
   }, [embedUrl]);
@@ -33,68 +49,38 @@ export function CalendarModule({
   return (
     <section id={id} className="scroll-mt-20 bg-fynd-gray py-12 lg:py-20">
       <Container>
-        <div className="mx-auto max-w-[520px]">
-          {/* Offer block stays on this page so nobody arrives at the call
-              thinking it's free consulting. */}
-          <div className="rounded-lg border border-line bg-white p-6 lg:p-8">
-            <p className="mt-4 text-small text-ink-soft">
-              {calendar.preframe}
-            </p>
-          </div>
-
-          {/* The fear on a booking page is "this is going to be a pitch".
-              Naming the agenda removes more friction than anything else here. */}
-          <div className="mt-6 rounded-lg border border-line bg-white p-6 lg:p-8">
-            {/* h2, not h3: this block sits above the calendar's own h2, so an
-                h3 here jumps the heading order. Visual size stays text-h3. */}
-            <h2 className="text-h3 text-ink">{callPreview.heading}</h2>
-            <ul className="mt-4 flex flex-col gap-3">
-              {callPreview.items.map((item) => (
-                <li key={item} className="flex gap-3">
-                  <Check
-                    aria-hidden="true"
-                    strokeWidth={2.5}
-                    className="mt-1 h-3.5 w-3.5 shrink-0 text-[#0F8F6E]"
-                  />
-                  <span className="text-small text-ink">{item}</span>
-                </li>
-              ))}
-            </ul>
-            <p className="mt-4 border-t border-line pt-4 text-small text-ink-soft">
-              {callPreview.footer}
-            </p>
-          </div>
-
-          <div className="mt-6 rounded-lg border-2 border-fynd-blue bg-white p-6 lg:p-8">
-            <h2 className="text-h2 text-ink">{calendar.heading}</h2>
-            <p className="mt-3 text-body text-ink-soft">{calendar.body}</p>
-
-            <div className="relative mt-6 min-h-[700px] lg:min-h-[620px]">
-              {embedUrl ? (
-                <>
-                  {!loaded && <CalendarSkeleton />}
-                  <iframe
-                    src={embedUrl}
-                    title="Book a time"
-                    className="absolute inset-0 h-full w-full rounded-sm border border-line"
-                    onLoad={() => {
-                      setLoaded(true);
-                      track("calendar_loaded", { state: "iframe_ready" });
-                    }}
-                  />
-                </>
-              ) : (
-                <CalendarSkeleton
-                  note="Calendar not configured — set NEXT_PUBLIC_GHL_CALENDAR_ID."
-                />
-              )}
-            </div>
-
-            <p className="mt-5 text-small text-ink-soft">
-              {calendar.textInstead}
-            </p>
-          </div>
-
+        <div className="relative mx-auto min-h-[700px] max-w-[520px] lg:min-h-[620px]">
+          {embedUrl ? (
+            <>
+              {!loaded && <CalendarSkeleton />}
+              {/* In flow rather than absolutely positioned, because
+                  form_embed.js sets the height inline and an absolute frame
+                  would clip whatever it grows to. min-height keeps the space
+                  reserved so the page doesn't jump while it loads, and
+                  scrolling is left enabled: if the resize script is blocked,
+                  an inner scrollbar is ugly but a clipped calendar is
+                  unusable. */}
+              <iframe
+                id={frameId}
+                src={embedUrl}
+                title="Book a time"
+                allow="payment"
+                className="block min-h-[700px] w-full rounded-lg border border-line bg-white lg:min-h-[620px]"
+                onLoad={() => {
+                  setLoaded(true);
+                  track("calendar_loaded", { state: "iframe_ready" });
+                }}
+              />
+              <Script
+                src={GHL_EMBED_SCRIPT}
+                strategy="lazyOnload"
+              />
+            </>
+          ) : (
+            <CalendarSkeleton
+              note="Calendar not configured — set NEXT_PUBLIC_GHL_CALENDAR_ID."
+            />
+          )}
         </div>
       </Container>
     </section>
@@ -103,7 +89,7 @@ export function CalendarModule({
 
 function CalendarSkeleton({ note }: { note?: string }) {
   return (
-    <div className="absolute inset-0 flex flex-col gap-3 rounded-sm border border-line bg-fynd-gray p-5">
+    <div className="absolute inset-0 flex flex-col gap-3 rounded-lg border border-line bg-white p-5">
       <div className="h-5 w-40 animate-pulse rounded-sm bg-line" />
       <div className="grid grid-cols-4 gap-2">
         {Array.from({ length: 12 }).map((_, i) => (

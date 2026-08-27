@@ -180,7 +180,10 @@ function ProfileCard({
         aria-labelledby={`problem-tab-${state.n}`}
         className="motion-safe:animate-[fynd-panel_260ms_var(--ease-fynd)_both]"
       >
-        <div className="px-5 py-6 lg:px-7 lg:py-7">
+        {/* Reserve room for the tallest panel so changing stages does not
+            move the action row, tab controls, or the content below. Keep it
+            as a min-height so wrapped copy can still grow on narrow screens. */}
+        <div className="min-h-[280px] px-5 py-6 lg:px-7 lg:py-7">
           <Panel state={state} />
         </div>
 
@@ -229,16 +232,18 @@ function Panel({ state }: { state: State }) {
         <p className="text-micro uppercase tracking-[0.08em] text-ink-soft">
           {state.day.label}
         </p>
-        <ul className="mt-3 divide-y divide-line">
+        <ul className="mt-3 grid grid-cols-2 gap-x-4">
           {state.day.appointments.map((slot) => (
             <li
               key={slot.time}
-              className="flex items-center gap-3 py-2 text-small"
+              className="flex min-w-0 items-center gap-2 border-b border-line py-2 text-small"
             >
-              <span className="w-14 shrink-0 tabular-nums text-ink-soft">
+              <span className="w-10 shrink-0 tabular-nums text-ink-soft">
                 {slot.time}
               </span>
-              <span className="flex-1 text-ink">{slot.service}</span>
+              <span className="min-w-0 flex-1 truncate text-ink">
+                {slot.service}
+              </span>
               <Check
                 aria-hidden="true"
                 strokeWidth={2.5}

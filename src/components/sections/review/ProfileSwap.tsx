@@ -14,6 +14,12 @@ import { Reveal } from "./Reveal";
  * Stacks on a phone with the arrow turning to point down; two 180px-wide
  * screenshots side by side at 390px would be unreadable.
  *
+ * Capped at 280px there rather than running full width. At 358px each shot is
+ * bigger than it needs to be — the only thing being read off them is the
+ * rating and the count — and the pair no longer fit on screen together, which
+ * is the one thing a before/after has to do. 280 still lets both sit in one
+ * viewport with the arrow between them.
+ *
  * No client JavaScript of its own: the staggered entrance is Reveal, which is
  * progressive enhancement, so with JS off both shots are simply there.
  */
@@ -56,7 +62,7 @@ function Shot({ state }: { state: "before" | "after" }) {
 
   return (
     <figure
-      className={`relative overflow-hidden rounded-lg border bg-navy-card ${
+      className={`relative mx-auto w-full max-w-[280px] overflow-hidden rounded-lg border bg-navy-card sm:max-w-none ${
         after
           ? "border-fynd-green/40 shadow-2xl shadow-black/30"
           : "border-white/10"
@@ -67,7 +73,7 @@ function Shot({ state }: { state: "before" | "after" }) {
         alt={shot.alt}
         width={shot.width}
         height={shot.height}
-        sizes="(min-width: 640px) 390px, 100vw"
+        sizes="(min-width: 640px) 390px, 280px"
         className="h-auto w-full"
       />
       <figcaption

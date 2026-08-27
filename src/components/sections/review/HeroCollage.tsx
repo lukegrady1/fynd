@@ -23,6 +23,21 @@ const CANVAS = { w: 820, h: 700 };
 /** Card centres on the right rail are arithmetic — see the rail below. */
 const OUTCOME_Y = [118, 350, 582] as const;
 
+/**
+ * The trigger card runs a step larger than the outcome cards on the right.
+ * It is the start of the sentence and the only thing on that side of the
+ * canvas, so at the shared scale it read as the smallest element in the
+ * composition rather than its opening.
+ *
+ * Widening it to 27% also moves the arrow — see the connector note below.
+ */
+const CANVAS_TRIGGER = {
+  "--hc-title": "2.5cqw",
+  "--hc-body": "1.9cqw",
+  "--hc-pad": "2.3cqw",
+  "--hc-icon": "5.4cqw",
+} as React.CSSProperties;
+
 const fluid = {
   "--hc-micro": "1.22cqw",
   "--hc-body": "1.71cqw",
@@ -45,10 +60,13 @@ export function HeroCollage({ business }: { business?: string }) {
           <Glow />
           <Connectors />
 
-          <Trigger className="absolute left-0 top-[30%] z-10 w-[24%]" />
+          <Trigger
+            className="absolute left-0 top-[30%] z-10 w-[27%]"
+            style={CANVAS_TRIGGER}
+          />
           <Phone
             business={business}
-            className="absolute left-[35%] top-[10%] z-20 h-[70%] w-[30%]"
+            className="absolute left-[35%] top-[10%] z-20 h-[74.5%] w-[32%] origin-center lg:scale-[1.06]"
           />
 
           {/* The three outcomes. Fixed-height rail with flex-1 children, so the
@@ -81,11 +99,11 @@ export function HeroCollage({ business }: { business?: string }) {
  * an unclamped one would keep shrinking past legibility on a 320px screen.
  */
 const M_TRIGGER = {
-  "--hc-title": "clamp(15px, 4.4cqw, 19px)",
-  "--hc-body": "clamp(12.5px, 3.7cqw, 15px)",
-  "--hc-pad": "clamp(12px, 3.6cqw, 18px)",
-  "--hc-gap": "clamp(5px, 1.6cqw, 8px)",
-  "--hc-icon": "clamp(30px, 9cqw, 40px)",
+  "--hc-title": "clamp(13.5px, 3.9cqw, 17px)",
+  "--hc-body": "clamp(11.5px, 3.3cqw, 14px)",
+  "--hc-pad": "clamp(10px, 3cqw, 15px)",
+  "--hc-gap": "clamp(4px, 1.4cqw, 7px)",
+  "--hc-icon": "clamp(26px, 7.6cqw, 34px)",
 } as React.CSSProperties;
 
 const M_PHONE = {
@@ -239,25 +257,28 @@ function Connectors() {
         </filter>
       </defs>
 
-      {/* trigger -> Fynd.
+      {/* trigger -> Fynd. Starts at 228: the card is 27% of an 820 canvas, so
+          its right edge lands at 221 and anything earlier runs underneath it.
           No glow filter on this one. The path is perfectly horizontal, so its
           bounding box has zero height, and an SVG filter region defaults to a
           percentage of that box — the filter resolves to an empty region and
           the line disappears entirely. The curved wires below have real bbox
           height, so the glow is safe there. */}
       <path
-        d="M204 300 H276"
+        d="M228 300 H278"
         stroke="var(--color-fynd-blue)"
         strokeWidth="3.5"
         strokeLinecap="round"
         markerEnd="url(#hc-arrow)"
       />
 
-      {/* Fynd -> each outcome */}
+      {/* Fynd -> each outcome. Leaves from (549, 331): the phone is 32% wide
+          from 35%, so its right edge sits at 549 and its centre line at 331.
+          Both numbers move if the phone is resized. */}
       {OUTCOME_Y.map((y) => (
         <path
           key={y}
-          d={`M533 315 C563 315 563 ${y} 586 ${y}`}
+          d={`M549 331 C566 331 566 ${y} 586 ${y}`}
           stroke="url(#hc-wire)"
           strokeWidth="2"
           opacity="0.85"
@@ -268,7 +289,7 @@ function Connectors() {
       {OUTCOME_Y.map((y) => (
         <circle key={`n${y}`} cx={586} cy={y} r="4" fill="var(--color-fynd-green)" />
       ))}
-      <circle cx={204} cy={300} r="4" fill="var(--color-fynd-blue)" />
+      <circle cx={228} cy={300} r="4" fill="var(--color-fynd-blue)" />
     </svg>
   );
 }

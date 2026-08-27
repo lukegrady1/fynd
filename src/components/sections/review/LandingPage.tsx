@@ -1,11 +1,9 @@
 import {
-  demoCta,
   finalCta as finalCtaCopy,
   pricing as pricingCopy,
 } from "@/content/copy";
 import type { PageId } from "@/lib/analytics";
 import type { PageParams } from "@/lib/params";
-import { calendarEmbedUrl } from "@/lib/ghl";
 import { PageTracking } from "./PageTracking";
 import { FunnelHeader, FunnelFooter } from "./PageChrome";
 import { StickyCta } from "./StickyCta";
@@ -17,11 +15,10 @@ import { ProblemStory } from "./ProblemStory";
 import { Mechanism } from "./Mechanism";
 import { ResultsSection } from "./ResultsSection";
 import { PricingSection } from "./PricingSection";
-import { CalendarModule } from "./CalendarModule";
+import { AddOnServices } from "./AddOnServices";
 import { FeatureGrid } from "./FeatureGrid";
 import { CaseStudies, TrustBar } from "./SocialProof";
 import { Testimonials } from "./Testimonials";
-import { BookingIntegrations } from "./BookingIntegrations";
 import { ObjectionFaq } from "./ObjectionFaq";
 import { FinalCta } from "./FinalCta";
 
@@ -33,15 +30,13 @@ import { FinalCta } from "./FinalCta";
  * the GHL calendar. They are now one page carrying both, and it is the site's
  * homepage.
  *
- * Two conversion modules means two anchors, and they must not collide:
- *   #convert -> checkout   (every primary CTA)
- *   #demo    -> calendar   (every "Book a Demo")
- * CalendarModule defaults its id to "convert" for a page where booking IS the
- * conversion, so it is explicitly moved to `demo` here.
+ * One conversion module on the page — checkout, at #convert. Booking moved to
+ * its own route, /demo, which every "Book a Demo" opens in a new tab.
  *
- * `withDemo` on each CTA surface is what pairs the second button with the
- * first. It is a prop rather than a default so the funnel components stay
- * usable on a page with only one ask.
+ * `withDemo` on each CTA surface is what pairs the second ask with the first.
+ * It is a prop rather than a default so the funnel components stay usable on a
+ * page with only one ask — the pricing card is exactly that case: inside the
+ * card the second button competed with the thing the card exists to sell.
  */
 export function LandingPage({
   params,
@@ -51,14 +46,6 @@ export function LandingPage({
   /** Which route is rendering this, for the analytics context only. */
   page: PageId;
 }) {
-  // Prefilled so nobody retypes their details on a phone keyboard. Null when
-  // GHL isn't configured yet — CalendarModule renders its own fallback.
-  const embedUrl = calendarEmbedUrl({
-    firstName: params.firstName,
-    phone: params.phone,
-    email: params.email,
-  });
-
   return (
     <>
       <PageTracking page={page} cid={params.cid} />
@@ -92,20 +79,19 @@ export function LandingPage({
         <CaseStudies />
         <Testimonials />
 
-        {/* ── The ask, twice. Checkout for anyone ready, the calendar
-            immediately after for anyone who wants to talk first — rather than
-            leaving the softer option stranded at the bottom of the page. ── */}
+        {/* ── The ask. No demo button inside the card: everywhere else the
+            two sit side by side, but in the checkout card itself a second
+            option undercuts the one thing the card is for. ── */}
         <PricingSection
           mode="checkout"
           cid={params.cid}
           cancelled={params.cancelled}
-          withDemo
         />
-        <CalendarModule id={demoCta.anchor} embedUrl={embedUrl} />
+        <AddOnServices />
 
-        {/* ── Everything behind the ask. ── */}
+        {/* ── Everything behind the ask. The Fit section used to sit here;
+            it is the "Booking software integration" modal now, in full. ── */}
         <FeatureGrid business={params.biz} />
-        <BookingIntegrations />
         <ObjectionFaq />
         <FinalCta
           heading={finalCtaCopy.heading}

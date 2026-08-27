@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { track } from "@/lib/analytics";
 import { demoCta, offer } from "@/content/copy";
+import { useDemoHref } from "./DemoCta";
 import { cn } from "@/lib/utils";
 
 /**
@@ -25,6 +26,7 @@ export function StickyCta({
   withDemo?: boolean;
 }) {
   const [visible, setVisible] = useState(false);
+  const demoHref = useDemoHref();
 
   useEffect(() => {
     // A scroll handler rather than IntersectionObserver: the observer only
@@ -63,13 +65,6 @@ export function StickyCta({
       ?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
-  const handleDemo = () => {
-    track("cta_click", { cta: demoCta.label, section: "sticky_pill" });
-    document
-      .getElementById(demoCta.anchor)
-      ?.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
-
   return (
     <div
       className={cn(
@@ -100,9 +95,13 @@ export function StickyCta({
       {/* No price on this one — it is the ask for people who did not want the
           price. Truncates before the primary pill does at 320px. */}
       {withDemo && (
-        <button
-          type="button"
-          onClick={handleDemo}
+        <a
+          href={demoHref}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={() =>
+            track("cta_click", { cta: demoCta.label, section: "sticky_pill" })
+          }
           tabIndex={visible ? 0 : -1}
           aria-hidden={!visible}
           className="flex h-12 min-w-0 items-center rounded-full bg-navy px-5 shadow-lg ring-1 ring-white/10 transition-colors duration-150 hover:bg-navy-card"
@@ -110,7 +109,8 @@ export function StickyCta({
           <span className="truncate text-small font-semibold text-white">
             {demoCta.label}
           </span>
-        </button>
+          <span className="sr-only"> ({demoCta.newTabHint})</span>
+        </a>
       )}
     </div>
   );

@@ -156,21 +156,6 @@ export const hero = {
   demoLink: "Watch the 2-min demo",
 } as const;
 
-/**
- * Booking pages stall on "what is this actually going to be" — the fear is a
- * pitch. Naming the agenda up front is the highest-leverage friction remover
- * on /call.
- */
-export const callPreview = {
-  heading: "What the fifteen minutes actually is",
-  items: [
-    "I pull up your Google Business Profile and read you your real review count and rating.",
-    "I work out how many reviews a month you get now, and how many you'd get with every customer asked.",
-    "I walk you through how the message reads and where each rating ends up, so there are no surprises.",
-    "If it's not a fit, I'll say so on the call. I'd rather not set up an account I have to unwind.",
-  ],
-  footer: "No slides. If you want to start after, you can. If not, you keep the numbers.",
-} as const;
 
 /** The proof row under the hero CTA. Data lives in content/clients.ts. */
 export const heroProof = {
@@ -202,12 +187,13 @@ export const checkout = {
   },
 } as const;
 
+/**
+ * /demo is the bare calendar now — no heading, preframe, agenda or
+ * text-instead note. The page is reached by clicking "Book a Demo" from a page
+ * that has already made the argument, so the only string left is the one shown
+ * while the embed loads.
+ */
 export const calendar = {
-  heading: "Grab 15 minutes.",
-  body: "I'll show you how many reviews you're getting now, how many you'd get with every customer asked, and exactly how the system does it. No pitch deck.",
-  preframe:
-    "This is what we'll be talking about, so nobody turns up expecting free consulting. Book inside the window and the free management is yours either way — whether you start on the call or after it.",
-  textInstead: "Prefer to text? Reply to my message and I'll answer there.",
   loading: "Loading available times…",
 } as const;
 
@@ -242,7 +228,16 @@ export const faq = {
 } as const;
 
 export const finalCta = {
-  heading: "Ready to own your reputation?",
+  /**
+   * Split so the payoff word carries Fynd Green, per design.md — inline here
+   * rather than via SplitHeading, which breaks across two lines. `tail` is
+   * punctuation only, so it renders hard against the accent with no space.
+   */
+  heading: {
+    lead: "Ready to own your",
+    accent: "reputation",
+    tail: "?",
+  },
   ctaStart: `Start for $${offer.price}/month`,
   ctaCall: "Pick a time",
 } as const;
@@ -281,6 +276,11 @@ export const confirmed = {
 } as const;
 
 export const meta = {
+  demo: {
+    title: "Book a demo — Fynd",
+    description:
+      "Fifteen minutes to see where your rating stands and what the review system would do for your business.",
+  },
   home: {
     title: "Fynd — Automated Google reviews for local businesses",
     description:
@@ -290,11 +290,6 @@ export const meta = {
     title: "Start — Fynd Review System",
     description:
       "Automated Google review requests for local service businesses. $97/mo, no contract.",
-  },
-  call: {
-    title: "Book a call — Fynd Review System",
-    description:
-      "Fifteen minutes to see where your rating stands and what the review system would do for your business.",
   },
 } as const;
 
@@ -413,8 +408,17 @@ export const pricing = {
     tag: "Optional",
     note: "One-time purchase. Tap it on a phone and the review page opens.",
   },
-  reassure:
-    "We build it, connect it to your booking software, and switch it on.",
+  /**
+   * Sits under the card, as the out for anyone the price just stopped.
+   * `linkLabel` is the only part that links — the sentence has to read
+   * naturally with it underlined mid-phrase, so keep it a noun, not "click
+   * here" and not the whole line.
+   */
+  demoLine: {
+    lead: "Want to see it first? Book a",
+    linkLabel: "demo call",
+    tail: ".",
+  },
 } as const;
 
 /**
@@ -449,13 +453,23 @@ export const profileSwap = {
 /**
  * The secondary ask, shown beside every primary CTA.
  *
- * `anchor` is the id CalendarModule renders on the combined page. It is NOT
- * "convert" — that belongs to the checkout module, and the two now sit on the
- * same page, so they must not share an id.
+ * Booking lives on its own route now rather than as a module further down the
+ * page, and these open it in a new tab: someone who wants a call before they
+ * buy should be able to book it without losing the page that convinced them.
+ *
+ * The links carry the current query string across, so the SMS prefill params
+ * (?firstName=, ?phone=, ?email=) still reach the calendar.
  */
+/** The footer's "Get in touch" link. Goes to the same booking page. */
+export const footerCta = {
+  label: "Book a call",
+} as const;
+
 export const demoCta = {
   label: "Book a Demo",
-  anchor: "demo",
+  href: "/demo",
+  /** Appended for screen readers, since the link leaves the page. */
+  newTabHint: "opens in a new tab",
 } as const;
 
 export const results = {
@@ -535,15 +549,54 @@ export const results = {
  * Ring positions are computed from the list length in the component, not
  * stored here — hand-tuned coordinates collided as soon as the list grew.
  */
+/**
+ * Extra services, under the pricing card.
+ *
+ * Deliberately priced nowhere. The review system has one number and that is
+ * the page's whole pricing story; these are scoped per business, and inventing
+ * a "from $X" for them would be a number nobody could hold you to. Every card
+ * asks for the same thing instead — a call.
+ *
+ * The third is not a fourth product. It exists because the two named ones make
+ * a visitor wonder whether the thing they actually want is on the list, and a
+ * dead end there costs an enquiry.
+ */
+export const addOnServices = {
+  eyebrow: "Additional services",
+  heading: "Need more than reviews?",
+  sub: "Reviews are what we do every day. These are the things owners ask for next.",
+  /** Same booking page as every other ask on the site. */
+  ctaLabel: "Ask on a demo call",
+  href: "/demo",
+  items: [
+    {
+      icon: "globe",
+      tone: "blue",
+      title: "Custom website",
+      body: "A fast, modern site built around getting found and getting booked — not a template with your logo dropped in.",
+    },
+    {
+      icon: "map",
+      tone: "green",
+      title: "GBP SEO",
+      body: "Your Google Business Profile set up properly: categories, services, photos and posts, so you show up in the map pack and not just the list.",
+    },
+    {
+      icon: "custom",
+      tone: "orange",
+      title: "Not listed?",
+      body: "Ads, email, a booking setup, something we haven't listed here — ask. If it isn't a fit we'll say so on the call.",
+    },
+  ],
+} as const;
+
 export const integrations = {
-  eyebrow: "Fit",
   heading: {
     lead: "Works with the",
     accent: "booking software",
     tail: "you already use.",
   },
   sub: "Fynd connects to the tools you already rely on, so the request fires the moment an appointment is marked complete.",
-  badge: "Integrates with your existing workflow",
 
   /**
    * Order is popularity, most first — the ring fills from the top of this
@@ -790,6 +843,39 @@ export const whyReviews = {
   ],
 } as const;
 
+/**
+ * The review-reply mockup inside the "Review management" modal.
+ *
+ * Two panels — approving a drafted reply, and the training note that teaches
+ * it your tone — plus the line about why that matters.
+ *
+ * Rendered as a picture, not a working UI: the buttons below are spans, since
+ * a button that does nothing is worse than an image of one.
+ */
+export const reviewReplies = {
+  approve: {
+    label: "Approve review reply",
+    reviewer: "Grain",
+    review:
+      "I needed help quickly and the whole team was professional, clear, and finished earlier than expected. I will use them again.",
+    replyLabel: "Drafted reply",
+    reply:
+      "Thanks, Grain. We really appreciate the kind words and we are glad the team could help quickly.",
+    note: "Please approve this so it can publish to your profile.",
+    cta: "Approve",
+  },
+  train: {
+    eyebrow: "Your voice, every time",
+    heading: "Train review replies to sound just like you.",
+    label: "Train review replies",
+    note: 'Please end all positive reviews by saying something like "We look forward to helping you again!" and send unhappy customers to us privately so we can make things right.',
+    example:
+      "Training note example: Use our friendly tone, mention the service when it fits, and keep replies short enough to feel personal.",
+    cancel: "Cancel",
+    save: "Save training note",
+  },
+} as const;
+
 export const features = {
   eyebrow: "What's included",
   heading: "Everything is included.",
@@ -802,29 +888,117 @@ export const features = {
     label: "Overview",
     range: "last 30 days",
   },
+  /**
+   * Each item is a card that opens a modal. The card shows only the title —
+   * the point of the section is that the list is short and scannable, and
+   * anyone who wants the detail asks for it.
+   *
+   * `visual` names which mockup the modal renders; see FeatureModal. `points`
+   * are the specifics, and every one of them is a claim made somewhere else on
+   * this page already — behindScenes, the integrations list, the FAQ. Do not
+   * add a capability here that the rest of the site does not also promise.
+   */
+  modalCta: "See how it works",
+
+  /**
+   * Every modal is the same shape: headline with the payoff in green, a sub,
+   * the visual, the specifics, then a footer that offers a call.
+   * That shape came from the Fit section, which is now the integrations modal
+   * — so that item simply points at the `integrations` copy rather than
+   * restating it, which is also why `integrations` is declared above this.
+   *
+   * `visual` names which mockup to render; see FeatureVisual. Every point is
+   * a claim made somewhere else on this page already — behindScenes, the
+   * integrations list, the FAQ. Do not add a capability here that the rest of
+   * the site does not also promise.
+   */
   items: [
     {
       icon: "MessageSquare",
       title: "Automatic review requests",
-      body: "Every completed appointment triggers a personalized request, sent from your studio's name.",
+      visual: "sms",
+      heading: {
+        lead: "Every finished appointment",
+        accent: "asks for a review",
+        tail: "— without you.",
+      },
+      sub: "The message goes out from your studio's name, with the client's name and the service they booked on it.",
+      points: [
+        "It waits the right amount of time before sending, rather than firing the second you close the ticket.",
+        "Every message uses the client's name and the service they booked.",
+        "Same message after every appointment — nobody gets left off the list.",
+        "If someone has an issue, it comes to you first instead of going straight to Google.",
+      ],
+      footer: {
+        lead: "Want to read the exact message?",
+        body: "I'll show you how it lands on a phone.",
+        ctaLabel: "Ask on a quick call",
+      },
     },
     {
       icon: "Plug",
       title: "Booking software integration",
-      body: "Connects to most booking platforms. No software? Text the client's number instead.",
+      visual: "integrations",
+      heading: integrations.heading,
+      sub: integrations.sub,
+      points: [
+        "The request fires the moment an appointment is marked complete — marking it done is your only step.",
+        "Appointment and client details stay in sync both ways.",
+        "Don't see yours? We probably connect with it anyway.",
+        "No booking software at all is fine — text us the number instead.",
+      ],
+      footer: {
+        lead: integrations.fallback.lead,
+        body: integrations.fallback.body,
+        ctaLabel: integrations.fallback.ctaLabel,
+      },
     },
     {
       icon: "Sparkles",
       title: "Review management",
-      body: "Replies drafted in your voice, and removal requests for anything that breaks Google's rules.",
+      visual: "reviews",
+      heading: {
+        lead: "Never stare at a",
+        accent: "blank review reply",
+        tail: "again.",
+      },
+      sub: "Get suggested Google review responses written in your tone. Approve them, tweak them, or let the system handle the repetitive replies while you stay focused on the work.",
+      points: [
+        "Set preferences once and Fynd keeps every reply consistent.",
+        "Your customers see a business that is responsive, grateful and professional.",
+        "Google weights a profile that answers its reviews — the replies are not just manners.",
+        "Anything that breaks Google's review policy gets a removal request filed.",
+        "Nothing publishes to your profile until you approve it.",
+      ],
+      footer: {
+        lead: "Got a review you want gone?",
+        body: "Bring it to the call and I'll tell you straight whether it's removable.",
+        ctaLabel: "Ask on a quick call",
+      },
     },
     {
       icon: "BarChart3",
       title: "Reputation dashboard",
-      body: "Your rating, your review growth, and where you sit against the studios nearby.",
+      visual: "dashboard",
+      heading: {
+        lead: "Everything that matters,",
+        accent: "on one page",
+        tail: "—  no report to read.",
+      },
+      sub: "Your rating, your review growth, and where you sit against the studios nearby.",
+      points: [
+        "Your rating and review count, and how both have moved.",
+        "Where the reviews came from — the text, the NFC card, or straight from your profile.",
+        "How you compare to the other studios nearby.",
+        "One page. No report to read.",
+      ],
+      footer: {
+        lead: "Want a look at the real thing?",
+        body: "I'll share my screen on the call.",
+        ctaLabel: "Ask on a quick call",
+      },
     },
   ],
-  footnote: "No add-ons. No per-seat pricing. No setup fee.",
 } as const;
 
 /** Additional FAQ entries appended to the originals. */
