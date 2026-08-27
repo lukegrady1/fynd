@@ -18,7 +18,7 @@ export const offer = {
   regular: 197,
 
   /** NFC review card. One-off add-on, not part of the subscription. */
-  nfcCard: 20,
+  nfcCard: 19,
 
   terms: "No contract. Cancel anytime.",
 
@@ -116,17 +116,27 @@ export const hero = {
    * meeting is the mismatch that stalls booking pages.
    */
   /**
-   * /start uses pain reversal (formula 2). "Start" deliberately echoes the
-   * button, so headline and CTA rhyme. The biz variant switches formula —
-   * naming the business is a stronger opening than any pattern.
+   * Split across two lines with the payoff on the second, which renders in
+   * Fynd Green — the headline convention in design.md §10. So `accent` is the
+   * half that has to carry the promise, not just the tail of a sentence.
+   *
+   * The biz variant keeps the same shape and drops the business name into the
+   * green line, since naming the business is a stronger opening than any
+   * pattern.
    */
   start: {
-    lead: "Every appointment you finish",
-    accent: "should earn you a review.",
-    leadWithBiz: "Every appointment at",
-    accentWithBiz: (biz: string) => `${biz} should earn a review.`,
-    sub: "Fynd asks every client for a Google review automatically — building trust, lifting your reputation, and helping you rank higher in local search while you stay focused on the work.",
-    cta: `Start for $${offer.price}/month`,
+    lead: "Turn appointments",
+    accent: "into reviews.",
+    leadWithBiz: "Turn appointments at",
+    accentWithBiz: (biz: string) => `${biz} into reviews.`,
+    sub: "Fynd asks every customer for a review after their appointment, follows up, and helps manage your reputation — all without adding another task to your day.",
+    /**
+     * Hero only. The price-bearing label lives on `pricing.cta`, which the
+     * results, pricing and closing buttons all read — changing this one does
+     * not move those, and it shouldn't: the number belongs next to the offer,
+     * not at the top of the page before anyone has been told what it buys.
+     */
+    cta: "Start Now",
     reassure: "No contract. Cancel anytime.",
   },
   /**
@@ -399,6 +409,8 @@ export const pricing = {
   addOn: {
     label: "NFC review card",
     price: `$${offer.nfcCard}`,
+    /** Sits next to the price so the add-on can't be read as part of the plan. */
+    tag: "Optional",
     note: "One-time purchase. Tap it on a phone and the review page opens.",
   },
   reassure:

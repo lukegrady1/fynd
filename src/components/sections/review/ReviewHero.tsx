@@ -7,6 +7,7 @@ import { Container } from "@/components/ui/Layout";
 import { DottedWorldMap } from "@/components/textures/Textures";
 import { HeroCollage } from "./HeroCollage";
 import { HeroProof } from "./HeroProof";
+import { OfferClock } from "./OfferClock";
 import { DemoCta } from "./DemoCta";
 
 /**
@@ -52,7 +53,12 @@ export function ReviewHero({
       <Container className="relative w-full">
         <div className="grid items-center gap-12 xl:grid-cols-[0.85fr_1.15fr] xl:gap-10">
           <div>
-            <h1 className="text-[27px] font-bold leading-[1.1] tracking-[-0.02em] text-white min-[420px]:text-[31px] sm:text-[38px] lg:text-[42px]">
+            {/* The offer flag sits above the headline rather than on the
+                button: it is content the reader takes in with the h1, not a
+                sticker on a control, and it leaves both CTAs clean. */}
+            <OfferClock tone="dark" />
+
+            <h1 className="mt-6 text-[27px] font-bold leading-[1.1] tracking-[-0.02em] text-white min-[420px]:text-[31px] sm:text-[38px] lg:text-[42px]">
               <span className="block">{lead}</span>
               <span className="block text-fynd-green">{accent}</span>
             </h1>
@@ -61,22 +67,35 @@ export function ReviewHero({
               {copy.sub}
             </p>
 
-            <div className="mt-9 flex flex-col items-start gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-5 sm:gap-y-4">
-              <button
-                type="button"
-                onClick={goTo}
-                className="group flex h-14 w-full items-center justify-center rounded-sm bg-fynd-blue px-8 text-body font-semibold text-white shadow-blue transition-all duration-150 ease-fynd hover:-translate-y-px hover:bg-[#3F4DF0] active:scale-[0.99] sm:w-auto"
-              >
-                {copy.cta}
-                <ArrowRight
-                  aria-hidden="true"
-                  className="ml-2 h-4 w-4 transition-transform duration-150 ease-fynd group-hover:translate-x-[3px]"
-                />
-              </button>
+            {/* A w-fit grid, not a flex row: two equal columns that size to
+                the WIDER label rather than stretching to fill the line. Flex
+                with flex-1 fills the row (too wide) and flex with auto widths
+                makes them unequal; grid with fit-content gives both at once.
+                Both still fit side by side at 320px. h-12 is the floor —
+                below that the tap target drops under 44px. */}
+            <div className="mt-9">
+              <div className="grid w-fit grid-cols-2 items-center gap-2.5 sm:gap-4">
+                <button
+                  type="button"
+                  onClick={goTo}
+                  className="group flex h-12 w-full items-center justify-center whitespace-nowrap rounded-sm bg-fynd-blue px-3 text-small font-semibold text-white shadow-blue transition-all duration-150 ease-fynd hover:-translate-y-px hover:bg-[#3F4DF0] active:scale-[0.99] sm:h-14 sm:px-8 sm:text-body"
+                >
+                  {copy.cta}
+                  <ArrowRight
+                    aria-hidden="true"
+                    className="ml-1.5 h-4 w-4 transition-transform duration-150 ease-fynd group-hover:translate-x-[3px] sm:ml-2"
+                  />
+                </button>
 
-              {withDemo && <DemoCta section="hero" />}
+                {withDemo && (
+                  <DemoCta
+                    section="hero"
+                    className="h-12 w-full whitespace-nowrap px-3 text-small sm:h-14 sm:w-full sm:px-8 sm:text-body"
+                  />
+                )}
+              </div>
 
-              <p className="flex items-center gap-2 text-small text-white/60">
+              <p className="mt-4 flex items-center gap-2 text-small text-white/60">
                 <Check
                   aria-hidden="true"
                   strokeWidth={2.5}

@@ -2,13 +2,13 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Check, Clock, Lock, Nfc } from "lucide-react";
-import { checkout, offer, offerWindow, pricing } from "@/content/copy";
+import { Check, Lock, Nfc } from "lucide-react";
+import { checkout, offer, pricing } from "@/content/copy";
 import { track } from "@/lib/analytics";
-import { useOfferWeek } from "@/lib/use-offer-window";
 import { Container, Eyebrow } from "@/components/ui/Layout";
 import { Reveal } from "./Reveal";
 import { DemoCta } from "./DemoCta";
+import { OfferClock } from "./OfferClock";
 
 /**
  * Pricing — and, on /start, the only conversion module on the page.
@@ -59,7 +59,7 @@ export function PricingSection(
           )}
 
           <div className="mt-8 rounded-lg border-2 border-fynd-blue bg-white p-6 text-left lg:p-8">
-            <WeekClock />
+            <OfferClock />
 
             <p className="mt-5 flex flex-wrap items-baseline gap-x-3 gap-y-1">
               <s className="text-h3 font-semibold tabular-nums text-ink-muted decoration-2">
@@ -125,39 +125,30 @@ export function PricingSection(
 
 /* ------------------------------------------------------------------ */
 
-/** Renders nothing until the client knows the time, so no number flashes. */
-function WeekClock() {
-  const week = useOfferWeek();
-  if (week.state === "unknown") return null;
-
-  return (
-    <span className="inline-flex items-center gap-2 rounded-sm border border-fynd-orange/40 bg-fynd-orange/8 px-3 py-1.5 text-small font-semibold text-ink">
-      <Clock
-        aria-hidden="true"
-        strokeWidth={2}
-        className="h-4 w-4 shrink-0 text-fynd-orange"
-      />
-      <span>{offerWindow.label}</span>
-      <span className="tabular-nums">
-        {week.label} {offerWindow.suffix}
-      </span>
-    </span>
-  );
-}
-
 /** The NFC card. A one-off, so it sits apart from the monthly figure. */
 function AddOn() {
   return (
-    <p className="mt-4 flex items-start gap-2.5 rounded-md border border-line bg-fynd-gray px-3.5 py-3">
+    <p className="mt-4 flex flex-wrap items-start gap-x-2.5 gap-y-2 rounded-md border border-line bg-fynd-gray px-3.5 py-3">
       <Nfc
         aria-hidden="true"
         strokeWidth={1.75}
         className="mt-0.5 h-4 w-4 shrink-0 text-fynd-blue"
       />
-      <span className="text-small text-ink">
+      {/* min-w keeps the copy readable: without a floor the shrink-0 tag
+          squeezed the note into a six-line column at 320px. Once the two no
+          longer fit on one line the tag wraps, and ml-auto keeps it right in
+          both cases. */}
+      <span className="min-w-[12rem] flex-1 text-small text-ink">
         <span className="font-semibold">{pricing.addOn.label}</span>{" "}
         <span className="tabular-nums">{pricing.addOn.price}</span>
         <span className="block text-ink-soft">{pricing.addOn.note}</span>
+      </span>
+
+      {/* Pinned to the top-right rather than trailing the price: it qualifies
+          the whole row, and inline it pushed the note onto an extra line at
+          320px. text-ink-soft, not text-muted — muted fails AA on Fynd Gray. */}
+      <span className="ml-auto shrink-0 rounded-full border border-line bg-white px-2 py-px text-micro uppercase tracking-[0.08em] text-ink-soft">
+        {pricing.addOn.tag}
       </span>
     </p>
   );

@@ -74,7 +74,15 @@ const subscribe = (onChange: () => void) => {
 export type OfferWeek =
   /** Server render and first hydration — render nothing rather than guess. */
   | { state: "unknown" }
-  | { state: "open"; days: number; label: string };
+  | {
+      state: "open";
+      days: number;
+      hours: number;
+      minutes: number;
+      seconds: number;
+      /** Preformatted "3d 04:48:10", for anywhere wanting one string. */
+      label: string;
+    };
 
 const pad = (n: number) => String(n).padStart(2, "0");
 
@@ -104,6 +112,9 @@ export function useOfferWeek(): OfferWeek {
   return {
     state: "open",
     days,
+    hours,
+    minutes,
+    seconds,
     label: `${days}d ${pad(hours)}:${pad(minutes)}:${pad(seconds)}`,
   };
 }
