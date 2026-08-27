@@ -74,10 +74,19 @@ the links get texted to a prospect who is still on the phone.
 - **Both pages are `noindex, nofollow`** — the pricing differs from the public
   site.
 
-Integration boundaries are stubbed and marked `TODO(integration)`:
-`src/lib/stripe.ts`, `src/lib/ghl.ts`, and the two API routes. The Stripe webhook
-rejects unverified requests with 501 by design — wire signature verification
-before pointing anything live at it. See `progress.md` for the full state.
+Stripe Checkout is live in `src/lib/stripe.ts`: subscription mode, billed on
+the 1st. `billing_cycle_anchor` is midnight `America/New_York` on the 1st of
+next month (`src/lib/billing-anchor.ts`) and `proration_behavior` is
+`create_prorations`, so Stripe bills the part-month at signup. **Never compute
+a prorated amount here** — it would disagree with the invoice Stripe issues.
+
+There is **no Stripe webhook**. Nothing in the app knows whether a customer is
+currently paying; Stripe bills correctly on its own, but renewals, failed
+payments and cancellations go unobserved. Build the receiver before anything
+depends on subscription state.
+
+`src/lib/ghl.ts` is still stubbed and marked `TODO(integration)`. See
+`progress.md` for the full state.
 
 ### Traps worth knowing
 
