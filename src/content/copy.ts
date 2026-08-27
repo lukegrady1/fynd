@@ -604,19 +604,19 @@ export const integrations = {
    * freely; nothing else needs to change.
    */
   platforms: [
-    { name: "Vagaro", logo: "/integrations/vagaro.png" },
-    { name: "Mindbody", logo: "/integrations/mindbody.png" },
-    { name: "Fresha", logo: "/integrations/fresha.png" },
-    { name: "Booksy", logo: "/integrations/booksy.png" },
-    { name: "Square", logo: "/integrations/square.png" },
-    { name: "Acuity", logo: "/integrations/acuity.png" },
-    { name: "StyleSeat", logo: "/integrations/styleseat.png" },
-    { name: "Setmore", logo: "/integrations/setmore.png" },
-    { name: "Timely", logo: "/integrations/timely.png" },
-    { name: "Booker", logo: "/integrations/booker.png" },
-    { name: "Goldie", logo: "/integrations/goldie.png" },
-    { name: "MyTime", logo: "/integrations/mytime.png" },
-    { name: "Appointy", logo: "/integrations/appointy.png" },
+    { name: "Vagaro", logo: "/integrations/vagaro.webp" },
+    { name: "Mindbody", logo: "/integrations/mindbody.webp" },
+    { name: "Fresha", logo: "/integrations/fresha.webp" },
+    { name: "Booksy", logo: "/integrations/booksy.webp" },
+    { name: "Square", logo: "/integrations/square.webp" },
+    { name: "Acuity", logo: "/integrations/acuity.webp" },
+    { name: "StyleSeat", logo: "/integrations/styleseat.webp" },
+    { name: "Setmore", logo: "/integrations/setmore.webp" },
+    { name: "Timely", logo: "/integrations/timely.webp" },
+    { name: "Booker", logo: "/integrations/booker.webp" },
+    { name: "Goldie", logo: "/integrations/goldie.webp" },
+    { name: "MyTime", logo: "/integrations/mytime.webp" },
+    { name: "Appointy", logo: "/integrations/appointy.webp" },
   ],
 
   /** Heading for the platforms that did not fit in the ring. */
