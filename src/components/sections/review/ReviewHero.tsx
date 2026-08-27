@@ -7,6 +7,7 @@ import { Container } from "@/components/ui/Layout";
 import { DottedWorldMap } from "@/components/textures/Textures";
 import { HeroCollage } from "./HeroCollage";
 import { HeroProof } from "./HeroProof";
+import { DemoCta } from "./DemoCta";
 
 /**
  * Hero. The visual is the automation running end to end, not a dashboard —
@@ -17,11 +18,14 @@ export function ReviewHero({
   biz,
   variant,
   targetId,
+  withDemo,
 }: {
   biz?: string;
   /** "start" sells the product, "call" sells the call. See copy.ts. */
   variant: "start" | "call";
   targetId: string;
+  /** Pairs "Book a Demo" with the primary ask. */
+  withDemo?: boolean;
 }) {
   const copy = hero[variant];
   const lead = biz ? copy.leadWithBiz : copy.lead;
@@ -57,7 +61,7 @@ export function ReviewHero({
               {copy.sub}
             </p>
 
-            <div className="mt-9 flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:gap-6">
+            <div className="mt-9 flex flex-col items-start gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-5 sm:gap-y-4">
               <button
                 type="button"
                 onClick={goTo}
@@ -69,6 +73,8 @@ export function ReviewHero({
                   className="ml-2 h-4 w-4 transition-transform duration-150 ease-fynd group-hover:translate-x-[3px]"
                 />
               </button>
+
+              {withDemo && <DemoCta section="hero" />}
 
               <p className="flex items-center gap-2 text-small text-white/60">
                 <Check

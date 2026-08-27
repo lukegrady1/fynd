@@ -1,56 +1,30 @@
-import { Nav } from "@/components/site/Nav";
-import { Footer } from "@/components/site/Footer";
-import { Hero } from "@/components/sections/Hero";
-import { PillarRow } from "@/components/sections/PillarRow";
-import { DashboardProof } from "@/components/sections/DashboardProof";
-import { CtaCloser } from "@/components/sections/CtaCloser";
-import { Card } from "@/components/ui/Card";
-import { KpiBlock, ScoreGauge } from "@/components/ui/DataViz";
-import { brand } from "@/lib/brand";
-import { StatBar } from "@/components/sections/review/StatBar";
-import { Testimonials } from "@/components/sections/review/Testimonials";
+import type { Metadata } from "next";
+import { meta } from "@/content/copy";
+import { parseParams, type SearchParams } from "@/lib/params";
+import { LandingPage } from "@/components/sections/review/LandingPage";
 
-export default function Home() {
-  return (
-    <>
-      <Nav />
-      <main className="flex-1">
-        <Hero
-          eyebrow="Local visibility, handled"
-          line1={brand.headline.line1}
-          line2={brand.headline.line2}
-          subcopy={brand.positioning}
-          primary={{ label: "Book a Demo", href: "/#demo" }}
-          secondary={{ label: "Watch Video", href: "/#video" }}
-          aside={
-            <Card tone="dark" size="lg" className="shadow-lg">
-              <p className="text-micro uppercase text-white/72">Overview</p>
-              <div className="mt-6 flex items-center gap-8">
-                <div className="rounded-md bg-white p-4">
-                  <ScoreGauge score={87} label="Excellent" />
-                </div>
-                <div className="flex flex-col gap-6">
-                  <KpiBlock name="Impressions" value="24.5K" delta="18%" tone="dark" />
-                  <KpiBlock name="New reviews" value="412" delta="24%" tone="dark" />
-                </div>
-              </div>
-            </Card>
-          }
-        />
+/**
+ * The homepage is the landing page.
+ *
+ * The old marketing homepage (Hero / PillarRow / DashboardProof / CtaCloser)
+ * is gone from this route; those components are still in the tree if any of it
+ * is wanted back.
+ *
+ * Note this route is indexable, unlike /start and /call. The pricing shown
+ * here — $197 struck through, $97 charged, with the offer clock — is now the
+ * public price, which is the thing that kept the funnel pages out of search.
+ */
+export const metadata: Metadata = {
+  title: meta.home.title,
+  description: meta.home.description,
+};
 
-        <PillarRow />
-        <DashboardProof />
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<SearchParams>;
+}) {
+  const params = parseParams(await searchParams);
 
-        <StatBar />
-
-        {/* Data-driven: renders nothing until real quotes exist in
-            content/testimonials.ts. This band previously held three invented
-            customers, which the funnel pages had already stopped doing. */}
-        <Testimonials />
-
-        <CtaCloser />
-      </main>
-      <Footer />
-    </>
-  );
+  return <LandingPage params={params} page="home" />;
 }

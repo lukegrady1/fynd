@@ -7,6 +7,7 @@ import { track } from "@/lib/analytics";
 import { Container, Eyebrow } from "@/components/ui/Layout";
 import { ProfileSwap } from "./ProfileSwap";
 import { Reveal } from "./Reveal";
+import { DemoCta } from "./DemoCta";
 
 /**
  * Results, in four centred tiers: the claim, the proof, the outcomes, the ask.
@@ -28,9 +29,11 @@ import { Reveal } from "./Reveal";
 export function ResultsSection({
   ctaLabel,
   targetId,
+  withDemo,
 }: {
   ctaLabel?: string;
   targetId?: string;
+  withDemo?: boolean;
 }) {
   const handleClick = () => {
     if (!targetId) return;
@@ -79,7 +82,7 @@ export function ResultsSection({
         )}
 
         {ctaLabel && targetId && (
-          <Reveal className="mt-14 flex justify-center">
+          <Reveal className="mt-14 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
             <button
               type="button"
               onClick={handleClick}
@@ -87,6 +90,7 @@ export function ResultsSection({
             >
               {ctaLabel}
             </button>
+            {withDemo && <DemoCta section="results" />}
           </Reveal>
         )}
       </Container>

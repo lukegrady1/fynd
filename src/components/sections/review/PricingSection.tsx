@@ -8,6 +8,7 @@ import { track } from "@/lib/analytics";
 import { useOfferWeek } from "@/lib/use-offer-window";
 import { Container, Eyebrow } from "@/components/ui/Layout";
 import { Reveal } from "./Reveal";
+import { DemoCta } from "./DemoCta";
 
 /**
  * Pricing — and, on /start, the only conversion module on the page.
@@ -20,19 +21,20 @@ import { Reveal } from "./Reveal";
  * change the price — see the note in lib/use-offer-window.ts.
  */
 export function PricingSection(
-  props:
+  props: (
     | {
-        /** /start — the button runs Stripe checkout. */
+        /** The button runs Stripe checkout. */
         mode: "checkout";
         cid?: string;
         cancelled: boolean;
       }
     | {
-        /** /call — the button scrolls to the calendar. */
+        /** The button scrolls to another module. */
         mode: "scroll";
         ctaLabel: string;
         targetId: string;
-      },
+      }
+  ) & { withDemo?: boolean },
 ) {
   return (
     <section
@@ -91,6 +93,17 @@ export function PricingSection(
               <CheckoutButton cid={props.cid} label={pricing.cta} />
             ) : (
               <ScrollButton label={props.ctaLabel} targetId={props.targetId} />
+            )}
+
+            {/* Light tone: this one sits on the white pricing card, not navy.
+                sm:w-full is not redundant — DemoCta's base is w-full sm:w-auto,
+                so without it the button shrink-wraps inside the card. */}
+            {props.withDemo && (
+              <DemoCta
+                section="pricing"
+                tone="light"
+                className="mt-3 w-full sm:w-full"
+              />
             )}
 
             <AddOn />

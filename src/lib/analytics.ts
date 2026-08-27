@@ -22,7 +22,7 @@ export type AnalyticsEvent =
   | "scroll_depth_50"
   | "scroll_depth_90";
 
-export type PageId = "start" | "call" | "welcome" | "confirmed";
+export type PageId = "home" | "start" | "call" | "welcome" | "confirmed";
 
 type Props = Record<string, string | number | boolean | undefined>;
 

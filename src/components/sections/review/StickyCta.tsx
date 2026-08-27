@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { track } from "@/lib/analytics";
-import { offer } from "@/content/copy";
+import { demoCta, offer } from "@/content/copy";
 import { cn } from "@/lib/utils";
 
 /**
@@ -17,9 +17,12 @@ import { cn } from "@/lib/utils";
 export function StickyCta({
   ctaLabel,
   targetId,
+  withDemo,
 }: {
   ctaLabel: string;
   targetId: string;
+  /** Adds a second, quieter pill beside the primary one. */
+  withDemo?: boolean;
 }) {
   const [visible, setVisible] = useState(false);
 
@@ -60,10 +63,17 @@ export function StickyCta({
       ?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
+  const handleDemo = () => {
+    track("cta_click", { cta: demoCta.label, section: "sticky_pill" });
+    document
+      .getElementById(demoCta.anchor)
+      ?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
   return (
     <div
       className={cn(
-        "fixed inset-x-0 bottom-5 z-40 flex justify-center px-4",
+        "fixed inset-x-0 bottom-5 z-40 flex justify-center gap-2 px-4",
         "transition-all duration-250 ease-fynd",
         visible
           ? "translate-y-0 opacity-100"
@@ -86,6 +96,22 @@ export function StickyCta({
           <ArrowRight aria-hidden="true" className="h-4 w-4" />
         </span>
       </button>
+
+      {/* No price on this one — it is the ask for people who did not want the
+          price. Truncates before the primary pill does at 320px. */}
+      {withDemo && (
+        <button
+          type="button"
+          onClick={handleDemo}
+          tabIndex={visible ? 0 : -1}
+          aria-hidden={!visible}
+          className="flex h-12 min-w-0 items-center rounded-full bg-navy px-5 shadow-lg ring-1 ring-white/10 transition-colors duration-150 hover:bg-navy-card"
+        >
+          <span className="truncate text-small font-semibold text-white">
+            {demoCta.label}
+          </span>
+        </button>
+      )}
     </div>
   );
 }

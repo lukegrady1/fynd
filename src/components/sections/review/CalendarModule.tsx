@@ -12,7 +12,18 @@ import { Container } from "@/components/ui/Layout";
  * The iframe gets a fixed min-height (700px mobile / 620px desktop) so the
  * page doesn't jump as the embed loads, with a skeleton underneath.
  */
-export function CalendarModule({ embedUrl }: { embedUrl: string | null }) {
+export function CalendarModule({
+  embedUrl,
+  id = "convert",
+}: {
+  embedUrl: string | null;
+  /**
+   * Defaults to "convert" for a page where booking IS the conversion. On the
+   * combined page checkout owns "convert", so this renders on "demo" instead —
+   * two modules on one page cannot share an anchor.
+   */
+  id?: string;
+}) {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
@@ -20,7 +31,7 @@ export function CalendarModule({ embedUrl }: { embedUrl: string | null }) {
   }, [embedUrl]);
 
   return (
-    <section id="convert" className="scroll-mt-20 bg-fynd-gray py-12 lg:py-20">
+    <section id={id} className="scroll-mt-20 bg-fynd-gray py-12 lg:py-20">
       <Container>
         <div className="mx-auto max-w-[520px]">
           {/* Offer block stays on this page so nobody arrives at the call

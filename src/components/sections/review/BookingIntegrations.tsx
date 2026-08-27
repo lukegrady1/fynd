@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, type RefObject } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Check } from "lucide-react";
-import { integrations } from "@/content/copy";
+import { demoCta, integrations } from "@/content/copy";
 import { LogoMark } from "@/components/brand/Logo";
 import { Container, Eyebrow } from "@/components/ui/Layout";
 import { cn } from "@/lib/utils";
@@ -159,8 +159,9 @@ export function BookingIntegrations() {
             <span className="font-semibold text-white">{fallback.lead}</span>{" "}
             {fallback.body}
           </p>
+          {/* An in-page anchor now that the calendar lives on this page. */}
           <Link
-            href="/call"
+            href={`#${demoCta.anchor}`}
             className="group inline-flex shrink-0 items-center gap-2 text-body font-semibold text-fynd-green underline-offset-4 hover:underline"
           >
             {fallback.ctaLabel}

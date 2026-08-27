@@ -1,0 +1,122 @@
+import {
+  demoCta,
+  finalCta as finalCtaCopy,
+  pricing as pricingCopy,
+} from "@/content/copy";
+import type { PageId } from "@/lib/analytics";
+import type { PageParams } from "@/lib/params";
+import { calendarEmbedUrl } from "@/lib/ghl";
+import { PageTracking } from "./PageTracking";
+import { FunnelHeader, FunnelFooter } from "./PageChrome";
+import { StickyCta } from "./StickyCta";
+import { ReviewHero } from "./ReviewHero";
+import { TrustStrip } from "./TrustStrip";
+import { StatBar } from "./StatBar";
+import { ProblemSection, WhyReviews } from "./ProblemSection";
+import { Mechanism } from "./Mechanism";
+import { ResultsSection } from "./ResultsSection";
+import { PricingSection } from "./PricingSection";
+import { CalendarModule } from "./CalendarModule";
+import { FeatureGrid } from "./FeatureGrid";
+import { CaseStudies, TrustBar } from "./SocialProof";
+import { Testimonials } from "./Testimonials";
+import { BookingIntegrations } from "./BookingIntegrations";
+import { ObjectionFaq } from "./ObjectionFaq";
+import { FinalCta } from "./FinalCta";
+
+/**
+ * The whole landing page, in one piece.
+ *
+ * /start and /call used to be separate routes that were ~85% the same markup,
+ * differing only in which conversion module they ended on — Stripe checkout or
+ * the GHL calendar. They are now one page carrying both, and it is the site's
+ * homepage.
+ *
+ * Two conversion modules means two anchors, and they must not collide:
+ *   #convert -> checkout   (every primary CTA)
+ *   #demo    -> calendar   (every "Book a Demo")
+ * CalendarModule defaults its id to "convert" for a page where booking IS the
+ * conversion, so it is explicitly moved to `demo` here.
+ *
+ * `withDemo` on each CTA surface is what pairs the second button with the
+ * first. It is a prop rather than a default so the funnel components stay
+ * usable on a page with only one ask.
+ */
+export function LandingPage({
+  params,
+  page,
+}: {
+  params: PageParams;
+  /** Which route is rendering this, for the analytics context only. */
+  page: PageId;
+}) {
+  // Prefilled so nobody retypes their details on a phone keyboard. Null when
+  // GHL isn't configured yet — CalendarModule renders its own fallback.
+  const embedUrl = calendarEmbedUrl({
+    firstName: params.firstName,
+    phone: params.phone,
+    email: params.email,
+  });
+
+  return (
+    <>
+      <PageTracking page={page} cid={params.cid} />
+      <FunnelHeader tone="dark" />
+
+      {/* Bottom bar on mobile needs clearance so it never covers content.
+          No top padding on desktop: the sticky bar only fades in after the
+          hero exits, so reserving space for it just opens a void up top. */}
+      <main className="flex-1">
+        {/* ── Setup: who this is for, what's wrong, how it works. ── */}
+        <ReviewHero
+          biz={params.biz}
+          variant="start"
+          targetId="convert"
+          withDemo
+        />
+        <TrustStrip />
+        <ProblemSection />
+        <Mechanism />
+
+        {/* ── Stakes, then proof. Why it matters now sits ahead of the
+            results, so the numbers land on someone who already cares. ── */}
+        <WhyReviews />
+        <StatBar />
+        <TrustBar />
+        <ResultsSection
+          ctaLabel={pricingCopy.cta}
+          targetId="convert"
+          withDemo
+        />
+        <CaseStudies />
+        <Testimonials />
+
+        {/* ── The ask, twice. Checkout for anyone ready, the calendar
+            immediately after for anyone who wants to talk first — rather than
+            leaving the softer option stranded at the bottom of the page. ── */}
+        <PricingSection
+          mode="checkout"
+          cid={params.cid}
+          cancelled={params.cancelled}
+          withDemo
+        />
+        <CalendarModule id={demoCta.anchor} embedUrl={embedUrl} />
+
+        {/* ── Everything behind the ask. ── */}
+        <FeatureGrid business={params.biz} />
+        <BookingIntegrations />
+        <ObjectionFaq />
+        <FinalCta
+          heading={finalCtaCopy.heading}
+          ctaLabel={finalCtaCopy.ctaStart}
+          targetId="convert"
+          withDemo
+        />
+      </main>
+
+      <FunnelFooter />
+
+      <StickyCta ctaLabel="Start setup" targetId="convert" withDemo />
+    </>
+  );
+}

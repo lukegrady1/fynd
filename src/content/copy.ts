@@ -271,6 +271,11 @@ export const confirmed = {
 } as const;
 
 export const meta = {
+  home: {
+    title: "Fynd — Automated Google reviews for local businesses",
+    description:
+      "Every finished appointment asks for a Google review, automatically. More reviews, a better rating, and hours a year off your plate.",
+  },
   start: {
     title: "Start — Fynd Review System",
     description:
@@ -427,6 +432,18 @@ export const profileSwap = {
     height: 2048,
     alt: "Salt Salon's Google Business Profile after Fynd: 4.9 stars from 174 reviews.",
   },
+} as const;
+
+/**
+ * The secondary ask, shown beside every primary CTA.
+ *
+ * `anchor` is the id CalendarModule renders on the combined page. It is NOT
+ * "convert" — that belongs to the checkout module, and the two now sit on the
+ * same page, so they must not share an id.
+ */
+export const demoCta = {
+  label: "Book a Demo",
+  anchor: "demo",
 } as const;
 
 export const results = {
