@@ -436,14 +436,14 @@ export const profileSwap = {
   business: "Salt Salon",
   before: {
     label: "Before",
-    src: "/old-gbp.jpg",
+    src: "/old-gbp.webp",
     width: 398,
     height: 426,
     alt: "Salt Salon's Google Business Profile before Fynd: 4.6 stars from 93 reviews.",
   },
   after: {
     label: "After",
-    src: "/new-gbp.png",
+    src: "/new-gbp.webp",
     width: 1913,
     height: 2048,
     alt: "Salt Salon's Google Business Profile after Fynd: 4.9 stars from 174 reviews.",
