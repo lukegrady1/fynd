@@ -149,27 +149,34 @@ function DemoLine() {
 /** The NFC card. A one-off, so it sits apart from the monthly figure. */
 function AddOn() {
   return (
-    <p className="mt-4 flex flex-wrap items-start gap-x-2.5 gap-y-2 rounded-md border border-line bg-fynd-gray px-3.5 py-3">
+    /**
+     * A grid, not a wrapping flex row. Flex made the tag a sibling of the
+     * whole text block, so once the two no longer fit on a line the tag wrapped
+     * underneath and landed bottom-right — on every phone. Here the tag has its
+     * own cell in row one and the note drops to row two beneath it, which puts
+     * the tag top-right at any width without squeezing the copy into a column.
+     */
+    <p className="mt-4 grid grid-cols-[auto_1fr_auto] items-start gap-x-2.5 gap-y-1 rounded-md border border-line bg-fynd-gray px-3.5 py-3">
       <Nfc
         aria-hidden="true"
         strokeWidth={1.75}
         className="mt-0.5 h-4 w-4 shrink-0 text-fynd-blue"
       />
-      {/* min-w keeps the copy readable: without a floor the shrink-0 tag
-          squeezed the note into a six-line column at 320px. Once the two no
-          longer fit on one line the tag wraps, and ml-auto keeps it right in
-          both cases. */}
-      <span className="min-w-[12rem] flex-1 text-small text-ink">
+
+      <span className="min-w-0 text-small text-ink">
         <span className="font-semibold">{pricing.addOn.label}</span>{" "}
         <span className="tabular-nums">{pricing.addOn.price}</span>
-        <span className="block text-ink-soft">{pricing.addOn.note}</span>
       </span>
 
-      {/* Pinned to the top-right rather than trailing the price: it qualifies
-          the whole row, and inline it pushed the note onto an extra line at
-          320px. text-ink-soft, not text-muted — muted fails AA on Fynd Gray. */}
-      <span className="ml-auto shrink-0 rounded-full border border-line bg-white px-2 py-px text-micro uppercase tracking-[0.08em] text-ink-soft">
+      {/* text-ink-soft, not text-muted — muted fails AA on Fynd Gray. */}
+      <span className="shrink-0 rounded-full border border-line bg-white px-2 py-px text-micro uppercase tracking-[0.08em] text-ink-soft">
         {pricing.addOn.tag}
+      </span>
+
+      {/* Starts under the label rather than the icon, and runs beneath the tag
+          — nothing sits to its right, so it keeps the full measure. */}
+      <span className="col-start-2 col-end-4 text-small text-ink-soft">
+        {pricing.addOn.note}
       </span>
     </p>
   );
