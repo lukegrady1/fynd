@@ -1,0 +1,19 @@
+# Build command, publish directory and the Next.js plugin are configured in the
+# Netlify UI. This file deliberately sets only the one thing that has to live in
+# version control, so the reasoning travels with the repo.
+
+[build.environment]
+  # Netlify's secret scanner reads the Turbopack build cache as well as the
+  # published output, and Turbopack writes environment values into its cache
+  # files. That cache is never deployed — `publish` is `.next`, not
+  # `.next/cache` — so a hit there is a false positive, but it still fails the
+  # build. It surfaced when STRIPE_WEBHOOK_SECRET was added:
+  #
+  #   found value at line 19012 in .netlify/.next/cache/turbopack/…/00000012.sst
+  #
+  # SCOPED TO THE CACHE ON PURPOSE. The two other ways to silence this are both
+  # wrong: SECRETS_SCAN_ENABLED=false turns the scanner off entirely, and
+  # SECRETS_SCAN_OMIT_KEYS stops it checking that particular secret anywhere —
+  # including in published JavaScript, which is the leak the feature exists to
+  # catch. Published output stays scanned for everything.
+  SECRETS_SCAN_OMIT_PATHS = ".netlify/.next/cache/**,.next/cache/**"
