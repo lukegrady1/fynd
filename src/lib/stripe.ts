@@ -16,26 +16,32 @@ import {
  * alternative.
  *
  * BILLING SHAPE: full price up front, extended first period. The customer
- * pays $97 at checkout and that payment carries them past the end of the
- * month to the next billing day — always at least a full month, up to 46
- * days. After that it is $97 on the 1st or the 15th, monthly.
+ * pays $97 at checkout and that payment carries them to the next billing day
+ * — the 1st or the 15th, whichever falls first on or after one month from
+ * signup. After that it is $97/month on that day. First periods run 28-46
+ * days and nothing is prorated in either direction: the extra days are given
+ * away on purpose, in exchange for collecting a whole month on day one.
  *
- * Nothing is prorated. The extra days are given away on purpose: a whole
- * month is collected on day one rather than a part-month that can be as low
- * as a few dollars.
+ * MECHANISM: this is TWO operations, not one.
  *
- * MECHANISM, and it is not the obvious one. Stripe rejects
- * `proration_behavior: "none"` outright in a Checkout Session that carries a
- * one-time price, so the "charge full price now, start the cycle later" shape
- * cannot be built from `billing_cycle_anchor`. It is built instead from a
- * trial that ends on the anchor, plus a one-time line item that collects the
- * money today. The subscription sits in `trialing` until the anchor and bills
- * normally from there.
+ *   1. A `payment` mode Checkout Session collects $97 and saves the card
+ *      (`setup_future_usage: "off_session"`).
+ *   2. `ensureSubscription` then creates the subscription against that saved
+ *      card, with a trial running to the anchor so the first recurring charge
+ *      lands on the billing day.
  *
- * The cost of that mechanism is wording: Checkout derives "Try …", "N days
- * free" and the "Pay and start trial" button from the trial and none of the
- * three can be overridden. `custom_text` and the one-time item's own name
- * carry the real numbers instead.
+ * Subscription mode was tried first and rejected on wording. It can only
+ * produce this shape via a trial, and Checkout then derives "Try …", "N days
+ * free" and a "Pay and start trial" button from that trial — none of which
+ * can be overridden, and "free" is untrue when $97 was just collected.
+ * (`billing_cycle_anchor` cannot do it at all: Stripe refuses
+ * `proration_behavior: "none"` in a session carrying a one-time price.)
+ * Payment mode has no trial, so the page reads "$97.00 … Pay".
+ *
+ * The cost of splitting it is a window where the customer has paid and has no
+ * subscription. `ensureSubscription` is therefore called from BOTH the
+ * `checkout.session.completed` webhook and the success page, and is safe to
+ * call any number of times — see its own comment for how.
  */
 
 export type CheckoutRequest = {
@@ -120,9 +126,18 @@ export const createCheckoutSession = async (
     const anchorLabel = formatAnchor(anchor);
 
     const session = await stripe().checkout.sessions.create({
-      mode: "subscription",
+      mode: "payment",
+      // A Customer is required to hang the subscription off afterwards;
+      // payment mode does not create one on its own.
+      customer_creation: "always",
+      payment_intent_data: {
+        // What makes the card reusable for the subscription. It also makes
+        // Checkout print its own "…and future payments" consent line, which
+        // is the authorisation for that later billing.
+        setup_future_usage: "off_session",
+        metadata,
+      },
       line_items: [
-        { price: PRICE_ID, quantity: 1 },
         {
           quantity: 1,
           // Inline rather than a stored Price: the description names the
@@ -131,31 +146,19 @@ export const createCheckoutSession = async (
             currency: "usd",
             unit_amount: PRICE_CENTS,
             product_data: {
-              name: "Fynd — due today",
-              description: `Covers your first period, today through ${anchorLabel}.`,
+              name: "Fynd Review System",
+              description: `Your first period, today through ${anchorLabel}. Continues as a ${PRICE_LABEL}/month subscription on ${anchorLabel}.`,
             },
           },
         },
       ],
-      metadata,
-      subscription_data: {
-        metadata,
-        /**
-         * Ends on the anchor, which is what defers the first recurring
-         * charge. The one-time line item above is what is actually paid
-         * today, so nothing here is free — see the note at the top.
-         */
-        trial_end: anchor,
-      },
-      /**
-       * Sits directly above the pay button, which Checkout will not relabel.
-       * States this customer's own dates; the standing policy ("billed on the
-       * 1st or the 15th") lives on the recurring product's description, where
-       * it renders beside Checkout's "N days free" and defuses it.
-       */
+      // The anchor is carried on the session so the webhook and the success
+      // page both build the same subscription. Recomputing it later would
+      // drift for anyone who pays either side of midnight.
+      metadata: { ...metadata, billing_anchor: String(anchor) },
       custom_text: {
         submit: {
-          message: `${PRICE_LABEL} is due today and covers you through ${anchorLabel}. Your next payment of ${PRICE_LABEL} is on ${anchorLabel}, then monthly on the ${anchorDayOrdinal(anchor)}.`,
+          message: `${PRICE_LABEL} is due today and covers you through ${anchorLabel}. It then continues as a ${PRICE_LABEL}/month subscription, billed on the ${anchorDayOrdinal(anchor)}. Cancel any time.`,
         },
       },
       success_url: `${req.origin}/start/welcome?session_id={CHECKOUT_SESSION_ID}`,
@@ -178,5 +181,162 @@ export const createCheckoutSession = async (
 
     console.error("[stripe] checkout session failed:", message);
     return { status: "error", message };
+  }
+};
+
+export type EnsureResult =
+  | { status: "created"; subscriptionId: string }
+  | { status: "existing"; subscriptionId: string }
+  | { status: "unpaid" }
+  | { status: "unconfigured" }
+  | { status: "error"; message: string };
+
+/**
+ * Creates the subscription behind a paid Checkout Session — or returns the one
+ * that already exists.
+ *
+ * Called from two places on purpose. The webhook is the reliable path: it
+ * fires whether or not the customer's browser survives the redirect. The
+ * success page is the backstop for the webhook being slow, misconfigured, or
+ * not yet pointed at this deploy. Either can win.
+ *
+ * SAFE TO CALL REPEATEDLY, by two independent mechanisms:
+ *
+ *   - It first looks for a subscription already tagged with this session id,
+ *     which is what makes it idempotent for good (a customer can reload the
+ *     success page next week).
+ *   - The create itself carries an idempotency key derived from the session
+ *     id, which closes the much narrower race where the webhook and the page
+ *     both look, both find nothing, and both create. Stripe's keys only last
+ *     24 hours, hence the tag as well.
+ *
+ * A double-charge is not among the failure modes here — this call bills
+ * nothing. The subscription's first invoice is at the anchor.
+ */
+export const ensureSubscription = async (
+  sessionId: string,
+): Promise<EnsureResult> => {
+  if (missingStripeEnv().length > 0) return { status: "unconfigured" };
+
+  try {
+    const session = await stripe().checkout.sessions.retrieve(sessionId, {
+      expand: ["payment_intent"],
+    });
+
+    // The one check that matters: never build a subscription off an unpaid
+    // session. Reaching the success URL is not evidence of payment.
+    if (session.payment_status !== "paid") return { status: "unpaid" };
+
+    const customer =
+      typeof session.customer === "string"
+        ? session.customer
+        : session.customer?.id;
+
+    const paymentIntent =
+      typeof session.payment_intent === "string"
+        ? null
+        : session.payment_intent;
+
+    const paymentMethod =
+      typeof paymentIntent?.payment_method === "string"
+        ? paymentIntent.payment_method
+        : (paymentIntent?.payment_method?.id ?? null);
+
+    if (!customer || !paymentMethod) {
+      return {
+        status: "error",
+        message: `session ${sessionId} paid but missing customer or payment method`,
+      };
+    }
+
+    const existing = await stripe().subscriptions.list({
+      customer,
+      status: "all",
+      limit: 100,
+    });
+
+    const already = existing.data.find(
+      (sub) =>
+        sub.metadata?.checkout_session_id === sessionId &&
+        sub.status !== "incomplete_expired" &&
+        sub.status !== "canceled",
+    );
+
+    if (already) {
+      return { status: "existing", subscriptionId: already.id };
+    }
+
+    // Fall back to recomputing only if the session predates the metadata.
+    const anchor = Number(session.metadata?.billing_anchor) || nextBillingAnchor();
+
+    // Makes the saved card the one invoices draw on; without it the renewal
+    // has no payment method and fails.
+    await stripe().customers.update(customer, {
+      invoice_settings: { default_payment_method: paymentMethod },
+    });
+
+    const subscription = await stripe().subscriptions.create(
+      {
+        customer,
+        items: [{ price: PRICE_ID, quantity: 1 }],
+        default_payment_method: paymentMethod,
+        /** Runs to the anchor; the first period was paid at checkout. */
+        trial_end: anchor,
+        proration_behavior: "none",
+        metadata: {
+          ...(session.metadata ?? {}),
+          checkout_session_id: sessionId,
+        },
+      },
+      { idempotencyKey: `sub:${sessionId}` },
+    );
+
+    return { status: "created", subscriptionId: subscription.id };
+  } catch (error) {
+    const message =
+      error instanceof Stripe.errors.StripeError
+        ? `${error.type}: ${error.message}`
+        : error instanceof Error
+          ? error.message
+          : "Unknown Stripe error.";
+
+    console.error("[stripe] ensureSubscription failed:", message);
+    return { status: "error", message };
+  }
+};
+
+export type WebhookVerification =
+  | { status: "ok"; event: Stripe.Event }
+  | { status: "invalid"; message: string }
+  | { status: "unconfigured" };
+
+/**
+ * Verifies a webhook payload against STRIPE_WEBHOOK_SECRET.
+ *
+ * Kept here rather than in the route so every Stripe import stays behind this
+ * module, and so the route cannot accidentally skip the check — an unverified
+ * body is attacker-controlled, and this one creates subscriptions.
+ *
+ * `raw` must be the untouched request body; re-serialised JSON will not match
+ * the signature.
+ */
+export const constructWebhookEvent = (
+  raw: string,
+  signature: string,
+): WebhookVerification => {
+  const secret = process.env.STRIPE_WEBHOOK_SECRET;
+  if (!secret) return { status: "unconfigured" };
+  if (missingStripeEnv().length > 0) return { status: "unconfigured" };
+
+  try {
+    return {
+      status: "ok",
+      event: stripe().webhooks.constructEvent(raw, signature, secret),
+    };
+  } catch (error) {
+    return {
+      status: "invalid",
+      message: error instanceof Error ? error.message : "unknown",
+    };
   }
 };

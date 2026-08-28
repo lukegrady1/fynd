@@ -7,6 +7,7 @@ import {
   FunnelFooter,
 } from "@/components/sections/review/PageChrome";
 import { PageTracking } from "@/components/sections/review/PageTracking";
+import { ensureSubscription } from "@/lib/stripe";
 import { OnboardingForm } from "@/components/sections/onboarding/OnboardingForm";
 import { inviteEmail, oauthReadiness } from "@/lib/connect";
 import { Check } from "lucide-react";
@@ -22,6 +23,24 @@ export default async function WelcomePage({
   searchParams: Promise<SearchParams>;
 }) {
   const params = parseParams(await searchParams);
+  const raw = await searchParams;
+
+  // Backstop for the webhook. The customer paid in `payment` mode and the
+  // subscription is a second, separate operation; the webhook is the reliable
+  // path, this catches it being slow or not yet pointed at this deploy.
+  // Idempotent, so racing the webhook is fine — see ensureSubscription.
+  //
+  // Deliberately not gating the page on the result. Nothing here is worth
+  // protecting yet, and a Stripe outage should not leave a paying customer
+  // staring at an error instead of the onboarding form.
+  const sessionId = typeof raw.session_id === "string" ? raw.session_id : null;
+
+  if (sessionId) {
+    const result = await ensureSubscription(sessionId);
+    if (result.status === "error") {
+      console.error("[welcome] subscription not created:", result.message);
+    }
+  }
 
   return (
     <>

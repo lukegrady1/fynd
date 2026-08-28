@@ -74,26 +74,42 @@ the links get texted to a prospect who is still on the phone.
 - **Both pages are `noindex, nofollow`** — the pricing differs from the public
   site.
 
-Stripe Checkout is live in `src/lib/stripe.ts`: subscription mode, full price
-up front, extended first period. The customer pays $97 at checkout and that
-payment carries them to the next billing day — the 1st or the 15th, whichever
-falls first on or after one month from signup (`src/lib/billing-anchor.ts`).
-First periods run 28–46 days; **nothing is prorated in either direction**, the
-extra days are given away deliberately in exchange for collecting a whole
-month on day one.
+Stripe Checkout is live in `src/lib/stripe.ts`: full price up front, extended
+first period. The customer pays $97 at checkout and that payment carries them
+to the next billing day — the 1st or the 15th, whichever falls first on or
+after one month from signup (`src/lib/billing-anchor.ts`). First periods run
+28–46 days and **nothing is prorated in either direction**; the extra days are
+given away deliberately in exchange for collecting a whole month on day one.
 
-The mechanism is not the obvious one. Stripe rejects `proration_behavior:
-"none"` in a Checkout Session carrying a one-time price, so this shape cannot
-be built from `billing_cycle_anchor`. It is a `trial_end` on the anchor plus a
-one-time line item that collects the money today. The cost is wording:
-Checkout derives "Try …", "N days free" and "Pay and start trial" from the
-trial and none can be overridden — `custom_text` and the one-time item's name
-carry the real numbers instead.
+This is **two operations, not one**:
 
-There is **no Stripe webhook**. Nothing in the app knows whether a customer is
-currently paying; Stripe bills correctly on its own, but renewals, failed
-payments and cancellations go unobserved. Build the receiver before anything
-depends on subscription state.
+1. A `payment` mode Checkout Session collects $97 and saves the card
+   (`setup_future_usage: "off_session"`).
+2. `ensureSubscription` creates the subscription against that saved card, with
+   a trial running to the anchor.
+
+Subscription mode was tried and rejected on wording — it can only produce this
+shape via a trial, and Checkout then derives "Try …", "N days free" and "Pay
+and start trial" from it, none of which can be overridden and "free" is untrue
+when $97 was just taken. (`billing_cycle_anchor` cannot do it at all: Stripe
+refuses `proration_behavior: "none"` in a session carrying a one-time price.)
+
+Splitting it opens a window where a customer has paid and has no
+subscription, so `ensureSubscription` is called from **both** the
+`checkout.session.completed` webhook (`src/app/api/stripe/webhook/route.ts`)
+and the `/start/welcome` success page. Either can win. It is idempotent twice
+over: it looks for a subscription already tagged `checkout_session_id`, and
+the create carries an idempotency key. **Never make it non-idempotent** — the
+two callers race on every normal checkout.
+
+The webhook returns 500 on failure *on purpose*, so Stripe retries; that retry
+is what rescues a paid customer whose subscription did not get made. It needs
+`STRIPE_WEBHOOK_SECRET`; without it the route 503s and the success page is the
+only thing creating subscriptions.
+
+The recurring product's Stripe **description** carries the standing billing
+policy and renders in the order summary. It lives in the Stripe Dashboard, not
+in this repo.
 
 `src/lib/ghl.ts` is still stubbed and marked `TODO(integration)`. See
 `progress.md` for the full state.
