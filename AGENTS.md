@@ -74,11 +74,21 @@ the links get texted to a prospect who is still on the phone.
 - **Both pages are `noindex, nofollow`** — the pricing differs from the public
   site.
 
-Stripe Checkout is live in `src/lib/stripe.ts`: subscription mode, billed on
-the 1st. `billing_cycle_anchor` is midnight `America/New_York` on the 1st of
-next month (`src/lib/billing-anchor.ts`) and `proration_behavior` is
-`create_prorations`, so Stripe bills the part-month at signup. **Never compute
-a prorated amount here** — it would disagree with the invoice Stripe issues.
+Stripe Checkout is live in `src/lib/stripe.ts`: subscription mode, full price
+up front, extended first period. The customer pays $97 at checkout and that
+payment carries them to the next billing day — the 1st or the 15th, whichever
+falls first on or after one month from signup (`src/lib/billing-anchor.ts`).
+First periods run 28–46 days; **nothing is prorated in either direction**, the
+extra days are given away deliberately in exchange for collecting a whole
+month on day one.
+
+The mechanism is not the obvious one. Stripe rejects `proration_behavior:
+"none"` in a Checkout Session carrying a one-time price, so this shape cannot
+be built from `billing_cycle_anchor`. It is a `trial_end` on the anchor plus a
+one-time line item that collects the money today. The cost is wording:
+Checkout derives "Try …", "N days free" and "Pay and start trial" from the
+trial and none can be overridden — `custom_text` and the one-time item's name
+carry the real numbers instead.
 
 There is **no Stripe webhook**. Nothing in the app knows whether a customer is
 currently paying; Stripe bills correctly on its own, but renewals, failed
