@@ -174,6 +174,46 @@ export const testimonialsSection = {
   heading: "What owners say",
 } as const;
 
+/**
+ * /watch — the VSL page texted to leads. Three beats: the video, what owners
+ * say, and the calendar. There is no price on it: the video sells the idea
+ * and the call is the ask, so the number belongs on the call.
+ */
+export const watch = {
+  hero: {
+    /** One headline for everyone — no ?biz= variant on this page. */
+    lead: "Watch how Fynd turns",
+    accent: "appointments into reviews.",
+    cta: "Book a demo",
+  },
+
+  video: {
+    src: "/fynd-split-vsl.mp4",
+    poster: "/fynd-split-vsl-poster.jpg",
+    /** Runs 30.8s. Update if the file is swapped. */
+    duration: "0:31",
+    playLabel: "Play the video",
+    /** Shown over the last frame once it finishes. */
+    ended: {
+      heading: "Want to see it on your business?",
+      cta: "Book a demo",
+      replay: "Watch again",
+    },
+  },
+
+  testimonials: {
+    eyebrow: "Owners",
+    lead: "What owners say",
+    accent: "once it's running.",
+  },
+
+  book: {
+    eyebrow: "Book a demo",
+    lead: "Pick a time",
+    accent: "that suits you.",
+  },
+} as const;
+
 export const checkout = {
   /**
    * The standalone "Get started" section was removed — pricing is now the
@@ -288,6 +328,11 @@ export const meta = {
     title: "Start — Fynd Review System",
     description:
       "Automated Google review requests for local service businesses. $97/mo, no contract.",
+  },
+  watch: {
+    title: "Watch — Fynd Review System",
+    description:
+      "Thirty seconds on how Fynd turns finished appointments into Google reviews, then a time to talk it through.",
   },
 } as const;
 

@@ -19,11 +19,18 @@ export function StickyCta({
   ctaLabel,
   targetId,
   withDemo,
+  showPrice = true,
 }: {
   ctaLabel: string;
   targetId: string;
   /** Adds a second, quieter pill beside the primary one. */
   withDemo?: boolean;
+  /**
+   * The $/mo figure ahead of the label. Off on pages with no price on them —
+   * /watch asks for a call, and a price on the pill would be the only one
+   * on the page.
+   */
+  showPrice?: boolean;
 }) {
   const [visible, setVisible] = useState(false);
   const demoHref = useDemoHref();
@@ -86,13 +93,17 @@ export function StickyCta({
             room. Below 360px the two pills cannot both fit with it, and a
             truncated "Book a De…" costs more than a hidden number — the price
             is on the card these buttons scroll to. */}
-        <span className="hidden text-[13px] font-bold tabular-nums text-white min-[360px]:inline sm:text-small">
-          ${offer.price}/mo
-        </span>
-        <span
-          aria-hidden="true"
-          className="hidden h-4 w-px bg-white/20 min-[360px]:block"
-        />
+        {showPrice && (
+          <>
+            <span className="hidden text-[13px] font-bold tabular-nums text-white min-[360px]:inline sm:text-small">
+              ${offer.price}/mo
+            </span>
+            <span
+              aria-hidden="true"
+              className="hidden h-4 w-px bg-white/20 min-[360px]:block"
+            />
+          </>
+        )}
         <span className="flex items-center gap-1.5 whitespace-nowrap text-[13px] font-semibold text-fynd-green sm:text-small">
           {ctaLabel}
           <ArrowRight aria-hidden="true" className="h-3.5 w-3.5 sm:h-4 sm:w-4" />

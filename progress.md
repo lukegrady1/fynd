@@ -71,6 +71,44 @@ Nothing was deleted — it was resequenced.
   calendar. The fear on a booking page is that it will be a pitch; naming the
   agenda is the cheapest friction removal available.
 
+### VSL page — `/watch`
+
+The link to text a lead who has not been on a call yet. Three beats: the
+video, what owners say, the calendar. No price anywhere on it — the video
+sells the idea and the call is the only ask, so every button (hero, video
+end-card, sticky pill) scrolls to `#book`.
+
+- **Video is self-hosted** — `public/fynd-split-vsl.mp4` (1920x1080, 30.8s,
+  11MB) played through a native `<video>` in
+  `src/components/sections/review/VslPlayer.tsx`. No YouTube script, no
+  iframe. `preload="metadata"` so the file costs nothing until play; the
+  poster is `public/fynd-split-vsl-poster.jpg`, a 1280x720 title card of the
+  logo lockup on navy-card, composed with PIL from `transparent-fynd.PNG`
+  and Poppins Bold (Luke asked for the logo rather than a video frame). The
+  lockup sits at 42% height and the play control at 68%, so they never
+  overlap. Click-to-play with sound, native controls after the first press,
+  and an end-card over the last frame with "Book a demo" + "Watch again".
+  Fires the same `vsl_play` / `vsl_25|50|75` / `vsl_complete` events the
+  YouTube player does. If the file is swapped, update `watch.video.duration`
+  in `copy.ts` and re-cut the poster.
+- **Testimonials read `src/content/testimonials.ts`** through a new
+  `TestimonialBand` (the design.md §9 card in a 1/2/3 grid). The four real
+  slots are still `quote: null`. While they are, the band falls back to
+  `placeholderTestimonials` — six FICTIONAL quotes, names and businesses,
+  added at Luke's request so the section could be looked at. Each carries
+  `placeholder: true`, which renders an "Example" chip on the card and a
+  note under the grid; the first real quote retires all of them. The type
+  also gained an optional `rating` (1–5); the star row only renders when it
+  is set. `testimonial-drafts.md` in the repo root has a draft quote per
+  real client to text them for approval.
+- **Calendar** reuses `CalendarModule` with a heading and a three-line agenda
+  above it (`BookDemo.tsx`). Prefills from `?fn=`, `?phone=`, `?email=` like
+  `/demo`; `?biz=` goes into the headline; `?cid=` into analytics
+  (`page: "watch"`).
+- `StickyCta` gained `showPrice` — off here, since a $/mo on the pill would
+  be the only price on the page.
+- `noindex, nofollow`, like `/start`.
+
 ### Onboarding form — `/start/welcome`
 
 Four steps: your details → business type → booking software → connect. Built in
@@ -146,6 +184,29 @@ The GBP notice renders on all three paths — it is unrelated to which platform
 they picked. There is no skip link: the only way off step 4 is the confirm
 button, so watch the *Form submitted* stage for people who stalled rather than
 assuming everything there is a fresh arrival.
+
+### Paid customers enter the pipeline at checkout, not at the form
+
+`recordPaidCustomer` in `src/lib/ghl-contacts.ts`, called from the Stripe
+webhook. Before this, a customer who paid and never opened the onboarding form
+did not exist in GHL at all — the one person most worth chasing was invisible.
+They now land in **Fynd Onboarding** at *Paid — form not started*
+(`b72c1e1d-9d97-47ab-b37b-fe2ad6af2d22`), and the form advances that same card
+to *Form submitted*.
+
+- **Both entry points dedupe through `findOpportunity`.** Stripe delivers
+  at-least-once and the success page races the webhook, so a second delivery
+  must return the existing card, not open another. Verified: two deliveries
+  returned identical contact and opportunity ids.
+- **The GHL write is non-fatal in the webhook.** Stripe must not retry forever
+  because GHL had a bad minute, and the subscription is already safe by then.
+  Failures are logged with the session id and email so they can be replayed.
+
+`Fynd Demo Calls` (`HvoBX365wwzJCATUViiu`) exists for website demo bookings —
+Call booked / Showed / Pitched / Won / No-show / Lost. **Nothing writes to it
+yet**: the booking happens inside the GHL calendar widget, so no app code runs.
+It needs a GHL workflow (Appointment Booked -> create opportunity), and
+workflows are UI-only — the API is list-only.
 
 ## Verified
 
