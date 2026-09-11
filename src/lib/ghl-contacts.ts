@@ -41,6 +41,8 @@ export const FIELD = {
 
 /** Stage ids for the "Fynd Onboarding" pipeline. */
 export const STAGE = {
+  /** Set by the Stripe webhook: they paid, the form is untouched. */
+  paid: "b72c1e1d-9d97-47ab-b37b-fe2ad6af2d22",
   formSubmitted: "64a6e44f-e18f-4e49-87a0-535a3cbd0076",
   needsAccess: "ea9a7036-482d-4300-8b6e-e9317b130d0b",
   accessPending: "870b7eac-1c06-44c4-8dd4-eeb564671232",
@@ -78,6 +80,31 @@ const splitName = (full: string) => {
     firstName: parts[0] ?? "",
     lastName: parts.slice(1).join(" "),
   };
+};
+
+/**
+ * The contact's existing opportunity in the onboarding pipeline, if any.
+ *
+ * Needed because there are now two entry points — the Stripe webhook opens the
+ * card at "Paid", and the form arrives later for the same person. Without this
+ * the form would open a second card and the pipeline would double-count every
+ * customer who actually paid.
+ */
+const findOpportunity = async (
+  config: GhlConfig,
+  contactId: string,
+): Promise<string | null> => {
+  try {
+    const res = await fetch(
+      `${API}/opportunities/search?location_id=${config.locationId}&contact_id=${contactId}&pipeline_id=${config.pipelineId}`,
+      { headers: headers(config.token), signal: AbortSignal.timeout(10_000) },
+    );
+    if (!res.ok) return null;
+    const found = await res.json();
+    return found?.opportunities?.[0]?.id ?? null;
+  } catch {
+    return null;
+  }
 };
 
 export type OnboardingContact = {
@@ -185,20 +212,31 @@ export const upsertOnboardingContact = async (
 
   let opportunityId: string | null = null;
   try {
-    const opp = await request(config, "/opportunities/", {
-      method: "POST",
-      body: {
-        pipelineId: config.pipelineId,
-        locationId: config.locationId,
-        pipelineStageId: STAGE.formSubmitted,
-        name: contact.businessName,
-        status: "open",
-        contactId,
-      },
-    });
-    opportunityId = opp?.opportunity?.id ?? null;
+    // Paid customers already have a card sitting at "Paid — form not started".
+    // Advance it rather than opening a duplicate.
+    const existing = await findOpportunity(config, contactId);
+    if (existing) {
+      await request(config, `/opportunities/${existing}`, {
+        method: "PUT",
+        body: { pipelineStageId: STAGE.formSubmitted, name: contact.businessName },
+      });
+      opportunityId = existing;
+    } else {
+      const opp = await request(config, "/opportunities/", {
+        method: "POST",
+        body: {
+          pipelineId: config.pipelineId,
+          locationId: config.locationId,
+          pipelineStageId: STAGE.formSubmitted,
+          name: contact.businessName,
+          status: "open",
+          contactId,
+        },
+      });
+      opportunityId = opp?.opportunity?.id ?? null;
+    }
   } catch (error) {
-    console.error("[ghl] opportunity create failed:", error);
+    console.error("[ghl] opportunity write failed:", error);
   }
 
   return { status: "ok", contactId, opportunityId };
@@ -266,14 +304,7 @@ const moveOpportunity = async (
   status: string,
 ) => {
   try {
-    const search = await fetch(
-      `${API}/opportunities/search?location_id=${config.locationId}&contact_id=${contactId}&pipeline_id=${config.pipelineId}`,
-      { headers: headers(config.token), signal: AbortSignal.timeout(10_000) },
-    );
-    if (!search.ok) return;
-
-    const found = await search.json();
-    const id = found?.opportunities?.[0]?.id;
+    const id = await findOpportunity(config, contactId);
     if (!id) return;
 
     await request(config, `/opportunities/${id}`, {
@@ -282,5 +313,77 @@ const moveOpportunity = async (
     });
   } catch (error) {
     console.error("[ghl] opportunity move failed:", error);
+  }
+};
+
+/**
+ * Opens the onboarding card the moment someone pays.
+ *
+ * Without this a paying customer does not exist in GHL until they finish the
+ * form — which is precisely the person worth chasing if they never do. Called
+ * from the Stripe webhook, so it runs even if the browser never reaches the
+ * success page.
+ *
+ * Stripe checkout gives us an email and usually a name; there is no business
+ * name yet, so the card is titled from whatever we have and renamed by the
+ * form later.
+ */
+export const recordPaidCustomer = async (paid: {
+  email: string;
+  name?: string | null;
+  phone?: string | null;
+}): Promise<WriteResult> => {
+  const config = ghlConfig();
+  if (!config) {
+    return { status: "unconfigured", missing: "GHL_PIT / GHL_LOCATION_ID" };
+  }
+
+  const { firstName, lastName } = splitName(paid.name ?? "");
+
+  try {
+    const result = await request(config, "/contacts/upsert", {
+      method: "POST",
+      body: {
+        locationId: config.locationId,
+        email: paid.email,
+        ...(firstName ? { firstName, lastName } : {}),
+        ...(paid.phone ? { phone: paid.phone } : {}),
+        source: "Fynd checkout",
+        tags: ["fynd-paid"],
+      },
+    });
+
+    const contactId: string | undefined = result?.contact?.id;
+    if (!contactId) throw new Error("upsert returned no contact id");
+
+    // Idempotent: Stripe delivers at-least-once and the success page races
+    // this, so a second delivery must not open a second card.
+    const existing = await findOpportunity(config, contactId);
+    if (existing) {
+      return { status: "ok", contactId, opportunityId: existing };
+    }
+
+    const opp = await request(config, "/opportunities/", {
+      method: "POST",
+      body: {
+        pipelineId: config.pipelineId,
+        locationId: config.locationId,
+        pipelineStageId: STAGE.paid,
+        name: paid.name || paid.email,
+        status: "open",
+        contactId,
+      },
+    });
+
+    return {
+      status: "ok",
+      contactId,
+      opportunityId: opp?.opportunity?.id ?? null,
+    };
+  } catch (error) {
+    return {
+      status: "failed",
+      reason: error instanceof Error ? error.message : "unknown error",
+    };
   }
 };

@@ -3,6 +3,7 @@ import type Stripe from "stripe";
 
 import { constructWebhookEvent, ensureSubscription } from "@/lib/stripe";
 import { notifyGhl } from "@/lib/ghl";
+import { recordPaidCustomer } from "@/lib/ghl-contacts";
 
 /**
  * Stripe webhook receiver.
@@ -61,6 +62,28 @@ export const POST = async (request: Request) => {
       result.status === "error" ? result.message : "unconfigured",
     );
     return NextResponse.json({ error: "Retry." }, { status: 500 });
+  }
+
+  // Open the onboarding card as soon as they pay, not when they get round to
+  // the form. Runs on every delivery, not just first creation: the contact
+  // write is idempotent, and a customer missing from GHL is worse than a
+  // redundant upsert. Deliberately not fatal — Stripe must not retry forever
+  // because GHL had a bad minute, and the subscription is already safe.
+  const email = session.customer_details?.email;
+  if (email) {
+    const written = await recordPaidCustomer({
+      email,
+      name: session.customer_details?.name,
+      phone: session.customer_details?.phone,
+    });
+    if (written.status !== "ok") {
+      console.error(
+        "[stripe-webhook] paid customer not written to GHL:",
+        JSON.stringify({ session: session.id, email, written }),
+      );
+    }
+  } else {
+    console.error("[stripe-webhook] no email on session", session.id);
   }
 
   if (result.status === "created") {
