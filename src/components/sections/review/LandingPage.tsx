@@ -20,6 +20,7 @@ import { FeatureGrid } from "./FeatureGrid";
 import { CaseStudies, TrustBar } from "./SocialProof";
 import { Testimonials } from "./Testimonials";
 import { ObjectionFaq } from "./ObjectionFaq";
+import { BundleTeaser } from "./BundleTeaser";
 import { FinalCta } from "./FinalCta";
 
 /**
@@ -93,6 +94,10 @@ export function LandingPage({
             it is the "Booking software integration" modal now, in full. ── */}
         <FeatureGrid business={params.biz} />
         <ObjectionFaq />
+        {/* The second plan, at the bottom on purpose: this page sells the
+            $97 system and the teaser is for whoever read to the end still
+            wanting more. */}
+        <BundleTeaser />
         <FinalCta
           heading={finalCtaCopy.heading}
           ctaLabel={finalCtaCopy.ctaStart}

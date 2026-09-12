@@ -32,6 +32,7 @@ export type PageId =
   | "start"
   | "call"
   | "watch"
+  | "website"
   | "welcome"
   | "confirmed";
 

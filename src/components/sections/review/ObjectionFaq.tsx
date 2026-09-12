@@ -5,21 +5,29 @@ import { faq, faqExtra } from "@/content/copy";
 import { track } from "@/lib/analytics";
 import { Container } from "@/components/ui/Layout";
 
+// The six from the phone come first — they're the real objections; the rest
+// are implementation questions people scroll for.
+const defaultItems = [...faq.items, ...faqExtra];
+
 /**
  * Native <details>/<summary>: keyboard navigation and screen-reader semantics
  * come for free, and the answers stay readable with JavaScript disabled.
  * Which question gets opened is tracked — it reveals the real objections.
  */
-export function ObjectionFaq() {
-  // The six from the phone come first — they're the real objections; the rest
-  // are implementation questions people scroll for.
-  const items = [...faq.items, ...faqExtra];
+export function ObjectionFaq({
+  heading = faq.heading,
+  items = defaultItems,
+}: {
+  heading?: string;
+  /** Another page's questions. Defaults to the review system's. */
+  items?: readonly { q: string; a: string }[];
+} = {}) {
 
   return (
     <section className="bg-white py-12 lg:py-20">
       <Container>
         <div className="mx-auto max-w-[760px]">
-          <h2 className="text-h2 text-ink">{faq.heading}</h2>
+          <h2 className="text-h2 text-ink">{heading}</h2>
 
           <div className="mt-8 divide-y divide-line border-y border-line">
             {items.map((item) => (

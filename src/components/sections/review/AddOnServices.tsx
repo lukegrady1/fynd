@@ -1,6 +1,7 @@
 "use client";
 
-import { ArrowUpRight, Globe, MapPin, Sparkles } from "lucide-react";
+import Link from "next/link";
+import { ArrowRight, ArrowUpRight, Globe, MapPin, Sparkles } from "lucide-react";
 import { addOnServices, demoCta } from "@/content/copy";
 import { track } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
@@ -54,12 +55,29 @@ const TONES: Record<string, string> = {
   orange: "border-fynd-orange/25 bg-fynd-orange/[0.07] text-fynd-orange",
 };
 
-function ServiceCard({
-  item,
-}: {
-  item: (typeof addOnServices.items)[number];
-}) {
+type ServiceItem = (typeof addOnServices.items)[number] & {
+  href?: string;
+  ctaLabel?: string;
+};
+
+const cardClass =
+  "group flex h-full w-full flex-col rounded-lg border border-line bg-white p-5 transition-all duration-250 ease-fynd hover:-translate-y-1 hover:border-fynd-blue/40 hover:shadow-lg hover:shadow-ink/[0.06] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fynd-blue motion-reduce:transition-none motion-reduce:hover:translate-y-0 md:p-6 lg:p-7";
+
+function ServiceCard({ item }: { item: ServiceItem }) {
   const bookingHref = useBookingHref(addOnServices.href);
+  const ctaLabel = item.ctaLabel ?? addOnServices.ctaLabel;
+  const onClick = () =>
+    track("cta_click", { cta: ctaLabel, section: `addon_${item.icon}` });
+
+  // An add-on with a page of its own stays in this tab: it is part of the
+  // site, not a booking form the visitor might want to keep the page behind.
+  if (item.href) {
+    return (
+      <Link href={item.href} onClick={onClick} className={cardClass}>
+        <CardBody item={item} ctaLabel={ctaLabel} external={false} />
+      </Link>
+    );
+  }
 
   return (
     // The whole card is the link, and each one's text differs, so the three
@@ -68,14 +86,25 @@ function ServiceCard({
       href={bookingHref}
       target="_blank"
       rel="noopener noreferrer"
-      onClick={() =>
-        track("cta_click", {
-          cta: addOnServices.ctaLabel,
-          section: `addon_${item.icon}`,
-        })
-      }
-      className="group flex h-full w-full flex-col rounded-lg border border-line bg-white p-5 transition-all duration-250 ease-fynd hover:-translate-y-1 hover:border-fynd-blue/40 hover:shadow-lg hover:shadow-ink/[0.06] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fynd-blue motion-reduce:transition-none motion-reduce:hover:translate-y-0 md:p-6 lg:p-7"
+      onClick={onClick}
+      className={cardClass}
     >
+      <CardBody item={item} ctaLabel={ctaLabel} external />
+    </a>
+  );
+}
+
+function CardBody({
+  item,
+  ctaLabel,
+  external,
+}: {
+  item: ServiceItem;
+  ctaLabel: string;
+  external: boolean;
+}) {
+  return (
+    <>
       {/* Icon beside the title on a phone, above it from md. Stacked, three
           cards run ~300px each and the section becomes a 1300px scroll for
           three sentences; inline, the icon costs no vertical space at all. */}
@@ -102,14 +131,23 @@ function ServiceCard({
       </span>
 
       <span className="mt-4 flex items-center gap-1.5 border-t border-line pt-3.5 text-small font-semibold text-fynd-blue md:mt-5 md:pt-4">
-        {addOnServices.ctaLabel}
-        <span className="sr-only"> ({demoCta.newTabHint})</span>
-        <ArrowUpRight
-          aria-hidden="true"
-          className="h-4 w-4 transition-transform duration-150 ease-fynd group-hover:translate-x-[2px] group-hover:-translate-y-[2px]"
-        />
+        {ctaLabel}
+        {external ? (
+          <>
+            <span className="sr-only"> ({demoCta.newTabHint})</span>
+            <ArrowUpRight
+              aria-hidden="true"
+              className="h-4 w-4 transition-transform duration-150 ease-fynd group-hover:translate-x-[2px] group-hover:-translate-y-[2px]"
+            />
+          </>
+        ) : (
+          <ArrowRight
+            aria-hidden="true"
+            className="h-4 w-4 transition-transform duration-150 ease-fynd group-hover:translate-x-[3px]"
+          />
+        )}
       </span>
-    </a>
+    </>
   );
 }
 

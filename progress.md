@@ -78,15 +78,20 @@ video, what owners say, the calendar. No price anywhere on it — the video
 sells the idea and the call is the only ask, so every button (hero, video
 end-card, sticky pill) scrolls to `#book`.
 
-- **Video is self-hosted** — `public/fynd-split-vsl.mp4` (1920x1080, 30.8s,
-  11MB) played through a native `<video>` in
+- **Video is self-hosted** — `public/fynd-split-vsl-vo-web_3.mp4` (1920x1080,
+  37.4s, 5.8MB, voiceover) played through a native `<video>` in
   `src/components/sections/review/VslPlayer.tsx`. No YouTube script, no
   iframe. `preload="metadata"` so the file costs nothing until play; the
   poster is `public/fynd-split-vsl-poster.jpg`, a 1280x720 title card of the
   logo lockup on navy-card, composed with PIL from `transparent-fynd.PNG`
   and Poppins Bold (Luke asked for the logo rather than a video frame). The
   lockup sits at 42% height and the play control at 68%, so they never
-  overlap. Click-to-play with sound, native controls after the first press,
+  overlap. **Autoplays muted** on load (browsers allow nothing louder
+  without a gesture) with a "Turn sound on" pill that restarts from 0 with
+  audio; falls back to the poster + play button if even the muted start is
+  blocked or the visitor prefers reduced motion. `vsl_play` and the
+  quartiles only count once sound is on. `preload="auto"`, so the 11MB file
+  downloads for every visitor now. Native controls after the sound-on press,
   and an end-card over the last frame with "Book a demo" + "Watch again".
   Fires the same `vsl_play` / `vsl_25|50|75` / `vsl_complete` events the
   YouTube player does. If the file is swapped, update `watch.video.duration`
@@ -108,6 +113,36 @@ end-card, sticky pill) scrolls to `#book`.
 - `StickyCta` gained `showPrice` — off here, since a $/mo on the pill would
   be the only price on the page.
 - `noindex, nofollow`, like `/start`.
+
+### Website + Reviews plan — `/website` ($249/mo)
+
+Keegan asked for "a website refresh + reviews for 249", at the bottom of the
+homepage and on its own page. Built as a second **plan**, not an add-on:
+
+- **`/website`** — hero (the two halves as a pair of cards), a two-column
+  "what's included" list, the $249 card at `#convert`, four questions, the
+  closer. Indexable. Copy is `bundle` in `copy.ts`; the price is
+  `offer.bundle.price`.
+- **Homepage** — `BundleTeaser` sits between the FAQ and the closer, and the
+  "Custom website" add-on card now links to `/website` (same tab) instead of
+  the demo calendar.
+- **Stripe** — `src/lib/stripe.ts` now has a `PLANS` table. Both plans use
+  the same billing shape (first period up front, subscription from the
+  anchor). `plan` rides on the session metadata and `ensureSubscription`
+  reads it back to pick the recurring price, so the webhook and the welcome
+  page need no changes. The live $249/month price
+  (`price_1UExSS3sJGpur4VmhB0pLEyU`) is the default, overridable with
+  `STRIPE_PRICE_WEBSITE_249` for a test deploy. The $97 plan is untouched.
+- `CheckoutButton` was extracted from `PricingSection` and takes a `plan`.
+  `ObjectionFaq` takes `heading`/`items`; `StickyCta` takes `price`.
+
+**Assumptions to confirm with Keegan/Luke** (all in `bundle` in `copy.ts`):
+$249 is per month, not one-off. The website scope list — mobile-first
+rebuild on their domain, copy from one call, book-now wired to their
+software, hosting/updates included, reviews shown on the site — and the
+"live in about two weeks", "no design fee", "keep your domain" and "move up
+from $97 later" answers are commitments written by Claude, not agreed
+policy. Edit before sending anyone the link.
 
 ### Onboarding form — `/start/welcome`
 

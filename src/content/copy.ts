@@ -20,6 +20,15 @@ export const offer = {
   /** NFC review card. One-off add-on, not part of the subscription. */
   nfcCard: 19,
 
+  /**
+   * The second plan: a rebuilt website plus the Review System, one monthly
+   * price. Sold on /website and teased at the bottom of the homepage.
+   */
+  bundle: {
+    productName: "Website + Reviews",
+    price: 249,
+  },
+
   terms: "No contract. Cancel anytime.",
 
   /** Used by the "what's the catch" FAQ answer. */
@@ -188,11 +197,13 @@ export const watch = {
   },
 
   video: {
-    src: "/fynd-split-vsl.mp4",
+    src: "/fynd-split-vsl-vo-web_3.mp4",
     poster: "/fynd-split-vsl-poster.jpg",
-    /** Runs 30.8s. Update if the file is swapped. */
-    duration: "0:31",
+    /** Runs 37.4s, with voiceover. Update if the file is swapped. */
+    duration: "0:37",
     playLabel: "Play the video",
+    /** Over the muted autoplay. Pressing it restarts from 0 with audio. */
+    unmuteLabel: "Turn sound on",
     /** Shown over the last frame once it finishes. */
     ended: {
       heading: "Want to see it on your business?",
@@ -328,6 +339,12 @@ export const meta = {
     title: "Start — Fynd Review System",
     description:
       "Automated Google review requests for local service businesses. $97/mo, no contract.",
+  },
+  website: {
+    /** The layout appends " | Fynd", so no brand here. */
+    title: "Website + Reviews plan",
+    description:
+      "A rebuilt website plus automated Google review requests, for one monthly price. No setup fee, no contract.",
   },
   watch: {
     title: "Watch — Fynd Review System",
@@ -617,6 +634,9 @@ export const addOnServices = {
       tone: "blue",
       title: "Custom website",
       body: "A fast, modern site built around getting found and getting booked — not a template with your logo dropped in.",
+      /** The one add-on with a plan of its own: goes to /website, same tab. */
+      href: "/website",
+      ctaLabel: "See the website plan",
     },
     {
       icon: "map",
@@ -1083,3 +1103,103 @@ export const faqExtra = [
     a: "Yes. There's an embeddable widget that pulls your live Google reviews onto your site, so the same proof works on the page people land on after they find you.",
   },
 ];
+
+/* ==========================================================================
+   /website — the Website + Reviews plan.
+
+   The website side of the list below is a scope statement, and it is what
+   a customer will hold Luke to. Edit it here, not in the component.
+   ========================================================================== */
+
+export const bundle = {
+  name: offer.bundle.productName,
+  price: offer.bundle.price,
+
+  hero: {
+    lead: "A new website, and",
+    accent: "the reviews to back it up.",
+    sub: "Your site rebuilt to get you booked, and every appointment turned into a Google review. One plan, one monthly price, nothing to piece together.",
+    cta: `Start for $${offer.bundle.price}/month`,
+    reassure: "No setup fee. No contract. Cancel anytime.",
+  },
+
+  includes: {
+    eyebrow: "What's included",
+    lead: "Two things owners pay",
+    accent: "two people for.",
+    website: {
+      title: "The website",
+      blurb: "Rebuilt from the ground up, on the domain you already have.",
+      items: [
+        "Fast, mobile-first, and designed around getting booked",
+        "Copy written for you from one short call",
+        "Book-now wired to your booking software",
+        "Hosting, security and updates handled",
+        "Your Google reviews shown live on the site",
+      ],
+    },
+    reviews: {
+      title: "The Review System",
+      blurb: "The same system on the $97 plan, included in full.",
+      items: [
+        "A review request texted after every appointment, automatically",
+        "Follow-up for anyone who didn't respond",
+        "Unhappy customers routed to you privately, not to Google",
+        "Live and sending within 72 hours",
+      ],
+    },
+  },
+
+  pricing: {
+    eyebrow: "Pricing",
+    heading: "One plan. Website and reviews.",
+    nowLabel: "Everything above, one monthly price",
+    clears: [
+      "No setup fee, no design fee",
+      "Site live in about two weeks",
+      "No contract, cancel anytime",
+    ],
+    demoLine: {
+      lead: "Want to talk it through first? Book a",
+      linkLabel: "demo call",
+      tail: ".",
+    },
+  },
+
+  faq: {
+    heading: "Straight answers",
+    items: [
+      {
+        q: "Do I keep my domain?",
+        a: "Yes. The new site goes live on the domain you already own, and it stays yours. If you don't have one yet, we register it in your name, not ours.",
+      },
+      {
+        q: "Is the review part the same as the $97 plan?",
+        a: "Exactly the same system, nothing held back. The website is on top of it, not instead of it.",
+      },
+      {
+        q: "How long until the site is live?",
+        a: "About two weeks from the kickoff call, most of which is waiting on photos and a look at the draft. The review requests start sending within 72 hours, so that part is working long before the site goes up.",
+      },
+      {
+        q: "Can I start with just reviews and add the site later?",
+        a: "Yes. Start on the $97 plan and move up whenever you want the site. Nothing is lost in the switch.",
+      },
+    ],
+  },
+
+  finalCta: {
+    heading: { lead: "Ready for a site that", accent: "gets you booked", tail: "?" },
+    cta: `Start for $${offer.bundle.price}/month`,
+  },
+
+  /** The teaser at the bottom of the homepage. */
+  teaser: {
+    eyebrow: "New plan",
+    lead: "Need a website too?",
+    accent: "Get both.",
+    body: `The Review System plus your site rebuilt, for $${offer.bundle.price}/month. No setup fee, no design fee, and the reviews start sending in the first 72 hours.`,
+    cta: "See the website plan",
+    href: "/website",
+  },
+} as const;

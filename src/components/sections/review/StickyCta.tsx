@@ -20,6 +20,7 @@ export function StickyCta({
   targetId,
   withDemo,
   showPrice = true,
+  price = offer.price,
 }: {
   ctaLabel: string;
   targetId: string;
@@ -31,6 +32,8 @@ export function StickyCta({
    * on the page.
    */
   showPrice?: boolean;
+  /** The $/mo figure on the pill. Defaults to the review system's. */
+  price?: number;
 }) {
   const [visible, setVisible] = useState(false);
   const demoHref = useDemoHref();
@@ -96,7 +99,7 @@ export function StickyCta({
         {showPrice && (
           <>
             <span className="hidden text-[13px] font-bold tabular-nums text-white min-[360px]:inline sm:text-small">
-              ${offer.price}/mo
+              ${price}/mo
             </span>
             <span
               aria-hidden="true"

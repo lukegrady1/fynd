@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import { Check, Lock, Nfc } from "lucide-react";
 import { checkout, demoCta, offer, pricing } from "@/content/copy";
@@ -9,6 +8,7 @@ import { Container, Eyebrow } from "@/components/ui/Layout";
 import { Reveal } from "./Reveal";
 import { useDemoHref } from "./DemoCta";
 import { OfferClock } from "./OfferClock";
+import { CheckoutButton, checkoutButtonClass } from "./CheckoutButton";
 
 /**
  * Pricing — and, on /start, the only conversion module on the page.
@@ -90,7 +90,11 @@ export function PricingSection(
             </ul>
 
             {props.mode === "checkout" ? (
-              <CheckoutButton cid={props.cid} label={pricing.cta} />
+              <CheckoutButton
+                plan="review-system"
+                cid={props.cid}
+                label={pricing.cta}
+              />
             ) : (
               <ScrollButton label={props.ctaLabel} targetId={props.targetId} />
             )}
@@ -203,67 +207,4 @@ function ScrollButton({
   );
 }
 
-function CheckoutButton({ cid, label }: { cid?: string; label: string }) {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const handleCheckout = async () => {
-    setLoading(true);
-    setError(null);
-    track("checkout_started", { section: "pricing" });
-
-    try {
-      const res = await fetch("/api/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ cid: cid ?? null, plan: "review-system" }),
-      });
-
-      const data = (await res.json()) as { url?: string; error?: string };
-
-      if (res.ok && data.url) {
-        window.location.href = data.url;
-        return;
-      }
-
-      setError(data.error ?? "Something went wrong. Please try again.");
-    } catch {
-      setError(
-        "Couldn't reach checkout. Check your connection and try again, or book a call.",
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return (
-    <>
-      <button
-        type="button"
-        onClick={handleCheckout}
-        disabled={loading}
-        className={`${buttonClass} disabled:cursor-not-allowed disabled:opacity-60`}
-      >
-        {loading ? "Starting…" : label}
-      </button>
-
-      {error && (
-        <p
-          role="alert"
-          className="mt-3 rounded-sm border border-fynd-orange/40 bg-fynd-orange/8 px-3 py-2 text-small text-ink"
-        >
-          {error}{" "}
-          <Link
-            href="/call"
-            className="font-semibold text-fynd-blue underline-offset-4 hover:underline"
-          >
-            Book a call instead &rarr;
-          </Link>
-        </p>
-      )}
-    </>
-  );
-}
-
-const buttonClass =
-  "mt-7 flex h-14 w-full items-center justify-center rounded-sm bg-fynd-blue px-6 text-body font-semibold text-white transition-all duration-150 ease-fynd hover:-translate-y-px hover:bg-[#3F4DF0] active:scale-[0.99]";
+const buttonClass = checkoutButtonClass;

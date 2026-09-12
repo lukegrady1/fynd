@@ -44,10 +44,13 @@ import {
  * call any number of times — see its own comment for how.
  */
 
+import type { Plan } from "./stripe-plans";
+export type { Plan };
+
 export type CheckoutRequest = {
   /** GHL contact id, carried into Stripe metadata. */
   cid: string | null;
-  plan: "review-system";
+  plan: Plan;
   origin: string;
 };
 
@@ -57,21 +60,44 @@ export type CheckoutResult =
   | { status: "error"; message: string };
 
 /**
- * The live $97/month price. Overridable per environment so a test deploy can
- * point at a test-mode price without a code change.
+ * The two plans. Same billing shape for both — full first period up front,
+ * subscription from the anchor — so a plan is just a name, an amount and
+ * the recurring price to hang the subscription on.
+ *
+ * `cents` must match the recurring Stripe price: the one-time item that
+ * collects the first period is built inline, so the amount is stated here
+ * rather than read back from Stripe.
+ *
+ * Both price ids have live defaults so the plans work with only the secret
+ * key set; the env vars exist to point a test deploy at test-mode prices.
+ * A plan whose price id resolves to nothing returns "unconfigured" and the
+ * page points people at a call instead of taking money it cannot subscribe.
  */
-const PRICE_ID =
-  process.env.STRIPE_PRICE_REVIEW_97 ?? "price_1U95IV3sJGpur4VmHm1ixoq5";
-
-/**
- * Must match the recurring price above. The one-time item that collects the
- * first period is built inline, so the amount is stated here rather than read
- * back from Stripe.
- */
-const PRICE_CENTS = 9700;
+const PLANS: Record<
+  Plan,
+  { name: string; cents: number; priceId: string | undefined; cancelPath: string }
+> = {
+  "review-system": {
+    name: "Fynd Review System",
+    cents: 9700,
+    priceId:
+      process.env.STRIPE_PRICE_REVIEW_97 ?? "price_1U95IV3sJGpur4VmHm1ixoq5",
+    cancelPath: "/",
+  },
+  "website-reviews": {
+    name: "Fynd Website + Reviews",
+    cents: 24900,
+    priceId:
+      process.env.STRIPE_PRICE_WEBSITE_249 ?? "price_1UExSS3sJGpur4VmhB0pLEyU",
+    cancelPath: "/website",
+  },
+};
 
 /** "$97.00" — cents are load-bearing here; "$97" reads like an estimate. */
-const PRICE_LABEL = `$${(PRICE_CENTS / 100).toFixed(2)}`;
+const priceLabel = (cents: number) => `$${(cents / 100).toFixed(2)}`;
+
+const isPlan = (value: unknown): value is Plan =>
+  typeof value === "string" && value in PLANS;
 
 /**
  * Only the secret key is required; the price has a default above.
@@ -112,12 +138,19 @@ export const createCheckoutSession = async (
     return { status: "unconfigured", missing };
   }
 
+  const plan = PLANS[req.plan];
+  if (!plan.priceId) {
+    return { status: "unconfigured", missing: [`price id for ${req.plan}`] };
+  }
+  const PRICE_LABEL = priceLabel(plan.cents);
+
   // Shared by the session and the subscription: the session's copy is read by
   // checkout.session.completed, the subscription's by every later billing
-  // event, which never sees the session.
+  // event, which never sees the session. `plan` is what ensureSubscription
+  // reads to pick the recurring price.
   const metadata = {
     ghl_contact_id: req.cid ?? "",
-    source: "start-page",
+    source: req.plan === "website-reviews" ? "website-page" : "start-page",
     plan: req.plan,
   };
 
@@ -144,9 +177,9 @@ export const createCheckoutSession = async (
           // period end, which differs per customer.
           price_data: {
             currency: "usd",
-            unit_amount: PRICE_CENTS,
+            unit_amount: plan.cents,
             product_data: {
-              name: "Fynd Review System",
+              name: plan.name,
               description: `Your first period, today through ${anchorLabel}. Continues as a ${PRICE_LABEL}/month subscription on ${anchorLabel}.`,
             },
           },
@@ -162,7 +195,7 @@ export const createCheckoutSession = async (
         },
       },
       success_url: `${req.origin}/start/welcome?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${req.origin}/?cancelled=1`,
+      cancel_url: `${req.origin}${plan.cancelPath}?cancelled=1`,
       allow_promotion_codes: true,
     });
 
@@ -269,6 +302,16 @@ export const ensureSubscription = async (
     // Fall back to recomputing only if the session predates the metadata.
     const anchor = Number(session.metadata?.billing_anchor) || nextBillingAnchor();
 
+    // Sessions from before there were two plans carry no `plan`; they are
+    // all the review system.
+    const plan = PLANS[isPlan(session.metadata?.plan) ? session.metadata.plan : "review-system"];
+    if (!plan.priceId) {
+      return {
+        status: "error",
+        message: `session ${sessionId} paid for ${session.metadata?.plan} but no recurring price is configured for it`,
+      };
+    }
+
     // Makes the saved card the one invoices draw on; without it the renewal
     // has no payment method and fails.
     await stripe().customers.update(customer, {
@@ -278,7 +321,7 @@ export const ensureSubscription = async (
     const subscription = await stripe().subscriptions.create(
       {
         customer,
-        items: [{ price: PRICE_ID, quantity: 1 }],
+        items: [{ price: plan.priceId, quantity: 1 }],
         default_payment_method: paymentMethod,
         /** Runs to the anchor; the first period was paid at checkout. */
         trial_end: anchor,

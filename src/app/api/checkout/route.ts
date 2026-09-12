@@ -5,7 +5,7 @@ import { notifyGhl } from "@/lib/ghl";
 
 const bodySchema = z.object({
   cid: z.string().max(64).nullable().optional(),
-  plan: z.literal("review-system"),
+  plan: z.enum(["review-system", "website-reviews"]),
 });
 
 export const POST = async (request: Request) => {
@@ -26,7 +26,7 @@ export const POST = async (request: Request) => {
     {
       event: "checkout_started",
       ghl_contact_id: cid,
-      page: "start",
+      page: parsed.data.plan === "website-reviews" ? "website" : "start",
       meta: { plan: parsed.data.plan },
     },
     `${Date.now()}`,
