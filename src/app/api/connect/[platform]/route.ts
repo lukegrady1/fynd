@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 import { oauthConfig } from "@/lib/connect";
 import { platformById } from "@/lib/onboarding";
+import { siteOrigin } from "@/lib/site-origin";
 
 /**
  * OAuth kickoff for a booking platform.
@@ -21,7 +22,7 @@ export const GET = async (
 ) => {
   const { platform: id } = await params;
   const platform = platformById(id);
-  const origin = new URL(request.url).origin;
+  const origin = siteOrigin(request);
 
   const back = (reason: string) =>
     NextResponse.redirect(

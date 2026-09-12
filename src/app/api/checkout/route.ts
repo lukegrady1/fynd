@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { createCheckoutSession } from "@/lib/stripe";
 import { notifyGhl } from "@/lib/ghl";
+import { siteOrigin } from "@/lib/site-origin";
 
 const bodySchema = z.object({
   cid: z.string().max(64).nullable().optional(),
@@ -19,7 +20,8 @@ export const POST = async (request: Request) => {
   }
 
   const cid = parsed.data.cid ?? null;
-  const origin = new URL(request.url).origin;
+  // Where Stripe sends them back. Not the request origin — see site-origin.ts.
+  const origin = siteOrigin(request);
 
   // Fires before redirect so the abandoned-checkout sequence has a trigger.
   await notifyGhl(
