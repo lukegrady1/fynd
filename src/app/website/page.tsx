@@ -56,10 +56,12 @@ export default async function WebsitePage({
 
       <FunnelFooter />
 
+      {/* No $/mo on the pill: "$249/mo" would be wrong and "$97/mo" would
+          hide the first charge. The card has both numbers. */}
       <StickyCta
         ctaLabel="Start now"
         targetId="convert"
-        price={bundle.price}
+        showPrice={false}
         withDemo
       />
     </>

@@ -60,35 +60,56 @@ export type CheckoutResult =
   | { status: "error"; message: string };
 
 /**
- * The two plans. Same billing shape for both — full first period up front,
- * subscription from the anchor — so a plan is just a name, an amount and
- * the recurring price to hang the subscription on.
+ * The two plans. Same billing shape for both — a one-time charge today that
+ * carries the customer to the anchor, then a subscription from the anchor —
+ * so a plan is a name, what today's charge is, and the recurring price to
+ * hang the subscription on.
  *
- * `cents` must match the recurring Stripe price: the one-time item that
- * collects the first period is built inline, so the amount is stated here
- * rather than read back from Stripe.
+ * They differ only in today's charge. The review plan collects one month
+ * ($97) up front. The website plan collects $249, which is the website
+ * build plus that same first period, and then continues on the SAME $97
+ * recurring price — the site is paid for once, the reviews are what recurs.
  *
- * Both price ids have live defaults so the plans work with only the secret
- * key set; the env vars exist to point a test deploy at test-mode prices.
- * A plan whose price id resolves to nothing returns "unconfigured" and the
- * page points people at a call instead of taking money it cannot subscribe.
+ * `firstCents` is the inline one-time item; `recurringCents` must match the
+ * recurring Stripe price and is only used for the wording on the checkout
+ * page, since the amount itself lives on the price.
+ *
+ * The price id has a live default so checkout works with only the secret
+ * key set; the env var exists to point a test deploy at a test-mode price.
  */
+const REVIEW_PRICE_ID =
+  process.env.STRIPE_PRICE_REVIEW_97 ?? "price_1U95IV3sJGpur4VmHm1ixoq5";
+
 const PLANS: Record<
   Plan,
-  { name: string; cents: number; priceId: string | undefined; cancelPath: string }
+  {
+    name: string;
+    /** Charged at checkout. Covers today through the anchor. */
+    firstCents: number;
+    /** What the subscription bills from the anchor. */
+    recurringCents: number;
+    /** Product description on the checkout line item. */
+    describe: (anchorLabel: string, recurringLabel: string) => string;
+    priceId: string | undefined;
+    cancelPath: string;
+  }
 > = {
   "review-system": {
     name: "Fynd Review System",
-    cents: 9700,
-    priceId:
-      process.env.STRIPE_PRICE_REVIEW_97 ?? "price_1U95IV3sJGpur4VmHm1ixoq5",
+    firstCents: 9700,
+    recurringCents: 9700,
+    describe: (anchorLabel, recurringLabel) =>
+      `Your first period, today through ${anchorLabel}. Continues as a ${recurringLabel}/month subscription on ${anchorLabel}.`,
+    priceId: REVIEW_PRICE_ID,
     cancelPath: "/",
   },
   "website-reviews": {
     name: "Fynd Website + Reviews",
-    cents: 24900,
-    priceId:
-      process.env.STRIPE_PRICE_WEBSITE_249 ?? "price_1UExSS3sJGpur4VmhB0pLEyU",
+    firstCents: 24900,
+    recurringCents: 9700,
+    describe: (anchorLabel, recurringLabel) =>
+      `Your website build, plus the Review System today through ${anchorLabel}. The Review System continues as a ${recurringLabel}/month subscription on ${anchorLabel}.`,
+    priceId: REVIEW_PRICE_ID,
     cancelPath: "/website",
   },
 };
@@ -142,7 +163,8 @@ export const createCheckoutSession = async (
   if (!plan.priceId) {
     return { status: "unconfigured", missing: [`price id for ${req.plan}`] };
   }
-  const PRICE_LABEL = priceLabel(plan.cents);
+  const FIRST_LABEL = priceLabel(plan.firstCents);
+  const RECURRING_LABEL = priceLabel(plan.recurringCents);
 
   // Shared by the session and the subscription: the session's copy is read by
   // checkout.session.completed, the subscription's by every later billing
@@ -177,10 +199,10 @@ export const createCheckoutSession = async (
           // period end, which differs per customer.
           price_data: {
             currency: "usd",
-            unit_amount: plan.cents,
+            unit_amount: plan.firstCents,
             product_data: {
               name: plan.name,
-              description: `Your first period, today through ${anchorLabel}. Continues as a ${PRICE_LABEL}/month subscription on ${anchorLabel}.`,
+              description: plan.describe(anchorLabel, RECURRING_LABEL),
             },
           },
         },
@@ -191,7 +213,7 @@ export const createCheckoutSession = async (
       metadata: { ...metadata, billing_anchor: String(anchor) },
       custom_text: {
         submit: {
-          message: `${PRICE_LABEL} is due today and covers you through ${anchorLabel}. It then continues as a ${PRICE_LABEL}/month subscription, billed on the ${anchorDayOrdinal(anchor)}. Cancel any time.`,
+          message: `${FIRST_LABEL} is due today and covers you through ${anchorLabel}. It then continues as a ${RECURRING_LABEL}/month subscription, billed on the ${anchorDayOrdinal(anchor)}. Cancel any time.`,
         },
       },
       success_url: `${req.origin}/start/welcome?session_id={CHECKOUT_SESSION_ID}`,

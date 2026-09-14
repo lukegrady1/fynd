@@ -21,8 +21,10 @@ export const offer = {
   nfcCard: 19,
 
   /**
-   * The second plan: a rebuilt website plus the Review System, one monthly
-   * price. Sold on /website and teased at the bottom of the homepage.
+   * The second plan: a rebuilt website plus the Review System. One charge
+   * of `price` at checkout covers the build and the first period; from the
+   * next billing day it is the ordinary `offer.price` a month. Sold on
+   * /website and teased at the bottom of the homepage.
    */
   bundle: {
     productName: "Website + Reviews",
@@ -344,7 +346,7 @@ export const meta = {
     /** The layout appends " | Fynd", so no brand here. */
     title: "Website + Reviews plan",
     description:
-      "A rebuilt website plus automated Google review requests, for one monthly price. No setup fee, no contract.",
+      "A rebuilt website plus automated Google review requests. $249 to start, then $97 a month. No contract.",
   },
   watch: {
     title: "Watch — Fynd Review System",
@@ -1113,14 +1115,17 @@ export const faqExtra = [
 
 export const bundle = {
   name: offer.bundle.productName,
+  /** Charged once at checkout: the build plus the first period of reviews. */
   price: offer.bundle.price,
+  /** What it becomes from the next billing day — the reviews-only rate. */
+  monthly: offer.price,
 
   hero: {
     lead: "A new website, and",
     accent: "the reviews to back it up.",
-    sub: "Your site rebuilt to get you booked, and every appointment turned into a Google review. One plan, one monthly price, nothing to piece together.",
-    cta: `Start for $${offer.bundle.price}/month`,
-    reassure: "No setup fee. No contract. Cancel anytime.",
+    sub: `Your site rebuilt to get you booked, and every appointment turned into a Google review. $${offer.bundle.price} to start, then $${offer.price} a month for the Review System. Nothing to piece together.`,
+    cta: `Start for $${offer.bundle.price}`,
+    reassure: `Then $${offer.price}/month. No contract. Cancel anytime.`,
   },
 
   includes: {
@@ -1140,7 +1145,7 @@ export const bundle = {
     },
     reviews: {
       title: "The Review System",
-      blurb: "The same system on the $97 plan, included in full.",
+      blurb: `The same system on the $${offer.price} plan, at the same $${offer.price} a month after the first charge.`,
       items: [
         "A review request texted after every appointment, automatically",
         "Follow-up for anyone who didn't respond",
@@ -1152,10 +1157,13 @@ export const bundle = {
 
   pricing: {
     eyebrow: "Pricing",
-    heading: "One plan. Website and reviews.",
-    nowLabel: "Everything above, one monthly price",
+    heading: `$${offer.bundle.price} to start. $${offer.price} a month after.`,
+    /** Beside the big number. */
+    todayLabel: "today",
+    thenLabel: `then $${offer.price}/mo`,
+    nowLabel: "Covers the website build and your first period of reviews",
     clears: [
-      "No setup fee, no design fee",
+      `Then $${offer.price}/month, the same as the reviews-only plan`,
       "Site live in about two weeks",
       "No contract, cancel anytime",
     ],
@@ -1174,8 +1182,12 @@ export const bundle = {
         a: "Yes. The new site goes live on the domain you already own, and it stays yours. If you don't have one yet, we register it in your name, not ours.",
       },
       {
-        q: "Is the review part the same as the $97 plan?",
-        a: "Exactly the same system, nothing held back. The website is on top of it, not instead of it.",
+        q: `What does the $${offer.bundle.price} cover?`,
+        a: `The website build and your first period of the Review System. From the next billing day it's $${offer.price} a month, exactly the same as the reviews-only plan. The site isn't billed again.`,
+      },
+      {
+        q: `Is the review part the same as the $${offer.price} plan?`,
+        a: "Exactly the same system, nothing held back, at the same monthly rate. The website is on top of it, not instead of it.",
       },
       {
         q: "How long until the site is live?",
@@ -1183,14 +1195,14 @@ export const bundle = {
       },
       {
         q: "Can I start with just reviews and add the site later?",
-        a: "Yes. Start on the $97 plan and move up whenever you want the site. Nothing is lost in the switch.",
+        a: `Yes. Start on the $${offer.price} plan and add the site whenever you want it. Your monthly doesn't change; the $${offer.bundle.price} covers the build.`,
       },
     ],
   },
 
   finalCta: {
     heading: { lead: "Ready for a site that", accent: "gets you booked", tail: "?" },
-    cta: `Start for $${offer.bundle.price}/month`,
+    cta: `Start for $${offer.bundle.price}`,
   },
 
   /** The teaser at the bottom of the homepage. */
@@ -1198,7 +1210,7 @@ export const bundle = {
     eyebrow: "New plan",
     lead: "Need a website too?",
     accent: "Get both.",
-    body: `The Review System plus your site rebuilt, for $${offer.bundle.price}/month. No setup fee, no design fee, and the reviews start sending in the first 72 hours.`,
+    body: `The Review System plus your site rebuilt. $${offer.bundle.price} to start, then $${offer.price} a month, and the reviews start sending in the first 72 hours.`,
     cta: "See the website plan",
     href: "/website",
   },

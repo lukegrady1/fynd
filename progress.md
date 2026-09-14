@@ -114,7 +114,7 @@ end-card, sticky pill) scrolls to `#book`.
   be the only price on the page.
 - `noindex, nofollow`, like `/start`.
 
-### Website + Reviews plan — `/website` ($249/mo)
+### Website + Reviews plan — `/website` ($249 once, then $97/mo)
 
 Keegan asked for "a website refresh + reviews for 249", at the bottom of the
 homepage and on its own page. Built as a second **plan**, not an add-on:
@@ -127,17 +127,20 @@ homepage and on its own page. Built as a second **plan**, not an add-on:
   "Custom website" add-on card now links to `/website` (same tab) instead of
   the demo calendar.
 - **Stripe** — `src/lib/stripe.ts` now has a `PLANS` table. Both plans use
-  the same billing shape (first period up front, subscription from the
-  anchor). `plan` rides on the session metadata and `ensureSubscription`
-  reads it back to pick the recurring price, so the webhook and the welcome
-  page need no changes. The live $249/month price
-  (`price_1UExSS3sJGpur4VmhB0pLEyU`) is the default, overridable with
-  `STRIPE_PRICE_WEBSITE_249` for a test deploy. The $97 plan is untouched.
+  the same billing shape (a one-time charge at checkout that covers today
+  through the anchor, then a subscription from the anchor). They differ only
+  in the first charge: **$249 for the website plan, then the same $97/month
+  recurring price as the reviews plan** — the site is paid once, the
+  reviews recur. `plan` rides on the session metadata and
+  `ensureSubscription` reads it back, so the webhook and the welcome page
+  need no changes. The $249/month recurring price Luke created in the
+  Dashboard (`price_1UExSS3sJGpur4VmhB0pLEyU`) is **unused** and can be
+  archived.
 - `CheckoutButton` was extracted from `PricingSection` and takes a `plan`.
   `ObjectionFaq` takes `heading`/`items`; `StickyCta` takes `price`.
 
 **Assumptions to confirm with Keegan/Luke** (all in `bundle` in `copy.ts`):
-$249 is per month, not one-off. The website scope list — mobile-first
+The website scope list — mobile-first
 rebuild on their domain, copy from one call, book-now wired to their
 software, hosting/updates included, reviews shown on the site — and the
 "live in about two weeks", "no design fee", "keep your domain" and "move up

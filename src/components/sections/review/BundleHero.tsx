@@ -1,7 +1,7 @@
 "use client";
 
 import { ArrowRight, Check, Globe, Star } from "lucide-react";
-import { bundle, offer } from "@/content/copy";
+import { bundle } from "@/content/copy";
 import { track } from "@/lib/analytics";
 import { Container } from "@/components/ui/Layout";
 import { DottedWorldMap } from "@/components/textures/Textures";
@@ -126,9 +126,13 @@ function PlanPair() {
 
       <p className="mt-4 text-center text-small text-white/60">
         <span className="font-bold tabular-nums text-white">
-          ${offer.bundle.price}
+          ${bundle.price}
+        </span>{" "}
+        today, then{" "}
+        <span className="font-bold tabular-nums text-white">
+          ${bundle.monthly}
         </span>
-        /month, everything included
+        /month
       </p>
     </div>
   );

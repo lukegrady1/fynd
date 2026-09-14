@@ -16,6 +16,11 @@ import { CheckoutButton } from "./CheckoutButton";
  * there is no "regular price" for this plan to be discounted from, and a
  * countdown next to a number that doesn't change would be the kind of urgency
  * the build spec forbids.
+ *
+ * Two numbers, deliberately unequal: $249 large with "today" beside it, and
+ * "then $97/mo" as a line beneath. The first is what the button charges,
+ * so it carries the weight; the second is the thing people would otherwise
+ * assume was $249 too.
  */
 export function BundlePricing({
   cid,
@@ -52,7 +57,12 @@ export function BundlePricing({
               <span className="text-[56px] font-bold leading-none tabular-nums text-ink">
                 ${bundle.price}
               </span>
-              <span className="text-h3 font-medium text-ink-soft">/mo</span>
+              <span className="text-h3 font-medium text-ink-soft">
+                {copy.todayLabel}
+              </span>
+            </p>
+            <p className="mt-1 text-h3 font-semibold tabular-nums text-fynd-green-text">
+              {copy.thenLabel}
             </p>
 
             <p className="mt-2 text-small text-ink-soft">{copy.nowLabel}</p>
