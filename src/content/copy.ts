@@ -259,7 +259,7 @@ export const faq = {
     },
     {
       q: "How long until I see reviews?",
-      a: "Typically the first ones land inside a week. It depends how many clients you see — a salon running 40 appointments a week moves faster than a solo therapist doing 10. Most accounts see a visible rating change in the first month.",
+      a: "Fast. The moment setup is done, the messages start going out to your recent customers, and the first reviews usually land within 48 hours or shortly after. From there it builds with every appointment: the more clients you see, the faster the rating moves.",
     },
     {
       q: "Do I have to do anything?",
