@@ -78,8 +78,8 @@ video, what owners say, the calendar. No price anywhere on it — the video
 sells the idea and the call is the only ask, so every button (hero, video
 end-card, sticky pill) scrolls to `#book`.
 
-- **Video is self-hosted** — `public/fynd-split-vsl-vo-web_3.mp4` (1920x1080,
-  37.4s, 5.8MB, voiceover) played through a native `<video>` in
+- **Video is self-hosted** — `public/fynd-split-vsl-vo-web_4.mp4` (1920x1080,
+  47.1s, 7.0MB, voiceover) played through a native `<video>` in
   `src/components/sections/review/VslPlayer.tsx`. No YouTube script, no
   iframe. `preload="metadata"` so the file costs nothing until play; the
   poster is `public/fynd-split-vsl-poster.jpg`, a 1280x720 title card of the

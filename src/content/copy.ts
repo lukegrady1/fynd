@@ -195,10 +195,10 @@ export const watch = {
   },
 
   video: {
-    src: "/fynd-split-vsl-vo-web_3.mp4",
+    src: "/fynd-split-vsl-vo-web_4.mp4",
     poster: "/fynd-split-vsl-poster.jpg",
-    /** Runs 37.4s, with voiceover. Update if the file is swapped. */
-    duration: "0:37",
+    /** Runs 47.1s, with voiceover. Update if the file is swapped. */
+    duration: "0:47",
     playLabel: "Play the video",
     /** Over the muted autoplay. Pressing it restarts from 0 with audio. */
     unmuteLabel: "Turn sound on",
