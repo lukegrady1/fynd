@@ -1,11 +1,18 @@
 "use client";
 
-import { Plus } from "lucide-react";
+import { ArrowUpRight, Plus } from "lucide-react";
 import { faq } from "@/content/copy";
 import { track } from "@/lib/analytics";
 import { Container } from "@/components/ui/Layout";
 
 const defaultItems = faq.items;
+
+type FaqItem = {
+  q: string;
+  a: string;
+  /** An optional link after the answer, for the one question that needs it. */
+  link?: { label: string; href: string };
+};
 
 /**
  * Native <details>/<summary>: keyboard navigation and screen-reader semantics
@@ -18,7 +25,7 @@ export function ObjectionFaq({
 }: {
   heading?: string;
   /** Another page's questions. Defaults to the review system's. */
-  items?: readonly { q: string; a: string }[];
+  items?: readonly FaqItem[];
 } = {}) {
 
   return (
@@ -46,6 +53,24 @@ export function ObjectionFaq({
                 </summary>
                 <p className="measure pb-5 text-body text-ink-soft">
                   {item.a}
+                  {item.link && (
+                    <>
+                      {" "}
+                      <a
+                        href={item.link.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-semibold text-fynd-blue underline decoration-fynd-blue/40 underline-offset-4 transition-colors duration-150 hover:decoration-fynd-blue"
+                      >
+                        {item.link.label}
+                        <span className="sr-only"> (opens in a new tab)</span>
+                        <ArrowUpRight
+                          aria-hidden="true"
+                          className="ml-0.5 inline h-3.5 w-3.5 align-[-2px]"
+                        />
+                      </a>
+                    </>
+                  )}
                 </p>
               </details>
             ))}

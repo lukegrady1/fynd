@@ -274,6 +274,14 @@ export const faq = {
       a: "No. We connect to your booking system or CRM, and from there it's automatic: when an appointment is marked complete, the request goes out on its own. Once we have access, it's hands-off. You don't write the message, you don't send it, and you don't chase anyone.",
     },
     {
+      q: "What booking software do you connect to?",
+      a: "Vagaro, Mindbody, Fresha, Booksy, Square, Acuity, StyleSeat, Setmore, Timely, Booker, Goldie, MyTime and Appointy, plus most CRMs. Don't see yours? If it's on Zapier, we can connect it.",
+      link: {
+        label: "Check the Zapier list",
+        href: "https://zapier.com/apps",
+      },
+    },
+    {
       q: "What if I get a bad review?",
       a: "That's the part most people worry about, so it's built in. The portal asks how it went — Excellent, Good, Ok or Bad. Excellent and Good get pointed at your Google profile. Ok and Bad never do; that customer lands on a private feedback form that comes straight to your inbox, usually within seconds, so you hear it before anyone else does.",
     },
