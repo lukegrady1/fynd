@@ -1070,7 +1070,7 @@ export const faqExtra = [
   },
   {
     q: "What if I have more than one location?",
-    a: "Each location has its own Google Business Profile, its own review flow, and its own dashboard. Message me about pricing for multiple locations rather than assuming it's a multiple of $97 — it usually isn't.",
+    a: "Each location has its own Google Business Profile, so each one needs its own Review System: its own review requests, its own routing, and its own dashboard. Reviews for one location never count toward another, which is exactly why a customer at your second shop needs to be asked about that shop.",
   },
   {
     q: "How many messages will my customers get?",
