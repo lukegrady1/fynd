@@ -33,10 +33,6 @@ export const offer = {
 
   terms: "No contract. Cancel anytime.",
 
-  /** Used by the "what's the catch" FAQ answer. */
-  capacity: {
-    perMonth: 5,
-  },
   /**
    * Fallback deadline for the /call confirmation page. ISO 8601 with an
    * explicit offset.
@@ -272,10 +268,6 @@ export const faq = {
     {
       q: "Am I locked in?",
       a: "Month to month. Cancel anytime from your dashboard or by texting me. The reviews you've collected are on your Google Business Profile — they're yours and they stay there whether you keep paying or not.",
-    },
-    {
-      q: `What's the catch?`,
-      a: `Two, and they're both real. First, setup is done by hand, so there is a limit to how many accounts start in a given week — if this week is full I'll tell you. Second, this only works if your clients are actually leaving happy. I can automate the asking. I can't fix the service.`,
     },
   ],
 } as const;
@@ -1070,7 +1062,7 @@ export const features = {
 export const faqExtra = [
   {
     q: "Can you get a bad review taken down?",
-    a: "Only if it breaks Google's rules, and I'll tell you straight which bucket yours is in. Fake reviews, ones from competitors, off-topic rants, anything with slurs or personal details — those get reported and chased, and they do come down. A real customer who had a genuinely bad experience and said so honestly is not coming down, not by me and not by anyone selling you otherwise. What we do instead is bury it: enough recent four and five star reviews and one bad one stops being the first thing anybody reads.",
+    a: "Only Google can remove a review, and only when it breaks their rules — but the software does the work of that for you. Every new review is watched, and anything that looks fake, off-topic, from a competitor, or carries slurs or personal details gets flagged so it can be reported and chased. Those do come down. A real customer who had a bad day and said so honestly is not coming down, not for anyone. So the software does two more things about it: it drafts a calm reply in your voice for you to approve, so the next reader sees how you handle it, and it keeps the four and five star reviews coming, so one bad one stops being the first thing anybody reads. And because unhappy customers are routed to you privately first, most never post at all.",
   },
   {
     q: "Who is this actually for?",
