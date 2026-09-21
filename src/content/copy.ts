@@ -1065,8 +1065,8 @@ export const faqExtra = [
     a: "Only Google can remove a review, and only when it breaks their rules — but the software does the work of that for you. Every new review is watched, and anything that looks fake, off-topic, from a competitor, or carries slurs or personal details gets flagged so it can be reported and chased. Those do come down. A real customer who had a bad day and said so honestly is not coming down, not for anyone. So the software does two more things about it: it drafts a calm reply in your voice for you to approve, so the next reader sees how you handle it, and it keeps the four and five star reviews coming, so one bad one stops being the first thing anybody reads. And because unhappy customers are routed to you privately first, most never post at all.",
   },
   {
-    q: "Who is this actually for?",
-    a: "Studios and salons where clients book time with you — hair, barbering, massage, pilates, yoga, nails, skincare. If new clients find you on Google and you'd struggle to name the last person who reviewed you, it fits.",
+    q: "Who is Fynd for?",
+    a: "Fynd is built for local business owners who want more 5-star Google reviews without the hassle. We work with hair salons, barbers, massage therapists, Pilates and yoga studios, nail and skincare studios, and home service businesses too. Whether you're a solo provider or running multiple locations, if you want more reviews without the hassle, Fynd is for you.",
   },
   {
     q: "What if I have more than one location?",
