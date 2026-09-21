@@ -307,12 +307,24 @@ export const faq = {
       a: "No. Google's policy prohibits incentivizing reviews and review gating — selectively soliciting only customers you expect to be happy. We ask every customer, and we never offer anything in exchange. The private-feedback path is an additional channel, not a filter on who gets asked. The portal does turn what the customer picked into a draft, but they read it, change anything that isn't true for them, and post it from their own account — or don't.",
     },
     {
+      q: "Can I pick which clients get asked?",
+      a: "No, and that's on purpose. Google's rules prohibit choosing who gets asked, so everyone is asked. What protects your rating is the routing: an unhappy client lands on a private feedback form that comes straight to you, not on Google. Filtering would break the rules. Routing doesn't.",
+    },
+    {
       q: "Am I locked in?",
       a: "Month to month. Cancel anytime from your dashboard or by texting me. The reviews you've collected are on your Google Business Profile — they're yours and they stay there whether you keep paying or not.",
     },
     {
+      q: "What happens if I cancel?",
+      a: "The requests stop. Every review you've collected is on your Google profile and stays there. Reviews aren't ours to take back.",
+    },
+    {
       q: "Can you get a bad review taken down?",
       a: "Only Google can remove a review, and only when it breaks their rules — but the software does the work of that for you. Every new review is watched, and anything that looks fake, off-topic, from a competitor, or carries slurs or personal details gets flagged so it can be reported and chased. Those do come down. A real customer who had a bad day and said so honestly is not coming down, not for anyone. So the software does two more things about it: it drafts a calm reply in your voice for you to approve, so the next reader sees how you handle it, and it keeps the four and five star reviews coming, so one bad one stops being the first thing anybody reads. And because unhappy customers are routed to you privately first, most never post at all.",
+    },
+    {
+      q: "Do you reply to reviews for me?",
+      a: "Yes. Every new review gets a reply drafted in your voice, and you approve it with one tap before it posts. Replies show the next person reading that you pay attention, and Google counts them too.",
     },
     {
       q: "What if I have more than one location?",
