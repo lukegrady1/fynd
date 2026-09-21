@@ -258,6 +258,10 @@ export const faq = {
       a: "Fynd is built for local business owners who want more 5-star Google reviews without the hassle. We work with hair salons, barbers, massage therapists, Pilates and yoga studios, nail and skincare studios, and home service businesses too. Whether you're a solo provider or running multiple locations, if you want more reviews without the hassle, Fynd is for you.",
     },
     {
+      q: "Are these reviews real?",
+      a: "Yes, every one of them. Fynd never writes a review, buys a review, or asks anyone who isn't your customer. The request goes only to people who actually had an appointment with you, and they write what they want in their own Google account, or don't. All Fynd does is ask at the right moment. The reviews are real customers saying real things, which is the only kind worth having.",
+    },
+    {
       q: "Why do 5-star reviews matter?",
       a: "Three reasons, and the numbers back them up. Google ranks local businesses partly on how many reviews they have and how recent they are, so more reviews means showing up higher in the map when someone searches for what you do. Once you're on the list, reviews decide who gets picked: 97% of people read reviews before choosing a local business, 47% won't use one with fewer than 20 reviews, and 31% will only use one rated 4.5 stars or higher. And recency counts: 74% want to see reviews from the last three months, which is why a steady stream beats a wall of old ones.",
       /** Every figure above is from this survey. Update both together. */
