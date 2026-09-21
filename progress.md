@@ -107,12 +107,13 @@ end-card, sticky pill) scrolls to `#book`.
   is set. `testimonial-drafts.md` in the repo root has a draft quote per
   real client to text them for approval.
 - **Calendar** sits beside the two people you'd be meeting (`BookDemo.tsx`,
-  Keegan's idea from the Loom): a "Who you'll be talking to" column with a
-  card each — photo, name under a marker stroke, role, one-line quote — and
-  the GHL calendar on the right, stacked on a phone. Data is
-  `src/content/team.ts`. **Both photos are still `null`** (an initial on a
-  navy disc renders until `/public/team/*.jpg` exist) and **both quotes are
-  Claude's drafts** in each person's voice — replace with their own words.
+  Keegan's idea from the Loom): a "Who you'll be talking to" column with one
+  card — a photo of both, both names under a marker stroke, "Co-founders",
+  one shared line — and the GHL calendar on the right, stacked on a phone.
+  Data is `src/content/team.ts`. **The photo is still `null`** (a navy
+  block with "K & L" renders until `/public/team/…` exists; set `width` and
+  `height` to the file's real size) and **the quote is Claude's draft** —
+  replace with their own words.
   "Scribbly" is the existing green marker underline, not a handwriting font:
   design.md allows one typeface. `CalendarEmbed` is the bare iframe,
   exported from `CalendarModule.tsx` for this layout. Prefills from `?fn=`,

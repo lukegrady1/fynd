@@ -16,13 +16,25 @@ import { cn } from "@/lib/utils";
  * rubber band. The filter id is per-instance so two of these on one page
  * can't collide. The parent must be `relative inline-block`.
  */
-export function MarkerUnderline({ className }: { className?: string }) {
+export function MarkerUnderline({
+  className,
+  stretch = false,
+}: {
+  className?: string;
+  /**
+   * Fix the height and let the stroke stretch to the width instead. For a
+   * long run of text — two names on one line — uniform scaling makes the
+   * band tall enough to cover the line beneath. Pair with a height class.
+   */
+  stretch?: boolean;
+}) {
   const filterId = `marker-${useId().replace(/[^a-zA-Z0-9]/g, "")}`;
 
   return (
     <svg
       aria-hidden="true"
       viewBox="0 0 300 26"
+      preserveAspectRatio={stretch ? "none" : undefined}
       fill="none"
       className={cn(
         "pointer-events-none absolute left-0 top-full w-full -translate-y-[0.1em] overflow-visible text-fynd-green",

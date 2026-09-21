@@ -1,38 +1,31 @@
 /**
- * The two people a lead meets on the demo call. Shown beside the calendar on
+ * The people a lead meets on the demo call. Shown beside the calendar on
  * /watch so booking is a meeting with faces, not a form.
  *
- * PHOTOS: drop them in /public/team and set `photoSrc`. Until then the card
- * shows an initial on a navy disc. Square crops, 600px or larger, both shot
- * the same way (same light, same distance) so they sit together.
+ * PHOTO: one picture of both of you. Drop it in /public/team and set
+ * `photo.src`. Until then a navy block with your initials renders in its
+ * place. Landscape works best — the card is wider than it is tall — 1200px
+ * or more on the long side, and cropped so you're both clearly in it.
  *
- * QUOTES: these are DRAFTS written by Claude in each person's voice. Replace
- * them with something you actually say — the point is that it sounds like
- * you on the call, not like a website.
+ * QUOTE: a DRAFT written by Claude. Replace it with something you'd actually
+ * say — the point is that it sounds like the two of you, not a website.
  */
-export type TeamMember = {
-  name: string;
-  /** Shown under the name. */
-  role: string;
-  /** Path under /public, e.g. "/team/keegan.jpg". null until supplied. */
-  photoSrc: string | null;
-  /** One short line, in their own words. null hides the quote. */
-  quote: string | null;
-};
-
-export const team: TeamMember[] = [
-  {
-    name: "Keegan Zoller",
-    role: "Co-founder",
-    photoSrc: null,
-    quote:
-      "Fifteen minutes. I'll pull up your profile and show you exactly where the reviews are going to come from.",
+export const team = {
+  photo: {
+    /** Path under /public, e.g. "/team/keegan-and-luke.jpg". null until supplied. */
+    src: null as string | null,
+    alt: "Keegan Zoller and Luke Grady",
+    /** Intrinsic size of the file, for next/image. Update when the photo lands. */
+    width: 1200,
+    height: 900,
   },
-  {
-    name: "Luke Grady",
-    role: "Co-founder",
-    photoSrc: null,
-    quote:
-      "No slides. You'll see the actual text your customers get and the review that comes back.",
-  },
-];
+  people: [
+    { name: "Keegan Zoller", role: "Co-founder" },
+    { name: "Luke Grady", role: "Co-founder" },
+  ],
+  /** One line, from both of you. null hides it. */
+  quote:
+    "We kept meeting owners doing great work that nobody could see on Google. Fynd exists to fix that without adding a single thing to your day." as
+      | string
+      | null,
+} as const;
