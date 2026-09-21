@@ -247,7 +247,7 @@ export const calendar = {
 } as const;
 
 export const faq = {
-  heading: "Straight answers",
+  heading: "FAQs",
   items: [
     {
       q: "What if I get a bad review?",
@@ -1167,7 +1167,7 @@ export const bundle = {
   },
 
   faq: {
-    heading: "Straight answers",
+    heading: "FAQs",
     items: [
       {
         q: "Do I keep my domain?",
