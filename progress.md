@@ -110,10 +110,10 @@ end-card, sticky pill) scrolls to `#book`.
   Keegan's idea from the Loom): a "Who you'll be talking to" column with one
   card — a photo of both, both names under a marker stroke, "Co-founders",
   one shared line — and the GHL calendar on the right, stacked on a phone.
-  Data is `src/content/team.ts`. **The photo is still `null`** (a navy
-  block with "K & L" renders until `/public/team/…` exists; set `width` and
-  `height` to the file's real size) and **the quote is Claude's draft** —
-  replace with their own words.
+  Data is `src/content/team.ts`. The photo is `/public/luke-keegan.png`
+  (1195x1316, shown at its own proportions — a landscape crop takes the
+  heads off; next/image serves a resized WebP). **The quote is Claude's
+  draft** — replace with their own words.
   "Scribbly" is the existing green marker underline, not a handwriting font:
   design.md allows one typeface. `CalendarEmbed` is the bare iframe,
   exported from `CalendarModule.tsx` for this layout. Prefills from `?fn=`,

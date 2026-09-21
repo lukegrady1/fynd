@@ -103,7 +103,9 @@ function TeamPhoto() {
         width={photo.width}
         height={photo.height}
         sizes="(min-width: 1024px) 440px, 100vw"
-        className="aspect-[4/3] w-full object-cover"
+        // Natural proportions, not a fixed crop: the photo is portrait and
+        // cropping it to the card's width would cut the heads off.
+        className="h-auto w-full"
       />
     );
   }
