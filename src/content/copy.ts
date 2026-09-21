@@ -262,6 +262,10 @@ export const faq = {
       a: "Fast. The moment setup is done, the messages start going out to your recent customers, and the first reviews usually land within 48 hours or shortly after. From there it builds with every appointment: the more clients you see, the faster the rating moves.",
     },
     {
+      q: "How many reviews should I expect?",
+      a: "Two waves. The first is your past customers: expect somewhere between 10% and 15% of the people already in your booking system or CRM to leave a review when we reach out to them. With 1,000 past customers on file, that's roughly 100 to 150 reviews in the first four to six weeks. The second wave is every customer from then on: expect 20% to 30% of new customers to leave a review after their appointment, and some businesses see more than half.",
+    },
+    {
       q: "Do I have to do anything?",
       a: "No. We connect to your booking system or CRM, and from there it's automatic: when an appointment is marked complete, the request goes out on its own. Once we have access, it's hands-off. You don't write the message, you don't send it, and you don't chase anyone.",
     },
