@@ -11,12 +11,13 @@ import { WatchHero } from "@/components/sections/review/WatchHero";
 import { TrustStrip } from "@/components/sections/review/TrustStrip";
 import { TestimonialBand } from "@/components/sections/review/TestimonialBand";
 import { BookDemo } from "@/components/sections/review/BookDemo";
+import { ObjectionFaq } from "@/components/sections/review/ObjectionFaq";
 import { StickyCta } from "@/components/sections/review/StickyCta";
 
 /**
  * /watch — the VSL page, texted to leads.
  *
- * Three beats, in order: the video, what owners say, the calendar. No price
+ * The video, what owners say, the calendar, then the FAQ. No price
  * and no checkout — the video sells the idea and the call is the only ask,
  * so the sticky pill and every button on the page scroll to the calendar.
  *
@@ -58,6 +59,9 @@ export default async function WatchPage({
         <TrustStrip />
         <TestimonialBand />
         <BookDemo embedUrl={embedUrl} id={BOOKING_ID} />
+        {/* Below the ask, for whoever scrolled past the calendar still
+            unsure. The same questions as the homepage. */}
+        <ObjectionFaq />
       </main>
 
       <FunnelFooter />
