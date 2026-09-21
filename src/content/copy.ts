@@ -320,7 +320,7 @@ export const faq = {
     },
     {
       q: "Can you get a bad review taken down?",
-      a: "Only Google can remove a review, and only when it breaks their rules — but the software does the work of that for you. Every new review is watched, and anything that looks fake, off-topic, from a competitor, or carries slurs or personal details gets flagged so it can be reported and chased. Those do come down. A real customer who had a bad day and said so honestly is not coming down, not for anyone. So the software does two more things about it: it drafts a calm reply in your voice for you to approve, so the next reader sees how you handle it, and it keeps the four and five star reviews coming, so one bad one stops being the first thing anybody reads. And because unhappy customers are routed to you privately first, most never post at all.",
+      a: "Only Google can remove a review, and only when it breaks their rules — but the software does the work of that for you. Every new review is watched, and anything that looks fake, off-topic, from a competitor, or carries slurs or personal details gets flagged so it can be reported and chased. Those do come down. A real customer who had a bad day and said so honestly is not coming down, not for anyone. So the software does two more things about it: it posts a calm reply in your voice, so the next reader sees how you handle it, and it keeps the four and five star reviews coming, so one bad one stops being the first thing anybody reads. And because unhappy customers are routed to you privately first, most never post at all.",
     },
     {
       q: "Do you reply to reviews for me?",
@@ -1100,13 +1100,13 @@ export const features = {
         accent: "blank review reply",
         tail: "again.",
       },
-      sub: "Get suggested Google review responses written in your tone. Approve them, tweak them, or let the system handle the repetitive replies while you stay focused on the work.",
+      sub: "Every Google review gets a reply written in your tone and posted for you, so nothing sits unanswered while you stay focused on the work.",
       points: [
         "Set preferences once and Fynd keeps every reply consistent.",
         "Your customers see a business that is responsive, grateful and professional.",
         "Google weights a profile that answers its reviews — the replies are not just manners.",
         "Anything that breaks Google's review policy gets a removal request filed.",
-        "Nothing publishes to your profile until you approve it.",
+        "Set the tone once in a training note and every reply follows it.",
       ],
       footer: {
         lead: "Got a review you want gone?",
