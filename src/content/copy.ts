@@ -248,7 +248,31 @@ export const calendar = {
 
 export const faq = {
   heading: "FAQs",
+  /**
+   * Order is deliberate: who it's for and what to expect first, then the
+   * objections, then the implementation questions people scroll for.
+   */
   items: [
+    {
+      q: "Who is Fynd for?",
+      a: "Fynd is built for local business owners who want more 5-star Google reviews without the hassle. We work with hair salons, barbers, massage therapists, Pilates and yoga studios, nail and skincare studios, and home service businesses too. Whether you're a solo provider or running multiple locations, if you want more reviews without the hassle, Fynd is for you.",
+    },
+    {
+      q: "How many reviews should I expect?",
+      a: "Two waves. The first is your past customers: expect somewhere between 10% and 15% of the people already in your booking system or CRM to leave a review when we reach out to them. With 1,000 past customers on file, that's roughly 100 to 150 reviews in the first four to six weeks. The second wave is every customer from then on: expect 20% to 30% of new customers to leave a review after their appointment, and some businesses see more than half.",
+    },
+    {
+      q: "What about repeat customers?",
+      a: "Someone who's already reviewed you doesn't get asked again. Your weekly regulars get asked once, not after every appointment.",
+    },
+    {
+      q: "How long until I see reviews?",
+      a: "Fast. The moment setup is done, the messages start going out to your recent customers, and the first reviews usually land within 48 hours or shortly after. From there it builds with every appointment: the more clients you see, the faster the rating moves.",
+    },
+    {
+      q: "Do I have to do anything?",
+      a: "No. We connect to your booking system or CRM, and from there it's automatic: when an appointment is marked complete, the request goes out on its own. Once we have access, it's hands-off. You don't write the message, you don't send it, and you don't chase anyone.",
+    },
     {
       q: "What if I get a bad review?",
       a: "That's the part most people worry about, so it's built in. The portal asks how it went — Excellent, Good, Ok or Bad. Excellent and Good get pointed at your Google profile. Ok and Bad never do; that customer lands on a private feedback form that comes straight to your inbox, usually within seconds, so you hear it before anyone else does.",
@@ -258,20 +282,36 @@ export const faq = {
       a: "No. Google's policy prohibits incentivizing reviews and review gating — selectively soliciting only customers you expect to be happy. We ask every customer, and we never offer anything in exchange. The private-feedback path is an additional channel, not a filter on who gets asked. The portal does turn what the customer picked into a draft, but they read it, change anything that isn't true for them, and post it from their own account — or don't.",
     },
     {
-      q: "How long until I see reviews?",
-      a: "Fast. The moment setup is done, the messages start going out to your recent customers, and the first reviews usually land within 48 hours or shortly after. From there it builds with every appointment: the more clients you see, the faster the rating moves.",
-    },
-    {
-      q: "How many reviews should I expect?",
-      a: "Two waves. The first is your past customers: expect somewhere between 10% and 15% of the people already in your booking system or CRM to leave a review when we reach out to them. With 1,000 past customers on file, that's roughly 100 to 150 reviews in the first four to six weeks. The second wave is every customer from then on: expect 20% to 30% of new customers to leave a review after their appointment, and some businesses see more than half.",
-    },
-    {
-      q: "Do I have to do anything?",
-      a: "No. We connect to your booking system or CRM, and from there it's automatic: when an appointment is marked complete, the request goes out on its own. Once we have access, it's hands-off. You don't write the message, you don't send it, and you don't chase anyone.",
-    },
-    {
       q: "Am I locked in?",
       a: "Month to month. Cancel anytime from your dashboard or by texting me. The reviews you've collected are on your Google Business Profile — they're yours and they stay there whether you keep paying or not.",
+    },
+    {
+      q: "Can you get a bad review taken down?",
+      a: "Only Google can remove a review, and only when it breaks their rules — but the software does the work of that for you. Every new review is watched, and anything that looks fake, off-topic, from a competitor, or carries slurs or personal details gets flagged so it can be reported and chased. Those do come down. A real customer who had a bad day and said so honestly is not coming down, not for anyone. So the software does two more things about it: it drafts a calm reply in your voice for you to approve, so the next reader sees how you handle it, and it keeps the four and five star reviews coming, so one bad one stops being the first thing anybody reads. And because unhappy customers are routed to you privately first, most never post at all.",
+    },
+    {
+      q: "What if I have more than one location?",
+      a: "Each location has its own Google Business Profile, so each one needs its own Review System: its own review requests, its own routing, and its own dashboard. Reviews for one location never count toward another, which is exactly why a customer at your second shop needs to be asked about that shop.",
+    },
+    {
+      q: "How many messages will my customers get?",
+      a: "One request, and one follow-up if they don't respond. Then it stops. Anyone who replies STOP is removed immediately, and nothing sends outside 8am–8pm their time.",
+    },
+    {
+      q: "Can I ask customers from before I signed up?",
+      a: "Yes, and that's usually where the first wave comes from. If you can export a list of recent customers, we ask them in the first week. It's the fastest lever you have.",
+    },
+    {
+      q: "Do you do platforms other than Google?",
+      a: "Google first, always — it's the one your customers actually check before they call. Facebook and industry-specific sites can be added once your Google reviews are coming in steadily.",
+    },
+    {
+      q: "Do you need access to my Google account?",
+      a: "You add me as a manager on your Business Profile, which lets me read reviews and post replies. It doesn't give me access to your email, your ads, or anything else in your Google account, and you can remove me in two clicks.",
+    },
+    {
+      q: "Can I put the reviews on my website?",
+      a: "Yes. There's an embeddable widget that pulls your live Google reviews onto your site, so the same proof works on the page people land on after they find you.",
     },
   ],
 } as const;
@@ -1061,46 +1101,6 @@ export const features = {
     },
   ],
 } as const;
-
-/** Additional FAQ entries appended to the originals. */
-export const faqExtra = [
-  {
-    q: "Can you get a bad review taken down?",
-    a: "Only Google can remove a review, and only when it breaks their rules — but the software does the work of that for you. Every new review is watched, and anything that looks fake, off-topic, from a competitor, or carries slurs or personal details gets flagged so it can be reported and chased. Those do come down. A real customer who had a bad day and said so honestly is not coming down, not for anyone. So the software does two more things about it: it drafts a calm reply in your voice for you to approve, so the next reader sees how you handle it, and it keeps the four and five star reviews coming, so one bad one stops being the first thing anybody reads. And because unhappy customers are routed to you privately first, most never post at all.",
-  },
-  {
-    q: "Who is Fynd for?",
-    a: "Fynd is built for local business owners who want more 5-star Google reviews without the hassle. We work with hair salons, barbers, massage therapists, Pilates and yoga studios, nail and skincare studios, and home service businesses too. Whether you're a solo provider or running multiple locations, if you want more reviews without the hassle, Fynd is for you.",
-  },
-  {
-    q: "What if I have more than one location?",
-    a: "Each location has its own Google Business Profile, so each one needs its own Review System: its own review requests, its own routing, and its own dashboard. Reviews for one location never count toward another, which is exactly why a customer at your second shop needs to be asked about that shop.",
-  },
-  {
-    q: "How many messages will my customers get?",
-    a: "One request, and one follow-up if they don't respond. Then it stops. Anyone who replies STOP is removed immediately, and nothing sends outside 8am–8pm their time.",
-  },
-  {
-    q: "What about repeat customers?",
-    a: "Someone who's already reviewed you doesn't get asked again. Your weekly regulars get asked once, not after every appointment.",
-  },
-  {
-    q: "Can I ask customers from before I signed up?",
-    a: "Yes, and that's usually where the first wave comes from. If you can export a list of recent customers, we ask them in the first week. It's the fastest lever you have.",
-  },
-  {
-    q: "Do you do platforms other than Google?",
-    a: "Google first, always — it's the one your customers actually check before they call. Facebook and industry-specific sites can be added once your Google reviews are coming in steadily.",
-  },
-  {
-    q: "Do you need access to my Google account?",
-    a: "You add me as a manager on your Business Profile, which lets me read reviews and post replies. It doesn't give me access to your email, your ads, or anything else in your Google account, and you can remove me in two clicks.",
-  },
-  {
-    q: "Can I put the reviews on my website?",
-    a: "Yes. There's an embeddable widget that pulls your live Google reviews onto your site, so the same proof works on the page people land on after they find you.",
-  },
-];
 
 /* ==========================================================================
    /website — the Website + Reviews plan.

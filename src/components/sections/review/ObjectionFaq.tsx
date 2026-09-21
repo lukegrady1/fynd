@@ -1,13 +1,11 @@
 "use client";
 
 import { Plus } from "lucide-react";
-import { faq, faqExtra } from "@/content/copy";
+import { faq } from "@/content/copy";
 import { track } from "@/lib/analytics";
 import { Container } from "@/components/ui/Layout";
 
-// The six from the phone come first — they're the real objections; the rest
-// are implementation questions people scroll for.
-const defaultItems = [...faq.items, ...faqExtra];
+const defaultItems = faq.items;
 
 /**
  * Native <details>/<summary>: keyboard navigation and screen-reader semantics
