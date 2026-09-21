@@ -284,7 +284,15 @@ export const faq = {
     },
     {
       q: "What booking software do you connect to?",
-      a: "Vagaro, Mindbody, Fresha, Booksy, Square, Acuity, StyleSeat, Setmore, Timely, Booker, Goldie, MyTime and Appointy, plus most CRMs. Don't see yours? If it's on Zapier, we can connect it.",
+      /**
+       * Only platforms with a verified route in, checked Sept 2026: a Zapier
+       * app with an appointment trigger (Square, Acuity, Boulevard, Zenoti,
+       * Meevo, Setmore, MyTime, Appointy) or a CRM Connector integration
+       * (Vagaro, Mindbody, Booker, Square, Acuity). Fresha, Booksy,
+       * StyleSeat, Goldie, GlossGenius, Jane and Schedulicity have neither;
+       * Timely and WellnessLiving are on Zapier with no appointment trigger.
+       */
+      a: "Vagaro, Mindbody, Booker, Square, Acuity, Boulevard, Zenoti, Meevo, Setmore, MyTime and Appointy, plus most CRMs. Don't see yours? If it's on Zapier, we can connect it.",
       link: {
         label: "Check the Zapier list",
         href: "https://zapier.com/apps",
