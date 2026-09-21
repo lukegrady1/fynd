@@ -220,6 +220,8 @@ export const watch = {
     eyebrow: "Book a demo",
     lead: "Pick a time",
     accent: "that suits you.",
+    /** Over the two faces beside the calendar. */
+    meetLabel: "Who you'll be talking to",
   },
 } as const;
 

@@ -6,6 +6,7 @@ import { calendar, offer } from "@/content/copy";
 import { GHL_EMBED_SCRIPT } from "@/lib/ghl-embed";
 import { track, trackOnce } from "@/lib/analytics";
 import { Container } from "@/components/ui/Layout";
+import { cn } from "@/lib/utils";
 
 /**
  * The booking calendar, and nothing else.
@@ -30,6 +31,27 @@ export function CalendarModule({
    */
   id?: string;
 }) {
+  return (
+    <section id={id} className="scroll-mt-20 bg-fynd-gray py-12 lg:py-20">
+      <Container>
+        <CalendarEmbed embedUrl={embedUrl} className="mx-auto max-w-[520px]" />
+      </Container>
+    </section>
+  );
+}
+
+/**
+ * The iframe and its skeleton, with no section around them, so a page can
+ * put the calendar in a layout of its own — /watch sets it beside the people
+ * you'd be meeting.
+ */
+export function CalendarEmbed({
+  embedUrl,
+  className,
+}: {
+  embedUrl: string | null;
+  className?: string;
+}) {
   const [loaded, setLoaded] = useState(false);
 
   /**
@@ -47,43 +69,34 @@ export function CalendarModule({
   }, [embedUrl]);
 
   return (
-    <section id={id} className="scroll-mt-20 bg-fynd-gray py-12 lg:py-20">
-      <Container>
-        <div className="relative mx-auto min-h-[700px] max-w-[520px] lg:min-h-[620px]">
-          {embedUrl ? (
-            <>
-              {!loaded && <CalendarSkeleton />}
-              {/* In flow rather than absolutely positioned, because
+    <div className={cn("relative min-h-[700px] lg:min-h-[620px]", className)}>
+      {embedUrl ? (
+        <>
+          {!loaded && <CalendarSkeleton />}
+          {/* In flow rather than absolutely positioned, because
                   form_embed.js sets the height inline and an absolute frame
                   would clip whatever it grows to. min-height keeps the space
                   reserved so the page doesn't jump while it loads, and
                   scrolling is left enabled: if the resize script is blocked,
                   an inner scrollbar is ugly but a clipped calendar is
                   unusable. */}
-              <iframe
-                id={frameId}
-                src={embedUrl}
-                title="Book a time"
-                allow="payment"
-                className="block min-h-[700px] w-full rounded-lg border border-line bg-white lg:min-h-[620px]"
-                onLoad={() => {
-                  setLoaded(true);
-                  track("calendar_loaded", { state: "iframe_ready" });
-                }}
-              />
-              <Script
-                src={GHL_EMBED_SCRIPT}
-                strategy="lazyOnload"
-              />
-            </>
-          ) : (
-            <CalendarSkeleton
-              note="Calendar not configured — set NEXT_PUBLIC_GHL_CALENDAR_ID."
-            />
-          )}
-        </div>
-      </Container>
-    </section>
+          <iframe
+            id={frameId}
+            src={embedUrl}
+            title="Book a time"
+            allow="payment"
+            className="block min-h-[700px] w-full rounded-lg border border-line bg-white lg:min-h-[620px]"
+            onLoad={() => {
+              setLoaded(true);
+              track("calendar_loaded", { state: "iframe_ready" });
+            }}
+          />
+          <Script src={GHL_EMBED_SCRIPT} strategy="lazyOnload" />
+        </>
+      ) : (
+        <CalendarSkeleton note="Calendar not configured — set NEXT_PUBLIC_GHL_CALENDAR_ID." />
+      )}
+    </div>
   );
 }
 

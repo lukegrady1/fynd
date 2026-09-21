@@ -19,6 +19,7 @@ export function Reveal({
   from,
   offset = 60,
   className,
+  id,
 }: {
   children: ReactNode;
   delay?: number;
@@ -35,6 +36,8 @@ export function Reveal({
    */
   offset?: number;
   className?: string;
+  /** For an anchor that should land on the revealed block itself. */
+  id?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -65,6 +68,7 @@ export function Reveal({
   return (
     <div
       ref={ref}
+      id={id}
       className={cn("js-reveal", from && `js-reveal-${from}`, className)}
       style={delay ? { transitionDelay: `${delay}s` } : undefined}
     >

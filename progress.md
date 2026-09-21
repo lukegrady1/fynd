@@ -106,10 +106,17 @@ end-card, sticky pill) scrolls to `#book`.
   also gained an optional `rating` (1–5); the star row only renders when it
   is set. `testimonial-drafts.md` in the repo root has a draft quote per
   real client to text them for approval.
-- **Calendar** reuses `CalendarModule` with a heading and a three-line agenda
-  above it (`BookDemo.tsx`). Prefills from `?fn=`, `?phone=`, `?email=` like
-  `/demo`; `?biz=` goes into the headline; `?cid=` into analytics
-  (`page: "watch"`).
+- **Calendar** sits beside the two people you'd be meeting (`BookDemo.tsx`,
+  Keegan's idea from the Loom): a "Who you'll be talking to" column with a
+  card each — photo, name under a marker stroke, role, one-line quote — and
+  the GHL calendar on the right, stacked on a phone. Data is
+  `src/content/team.ts`. **Both photos are still `null`** (an initial on a
+  navy disc renders until `/public/team/*.jpg` exist) and **both quotes are
+  Claude's drafts** in each person's voice — replace with their own words.
+  "Scribbly" is the existing green marker underline, not a handwriting font:
+  design.md allows one typeface. `CalendarEmbed` is the bare iframe,
+  exported from `CalendarModule.tsx` for this layout. Prefills from `?fn=`,
+  `?phone=`, `?email=` like `/demo`; `?cid=` into analytics.
 - `StickyCta` gained `showPrice` — off here, since a $/mo on the pill would
   be the only price on the page.
 - `noindex, nofollow`, like `/start`.
