@@ -259,7 +259,12 @@ export const faq = {
     },
     {
       q: "Why do 5-star reviews matter?",
-      a: "Three reasons. Google ranks local businesses partly on how many reviews they have and how recent they are, so more reviews means showing up higher in the map when someone searches for what you do. Then, once you're on the list, people pick the business with the most and best reviews, even a referral looks you up first. And a steady stream of recent reviews makes you the obvious choice instead of the cheapest quote, which means you stop competing on price.",
+      a: "Three reasons, and the numbers back them up. Google ranks local businesses partly on how many reviews they have and how recent they are, so more reviews means showing up higher in the map when someone searches for what you do. Once you're on the list, reviews decide who gets picked: 97% of people read reviews before choosing a local business, 47% won't use one with fewer than 20 reviews, and 31% will only use one rated 4.5 stars or higher. And recency counts: 74% want to see reviews from the last three months, which is why a steady stream beats a wall of old ones.",
+      /** Every figure above is from this survey. Update both together. */
+      link: {
+        label: "Source: BrightLocal, Local Consumer Review Survey 2026",
+        href: "https://www.brightlocal.com/research/local-consumer-review-survey/",
+      },
     },
     {
       q: "How many reviews should I expect?",
