@@ -324,7 +324,7 @@ export const faq = {
     },
     {
       q: "Do you reply to reviews for me?",
-      a: "Yes. Every new review gets a reply drafted in your voice, and you approve it with one tap before it posts. Replies show the next person reading that you pay attention, and Google counts them too.",
+      a: "Yes. Every new review gets a reply in your voice, posted for you, so nothing sits unanswered. Replies show the next person reading that you pay attention, and Google counts them too.",
     },
     {
       q: "What if I have more than one location?",
