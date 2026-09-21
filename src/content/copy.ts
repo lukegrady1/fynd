@@ -258,6 +258,10 @@ export const faq = {
       a: "Fynd is built for local business owners who want more 5-star Google reviews without the hassle. We work with hair salons, barbers, massage therapists, Pilates and yoga studios, nail and skincare studios, and home service businesses too. Whether you're a solo provider or running multiple locations, if you want more reviews without the hassle, Fynd is for you.",
     },
     {
+      q: "Why do 5-star reviews matter?",
+      a: "Three reasons. Google ranks local businesses partly on how many reviews they have and how recent they are, so more reviews means showing up higher in the map when someone searches for what you do. Then, once you're on the list, people pick the business with the most and best reviews, even a referral looks you up first. And a steady stream of recent reviews makes you the obvious choice instead of the cheapest quote, which means you stop competing on price.",
+    },
+    {
       q: "How many reviews should I expect?",
       a: "Two waves. The first is your past customers: expect somewhere between 10% and 15% of the people already in your booking system or CRM to leave a review when we reach out to them. With 1,000 past customers on file, that's roughly 100 to 150 reviews in the first four to six weeks. The second wave is every customer from then on: expect 20% to 30% of new customers to leave a review after their appointment, and some businesses see more than half.",
     },
