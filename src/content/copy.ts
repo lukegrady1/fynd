@@ -263,7 +263,7 @@ export const faq = {
     },
     {
       q: "Do I have to do anything?",
-      a: "The manual version takes five seconds: text the client's number to a dedicated line as they leave. The automatic version takes zero — we connect to most booking platforms, and requests fire when you mark the appointment complete. If yours isn't a direct integration it almost certainly works over Zapier. Either way, you never write the message.",
+      a: "No. We connect to your booking system or CRM, and from there it's automatic: when an appointment is marked complete, the request goes out on its own. Once we have access, it's hands-off. You don't write the message, you don't send it, and you don't chase anyone.",
     },
     {
       q: "Am I locked in?",
