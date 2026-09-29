@@ -44,7 +44,7 @@ import {
  * call any number of times — see its own comment for how.
  */
 
-import type { Plan } from "./stripe-plans";
+import type { CancelPath, Plan } from "./stripe-plans";
 export type { Plan };
 
 export type CheckoutRequest = {
@@ -52,6 +52,8 @@ export type CheckoutRequest = {
   cid: string | null;
   plan: Plan;
   origin: string;
+  /** Overrides the plan's own cancel page — see `CANCEL_PATHS`. */
+  cancelPath?: CancelPath;
 };
 
 export type CheckoutResult =
@@ -217,7 +219,9 @@ export const createCheckoutSession = async (
         },
       },
       success_url: `${req.origin}/start/welcome?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${req.origin}${plan.cancelPath}?cancelled=1`,
+      // `plan` rides along so a page that sells both plans can reopen the
+      // one they were on; the single-plan pages ignore it.
+      cancel_url: `${req.origin}${req.cancelPath ?? plan.cancelPath}?cancelled=1&plan=${req.plan}`,
       allow_promotion_codes: true,
     });
 

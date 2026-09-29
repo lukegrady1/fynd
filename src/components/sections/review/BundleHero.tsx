@@ -5,6 +5,7 @@ import { bundle } from "@/content/copy";
 import { track } from "@/lib/analytics";
 import { Container } from "@/components/ui/Layout";
 import { DottedWorldMap } from "@/components/textures/Textures";
+import { OfferClock } from "./OfferClock";
 import { DemoCta } from "./DemoCta";
 
 /**
@@ -37,7 +38,10 @@ export function BundleHero({ targetId }: { targetId: string }) {
       <Container className="relative w-full">
         <div className="grid items-center gap-12 lg:grid-cols-[1fr_0.9fr] lg:gap-10">
           <div>
-            <h1 className="text-hero text-white">
+            {/* Same flag as the homepage hero, above the headline. */}
+            <OfferClock tone="dark" size="sm" />
+
+            <h1 className="mt-6 text-hero text-white">
               <span className="block">{copy.lead}</span>
               <span className="block text-fynd-green">{copy.accent}</span>
             </h1>

@@ -73,10 +73,32 @@ Nothing was deleted — it was resequenced.
 
 ### VSL page — `/watch`
 
-The link to text a lead who has not been on a call yet. Three beats: the
-video, what owners say, the calendar. No price anywhere on it — the video
-sells the idea and the call is the only ask, so every button (hero, video
-end-card, sticky pill) scrolls to `#book`.
+The link to text a lead who has not been on a call yet. Now the same shape
+as the homepage and `/website`: the video as the hero, what owners say, a
+**plan picker** at `#convert`, the FAQ, the closer. Every "Start now" (hero,
+video end-card, closer, sticky pill) scrolls to the picker; "Book a Demo"
+opens `/demo` in a new tab as everywhere else. The calendar column that used
+to be the only ask is gone from the page (`BookDemo.tsx` and `watch.book`
+are still in the tree if wanted back).
+
+- **Plan picker** — `PlanChooser.tsx`: two tabs (Review System $97/mo,
+  Website + Reviews $249 today) above one card. The cards are the same
+  components the other pages render — `ReviewPlanCard` exported from
+  `PricingSection.tsx`, `BundlePlanCard` from `BundlePricing.tsx` — so a
+  price change shows up in all three places. Tabs rather than two stacked
+  cards because at 390px two full cards are three screens of pricing.
+  `?plan=` picks the opening tab; Stripe puts it on the cancel URL so someone
+  who backed out of the $249 checkout lands on the $249 card. The navy tab
+  fill is one element that slides between the cells (300ms, slight
+  overshoot) and the card rises in on each switch (`fynd-panel`, motion-safe
+  only). Both cards stay mounted in one grid cell — the one not showing is
+  `invisible` + `inert` — so the module is always the taller card's height
+  and the page never jumps; each card is a flex column with the list
+  absorbing the spare height, so the button sits at the same spot on both.
+- **Cancel path** — `CheckoutButton` takes `cancelPath`, validated at
+  `/api/checkout` against `CANCEL_PATHS` in `stripe-plans.ts` (only
+  `/watch` today), so a backed-out checkout from this page returns here
+  rather than to `/` or `/website`.
 
 - **Video is self-hosted** — `public/fynd-split-vsl-vo-web_4.mp4` (1920x1080,
   47.1s, 7.0MB, voiceover) played through a native `<video>` in
@@ -118,9 +140,12 @@ end-card, sticky pill) scrolls to `#book`.
   design.md allows one typeface. `CalendarEmbed` is the bare iframe,
   exported from `CalendarModule.tsx` for this layout. Prefills from `?fn=`,
   `?phone=`, `?email=` like `/demo`; `?cid=` into analytics.
-- `StickyCta` gained `showPrice` — off here, since a $/mo on the pill would
-  be the only price on the page.
+- `StickyCta` `showPrice` is off here, as on `/website`: two prices on the
+  page, and naming either on the pill would misquote the other.
 - `noindex, nofollow`, like `/start`.
+- **NFC review card add-on** is commented out of the $97 card (`AddOn` in
+  `PricingSection.tsx`, `pricing.addOn` in copy.ts) at Luke's request. The
+  **offer clock** now also sits on the `/website` hero and the $249 card.
 
 ### Website + Reviews plan — `/website` ($249 once, then $97/mo)
 

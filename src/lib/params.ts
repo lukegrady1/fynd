@@ -1,4 +1,5 @@
 import { z } from "zod";
+import type { Plan } from "./stripe-plans";
 
 /**
  * Query params arrive from GHL workflows and end up in the DOM, so `fn` and
@@ -64,6 +65,12 @@ export type PageParams = {
   exp?: string;
   sig?: string;
   cancelled: boolean;
+  /**
+   * Which plan to open on a page that sells both. Stripe puts it on the
+   * cancel URL so someone who backs out of the $249 checkout lands on the
+   * $249 card, not the default one.
+   */
+  plan?: Plan;
   /** Passed through to the GHL calendar prefill. */
   phone?: string;
   email?: string;
@@ -72,9 +79,12 @@ export type PageParams = {
 export const emailSchema = z.string().email().max(120);
 export const phoneSchema = z.string().regex(/^[+0-9() .-]{7,20}$/);
 
+const planSchema = z.enum(["review-system", "website-reviews"]);
+
 export const parseParams = (sp: SearchParams): PageParams => {
   const email = firstString(sp.email);
   const phone = firstString(sp.phone);
+  const plan = planSchema.safeParse(firstString(sp.plan));
 
   return {
     cid: sanitizeId(sp.cid),
@@ -83,6 +93,7 @@ export const parseParams = (sp: SearchParams): PageParams => {
     exp: firstString(sp.exp),
     sig: firstString(sp.sig),
     cancelled: firstString(sp.cancelled) === "1",
+    plan: plan.success ? plan.data : undefined,
     email: emailSchema.safeParse(email).success ? email : undefined,
     phone: phoneSchema.safeParse(phone).success ? phone : undefined,
   };

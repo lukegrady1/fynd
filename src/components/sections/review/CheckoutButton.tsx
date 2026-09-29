@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { track } from "@/lib/analytics";
-import type { Plan } from "@/lib/stripe-plans";
+import type { CancelPath, Plan } from "@/lib/stripe-plans";
 
 /**
  * The button that starts Stripe Checkout, shared by both pricing cards.
@@ -18,12 +18,18 @@ export function CheckoutButton({
   cid,
   label,
   section = "pricing",
+  cancelPath,
 }: {
   plan: Plan;
   cid?: string;
   label: string;
   /** For analytics, so the two cards can be told apart. */
   section?: string;
+  /**
+   * Where a backed-out checkout returns to. Omit on a plan's own page; set
+   * it on a page that sells both plans so the visitor comes back to it.
+   */
+  cancelPath?: CancelPath;
 }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -37,7 +43,7 @@ export function CheckoutButton({
       const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ cid: cid ?? null, plan }),
+        body: JSON.stringify({ cid: cid ?? null, plan, cancelPath }),
       });
 
       const data = (await res.json()) as { url?: string; error?: string };

@@ -27,7 +27,7 @@ export const offer = {
    * /website and teased at the bottom of the homepage.
    */
   bundle: {
-    productName: "Website + Reviews",
+    productName: "Website + Review System",
     price: 249,
   },
 
@@ -187,11 +187,18 @@ export const testimonialsSection = {
  * and the call is the ask, so the number belongs on the call.
  */
 export const watch = {
+  /**
+   * The one ask on the page, on every button that scrolls to the plans:
+   * hero, video end-card, closer, sticky pill. Plain "Start now" rather than
+   * "Start for $97" because the page carries two prices, and naming one on
+   * the button would misquote the other.
+   */
+  cta: "Start now",
+
   hero: {
     /** One headline for everyone — no ?biz= variant on this page. */
     lead: "Watch how Fynd turns",
     accent: "appointments into reviews.",
-    cta: "Book a demo",
   },
 
   video: {
@@ -204,8 +211,7 @@ export const watch = {
     unmuteLabel: "Turn sound on",
     /** Shown over the last frame once it finishes. */
     ended: {
-      heading: "Want to see it on your business?",
-      cta: "Book a demo",
+      heading: "Ready to run this on your business?",
       replay: "Watch again",
     },
   },
@@ -216,6 +222,33 @@ export const watch = {
     accent: "once it's running.",
   },
 
+  /**
+   * The plan picker — the conversion module on /watch, at #convert. Two
+   * tabs above one card, so a phone is not stacking two full cards. The
+   * card bodies are the same ones as on / and /website.
+   */
+  plans: {
+    eyebrow: "Pricing",
+    lead: "Pick a plan.",
+    accent: "Start today.",
+    /** Accessible name for the tab strip. */
+    pickerLabel: "Choose a plan",
+    /** Name and a line on what it is. No prices on the tabs — the cards
+        carry them, with the strikethrough and the clock. */
+    review: {
+      name: offer.productName,
+      blurb: "Reviews on autopilot",
+    },
+    bundle: {
+      name: offer.bundle.productName,
+      blurb: "Your site rebuilt, reviews included",
+    },
+  },
+
+  /**
+   * The calendar column that used to sit on this page. `BookDemo.tsx` still
+   * reads it; the page no longer renders that section.
+   */
   book: {
     eyebrow: "Book a demo",
     lead: "Pick a time",
@@ -430,7 +463,7 @@ export const meta = {
   watch: {
     title: "Watch — Fynd Review System",
     description:
-      "Thirty seconds on how Fynd turns finished appointments into Google reviews, then a time to talk it through.",
+      "Forty-seven seconds on how Fynd turns finished appointments into Google reviews, then pick a plan and start today.",
   },
 } as const;
 
@@ -1199,10 +1232,20 @@ export const bundle = {
     heading: `$${offer.bundle.price} to start. $${offer.price} a month after.`,
     /** Beside the big number. */
     todayLabel: "today",
-    thenLabel: `then $${offer.price}/mo`,
-    nowLabel: "Covers the website build and your first period of reviews",
+    /**
+     * The monthly line under the big number: "then ~~$197~~ $97/mo". The
+     * strikethrough is the same deal the $97 card shows — the Review System
+     * is discounted from `offer.regular` on this plan too.
+     */
+    then: {
+      lead: "then",
+      regular: `$${offer.regular}`,
+      price: `$${offer.price}/mo`,
+    },
+    nowLabel: "Covers the website build and the review system",
     clears: [
       `Then $${offer.price}/month, the same as the reviews-only plan`,
+      "Online booking included",
       "Site live in about two weeks",
       "No contract, cancel anytime",
     ],

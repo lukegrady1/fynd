@@ -1,12 +1,14 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { createCheckoutSession } from "@/lib/stripe";
+import { CANCEL_PATHS } from "@/lib/stripe-plans";
 import { notifyGhl } from "@/lib/ghl";
 import { siteOrigin } from "@/lib/site-origin";
 
 const bodySchema = z.object({
   cid: z.string().max(64).nullable().optional(),
   plan: z.enum(["review-system", "website-reviews"]),
+  cancelPath: z.enum(CANCEL_PATHS).optional(),
 });
 
 export const POST = async (request: Request) => {
@@ -38,6 +40,7 @@ export const POST = async (request: Request) => {
     cid,
     plan: parsed.data.plan,
     origin,
+    cancelPath: parsed.data.cancelPath,
   });
 
   if (result.status === "ok") {

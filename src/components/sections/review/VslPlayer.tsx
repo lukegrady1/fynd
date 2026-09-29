@@ -27,13 +27,13 @@ import { cn } from "@/lib/utils";
  *
  * When it ends the ask appears over the last frame, with a replay. Someone
  * who has just watched the whole thing is the warmest visitor on the page,
- * and the calendar is a screen below.
+ * and the plans are a screen below.
  */
 export function VslPlayer({
   targetId,
   className,
 }: {
-  /** The booking section the end-card button scrolls to. */
+  /** The section the end-card button scrolls to — the plan picker. */
   targetId: string;
   className?: string;
 }) {
@@ -105,8 +105,8 @@ export function VslPlayer({
     setState("ended");
   };
 
-  const goToBooking = () => {
-    track("cta_click", { cta: copy.ended.cta, section: "vsl_end" });
+  const goToPlans = () => {
+    track("cta_click", { cta: watch.cta, section: "vsl_end" });
     document
       .getElementById(targetId)
       ?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -180,10 +180,10 @@ export function VslPlayer({
           <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
             <button
               type="button"
-              onClick={goToBooking}
+              onClick={goToPlans}
               className="group flex h-12 items-center justify-center rounded-sm bg-fynd-blue px-6 text-body font-semibold text-white shadow-blue transition-all duration-150 ease-fynd hover:-translate-y-px hover:bg-[#3F4DF0] active:scale-[0.99]"
             >
-              {copy.ended.cta}
+              {watch.cta}
               <ArrowRight
                 aria-hidden="true"
                 className="ml-2 h-4 w-4 transition-transform duration-150 ease-fynd group-hover:translate-x-[3px]"
