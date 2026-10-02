@@ -392,6 +392,30 @@ export const faq = {
   ],
 } as const;
 
+/**
+ * /watch sells both plans, so its FAQ carries one question the homepage's
+ * doesn't: why a website at all when the owner already has Vagaro. The
+ * answer is the pitch for the bundle — the site ships with its own online
+ * booking, so they move onto ours rather than keep paying for a booking
+ * page. It goes second, straight after who it's for, because on this page
+ * it is the objection. Everything else is the shared list, in order.
+ */
+const websiteQuestion = {
+  q: "I already have Vagaro or online booking. Why do I need a website?",
+  a: "Because the site comes with online booking built in, so you end up with one thing instead of two. Vagaro is a booking page: a calendar with your logo on it that people reach once they've already picked you. It isn't where they find you, and it isn't what convinces them. The site we build is the whole thing in one place: your work, your reviews shown live, your services and prices, and a booking calendar that's part of your own site rather than a tab that sends people off to someone else's software. Every appointment booked there feeds the review requests automatically, and when someone searches for what you do, Google has a real page to send them to.",
+} as const;
+
+const afterWhoItsFor = faq.items.findIndex((item) => item.q === "Who is Fynd for?") + 1;
+
+export const watchFaq = {
+  heading: faq.heading,
+  items: [
+    ...faq.items.slice(0, afterWhoItsFor),
+    websiteQuestion,
+    ...faq.items.slice(afterWhoItsFor),
+  ],
+} as const;
+
 export const finalCta = {
   /**
    * Split so the payoff word carries Fynd Green, per design.md — inline here

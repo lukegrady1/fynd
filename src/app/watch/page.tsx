@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { finalCta as finalCtaCopy, meta, watch } from "@/content/copy";
+import { finalCta as finalCtaCopy, meta, watch, watchFaq } from "@/content/copy";
 import { parseParams, type SearchParams } from "@/lib/params";
 import { PageTracking } from "@/components/sections/review/PageTracking";
 import {
@@ -66,8 +66,10 @@ export default async function WatchPage({
           cancelPath="/watch"
         />
         {/* Below the ask, for whoever scrolled past the plans still unsure.
-            The same questions as the homepage. */}
-        <ObjectionFaq />
+            The homepage's questions plus one near the top: why a website when
+            they already have Vagaro, since this page is the one selling both
+            plans and the site ships with its own booking. */}
+        <ObjectionFaq items={watchFaq.items} />
         <FinalCta
           heading={finalCtaCopy.heading}
           ctaLabel={watch.cta}
