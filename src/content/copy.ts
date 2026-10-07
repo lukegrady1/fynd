@@ -462,7 +462,22 @@ export const confirmed = {
   skipCta: `Start for $${offer.price}/month`,
 } as const;
 
+/**
+ * /schedule — the setter's booking page. Internal: the setter keeps it open
+ * while on the phone with a lead and books onto Keegan's calendar directly.
+ */
+export const setter = {
+  eyebrow: "Setter booking",
+  heading: "Book a demo with Keegan",
+  note: "Books onto the Fynd Demo Call calendar, which is separate from the site's own demo calendar, so these bookings are traceable to you.",
+  notConfigured: "Calendar not configured — set NEXT_PUBLIC_GHL_SETTER_CALENDAR_ID.",
+} as const;
+
 export const meta = {
+  schedule: {
+    title: "Setter booking — Fynd",
+    description: "Internal booking calendar for setter-scheduled demos with Keegan.",
+  },
   demo: {
     title: "Book a demo — Fynd",
     description:

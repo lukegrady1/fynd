@@ -97,18 +97,21 @@ export const notifyGhl = async (
  * Builds the GHL calendar embed URL with prefill so nobody retypes their
  * details on a phone keyboard.
  *
- * One calendar. There was briefly a second for a separate /call page; every
- * ask on the site books the same slot type again.
+ * Defaults to the public demo calendar. /schedule passes the setter calendar's
+ * id instead: same person, same slot, a separate calendar so a booking made by
+ * the setter is distinguishable from one a lead made themselves.
  */
-export const calendarEmbedUrl = (prefill: {
-  firstName?: string;
-  phone?: string;
-  email?: string;
-}) => {
-  const id = process.env.NEXT_PUBLIC_GHL_CALENDAR_ID;
-  if (!id) return null;
+export const calendarEmbedUrl = (
+  prefill: {
+    firstName?: string;
+    phone?: string;
+    email?: string;
+  },
+  calendarId: string | undefined = process.env.NEXT_PUBLIC_GHL_CALENDAR_ID,
+) => {
+  if (!calendarId) return null;
 
-  const url = new URL(`https://${GHL_EMBED_HOST}/widget/booking/${id}`);
+  const url = new URL(`https://${GHL_EMBED_HOST}/widget/booking/${calendarId}`);
   url.searchParams.set("prefill", "true");
   if (prefill.firstName) url.searchParams.set("first_name", prefill.firstName);
   if (prefill.phone) url.searchParams.set("phone", prefill.phone);
