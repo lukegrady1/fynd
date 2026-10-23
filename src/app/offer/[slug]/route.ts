@@ -68,9 +68,12 @@ export const GET = async (
     return NextResponse.redirect(`${origin}/`, { status: 303, headers: NO_INDEX });
   }
 
-  // Netlify hands HEAD to this GET handler rather than to HEAD below, so it
-  // is checked here too. Link checkers and uptime monitors send it; minting
-  // a session for each would fill Stripe with abandoned checkouts.
+  // Link checkers send HEAD; minting a session for each would fill Stripe
+  // with abandoned checkouts. This works locally, but on Netlify a HEAD
+  // arrives here as a GET (verified 2026-10-23: a live HEAD minted a
+  // session), so in production nothing can tell them apart. Harmless: an
+  // unpaid session expires in 24 hours. Don't point an uptime monitor at
+  // an /offer link.
   if (request.method === "HEAD") {
     return new NextResponse(null, { headers: NO_INDEX });
   }
@@ -119,5 +122,5 @@ export const GET = async (
   });
 };
 
-/** Link checkers send HEAD. Answer without minting anything. */
+/** See the HEAD note in GET: on Netlify this export is never reached. */
 export const HEAD = () => new NextResponse(null, { headers: NO_INDEX });
