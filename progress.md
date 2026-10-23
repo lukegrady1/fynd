@@ -80,9 +80,11 @@ Three links, each minting a fresh session on tap:
 - `/offer/reviews` — Review System, $97 today, then $97/month.
 - `/offer/nov1` — Website + Reviews, nothing today. Setup-mode checkout
   saves the card; the subscription is created at once, trialing to
-  November 1, when $249 is charged (build + first month, as on /website).
-  Then $97 on the 1st from December 1. On Stripe's invoice that $249 shows
-  as two lines: the $97 month and a $152 "Fynd website build". Stops minting at 11pm ET on October 31.
+  November 1. Exactly the /website checkout with the charge moved: a draft
+  $249 invoice finalizes itself on November 1 and charges the saved card,
+  and the $97 subscription trials to December 1. Dry-run against live
+  Stripe on a throwaway customer (deleted): invoice and subscription come
+  out as intended. Stops minting at 11pm ET on October 31.
 
 `?cid=` passes through to Stripe metadata. Verified locally against live
 Stripe: all three redirect, the session wording and metadata are right, and

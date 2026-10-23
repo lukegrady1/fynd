@@ -140,14 +140,3 @@ export const easternMidnight = (ymd: string): number | null => {
   );
 };
 
-/**
- * The same billing day one month later, read in Eastern. Only defined for
- * the billing days themselves (1st, 15th), which exist in every month.
- */
-export const oneMonthAfter = (unixSeconds: number): number => {
-  const { year, month, day } = easternParts(new Date(unixSeconds * 1000));
-  const y = month === 12 ? year + 1 : year;
-  const m = month === 12 ? 1 : month + 1;
-  const ymd = `${y}-${String(m).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
-  return easternMidnight(ymd)!;
-};

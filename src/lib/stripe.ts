@@ -7,7 +7,6 @@ import {
   easternMidnight,
   formatAnchor,
   nextBillingAnchor,
-  oneMonthAfter,
 } from "./billing-anchor";
 import type { Offer, OfferSlug } from "./offers";
 
@@ -284,12 +283,15 @@ const MAX_SESSION_SECONDS = 24 * 60 * 60 - 60;
  * "Nothing today, everything on a fixed date" — the deferred offers in
  * `src/lib/offers.ts`.
  *
- * A `setup` mode Checkout Session: no charge, no line items, it only saves
- * the card. `ensureSubscription` then creates the subscription at once with
- * a trial ending on the start date, plus the offer's one-time charge as an
- * invoice item on that subscription, so the first invoice on the start date
- * carries both. The customer sees an active subscription immediately and is
- * billed nothing until then.
+ * The plan's normal checkout, with the charge moved to the start date. A
+ * `setup` mode Checkout Session saves the card and charges nothing. Then
+ * `ensureSubscription` creates two things at once:
+ *
+ *   - a draft invoice for the plan's first charge ($249 on the website
+ *     plan), set to finalize itself on the start date and charge the saved
+ *     card, as one line, the same as the /website checkout;
+ *   - the $97 subscription, trialing to the billing day that a checkout on
+ *     the start date would have produced (November 1 -> December 1).
  *
  * Setup mode has no order summary, so the submit message under the button
  * is the whole of what they are agreeing to and has to state every amount
@@ -319,27 +321,18 @@ export const createDeferredCheckoutSession = async (
   const expiresAt = Math.min(now + MAX_SESSION_SECONDS, start - DEFERRED_CUTOFF_SECONDS);
   if (expiresAt - now < MIN_SESSION_SECONDS) return { status: "closed" };
 
-  // The first invoice is the plan's month plus, if the offer charges more
-  // than that, one extra line for the difference.
-  const firstCents = req.offer.firstCents ?? plan.recurringCents;
-  if (firstCents < plan.recurringCents) {
-    return { status: "error", message: `offer ${req.offer.slug} charges less than one month` };
-  }
-  const oneTime =
-    firstCents > plan.recurringCents
-      ? {
-          cents: firstCents - plan.recurringCents,
-          description: req.offer.firstDescription ?? "One-time charge",
-        }
-      : null;
-
+  // Exactly the plan's normal checkout, moved to the start date: the plan's
+  // first charge ($249 on the website plan) is taken on `start` and carries
+  // them to the next billing day on or after a month from then, where the
+  // $97 subscription takes over. Same rule as nextBillingAnchor for a
+  // checkout made on that day.
+  const anchor = nextBillingAnchor(new Date(start * 1000));
   const startLabel = formatAnchor(start);
+  const anchorLabel = formatAnchor(anchor);
+  const firstLabel = priceLabel(plan.firstCents);
   const recurringLabel = priceLabel(plan.recurringCents);
-  const thenLabel = `It then continues at ${recurringLabel} a month on the ${anchorDayOrdinal(start)}, from ${formatAnchor(oneMonthAfter(start))}. Cancel any time.`;
 
-  const message = oneTime
-    ? `Nothing is charged today. Your card is saved and billed ${priceLabel(firstCents)} on ${startLabel}, for your website build and your first month of the Review System. ${thenLabel}`
-    : `Nothing is charged today. Your card is saved and billed ${recurringLabel} on ${startLabel}, for your first month of the Review System. ${thenLabel}`;
+  const message = `Nothing is charged today. Your card is saved and billed ${firstLabel} on ${startLabel}, which covers you through ${anchorLabel}. It then continues as a ${recurringLabel}/month subscription, billed on the ${anchorDayOrdinal(anchor)}. Cancel any time.`;
 
   // Everything ensureSubscription needs rides on the session, so editing
   // the offers table later never changes what an existing customer gets.
@@ -349,12 +342,9 @@ export const createDeferredCheckoutSession = async (
     plan: req.offer.plan,
     offer: req.offer.slug,
     deferred_start: String(start),
-    ...(oneTime
-      ? {
-          one_time_cents: String(oneTime.cents),
-          one_time_description: oneTime.description,
-        }
-      : {}),
+    billing_anchor: String(anchor),
+    first_cents: String(plan.firstCents),
+    first_description: `${plan.name}. ${plan.describe(anchorLabel, recurringLabel).replace(" today ", " ")}`,
   };
 
   try {
@@ -419,8 +409,18 @@ type Billing =
       customer: string;
       paymentMethod: string;
       trialEnd: number | null;
+      /** Deferred offers: the plan's first charge, on its own invoice. */
+      firstInvoice: FirstInvoice | null;
+      /** Legacy deferred sessions only — see ensureOneTimeItem. */
       oneTime: { cents: number; description: string } | null;
     };
+
+type FirstInvoice = {
+  cents: number;
+  description: string;
+  /** When it charges. Null means now: the session completed late. */
+  finalizesAt: number | null;
+};
 
 /** Stripe refuses a trial_end that is not comfortably in the future. */
 const TRIAL_MARGIN_SECONDS = 10 * 60;
@@ -440,7 +440,6 @@ const readBilling = (session: Stripe.Checkout.Session): Billing => {
       typeof session.setup_intent === "string" ? null : session.setup_intent;
     const paymentMethod = idOf(setupIntent?.payment_method);
     const start = Number(session.metadata?.deferred_start);
-    const oneTimeCents = Number(session.metadata?.one_time_cents);
 
     if (!customer || !paymentMethod || !start) {
       return {
@@ -450,11 +449,36 @@ const readBilling = (session: Stripe.Checkout.Session): Billing => {
     }
 
     const now = Math.floor(Date.now() / 1000);
+    const future = (at: number) => at > now + TRIAL_MARGIN_SECONDS;
+    const firstCents = Number(session.metadata?.first_cents);
+
+    if (firstCents > 0) {
+      const anchor = Number(session.metadata?.billing_anchor);
+      return {
+        status: "ok",
+        customer,
+        paymentMethod,
+        trialEnd: anchor && future(anchor) ? anchor : null,
+        firstInvoice: {
+          cents: firstCents,
+          description: session.metadata?.first_description || "First payment",
+          finalizesAt: future(start) ? start : null,
+        },
+        oneTime: null,
+      };
+    }
+
+    // LEGACY: sessions minted 2026-10-23 before the switch to a separate
+    // first invoice. They promised the first month on the start date plus a
+    // one-time line. Remove this branch, the `oneTime` field and
+    // ensureOneTimeItem once those sessions have expired (24h).
+    const oneTimeCents = Number(session.metadata?.one_time_cents);
     return {
       status: "ok",
       customer,
       paymentMethod,
-      trialEnd: start > now + TRIAL_MARGIN_SECONDS ? start : null,
+      trialEnd: future(start) ? start : null,
+      firstInvoice: null,
       oneTime:
         oneTimeCents > 0
           ? {
@@ -486,12 +510,15 @@ const readBilling = (session: Stripe.Checkout.Session): Billing => {
     paymentMethod,
     // Fall back to recomputing only if the session predates the metadata.
     trialEnd: Number(session.metadata?.billing_anchor) || nextBillingAnchor(),
+    firstInvoice: null,
     oneTime: null,
   };
 };
 
 /**
- * The deferred offer's one-time charge, as an invoice item — created once.
+ * LEGACY — only for setup sessions minted before `ensureFirstInvoice`; see
+ * the note in readBilling. The deferred offer's one-time charge, as an
+ * invoice item — created once.
  *
  * Tied to the subscription, so it lands on that subscription's next invoice:
  * the one at the end of the trial, on the start date. It has to be created
@@ -532,6 +559,68 @@ const ensureOneTimeItem = async (
 };
 
 /**
+ * A deferred offer's first charge: a draft invoice that finalizes itself on
+ * the start date and charges the saved card (Stripe attempts payment about
+ * an hour after finalizing). One line, like the /website checkout.
+ *
+ * Separate from the subscription on purpose. The subscription's own first
+ * invoice is at the anchor, a month later; an item attached to it would
+ * land then, not on the start date.
+ *
+ * Idempotent like the rest: found by its metadata tag before creating, and
+ * both creates carry idempotency keys. The line is only added while the
+ * invoice is still a draft, so a reload after the charge never adds a
+ * second one.
+ */
+const ensureFirstInvoice = async (
+  customer: string,
+  sessionId: string,
+  paymentMethod: string,
+  first: FirstInvoice,
+) => {
+  const invoices = await stripe().invoices.list({ customer, limit: 100 });
+  const invoice =
+    invoices.data.find((inv) => inv.metadata?.checkout_session_id === sessionId) ??
+    (await stripe().invoices.create(
+      {
+        customer,
+        collection_method: "charge_automatically",
+        auto_advance: true,
+        default_payment_method: paymentMethod,
+        pending_invoice_items_behavior: "exclude",
+        ...(first.finalizesAt !== null
+          ? { automatically_finalizes_at: first.finalizesAt }
+          : {}),
+        metadata: { checkout_session_id: sessionId },
+      },
+      { idempotencyKey: `first-invoice:${sessionId}` },
+    ));
+
+  if (invoice.status !== "draft" || !invoice.id) return;
+
+  // Stripe takes `invoice` or `customer` here, not both.
+  const items = await stripe().invoiceItems.list({ invoice: invoice.id, limit: 10 });
+  if (!items.data.some((item) => item.metadata?.checkout_session_id === sessionId)) {
+    await stripe().invoiceItems.create(
+      {
+        customer,
+        invoice: invoice.id,
+        amount: first.cents,
+        currency: "usd",
+        description: first.description,
+        metadata: { checkout_session_id: sessionId },
+      },
+      { idempotencyKey: `first-item:${sessionId}` },
+    );
+  }
+
+  // Completed after the start date: charge now rather than never.
+  if (first.finalizesAt === null) {
+    await stripe().invoices.finalizeInvoice(invoice.id, { auto_advance: true });
+  }
+};
+
+/**
  * Creates the subscription behind a paid Checkout Session — or returns the one
  * that already exists.
  *
@@ -554,8 +643,9 @@ const ensureOneTimeItem = async (
  * nothing. The subscription's first invoice is at the anchor.
  *
  * Handles both kinds of session: `payment` mode (paid today, trial to the
- * anchor) and `setup` mode from a deferred offer (nothing paid, trial to the
- * offer's start date, plus its one-time charge — see `ensureOneTimeItem`).
+ * anchor) and `setup` mode from a deferred offer (nothing paid; the first
+ * charge on its own invoice dated to the start date, trial to the anchor a
+ * month after it — see `ensureFirstInvoice`).
  */
 export const ensureSubscription = async (
   sessionId: string,
@@ -569,7 +659,7 @@ export const ensureSubscription = async (
 
     const billing = readBilling(session);
     if (billing.status !== "ok") return billing;
-    const { customer, paymentMethod, trialEnd, oneTime } = billing;
+    const { customer, paymentMethod, trialEnd, firstInvoice, oneTime } = billing;
 
     const existing = await stripe().subscriptions.list({
       customer,
@@ -587,6 +677,7 @@ export const ensureSubscription = async (
     // Checked on every call, not only on creation: a crash between the
     // subscription and the item must be healed by the next retry.
     if (already) {
+      if (firstInvoice) await ensureFirstInvoice(customer, sessionId, paymentMethod, firstInvoice);
       if (oneTime) await ensureOneTimeItem(customer, sessionId, oneTime, already.id);
       return { status: "existing", subscriptionId: already.id };
     }
@@ -616,8 +707,9 @@ export const ensureSubscription = async (
         customer,
         items: [{ price: plan.priceId, quantity: 1 }],
         default_payment_method: paymentMethod,
-        // Payment mode: runs to the anchor, the first period was paid at
-        // checkout. Setup mode: runs to the start date, nothing was paid.
+        // Runs to the anchor. Payment mode: the first period was paid at
+        // checkout. Setup mode: it is paid by the first invoice on the start
+        // date.
         ...(trialEnd !== null ? { trial_end: trialEnd } : {}),
         proration_behavior: "none",
         metadata: {
@@ -628,6 +720,9 @@ export const ensureSubscription = async (
       { idempotencyKey: `sub:${sessionId}` },
     );
 
+    if (firstInvoice) {
+      await ensureFirstInvoice(customer, sessionId, paymentMethod, firstInvoice);
+    }
     if (oneTime && trialEnd !== null) {
       await ensureOneTimeItem(customer, sessionId, oneTime, subscription.id);
     }

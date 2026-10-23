@@ -14,10 +14,10 @@ import type { Plan } from "./stripe-plans";
  *   - "now"      the normal checkout, identical to the Start now buttons:
  *                the plan's first charge today, then $97/month from the
  *                billing anchor. See `createCheckoutSession`.
- *   - "deferred" nothing today. Checkout runs in setup mode and only saves
- *                the card; the subscription is created at once with a trial
- *                to `startsOn`, and everything is billed on that day. See
- *                `createDeferredCheckoutSession`.
+ *   - "deferred" the same plan and the same charge, moved to `startsOn`.
+ *                Checkout only saves the card; the plan's first charge is
+ *                taken on that day and the $97/month starts on the billing
+ *                day after it. See `createDeferredCheckoutSession`.
  *
  * A new custom deal is one line here. Slugs are lowercase and URL-safe;
  * link-preview text for each lives in `offerLinks` in `src/content/copy.ts`.
@@ -28,19 +28,12 @@ export type Offer = { plan: Plan } & (
   | {
       billing: "deferred";
       /**
-       * YYYY-MM-DD, midnight Eastern. Must be the 1st or the 15th so the
-       * customer lands on a normal billing day afterwards. The link stops
-       * minting sessions shortly before this, and sends people to the plan's
-       * public page instead.
+       * YYYY-MM-DD, midnight Eastern: the day the plan's first charge is
+       * taken. Any date works; the $97/month then starts on the billing day
+       * a checkout on this date would get. The link stops minting sessions
+       * an hour before it and sends people to the plan's public page.
        */
       startsOn: string;
-      /**
-       * Total charged on `startsOn`, including the first month. Anything
-       * above the plan's $97 goes on that invoice as a separate line named
-       * `firstDescription`. Omit to charge just the first month.
-       */
-      firstCents?: number;
-      firstDescription?: string;
     }
 );
 
@@ -50,16 +43,10 @@ export const OFFERS = {
   /** Review System only: $97 today, then $97/month. */
   reviews: { plan: "review-system", billing: "now" },
   /**
-   * Website + Reviews, nothing today: $249 on November 1 (the build and the
-   * first month, as on /website), then $97 on the 1st from December 1.
+   * The /website checkout with the charge moved: nothing today, $249 on
+   * November 1, then $97 on the 1st from December 1.
    */
-  nov1: {
-    plan: "website-reviews",
-    billing: "deferred",
-    startsOn: "2026-11-01",
-    firstCents: 24900,
-    firstDescription: "Fynd website build",
-  },
+  nov1: { plan: "website-reviews", billing: "deferred", startsOn: "2026-11-01" },
 } satisfies Record<string, Offer>;
 
 export type OfferSlug = keyof typeof OFFERS;
