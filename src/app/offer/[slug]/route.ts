@@ -87,10 +87,20 @@ export const GET = async (
 
   const cid = sanitizeId(request.nextUrl.searchParams.get("cid") ?? undefined) ?? null;
 
+  // Backing out of any offer lands on /watch, which sells both plans and
+  // opens on the one they were looking at (`plan` rides on the cancel URL).
+  const cancelPath = "/watch";
+
   const result =
     offer.billing === "deferred"
-      ? await createDeferredCheckoutSession({ offer, cid, origin })
-      : await createCheckoutSession({ cid, plan: offer.plan, origin, offer: offer.slug });
+      ? await createDeferredCheckoutSession({ offer, cid, origin, cancelPath })
+      : await createCheckoutSession({
+          cid,
+          plan: offer.plan,
+          origin,
+          offer: offer.slug,
+          cancelPath,
+        });
 
   if (result.status === "ok") {
     // Only once a real session exists, so a closed or broken link never

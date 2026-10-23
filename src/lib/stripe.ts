@@ -257,6 +257,8 @@ export type DeferredCheckoutRequest = {
   offer: { slug: OfferSlug } & Extract<Offer, { billing: "deferred" }>;
   cid: string | null;
   origin: string;
+  /** Overrides the plan's own cancel page — see `CANCEL_PATHS`. */
+  cancelPath?: CancelPath;
 };
 
 export type DeferredCheckoutResult =
@@ -356,7 +358,7 @@ export const createDeferredCheckoutSession = async (
       expires_at: expiresAt,
       custom_text: { submit: { message } },
       success_url: `${req.origin}/start/welcome?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${req.origin}${plan.cancelPath}?cancelled=1&plan=${req.offer.plan}`,
+      cancel_url: `${req.origin}${req.cancelPath ?? plan.cancelPath}?cancelled=1&plan=${req.offer.plan}`,
     });
 
     if (!session.url) {

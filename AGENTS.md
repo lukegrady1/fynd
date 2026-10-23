@@ -123,6 +123,8 @@ in `offerLinks` in `copy.ts`.
   invoice at creation and would sweep up an earlier item, charging it today).
   The session expires an hour before the start date; after that the link
   sends people to the plan's public page.
+- Backing out of any offer's checkout returns to `/watch`, opened on that
+  offer's plan.
 - Link-preview crawlers (iMessage, WhatsApp, Slack) get a static OG card and
   never mint a session or fire `checkout_started`.
 
