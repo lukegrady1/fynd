@@ -23,13 +23,6 @@ import type { Plan } from "./stripe-plans";
  * link-preview text for each lives in `offerLinks` in `src/content/copy.ts`.
  */
 
-type OneTime = {
-  /** Added to the first invoice, on top of the first month. */
-  cents: number;
-  /** The line on that invoice. */
-  description: string;
-};
-
 export type Offer = { plan: Plan } & (
   | { billing: "now" }
   | {
@@ -41,7 +34,13 @@ export type Offer = { plan: Plan } & (
        * public page instead.
        */
       startsOn: string;
-      oneTime?: OneTime;
+      /**
+       * Total charged on `startsOn`, including the first month. Anything
+       * above the plan's $97 goes on that invoice as a separate line named
+       * `firstDescription`. Omit to charge just the first month.
+       */
+      firstCents?: number;
+      firstDescription?: string;
     }
 );
 
@@ -51,14 +50,15 @@ export const OFFERS = {
   /** Review System only: $97 today, then $97/month. */
   reviews: { plan: "review-system", billing: "now" },
   /**
-   * Website + Reviews, nothing today: $346 on November 1 ($249 build plus
-   * the first $97 month), then $97 on the 1st from December 1.
+   * Website + Reviews, nothing today: $249 on November 1 (the build and the
+   * first month, as on /website), then $97 on the 1st from December 1.
    */
   nov1: {
     plan: "website-reviews",
     billing: "deferred",
     startsOn: "2026-11-01",
-    oneTime: { cents: 24900, description: "Fynd website build" },
+    firstCents: 24900,
+    firstDescription: "Fynd website build",
   },
 } satisfies Record<string, Offer>;
 

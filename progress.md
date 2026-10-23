@@ -80,8 +80,9 @@ Three links, each minting a fresh session on tap:
 - `/offer/reviews` — Review System, $97 today, then $97/month.
 - `/offer/nov1` — Website + Reviews, nothing today. Setup-mode checkout
   saves the card; the subscription is created at once, trialing to
-  November 1, when $346 is charged ($249 build + first $97). Then $97 on the
-  1st from December 1. Stops minting at 11pm ET on October 31.
+  November 1, when $249 is charged (build + first month, as on /website).
+  Then $97 on the 1st from December 1. On Stripe's invoice that $249 shows
+  as two lines: the $97 month and a $152 "Fynd website build". Stops minting at 11pm ET on October 31.
 
 `?cid=` passes through to Stripe metadata. Verified locally against live
 Stripe: all three redirect, the session wording and metadata are right, and

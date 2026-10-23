@@ -319,15 +319,27 @@ export const createDeferredCheckoutSession = async (
   const expiresAt = Math.min(now + MAX_SESSION_SECONDS, start - DEFERRED_CUTOFF_SECONDS);
   if (expiresAt - now < MIN_SESSION_SECONDS) return { status: "closed" };
 
-  const oneTime = req.offer.oneTime ?? null;
+  // The first invoice is the plan's month plus, if the offer charges more
+  // than that, one extra line for the difference.
+  const firstCents = req.offer.firstCents ?? plan.recurringCents;
+  if (firstCents < plan.recurringCents) {
+    return { status: "error", message: `offer ${req.offer.slug} charges less than one month` };
+  }
+  const oneTime =
+    firstCents > plan.recurringCents
+      ? {
+          cents: firstCents - plan.recurringCents,
+          description: req.offer.firstDescription ?? "One-time charge",
+        }
+      : null;
+
   const startLabel = formatAnchor(start);
   const recurringLabel = priceLabel(plan.recurringCents);
-  const firstLabel = priceLabel(plan.recurringCents + (oneTime?.cents ?? 0));
   const thenLabel = `It then continues at ${recurringLabel} a month on the ${anchorDayOrdinal(start)}, from ${formatAnchor(oneMonthAfter(start))}. Cancel any time.`;
 
   const message = oneTime
-    ? `Nothing is charged today. Your card is saved and billed ${firstLabel} on ${startLabel}: ${priceLabel(oneTime.cents)} for the website build plus ${recurringLabel} for your first month of the Review System. ${thenLabel}`
-    : `Nothing is charged today. Your card is saved and billed ${recurringLabel} on ${startLabel} for your first month of the Review System. ${thenLabel}`;
+    ? `Nothing is charged today. Your card is saved and billed ${priceLabel(firstCents)} on ${startLabel}, for your website build and your first month of the Review System. ${thenLabel}`
+    : `Nothing is charged today. Your card is saved and billed ${recurringLabel} on ${startLabel}, for your first month of the Review System. ${thenLabel}`;
 
   // Everything ensureSubscription needs rides on the session, so editing
   // the offers table later never changes what an existing customer gets.
