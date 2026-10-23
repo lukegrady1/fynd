@@ -231,7 +231,11 @@ export const createCheckoutSession = async (
       success_url: `${req.origin}/start/welcome?session_id={CHECKOUT_SESSION_ID}`,
       // `plan` rides along so a page that sells both plans can reopen the
       // one they were on; the single-plan pages ignore it.
-      cancel_url: `${req.origin}${req.cancelPath ?? plan.cancelPath}?cancelled=1&plan=${req.plan}`,
+      // Offer links return to a plain page: no "Still deciding?" note and no
+      // tab switch, so /watch looks exactly as it did when the lead first saw it.
+      cancel_url: req.offer
+        ? `${req.origin}${req.cancelPath ?? plan.cancelPath}`
+        : `${req.origin}${req.cancelPath ?? plan.cancelPath}?cancelled=1&plan=${req.plan}`,
       allow_promotion_codes: true,
     });
 
@@ -358,7 +362,8 @@ export const createDeferredCheckoutSession = async (
       expires_at: expiresAt,
       custom_text: { submit: { message } },
       success_url: `${req.origin}/start/welcome?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${req.origin}${req.cancelPath ?? plan.cancelPath}?cancelled=1&plan=${req.offer.plan}`,
+      // Plain page, like the other offer links — see createCheckoutSession.
+      cancel_url: `${req.origin}${req.cancelPath ?? plan.cancelPath}`,
     });
 
     if (!session.url) {

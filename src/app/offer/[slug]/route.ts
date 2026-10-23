@@ -87,8 +87,8 @@ export const GET = async (
 
   const cid = sanitizeId(request.nextUrl.searchParams.get("cid") ?? undefined) ?? null;
 
-  // Backing out of any offer lands on /watch, which sells both plans and
-  // opens on the one they were looking at (`plan` rides on the cancel URL).
+  // Backing out of any offer lands on plain /watch, which sells both plans.
+  // No ?cancelled or ?plan: the page is left exactly as a first visit sees it.
   const cancelPath = "/watch";
 
   const result =
