@@ -124,3 +124,30 @@ export const anchorDayOrdinal = (unixSeconds: number): string => {
 
   return `${day}${suffix}`;
 };
+
+/**
+ * Unix seconds for midnight Eastern on a YYYY-MM-DD date, or null if the
+ * string is not a real calendar date. For fixed start dates on deferred
+ * offers (`src/lib/offers.ts`).
+ */
+export const easternMidnight = (ymd: string): number | null => {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(ymd);
+  if (!match) return null;
+  const [y, m, d] = match.slice(1).map(Number);
+  if (m < 1 || m > 12 || d < 1 || d > daysInMonth(y, m)) return null;
+  return Math.floor(
+    fromZonedTime(`${ymd}T00:00:00`, BILLING_TIME_ZONE).getTime() / 1000,
+  );
+};
+
+/**
+ * The same billing day one month later, read in Eastern. Only defined for
+ * the billing days themselves (1st, 15th), which exist in every month.
+ */
+export const oneMonthAfter = (unixSeconds: number): number => {
+  const { year, month, day } = easternParts(new Date(unixSeconds * 1000));
+  const y = month === 12 ? year + 1 : year;
+  const m = month === 12 ? 1 : month + 1;
+  const ymd = `${y}-${String(m).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+  return easternMidnight(ymd)!;
+};

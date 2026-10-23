@@ -1336,3 +1336,25 @@ export const bundle = {
     href: "/website",
   },
 } as const;
+
+/**
+ * Link-preview text for the permanent payment links at /offer/<slug>
+ * (`src/lib/offers.ts`). Only crawlers ever see it: iMessage, WhatsApp and
+ * Slack fetch the link to draw the card under the text, and get this instead
+ * of a checkout session. People are redirected straight to Stripe.
+ */
+export const offerLinks = {
+  website: {
+    title: "Fynd Website + Reviews",
+    description: `Your new website plus the Review System. $${offer.bundle.price} today, then $${offer.price} a month.`,
+  },
+  reviews: {
+    title: "Fynd Review System",
+    description: `More 5-star Google reviews, on autopilot. $${offer.price} a month, cancel any time.`,
+  },
+  nov1: {
+    title: "Fynd Website + Reviews",
+    description:
+      "Your new website plus the Review System. Nothing today, first payment November 1.",
+  },
+} as const;

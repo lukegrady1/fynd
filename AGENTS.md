@@ -107,6 +107,25 @@ is what rescues a paid customer whose subscription did not get made. It needs
 `STRIPE_WEBHOOK_SECRET`; without it the route 503s and the success page is the
 only thing creating subscriptions.
 
+### Permanent payment links — /offer/<slug>
+
+Stripe Checkout URLs die after 24 hours, so links texted to leads point at
+`/offer/<slug>` instead (`src/app/offer/[slug]/route.ts`). Each visit mints
+a fresh session and 303s to Stripe. The offers are a table in
+`src/lib/offers.ts`; a new deal is one line there plus its link-preview text
+in `offerLinks` in `copy.ts`.
+
+- `billing: "now"` reuses `createCheckoutSession` unchanged.
+- `billing: "deferred"` is a **setup-mode** session: no charge, card saved.
+  `ensureSubscription` then creates the subscription with a trial to the
+  start date and adds the one-time charge as an invoice item **on that
+  subscription, created after it** (a trialing subscription issues a $0
+  invoice at creation and would sweep up an earlier item, charging it today).
+  The session expires an hour before the start date; after that the link
+  sends people to the plan's public page.
+- Link-preview crawlers (iMessage, WhatsApp, Slack) get a static OG card and
+  never mint a session or fire `checkout_started`.
+
 The recurring product's Stripe **description** carries the standing billing
 policy and renders in the order summary. It lives in the Stripe Dashboard, not
 in this repo.
