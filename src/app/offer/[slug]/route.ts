@@ -68,6 +68,13 @@ export const GET = async (
     return NextResponse.redirect(`${origin}/`, { status: 303, headers: NO_INDEX });
   }
 
+  // Netlify hands HEAD to this GET handler rather than to HEAD below, so it
+  // is checked here too. Link checkers and uptime monitors send it; minting
+  // a session for each would fill Stripe with abandoned checkouts.
+  if (request.method === "HEAD") {
+    return new NextResponse(null, { headers: NO_INDEX });
+  }
+
   if (PREVIEW_BOT.test(request.headers.get("user-agent") ?? "")) {
     const copy = offerLinks[offer.slug];
     return new NextResponse(previewCard(copy.title, copy.description, origin), {
