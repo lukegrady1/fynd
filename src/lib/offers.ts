@@ -47,6 +47,11 @@ export const OFFERS = {
    * November 1, then $97 on the 1st from December 1.
    */
   nov1: { plan: "website-reviews", billing: "deferred", startsOn: "2026-11-01" },
+  /**
+   * The /reviews checkout with the charge moved: nothing today, $97 on
+   * November 13, then $97 on the 15th from December 15.
+   */
+  nov13: { plan: "review-system", billing: "deferred", startsOn: "2026-11-13" },
 } satisfies Record<string, Offer>;
 
 export type OfferSlug = keyof typeof OFFERS;

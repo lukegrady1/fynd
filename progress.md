@@ -74,7 +74,7 @@ Nothing was deleted — it was resequenced.
 ### Permanent payment links — `/offer/<slug>`
 
 Replaces sending raw Stripe Checkout URLs, which expire after 24 hours.
-Three links, each minting a fresh session on tap:
+Four links, each minting a fresh session on tap:
 
 - `/offer/website` — Website + Reviews, $249 today, then $97/month.
 - `/offer/reviews` — Review System, $97 today, then $97/month.
@@ -85,6 +85,11 @@ Three links, each minting a fresh session on tap:
   and the $97 subscription trials to December 1. Dry-run against live
   Stripe on a throwaway customer (deleted): invoice and subscription come
   out as intended. Stops minting at 11pm ET on October 31.
+- `/offer/nov13` — Review System, nothing today. Same deferred shape as
+  `/offer/nov1` on the $97 plan: a draft $97 invoice charges the saved card
+  on November 13, and the $97 subscription trials to December 15 (the
+  billing day a November 13 checkout would get). Stops minting at 11pm ET
+  on November 12.
 
 `?cid=` passes through to Stripe metadata. Verified locally against live
 Stripe: all three redirect, the session wording and metadata are right, and

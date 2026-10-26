@@ -1357,4 +1357,9 @@ export const offerLinks = {
     description:
       "Your new website plus the Review System. Nothing today, first payment November 1.",
   },
+  nov13: {
+    title: "Fynd Review System",
+    description:
+      "More 5-star Google reviews, on autopilot. Nothing today, first payment November 13.",
+  },
 } as const;
