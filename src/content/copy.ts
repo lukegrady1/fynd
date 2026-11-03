@@ -506,7 +506,7 @@ export const watch = {
     card: {
       label: "One simple price",
       per: `for ${offer.trialDays} days`,
-      perNote: `then $${offer.price} a month, per location`,
+      perNote: `then $${offer.price} a month`,
       pill: `Free for ${offer.trialDays} days · Cancel anytime`,
       allIn: {
         title: "All-in price. No setup fee, no per-seat pricing.",
