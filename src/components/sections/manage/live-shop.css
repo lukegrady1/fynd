@@ -1,0 +1,65 @@
+/* The live storefront in the /manage "Your business" card. Scoped to .ls. */
+
+/* The walker glides along the pavement; the hop and the legs come from the
+   keyframes below while it walks. */
+.ls .ls-walker {
+  transform-box: view-box;
+  /* Fades out once the door has opened (the delay is the door's swing) */
+  transition: transform 1700ms linear, opacity 300ms ease 380ms;
+}
+
+.ls[data-phase='walk'] .ls-walker {
+  /* Fades in as it sets off */
+  transition: transform 1700ms linear, opacity 250ms ease;
+}
+
+.ls[data-phase='away'] .ls-walker {
+  /* Back to the edge with no walk: it's invisible there */
+  transition: opacity 0ms, transform 0ms;
+}
+
+.ls[data-phase='walk'] .ls-leg--l {
+  animation: ls-step 420ms ease-in-out infinite;
+}
+
+.ls[data-phase='walk'] .ls-leg--r {
+  animation: ls-step 420ms ease-in-out infinite reverse;
+}
+
+.ls[data-phase='walk'] .ls-walker {
+  animation: ls-bob 420ms ease-in-out infinite;
+}
+
+/* The door panel swings on its left edge: a scaleX toward the hinge reads
+   as the door opening toward the street. */
+.ls .ls-door {
+  transform-box: fill-box;
+  transform-origin: left center;
+  transition: transform 380ms cubic-bezier(0.45, 0, 0.1, 1);
+}
+
+.ls .ls-door[data-open] {
+  transform: scaleX(0.14);
+}
+
+@keyframes ls-step {
+  0%, 100% { transform: translateX(-1.6px) rotate(-12deg); }
+  50% { transform: translateX(1.6px) rotate(12deg); }
+}
+
+@keyframes ls-bob {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -1.2px; }
+}
+
+.ls .ls-leg {
+  transform-box: fill-box;
+  transform-origin: top center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ls .ls-walker, .ls .ls-door, .ls .ls-leg {
+    animation: none !important;
+    transition: none !important;
+  }
+}

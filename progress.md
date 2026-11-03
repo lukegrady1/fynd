@@ -355,6 +355,21 @@ both website FAQ answers steer the same way. Nothing charges the $249 yet
 
 ### Stageshow demos
 
+`src/components/sections/manage/LiveShop.tsx` (+ `live-shop.css`) is the
+storefront in /manage's "Your business. Everywhere." card, alive (Luke,
+Nov 3, 2026): a customer walks in from the right along the pavement
+(legs and a bob from keyframes), the door panel swings on its hinge, they
+step inside, the door closes and the kit's `Count` rolls the number up
+by one; then the next, in a different colourway, for as long as the card
+is on screen. The count starts at the copy's `centre.count` and never
+comes down — a reload is the only reset; off screen or in a hidden tab
+the loop pauses and resumes with a fresh approach. Not a `Stage`: a phase
+state (`away` → `walk` → `enter` → `close`) with CSS transitions, so the
+count can persist across pauses, which a Stage's loop would not. Reduced
+motion: nothing moves, the count holds. Two instances mount (the ring's
+card from sm, the stacked card below), each with its own count; only the
+visible one runs. Checked at 1280 and 390.
+
 `src/components/stageshow/kit/` is the stageshow skill's React kit
 (github benjitaylor/skills, installed Nov 3, 2026 to
 `~/.agents/skills/stageshow`, linked as `~/.claude/skills/stageshow`),

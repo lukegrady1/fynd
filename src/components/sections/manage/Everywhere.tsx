@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react";
 import {
-  CalendarCheck,
+
   FileText,
   Image as ImageIcon,
   MessageSquare,
@@ -15,6 +15,7 @@ import { LogoMark } from "@/components/brand/Logo";
 import { Container } from "@/components/ui/Layout";
 import { Reveal } from "@/components/sections/review/Reveal";
 import { MarkSvg, type Brand } from "./ChannelLogos";
+import { LiveShop } from "./LiveShop";
 import { ScrollButton } from "./ScrollButton";
 
 /**
@@ -192,24 +193,9 @@ function BusinessCard({ className }: { className?: string }) {
         <p className="mt-2 text-[26px] font-bold leading-[1.18] tracking-[-0.9px] sm:text-[30px]">{c.title}</p>
         <p className="mt-1.5 text-[8px] leading-[1.5] text-[#587189] sm:text-[9px]">{c.sub}</p>
 
-        <div className="relative mx-auto mt-1.5 h-[98px] w-full max-w-[224px] sm:mt-2 sm:h-[116px]">
-          <Storefront />
-          <span className="absolute -right-1 top-1 flex items-center gap-1 rounded-[9px] bg-[#fffefa] px-2 py-1.5 text-[8px] font-semibold text-[#3b8469] shadow-[0_5px_18px_rgba(23,55,112,0.13),0_0_0_1px_rgba(115,182,155,0.18)] sm:text-[9px]">
-            <CalendarCheck strokeWidth={2} className="h-3 w-3" />
-            {c.receipt}
-          </span>
-        </div>
-
-        <div className="mt-1.5 flex items-center justify-center gap-2 border-t border-[#356aa6]/[0.13] pt-2 text-left sm:gap-[11px] sm:pt-[11px]">
-          <p className="whitespace-nowrap text-[36px] font-semibold leading-none tracking-[-2px] tabular-nums sm:text-[43px]">
-            <span className="mr-0.5 align-[4px] text-[23px] font-normal text-fynd-blue sm:text-[26px]">+</span>
-            {c.count}
-          </p>
-          <p className="text-[9px] font-medium leading-[1.4] text-[#365372] sm:text-[10px]">
-            {c.countLabel}
-            <span className="mt-0.5 block text-[7px] font-normal text-[#72899d] sm:text-[8px]">{c.countSub}</span>
-          </p>
-        </div>
+        {/* The storefront and the count, alive: customers walk in, the door
+            opens, the number rolls up — see LiveShop. */}
+        <LiveShop />
       </div>
 
       {/* The team, tucked under the card's edge. */}
@@ -226,60 +212,5 @@ function BusinessCard({ className }: { className?: string }) {
         <span className="ml-auto h-1 w-1 shrink-0 rounded-full bg-fynd-green" />
       </div>
     </div>
-  );
-}
-
-/** The platform's storefront drawing, with the awning in Fynd Blue. */
-function Storefront() {
-  return (
-    <svg viewBox="0 0 240 144" fill="none" className="h-full w-full overflow-visible">
-      <defs>
-        <linearGradient id="fynd-shop-wall" x1="60" y1="45" x2="180" y2="130" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#fffefa" />
-          <stop offset="1" stopColor="#d9eaf8" />
-        </linearGradient>
-        <linearGradient id="fynd-shop-glass" x1="0" y1="0" x2="1" y2="1">
-          <stop stopColor="#fff5c9" />
-          <stop offset="1" stopColor="#f7d8a8" />
-        </linearGradient>
-      </defs>
-      <ellipse cx="119" cy="132" rx="88" ry="7" fill="#6188ba" opacity=".18" />
-      <path d="M52 55h136v72a5 5 0 0 1-5 5H57a5 5 0 0 1-5-5Z" fill="url(#fynd-shop-wall)" stroke="#9bbadb" />
-      <path d="M61 24h118a5 5 0 0 1 5 5v24H56V29a5 5 0 0 1 5-5Z" fill="#dceaff" stroke="#9bb7e8" />
-      <rect x="90" y="32" width="60" height="14" rx="7" fill="#fffaf4" />
-      <circle cx="104" cy="39" r="2" fill="#5eab88" />
-      <text x="124" y="41.5" textAnchor="middle" fill="#659178" fontFamily="inherit" fontWeight="650" fontSize="7" letterSpacing="1.5">
-        OPEN
-      </text>
-      <rect x="65" y="75" width="48" height="38" rx="3" fill="url(#fynd-shop-glass)" stroke="#d7b689" />
-      <path d="m69 92 13-13m-9 23 23-23m-7 21 20-20" stroke="white" strokeOpacity=".6" strokeWidth="3" />
-      <path d="M89 76v37M65 95h48" stroke="#c3a385" strokeWidth="1.3" />
-      <rect x="128" y="73" width="42" height="58" rx="3" fill="#3a48d6" />
-      <rect x="132" y="77" width="34" height="53" rx="1.5" fill="#c6dfff" />
-      <rect x="132" y="77" width="34" height="53" rx="1.5" fill="#fff0c9" opacity=".26" />
-      <path d="m136 98 25-18m-18 28 18-13" stroke="white" strokeOpacity=".42" strokeWidth="2" />
-      <path d="M161 105v9" stroke="#315291" strokeWidth="2" strokeLinecap="round" />
-      <path d="M57 49h126l12 14H45Z" fill="#4c5bff" stroke="#3a48d6" />
-      <path d="m72 49-6 14h22l3-14m19 0-1 14h22l-1-14m19 0 3 14h22l-6-14" fill="#e4eeff" />
-      <path d="M45 63h21v5c0 9-21 9-21 0Zm43 0h21v5c0 9-21 9-21 0Zm43 0h21v5c0 9-21 9-21 0Zm43 0h21v5c0 9-21 9-21 0Z" fill="#4c5bff" />
-      <path d="M66 63h22v5c0 9-22 9-22 0Zm43 0h22v5c0 9-22 9-22 0Zm43 0h22v5c0 9-22 9-22 0Z" fill="#e4eeff" />
-      <path d="M38 130h-9l-2-14h13Z" fill="#ddbeab" />
-      <path d="M33 117V98m0 12c-12-2-13-9-10-10 7-1 10 7 10 7m0-1c11-2 12-9 8-10-6-1-8 8-8 8" fill="#8ab295" stroke="#76a182" strokeWidth="1.5" strokeLinecap="round" />
-      <path d="M207 130h-9l-2-14h13Z" fill="#ddbeab" />
-      <path d="M203 117V98m0 12c-12-2-13-9-10-10 7-1 10 7 10 7m0-1c11-2 12-9 8-10-6-1-8 8-8 8" fill="#8ab295" stroke="#76a182" strokeWidth="1.5" strokeLinecap="round" />
-      <g transform="translate(53 123) scale(.85)">
-        <circle cy="-20" r="5.2" fill="#ad795c" />
-        <path d="M-5-23c0-6 11-6 10 1" fill="#493a47" />
-        <path d="M-7-8q0-8 7-8t7 8v9H-7Z" fill="#8ebdaf" />
-        <path d="M-4 1v10m8-10v10" stroke="#445c7b" strokeWidth="3.5" strokeLinecap="round" />
-      </g>
-      <g transform="translate(187 120) scale(.8)">
-        <circle cy="-20" r="5.2" fill="#e3b598" />
-        <path d="M-5-21c-1-8 12-9 11 1l-3-3-8 2Z" fill="#68525c" />
-        <path d="M-7-8q0-8 7-8t7 8v9H-7Z" fill="#7399e5" />
-        <path d="M-4 1v10m8-10v10" stroke="#445c7b" strokeWidth="3.5" strokeLinecap="round" />
-        <rect x="7" y="-2" width="7" height="9" rx="1" fill="#ecc78e" />
-      </g>
-    </svg>
   );
 }
