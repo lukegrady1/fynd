@@ -478,7 +478,10 @@ it, like `BookDemo.tsx` / `watch.book`).
   ends up doing.
 - **The checkout is live (Nov 3, 2026).** `/offer/trial` and the card's
   button (plan `review-trial`) both mint `createTrialCheckoutSession`:
-  a SUBSCRIPTION-mode session on the $97 price with
+  a SUBSCRIPTION-mode session on the trial's own $97 price
+  (`TRIAL_PRICE_ID`, product "Fynd Review System", prod_VYxk6Dd18aIZZH,
+  made Nov 3, 2026 so the order summary prints the trial wording
+  instead of the shared product's 1st/15th line) with
   `trial_period_days: 7` and `payment_method_collection: "always"`, so
   Checkout saves the card, creates the subscription itself, and Stripe
   bills $97 on day 8 and that day monthly (no 1st/15th anchor). Metadata

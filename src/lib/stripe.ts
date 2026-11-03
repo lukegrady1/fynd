@@ -88,6 +88,19 @@ const REVIEW_PRICE_ID =
 /** "Fynd Profile Management", $297/month (prod_VYZPspD1a8m69f, live). */
 const MANAGE_PRICE_ID =
   process.env.STRIPE_PRICE_MANAGE_297 ?? "price_1UXSGn3sJGpur4VmLI0FgTYY";
+/**
+ * "Fynd Review System", $97/month (prod_VYxk6Dd18aIZZH, live): the same
+ * $97 as REVIEW_PRICE_ID on its own product, for the free trial only. A
+ * subscription-mode Checkout prints the product's description in its order
+ * summary, and the shared product's ("Billed monthly on the 1st or the
+ * 15th. Your first payment today covers you until then.") is the other
+ * plans' policy, not the trial's. This product's reads: "Your 7-day free
+ * trial starts now and your card is saved. 7 days later it's $97/month,
+ * billed on that day each month. Cancel any time." (Luke, Nov 3, 2026).
+ * Edit it in the Dashboard, on this product, not the shared one.
+ */
+const TRIAL_PRICE_ID =
+  process.env.STRIPE_PRICE_REVIEW_TRIAL_97 ?? "price_1UXpoj3sJGpur4Vmoxs6fwsk";
 
 const PLANS: Record<
   Plan,
@@ -446,9 +459,9 @@ export const createTrialCheckoutSession = async (
   if (missing.length > 0) return { status: "unconfigured", missing };
 
   const plan = PLANS[req.offer.plan];
-  if (!plan.priceId) {
-    return { status: "unconfigured", missing: [`price id for ${req.offer.plan}`] };
-  }
+  // The trial's own price (see TRIAL_PRICE_ID), not the plan's: same $97,
+  // different product description on the checkout page.
+  const priceId = TRIAL_PRICE_ID;
 
   const days = req.offer.days;
   const now = Math.floor(Date.now() / 1000);
@@ -472,7 +485,7 @@ export const createTrialCheckoutSession = async (
   try {
     const session = await stripe().checkout.sessions.create({
       mode: "subscription",
-      line_items: [{ price: plan.priceId, quantity: 1 }],
+      line_items: [{ price: priceId, quantity: 1 }],
       subscription_data: {
         trial_period_days: days,
         metadata,

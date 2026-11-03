@@ -210,7 +210,10 @@ up front.
 (`createTrialCheckoutSession`; `billing: "trial"` in `offers.ts`;
 `/offer/trial` is the permanent link and the /watch button mints the
 same session). Checkout saves the card and creates the subscription
-itself on the $97 recurring price with `trial_period_days: 7`; Stripe
+itself on the trial's own $97 price (`TRIAL_PRICE_ID`, product "Fynd
+Review System", whose Stripe description carries the trial wording;
+the shared "Fynd" product's description is the 1st/15th policy and
+would print here otherwise) with `trial_period_days: 7`; Stripe
 charges $97 when the trial ends and on that day each month after. No
 billing anchor, no first invoice, no `ensureSubscription` create: that
 function sees `mode: "subscription"`, tags the subscription with the
