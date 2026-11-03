@@ -4,13 +4,27 @@
    keyframes below while it walks. */
 .ls .ls-walker {
   transform-box: view-box;
-  /* Fades out once the door has opened (the delay is the door's swing) */
-  transition: transform 1700ms linear, opacity 300ms ease 380ms;
+  transition: transform 1700ms linear, opacity 300ms ease;
 }
 
 .ls[data-phase='walk'] .ls-walker {
   /* Fades in as it sets off */
   transition: transform 1700ms linear, opacity 250ms ease;
+}
+
+/* The door opening is the last stretch of the same walk: the transform
+   keeps running, legs and bob keep going. */
+.ls[data-phase='open'] .ls-walker {
+  transition: transform 1700ms linear, opacity 250ms ease;
+}
+
+.ls[data-phase='open'] .ls-leg--l { animation: ls-step 420ms ease-in-out infinite; }
+.ls[data-phase='open'] .ls-leg--r { animation: ls-step 420ms ease-in-out infinite reverse; }
+.ls[data-phase='open'] .ls-walker { animation: ls-bob 420ms ease-in-out infinite; }
+
+/* Stepping in: the walker fades as it passes the threshold */
+.ls[data-phase='enter'] .ls-walker {
+  transition: opacity 300ms ease 60ms;
 }
 
 .ls[data-phase='away'] .ls-walker {

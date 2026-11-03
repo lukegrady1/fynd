@@ -28,13 +28,19 @@ import "./live-shop.css";
  * screen-reader text says so.
  */
 
-type Phase = "away" | "walk" | "enter" | "close";
+/** away: at the edge, unseen · walk: along the pavement · open: the door
+    swings while the walker covers the last stretch · enter: steps in ·
+    close: the door shuts and the count rolls. */
+type Phase = "away" | "walk" | "open" | "enter" | "close";
 
 /** Where the walker stands (SVG x) at each phase; y is the pavement. The
     drawing overflows its box (the plants and shadow need it), so "away" is
     just past the right edge and the walker is invisible there. */
 const X = { away: 246, door: 149 };
 const WALK_MS = 1700;
+/** How far before the walker arrives the door starts to open (Luke, Nov 3,
+    2026: "slightly earlier"): the last stretch of the walk. */
+const DOOR_LEAD_MS = 520;
 const DOOR_MS = 380;
 const ENTER_MS = 520;
 const REST_MS = 900;
@@ -85,10 +91,13 @@ export function LiveShop() {
         while (onScreen && !document.hidden) {
           setWho((w) => (w + 1) % PEOPLE.length);
           setPhase("walk");
-          await wait(WALK_MS);
+          await wait(WALK_MS - DOOR_LEAD_MS);
+          if (!running) return;
+          setPhase("open");
+          await wait(DOOR_LEAD_MS);
           if (!running) return;
           setPhase("enter");
-          await wait(DOOR_MS + ENTER_MS);
+          await wait(ENTER_MS);
           if (!running) return;
           setCount((n) => n + 1);
           setPhase("close");
@@ -123,9 +132,10 @@ export function LiveShop() {
 
   const person = PEOPLE[who];
   const x = phase === "away" ? X.away : X.door;
-  const doorOpen = phase === "enter";
-  // Seen only while walking: invisible at the edge, gone once inside.
-  const shown = phase === "walk";
+  const doorOpen = phase === "open" || phase === "enter";
+  // Seen while walking (the door opening is still the walk): invisible at
+  // the edge, gone once inside.
+  const shown = phase === "walk" || phase === "open";
 
   return (
     <>
