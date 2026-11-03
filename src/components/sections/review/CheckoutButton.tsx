@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { track } from "@/lib/analytics";
-import type { CancelPath, Plan } from "@/lib/stripe-plans";
+import type { CancelPath, Purchasable } from "@/lib/stripe-plans";
 
 /**
  * The button that starts Stripe Checkout, shared by both pricing cards.
@@ -12,6 +12,10 @@ import type { CancelPath, Plan } from "@/lib/stripe-plans";
  * session for the plan it is handed, and everything after checkout — the
  * welcome page, the webhook, the subscription — reads the plan back off the
  * session's metadata rather than needing to be told.
+ *
+ * It also starts the one-time products (`OneTimeProduct`): same button, same
+ * route, but the route builds a plain payment session for those and nothing
+ * downstream makes a subscription — see `createOneTimeCheckoutSession`.
  */
 export function CheckoutButton({
   plan,
@@ -20,7 +24,7 @@ export function CheckoutButton({
   section = "pricing",
   cancelPath,
 }: {
-  plan: Plan;
+  plan: Purchasable;
   cid?: string;
   label: string;
   /** For analytics, so the two cards can be told apart. */

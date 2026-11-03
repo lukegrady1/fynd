@@ -332,6 +332,8 @@ export const recordPaidCustomer = async (paid: {
   email: string;
   name?: string | null;
   phone?: string | null;
+  /** Defaults to the review system's. The $297 management plan tags "fynd-manage-paid". */
+  tag?: string;
 }): Promise<WriteResult> => {
   const config = ghlConfig();
   if (!config) {
@@ -349,7 +351,7 @@ export const recordPaidCustomer = async (paid: {
         ...(firstName ? { firstName, lastName } : {}),
         ...(paid.phone ? { phone: paid.phone } : {}),
         source: "Fynd checkout",
-        tags: ["fynd-paid"],
+        tags: [paid.tag ?? "fynd-paid"],
       },
     });
 
@@ -380,6 +382,56 @@ export const recordPaidCustomer = async (paid: {
       contactId,
       opportunityId: opp?.opportunity?.id ?? null,
     };
+  } catch (error) {
+    return {
+      status: "failed",
+      reason: error instanceof Error ? error.message : "unknown error",
+    };
+  }
+};
+
+/**
+ * A one-time purchase — the $99 profile optimization — as a tagged contact.
+ *
+ * No opportunity, unlike `recordPaidCustomer`: the onboarding pipeline's
+ * stages are about the subscription's onboarding form, which this customer
+ * never sees. The tag is what a GHL workflow hangs the "send the manager
+ * access steps" email off. Idempotent: the upsert is keyed on email, so the
+ * webhook and the thank-you page can both call it.
+ */
+export const recordOneTimeCustomer = async (paid: {
+  email: string;
+  name?: string | null;
+  phone?: string | null;
+  /** The product's tag, e.g. "fynd-gbp-paid". */
+  tag: string;
+  /** Shown as the contact's source in GHL. */
+  source: string;
+}): Promise<WriteResult> => {
+  const config = ghlConfig();
+  if (!config) {
+    return { status: "unconfigured", missing: "GHL_PIT / GHL_LOCATION_ID" };
+  }
+
+  const { firstName, lastName } = splitName(paid.name ?? "");
+
+  try {
+    const result = await request(config, "/contacts/upsert", {
+      method: "POST",
+      body: {
+        locationId: config.locationId,
+        email: paid.email,
+        ...(firstName ? { firstName, lastName } : {}),
+        ...(paid.phone ? { phone: paid.phone } : {}),
+        source: paid.source,
+        tags: [paid.tag],
+      },
+    });
+
+    const contactId: string | undefined = result?.contact?.id;
+    if (!contactId) throw new Error("upsert returned no contact id");
+
+    return { status: "ok", contactId, opportunityId: null };
   } catch (error) {
     return {
       status: "failed",

@@ -31,6 +31,16 @@ export const offer = {
     price: 249,
   },
 
+  /**
+   * The one-time service: a Google Business Profile tidied up once, by a
+   * person. No subscription attached — the checkout is plain `payment`
+   * mode and never reaches `ensureSubscription`. Sold on /optimize.
+   */
+  gbp: {
+    productName: "Profile Optimization",
+    price: 99,
+  },
+
   terms: "No contract. Cancel anytime.",
 
   /**
@@ -503,6 +513,24 @@ export const meta = {
     title: "Watch — Fynd Review System",
     description:
       "Forty-seven seconds on how Fynd turns finished appointments into Google reviews, then pick a plan and start today.",
+  },
+  optimize: {
+    /** The layout appends " | Fynd". */
+    title: "Google Business Profile optimization for salons and barbers",
+    description:
+      "Everything to update on a salon or barbershop Google Business Profile, what finished looks like, and $99 once if you'd rather we did it.",
+  },
+  optimizeThanks: {
+    title: "Paid — Fynd Profile Optimization",
+  },
+  manageWelcome: {
+    title: "You're in — Fynd",
+  },
+  manage: {
+    /** The layout appends " | Fynd". */
+    title: "Google Business Profile management for salons and barbers",
+    description:
+      "Your Google Business Profile optimized and run for you: weekly posts and photos, review requests and replies, website, social, video and AI search, with a monthly ranking report. $297 a month, no contract.",
   },
 } as const;
 
@@ -1352,6 +1380,11 @@ export const offerLinks = {
     title: "Fynd Review System",
     description: `More 5-star Google reviews, on autopilot. $${offer.price} a month, cancel any time.`,
   },
+  manage: {
+    title: "Fynd Profile Management",
+    description:
+      "Your Google Business Profile run for you: posts, photos, reviews, website and AI search, every week. $297 a month, cancel any time.",
+  },
   nov1: {
     title: "Fynd Website + Reviews",
     description:
@@ -1362,4 +1395,1241 @@ export const offerLinks = {
     description:
       "More 5-star Google reviews, on autopilot. Nothing today, first payment November 13.",
   },
+} as const;
+
+/**
+ * /optimize — the one-time Google Business Profile optimization.
+ *
+ * The page's shape is the pitch: here is the problem, here are three fixes
+ * in full, here is the rest of the list by NAME ONLY, here is what a finished
+ * profile looks like, and if you'd rather not do it yourself it is $99. The
+ * three tips are real and complete on purpose — a page that withholds
+ * everything reads as a trick — and the eleven after them are deliberately
+ * headings with no how-to, which is the point of the $99.
+ *
+ * Commitments written here by Claude, not agreed policy — edit before
+ * sending anyone the link: "five business days", "done by a person", and the
+ * "manager access, never your password" answer.
+ */
+export const optimize = {
+  name: offer.gbp.productName,
+  price: offer.gbp.price,
+
+  hero: {
+    lead: "Your Google profile is",
+    accent: "half finished.",
+    sub: "When someone searches for a salon near them, Google decides who shows up based on how complete each profile is. Most profiles are missing half of what Google looks for.",
+    /** Scrolls to the checklist, not the checkout: the page teaches first (Luke). */
+    cta: "Learn how",
+    reassure: "One-time, no subscription.",
+    /** The quiet link under the button, to the managed section. */
+    managedLink: "Rather have it managed every month?",
+    /** The tag on the phone: "<n> gaps on the first screen". */
+    callout: "gaps on the first screen",
+  },
+
+  /**
+   * The drawn profile: the mobile Google panel a customer sees after
+   * searching the business, in two states. FICTIONAL business — it is drawn,
+   * not a screenshot, and every instance carries the "Example" chip so nobody
+   * reads it as a client. The rating and the review count are the same in
+   * both states on purpose: optimization fixes the profile, not the review
+   * count. Reviews are the monthly plan.
+   *
+   * `sections` are the panel rows, in order. In the typical state a row's
+   * `gap` is the legend line beside the hero card (and what the orange
+   * marker on the row means); the row itself shows what Google shows when
+   * the field is empty. The hero card shows `heroSections` only.
+   */
+  profile: {
+    exampleLabel: "Example",
+    typicalLabel: "Typical",
+    optimizedLabel: "Optimized",
+    business: "Northside Hair Studio",
+    rating: "4.6",
+    reviews: 23,
+    ratingSr: "Rated 4.6 out of 5, 23 ratings",
+    /** The line under the name: category, then the hours. */
+    category: {
+      typical: { value: "Beauty salon", gap: "“Beauty salon”, not “Hair salon”" },
+      optimized: { value: "Hair salon" },
+    },
+    hoursLine: { typical: "Hours may differ", optimized: "Open · Closes 7 PM" },
+    photos: {
+      typical: { value: "3 photos", gap: "Three photos, all from 2019" },
+      optimized: { value: "42 photos", more: "+39" },
+    },
+    actions: {
+      typical: ["Call", "Directions", "Website", "Save"],
+      optimized: ["Call", "Directions", "Website", "Book"],
+    },
+    missingLabel: "Missing",
+    setLabel: "Set",
+    sections: [
+      {
+        key: "description",
+        label: "From the business",
+        typical: { empty: "No description added.", gap: "No description" },
+        optimized: {
+          text: "Hair salon and barbershop in Beverly, MA since 2014. Cuts, color, balayage, skin fades and beard trims, with online booking and walk-ins when the chair is free. Open late Thursdays.",
+        },
+      },
+      {
+        key: "services",
+        label: "Services",
+        typical: { empty: "No services listed.", gap: "No services listed" },
+        optimized: {
+          chips: ["Women's haircut", "Balayage", "Skin fade", "Beard trim"],
+          more: "+10 more",
+        },
+      },
+      {
+        key: "hours",
+        label: "Hours",
+        typical: {
+          empty: "Hours might differ. Not confirmed by the business.",
+          gap: "Hours never confirmed",
+        },
+        optimized: {
+          text: "Tue–Sat 9 AM – 7 PM · Thu until 9 PM · Holiday hours set",
+        },
+      },
+      {
+        key: "qa",
+        label: "Questions & answers",
+        typical: {
+          empty: "Be the first to ask a question.",
+          gap: "No questions answered",
+        },
+        optimized: { text: "8 questions, answered by the owner" },
+      },
+      {
+        key: "updates",
+        label: "Updates",
+        typical: { empty: "No updates from the business.", gap: "Never posted" },
+        optimized: {
+          text: "3 days ago · “Thursday evening openings this week. Book online.”",
+        },
+      },
+      {
+        key: "attributes",
+        label: "Highlights",
+        typical: { empty: "No highlights added.", gap: "No attributes set" },
+        optimized: {
+          chips: ["Walk-ins welcome", "Online booking", "Women-owned", "Wheelchair accessible"],
+        },
+      },
+    ],
+    /** Which rows the hero card shows. */
+    heroSections: ["description", "services", "hours"],
+  },
+
+  /**
+   * How Google decides who shows up, as a mental model for the list that
+   * follows: relevance, distance, prominence (Google's own three, as stated
+   * in its help docs). Distance can't be changed; the other two are mostly
+   * the profile. Each card names which checklist items feed it.
+   */
+  ranking: {
+    lead: "Google ranks on three things.",
+    accent: "Your profile is two of them.",
+    sub: "Before the list, the reason for it. When someone searches “hair salon near me”, Google weighs every profile in the area on the same three things.",
+    factors: [
+      {
+        key: "relevance",
+        name: "Relevance",
+        what: "How closely the profile matches what was typed.",
+        onProfile: "Categories, services, description, attributes.",
+        yours: true,
+      },
+      {
+        key: "distance",
+        name: "Distance",
+        what: "How far you are from the person searching.",
+        onProfile: "Nothing to do here. It is what it is.",
+        yours: false,
+      },
+      {
+        key: "prominence",
+        name: "Prominence",
+        what: "How well known and well kept the business looks.",
+        onProfile: "Photos, posts, confirmed hours, details that match everywhere.",
+        yours: true,
+      },
+    ],
+    yoursLabel: "On the profile",
+    notYoursLabel: "Out of your hands",
+  },
+
+  /**
+   * The list: everything on the profile to update, with why Google cares,
+   * and deliberately not what to write in any of it. The list is the free
+   * value; the writing is the $99. Grouped in four so fourteen items read
+   * as four jobs; numbering runs straight through.
+   */
+  checklist: {
+    lead: "Here's everything on the list.",
+    accent: "Start at the top.",
+    sub: "These are the parts of your profile Google looks at. Go through them one by one and fill in anything that's missing.",
+    groups: [
+      {
+        title: "Who you are",
+        blurb: "What Google reads first to work out what kind of business this is.",
+        items: [
+          {
+            title: "Primary category",
+            why: "The first thing Google ranks you on. One broad word here and you're competing with every spa and nail bar in town.",
+          },
+          {
+            title: "Secondary categories",
+            why: "Everything else you do that people search for on its own. Barbering, extensions, waxing, each one a category.",
+          },
+          {
+            title: "Business description",
+            why: "750 characters Google reads for your town and what you specialise in. On most profiles it's blank.",
+          },
+          {
+            title: "Logo and cover photo",
+            why: "What shows beside your name on Maps and in the search results. The default is a grey circle.",
+          },
+        ],
+      },
+      {
+        title: "What you offer",
+        blurb: "The searches you can show up for that your category alone won't cover.",
+        items: [
+          {
+            title: "Services, with a line under each",
+            why: "The closest thing the profile has to keywords. Named the way people search, described in two lines.",
+          },
+          {
+            title: "Products",
+            why: "The retail lines you carry, each one a search you can show up for.",
+          },
+          {
+            title: "Attributes",
+            why: "Walk-ins, parking, accessibility, women-owned. People filter by these without knowing they're filtering.",
+          },
+        ],
+      },
+      {
+        title: "Signs you're open",
+        blurb: "What tells Google, and the person searching, that this is a live business.",
+        items: [
+          {
+            title: "Hours, including holidays",
+            why: "“Hours might differ” is what customers see until you confirm them. Set the holidays now, not the week of.",
+          },
+          {
+            title: "Photos",
+            why: "Google dates them. Three from 2019 reads as a place that might have closed. Chairs, work, team, recent.",
+          },
+          {
+            title: "Updates",
+            why: "A post a week is what keeps the profile current in Google's eyes. Most have never posted.",
+          },
+          {
+            title: "Questions and answers",
+            why: "Anyone can ask one and anyone can answer it. The ones you get on the phone belong here, answered by you.",
+          },
+        ],
+      },
+      {
+        title: "Links and details",
+        blurb: "The buttons on the profile, and the facts Google checks against everywhere else.",
+        items: [
+          {
+            title: "Booking link",
+            why: "Puts a Book button on the profile itself. For a salon, that button is the whole point.",
+          },
+          {
+            title: "Website link",
+            why: "The Website button on the profile. It should go to the page you want people to land on, and be the same address Google has everywhere else.",
+          },
+          {
+            title: "Name, address and phone, matched everywhere",
+            why: "Google checks the profile against every other listing of you. One old phone number on Yelp costs trust on Google.",
+          },
+        ],
+      },
+    ],
+    /** The hand-off line under the list, into the $99. */
+    outro: "That's everything, and you can do all of it yourself. If you don't have the time, don't know where to start, or it's all a bit confusing, you can pay us to have it done professionally.",
+  },
+
+  /** Typical beside optimized. */
+  compare: {
+    lead: "Same salon. Next day.",
+    accent: "Different profile.",
+    sub: "Both are the same salon. The one on the right just has every section filled in.",
+  },
+
+  /** The $99 card, at #convert, and the three steps under it. */
+  pricing: {
+    heading: "Want us to do it?",
+    sub: "You can do the list yourself. Or, if you don't have the time or aren't sure how, pay once and have it professionally done.",
+    onceLabel: "one time",
+    nowLabel: "We fill in everything on the list for you, once",
+    includedLabel: "What's included",
+    clears: [
+      "All fourteen items on the list, including the writing",
+      "A short list of what we're changing before we start",
+      "Finished within five business days of getting access",
+      "A note when it's done. No report; the finished profile is the result",
+      "You keep ownership; we work as a manager you can remove",
+    ],
+    /** Under the button: what this is and isn't, then the hand-off. */
+    oneTimeNote:
+      "This is a one-time update, not an ongoing service. We fill the profile in, hand it back, and that's it.",
+    managedLead: "Want it kept up to date every month? See full management",
+    cta: `Get started for $${offer.gbp.price}`,
+    needLine: "No subscription. Nothing to cancel.",
+    /** How it goes after the button: three steps, in order. */
+    stepsLabel: "How it works",
+    steps: [
+      {
+        title: "Pay once",
+        body: "$99 at checkout, and you're on the list. We reach out within a day.",
+      },
+      {
+        title: "Add us as a manager",
+        body: "Two minutes in your Google account. We send the steps; we never need your password.",
+      },
+      {
+        title: "Done in five business days",
+        body: "Every item filled in and written. We let you know it's done, and the profile itself is what you get: there's no report with the one-time update.",
+      },
+    ],
+  },
+
+  /**
+   * Why ongoing beats once, taught before it is asked for: what goes
+   * stale after a one-time fill (three cards), then the one-off beside
+   * the monthly service as a table. The right-hand column is what the
+   * white-labelled platform does and nothing more — no Q&A or hours
+   * upkeep (see the note on `manage`). Sits after the $99 card, before
+   * the managed ask.
+   */
+  ongoing: {
+    lead: "Filled in isn't the same as",
+    accent: "kept up.",
+    sub: "Relevance is mostly set once. Prominence is earned every week, and Google notices when it stops.",
+    decays: [
+      {
+        key: "photos",
+        title: "Photos age",
+        body: "Google dates every photo. The ones that make the profile look alive today are the ones that make it look abandoned in a year.",
+      },
+      {
+        key: "posts",
+        title: "Posts go quiet",
+        body: "A profile with a post from this week reads as open. One whose last post was months ago reads as a place that stopped trying.",
+      },
+      {
+        key: "competitors",
+        title: "The salon down the road keeps going",
+        body: "Rankings are relative. A competitor posting every week and collecting reviews moves ahead of a profile that was perfect once.",
+      },
+    ],
+    /** Once beside every month. Column one is the $99; column two is full management. */
+    table: {
+      rowLabel: "Every month",
+      onceLabel: `$${offer.gbp.price} once`,
+      monthlyLabel: "$297 a month",
+      /** `once` null means the one-off doesn't do it; the cell draws a dash. */
+      rows: [
+        { label: "Profile optimization", once: "Every item, once", monthly: "First, then kept optimized" },
+        { label: "Google posts", once: null, monthly: "Written and published every week" },
+        { label: "Photos", once: "The ones you send, added", monthly: "New ones added, geotagged" },
+        { label: "Reviews", once: null, monthly: "Requested by text, every one answered" },
+        { label: "Social and video", once: null, monthly: "Facebook, Instagram, LinkedIn, YouTube, TikTok" },
+        { label: "Website", once: null, monthly: "Built for you, or yours tuned up" },
+        { label: "AI search", once: null, monthly: "Kept easy for ChatGPT and Gemini to recommend" },
+        { label: "Report", once: null, monthly: "Monthly: rankings across your area, plus AI" },
+      ],
+    },
+    cta: "Let us run it for you",
+    href: "/manage",
+  },
+
+  /**
+   * Questions about the one-off. Nothing here about the monthly service
+   * (that FAQ is `manage.faq`) and nothing about reviews (Luke, Nov 2, 2026:
+   * the Review System covers those). The last answer is the only mention
+   * of full management, as the honest answer to "then what?".
+   */
+  faq: {
+    heading: "FAQs",
+    items: [
+      {
+        q: "What do you need from me?",
+        a: "Nothing, we just need you to manage your access on your Google Business Profile.",
+      },
+      {
+        q: "How long does it take?",
+        a: "Within five business days of getting access. Most of that is the writing and waiting on Google to approve changes to things like categories and the description.",
+      },
+      {
+        q: "Do I have to write anything?",
+        a: "No. The writing is the job. You tell us about the salon in plain words and we write the description, the services and the answers. You can change any of it afterwards; it's your profile.",
+      },
+      {
+        q: "What about photos?",
+        a: "We use yours. Send what you have and we'll tell you which shots would help most, so you can take them on your phone in an afternoon. We don't put stock photos on a salon's profile.",
+      },
+      {
+        q: "Can't I just do this myself?",
+        a: "Yes, you can. Or you can pay if you don't have time, don't know how, or are confused by it. You can pay us to have it professionally done.",
+      },
+      {
+        q: "Some of my profile is already filled in.",
+        a: "Then we go through what's there as well as what's missing. A category that's too broad or a description with no town in it count as gaps too, and we fix those as well.",
+      },
+      {
+        q: "Do I keep control of the profile?",
+        a: "Yes. It stays on your Google account. We work as a manager you can remove in two clicks, and we tell you when we're done so you can.",
+      },
+      {
+        q: "Is this safe with Google?",
+        a: "Yes. Everything on the list is a field Google itself provides and asks you to fill in. No tricks, nothing against Google's guidelines, nothing that puts the profile at risk.",
+      },
+      {
+        q: "I have more than one location.",
+        a: "Each location has its own profile, and each profile is $99. Tell us which ones when we get in touch.",
+      },
+      {
+        q: "Is anything recurring?",
+        a: "No. One payment, nothing to cancel. If later you want the profile kept up to date, with new photos and posts every week, that's full management, and it's a separate decision.",
+        link: { label: "See full management", href: "/manage" },
+      },
+    ],
+  },
+
+  finalCta: {
+    heading: { lead: "Fix the profile you", accent: "already have", tail: "." },
+    cta: `Fix my profile for $${offer.gbp.price}`,
+  },
+
+  stickyCta: `Fix my profile for $${offer.gbp.price}`,
+
+  /** /optimize/thanks — after the $99 goes through. */
+  thanks: {
+    heading: "Paid. Here's what happens next.",
+    sub: "There's nothing else to fill out. We'll reach out within a day to get manager access to your profile and get started.",
+    steps: [
+      {
+        when: "Within a day",
+        body: "We get in touch with the two-minute steps to add Fynd as a manager on your profile. It never involves your password.",
+      },
+      {
+        when: "Once we're in",
+        body: "We go through the profile and send you a short list of what we're changing.",
+      },
+      {
+        when: "Within five business days",
+        body: "Everything on the list is done and we let you know. There's no report with the one-time update; open the profile and it's all there.",
+      },
+    ],
+    /** When the session can't be confirmed as paid (a reload, a stray link). */
+    unpaid: {
+      heading: "We couldn't find that payment.",
+      sub: "If you just paid, give it a minute and refresh. If you backed out, the page is still here.",
+      cta: "Back to the page",
+      href: "/optimize",
+    },
+    helpLine: "Questions? Reply to the first email you get from us.",
+  },
+} as const;
+
+/**
+ * /manage — full Google Business Profile management, $297/month, reviews
+ * included. The page is Merchynt's Paige page (merchynt.com/paige, read
+ * 2026-11-02) rebuilt section for section in Fynd's branding, because the
+ * service IS Paige, white-labelled. Same section order, same arguments,
+ * same illustrations redrawn: the "new customer" call, the to-do list,
+ * the channel orbit, the three-step timeline, the sample report, the
+ * cost bars, the tools table, the website mock, the pricing card, the
+ * full feature table, the numbered FAQ, the closer.
+ *
+ * Left out on purpose: Paige's customer results and heatmaps, its
+ * testimonials, its vendor stats (13,000+ businesses, 70% keep it, 80%
+ * autopilot, 4.9/5, press logos), the agency / white-label section, the
+ * Citations add-on, and the Users / Integrations / Support feature
+ * groups. None of that is Fynd's to claim, and the last is
+ * platform-revealing. The free trial is a paid month here: $297 today.
+ * Review requests are by text only (Luke), so the QR code and the
+ * email / WhatsApp channels are off the feature list too.
+ *
+ * Things Paige's page does NOT claim are kept off this one: Q&A,
+ * hours/holiday upkeep (the owner's), any ranking guarantee.
+ */
+export const manage = {
+  price: 297,
+
+  /**
+   * Paige's hero, as Luke saw it: a badge, "Get found by customers in
+   * your area on" with the channel rotating on the third line, then the
+   * paragraph, three checks and the button on the left and a drawn
+   * search result on the right — the business first, two competitors
+   * under it, a call coming in. ILLUSTRATION, captioned as one. Navy,
+   * like the rest of Fynd's heroes.
+   */
+  hero: {
+    badge: "Full Google profile management",
+    headline: { lead: "Get found by customers", mid: "in your area on" },
+    /**
+     * The third line cycles through these, each drawn as its logo and its
+     * name in the brand's own styling (Google's letter colours, the Gemini
+     * gradient, Claude's serif), as the platform's page does. The first is
+     * what renders without JavaScript. `brand` picks the logo and styling in
+     * `ChannelLogos.tsx`.
+     */
+    channels: [
+      { brand: "chatgpt", name: "ChatGPT" },
+      { brand: "maps", name: "Google Maps" },
+      { brand: "gemini", name: "Gemini" },
+      { brand: "google", name: "Google Search" },
+      { brand: "claude", name: "Claude" },
+      { brand: "aimode", name: "Google AI Mode" },
+      { brand: "perplexity", name: "perplexity" },
+    ],
+    wordsSr: "Google Search, Google Maps, ChatGPT, Gemini, Claude and Perplexity. Everywhere people search.",
+    body: {
+      lead: "When someone nearby searches for what you do, we make sure they find ",
+      strong: "you",
+      tail: ", not your competitor. We update your Google profile, post for you, reply to reviews and fix your listings every day. You just answer the phone.",
+    },
+    checks: [
+      "No marketing or tech skills needed",
+      "Set up in 20 minutes, then it runs itself",
+      "Google, Google Maps, ChatGPT and more",
+    ],
+    cta: "Start for $297",
+    ctaNote: "$297/mo per profile · Cancel anytime",
+    onceLink: { lead: "Just want it optimized once?", label: "Check it out here", href: "/optimize" },
+    mock: {
+      caption: "Illustration",
+      query: "balayage near me",
+      results: [
+        { rank: "1", name: "Your business", stars: 5, meta: "4.9 · Open now · 0.8 mi", action: "Call", you: true },
+        { rank: "2", name: "Competitor A", stars: 4, meta: "4.2 · 2.4 mi", you: false },
+        { rank: "3", name: "Competitor B", stars: 4, meta: "4.0 · 3.1 mi", you: false },
+      ],
+      calling: "New customer calling…",
+    },
+  },
+
+  /** "A local SEO tool built for busy owners": the two cards and three stats. */
+  busy: {
+    eyebrow: "How full management works",
+    heading: "Local marketing, built for busy owners",
+    sub: "Most SEO tools give you reports and a to-do list. This is the opposite: we improve your Google Business Profile, write the posts, reply to the reviews and track where you rank across your area. You approve what goes live, or let it run.",
+    question: "Is it right for a busy local business?",
+    questionSub: "If Google posts and review replies keep slipping down your to-do list, this handles that recurring work. It also covers profile optimization and ranking reports, so you see more than a list of recommendations.",
+    blocks: [
+      {
+        tone: "blue",
+        title: "Start with your business, not a blank dashboard",
+        body: "Connect the Google account that manages your Business Profile. Tell us what you do, where you work and which customers you want to reach. Choose autopilot, or approve content first.",
+      },
+      {
+        tone: "orange",
+        title: "What still needs you?",
+        body: "You know when your services, hours or offers change. Keep those facts accurate, send real photos of your work and check that what goes out represents your business. We don't replace your judgment, and nothing here guarantees rankings, calls or AI recommendations.",
+      },
+      {
+        tone: "blue",
+        title: "Already have a website?",
+        body: "You can keep it. We scan it, list exactly what to fix and add widgets for fresh reviews, photos and posts. Replacing your site is not required.",
+      },
+    ],
+    todo: {
+      title: "Meanwhile, our to-do list",
+      sub: "Recurring work, according to your automation and approval settings",
+      items: [
+        "Optimize your Google Business Profile",
+        "Write and publish Google posts",
+        "Add your photos, geotagged",
+        "Reply to every new review",
+        "Ask happy customers for reviews, by text",
+        "Share posts to Facebook, Instagram & LinkedIn",
+        "Publish videos to YouTube & TikTok",
+        "Build your website, or tune up yours",
+        "Make you easy for AI to recommend",
+        "Track your rankings on Google & AI",
+        "Adjust strategy to beat competitors",
+        "Send you a simple monthly report",
+      ],
+    },
+    reach: {
+      title: "If we ever need you, we reach out",
+      sub: "So nothing stalls quietly in the background",
+      items: [
+        "We ask for fresh photos when we need them",
+        "We tell you when it's time for more reviews",
+        "We flag profile changes that need your OK",
+        "We show you what to update as best practices change",
+      ],
+    },
+    note: "We handle the recurring work while you keep business facts and photos current. Rankings, calls and AI recommendations are not guaranteed.",
+    stats: [
+      { value: "~20 min", label: "to set up, once" },
+      { value: "0", label: "SEO knowledge needed" },
+      { value: "1", label: "business day until work starts" },
+    ],
+    cta: "Start for $297",
+  },
+
+  /**
+   * "Your business. Everywhere." — the navy panel, drawn as the platform
+   * draws it: the business card in the middle (storefront, a booking, a
+   * rising customer count, the Fynd team pill) and eleven channels on a
+   * ring around it, each as its real mark. ILLUSTRATION: the count and
+   * the booking are made up, and the panel says "Illustrative activity".
+   */
+  everywhere: {
+    eyebrow: "One setup gets your business everywhere",
+    heading: "Watch your marketing go out everywhere people search",
+    panel: {
+      lead: "Your business.",
+      accent: "Everywhere.",
+      sub: "Your business. Our marketing team. Let's grow your business.",
+    },
+    sr: "Your business and Fynd sit at the centre of a ring of eleven channels: Google Search, Google Maps, YouTube, ChatGPT, Claude, Gemini, Facebook, Instagram, TikTok, LinkedIn and your website. Content goes out to them and customers come back through them. The customer count and the booking shown are illustrative, not live data.",
+    centre: {
+      kicker: "The place they choose",
+      title: "Your business",
+      sub: "More customers. More revenue.",
+      receipt: "Booked!",
+      count: "12",
+      countLabel: "new customers",
+      countSub: "and counting",
+      team: "Fynd",
+      teamRole: "Your marketing team",
+    },
+    /** Clockwise from the top, as on the platform's panel. `brand` picks the mark in `ChannelLogos.tsx`. */
+    channels: [
+      { brand: "google", label: "Google Search" },
+      { brand: "maps", label: "Google Maps" },
+      { brand: "youtube", label: "YouTube" },
+      { brand: "chatgpt", label: "ChatGPT" },
+      { brand: "claude", label: "Claude" },
+      { brand: "gemini", label: "Gemini" },
+      { brand: "facebook", label: "Facebook" },
+      { brand: "instagram", label: "Instagram" },
+      { brand: "tiktok", label: "TikTok" },
+      { brand: "linkedin", label: "LinkedIn" },
+      { brand: "website", label: "Your website" },
+    ],
+    illustrative: "Illustrative activity",
+    cta: "Start for $297",
+    ctaNote: "$297 a month per profile · No contract · Cancel anytime",
+  },
+
+  /** "Here's what your free trial looks like" — the first month, three steps. */
+  firstMonth: {
+    heading: "Here's what your first month looks like.",
+    sub: "Start to finish. No sales call and no setup team.",
+    steps: [
+      {
+        when: "Minutes 1–20",
+        title: "One-time setup",
+        body: "Sign in with Google and tell us about your business. Your Maps heatmap and AI visibility check are ready right away.",
+      },
+      {
+        when: "Within 1 business day",
+        title: "Optimization first",
+        body: "Once your profile is connected, we do the full one-time optimization first: every section checked and filled in, so everything after it is built on a correct profile. Then the first posts, review replies and your website are prepared.",
+      },
+      {
+        when: "Days 1–30",
+        title: "Watch it happen",
+        body: "Work goes out on autopilot or after you approve it. Photos and videos depend on the images you send. On day 30, your first report.",
+      },
+    ],
+    proof: "Your baseline is taken the day you connect, so every report is measured against it.",
+    cta: "Start for $297",
+    callLink: "Not ready? Book a call first",
+    note: "Billed monthly, per profile. No contract. Cancel anytime.",
+  },
+
+  /** "What you can judge in 3 days, and what takes longer", plus the sample report. */
+  judge: {
+    heading: "What you can judge in week one, and what takes longer",
+    sub: "The first week shows you the work and the control you keep. Rankings, calls and AI recommendations need weeks of observation, so don't judge those in seven days.",
+    cards: [
+      {
+        tone: "blue",
+        label: "In your first week",
+        title: "Check the work and the control",
+        items: [
+          "Your baseline Google Maps heatmap and AI visibility check",
+          "Suggested profile fixes you can approve one by one or all at once",
+          "Draft posts and review replies, published on autopilot or after your OK",
+          "The calendar of planned and finished work",
+          "Whether the content sounds like your business",
+        ],
+      },
+      {
+        tone: "orange",
+        label: "Over the next 30–90 days",
+        title: "Watch the results",
+        items: [
+          "Changes in your Google Maps rankings across your service area",
+          "Calls, direction requests and website clicks from your profile",
+          "Whether AI assistants start recommending you",
+          "Your monthly report, compared with your starting baseline",
+        ],
+      },
+    ],
+    /**
+     * ILLUSTRATION: a sample monthly report for the fictional salon. Every
+     * number is made up, and the caption under it says so, as Paige's does.
+     * Ranks: 1–3 green, 4–10 orange, 11–20 faint orange, 21+ not found.
+     */
+    report: {
+      business: "Northside Hair Studio",
+      tagline: "Cut · Colour · Extensions",
+      badge: "Sample report",
+      title: "Monthly report · Month 3",
+      sub: "Here's how your business performed online this month.",
+      sr: "Sample monthly report for the fictional Northside Hair Studio. Three counts with made-up rises since day one: calls, direction requests and website clicks. Two maps for the search balayage near me: on day one the salon ranks eleventh to twentieth or is not found across town; by day 90 it is in the top three across the centre and on page one everywhere else. Then the work completed that month and an AI search visibility line.",
+      stats: [
+        { icon: "phone", label: "Calls", value: "42", delta: "+35% vs. day 1" },
+        { icon: "map", label: "Direction requests", value: "28", delta: "+47% vs. day 1" },
+        { icon: "pointer", label: "Website clicks", value: "96", delta: "+60% vs. day 1" },
+      ],
+      keywordLabel: "Keyword:",
+      keyword: "balayage near me",
+      before: "Day 1",
+      after: "Day 90",
+      notFound: "–",
+      beforeGrid: [
+        [21, 18, 20, 19, 21],
+        [16, 15, 18, 20, 16],
+        [13, 17, 19, 18, 14],
+        [12, 15, 17, 16, 13],
+        [21, 14, 16, 14, 21],
+      ],
+      afterGrid: [
+        [6, 4, 3, 4, 6],
+        [4, 2, 1, 2, 4],
+        [3, 1, 1, 1, 3],
+        [4, 2, 1, 2, 4],
+        [6, 4, 3, 4, 6],
+      ],
+      work: {
+        title: "Work completed this month",
+        items: [
+          { icon: "post", value: "4", label: "Google posts published" },
+          { icon: "reply", value: "18", label: "review replies" },
+          { icon: "image", value: "6", label: "photos added" },
+          { icon: "video", value: "2", label: "videos published" },
+        ],
+      },
+      ai: {
+        label: "AI search visibility",
+        lead: "ChatGPT mentioned you in",
+        strong: "5 of 10",
+        tail: "checks",
+        link: "View details",
+      },
+      caption: "Sample monthly report for a made-up business. Numbers are illustrative, not results.",
+    },
+  },
+
+  /**
+   * "The math": a marketer plus the tools against $297. The figures are
+   * Paige's own typical-cost estimates, labelled as estimates in `note`;
+   * nothing here is a Fynd client's bill. "85% less" is $297 against
+   * $1,932.
+   */
+  math: {
+    eyebrow: "The math",
+    lead: "Hire a full-time local marketer,",
+    accent: "tools included, for $297 a month.",
+    body: "An in-house marketer and the tools they need cost about $1,932 a month. Full management does that work every week, with every tool included and a person running it.",
+    cta: "See everything we do",
+    usual: {
+      label: "The usual way",
+      sub: "Marketer + software",
+      segments: [
+        { label: "In-house marketer · $1,500", amount: 1500 },
+        { label: "Software · $432", amount: 432 },
+      ],
+      total: "$1,932",
+    },
+    ours: {
+      label: "With Fynd",
+      sub: "Every tool included",
+      amount: 297,
+      total: "$297",
+      saving: "About 85% less",
+    },
+    per: "/mo",
+    note: "Estimated typical monthly cost of an in-house marketer and the separate tools we replace. Priced per Google Business Profile.",
+  },
+
+  /** "Already paying for tools?": the navy total card and the table. */
+  tools: {
+    eyebrow: "Already paying for tools?",
+    lead: "Everything we do, and the tools it",
+    accent: "replaces",
+    sub: "Each of these jobs usually means another subscription. Here's what those tools typically cost on their own. Full management includes every one.",
+    card: {
+      separately: "Bought separately",
+      separatelyValue: "$432",
+      ours: "With Fynd",
+      included: "Included",
+      yearly: {
+        lead: "That's about ",
+        strong: "$5,184 a year",
+        tail: " in software you can cancel, before counting anyone's time.",
+      },
+      cta: "Start for $297",
+    },
+    cols: { job: "What we do", replaces: "Replaces", price: "Typical price" },
+    per: "/mo",
+    included: "Included",
+    rows: [
+      {
+        icon: "map",
+        job: "Google Business Profile",
+        does: "Optimized to match top-ranked businesses near you, kept fresh weekly",
+        replaces: "Profile management software",
+        price: "$49",
+      },
+      {
+        icon: "sparkles",
+        job: "AI search",
+        does: "Easy for ChatGPT, Gemini, Perplexity and AI Mode to recommend",
+        replaces: "AI rank tracker",
+        price: "$79",
+      },
+      {
+        icon: "star",
+        job: "Reviews",
+        does: "Asks customers for reviews by text and replies to every one",
+        replaces: "Review management software",
+        price: "$99",
+      },
+      {
+        icon: "share",
+        job: "Social media",
+        does: "Your photos turned into posts for Facebook, Instagram and LinkedIn",
+        replaces: "Social media scheduler",
+        price: "$49",
+      },
+      {
+        icon: "video",
+        job: "YouTube & TikTok",
+        does: "Short videos made from your photos and published for you",
+        replaces: "AI video maker",
+        price: "$39",
+      },
+      {
+        icon: "globe",
+        job: "Your website",
+        does: "A complete website built for you, or a fix list for yours",
+        replaces: "Website builder & hosting",
+        price: "$39",
+      },
+      {
+        icon: "chart",
+        job: "Rank tracking & reports",
+        does: "Google Maps heatmaps, AI rankings and a monthly report",
+        replaces: "Google Maps rank tracker",
+        price: "$49",
+      },
+      {
+        icon: "pen",
+        job: "Content",
+        does: "Every post, reply and description written for you",
+        replaces: "AI writing tool",
+        price: "$29",
+      },
+    ],
+    /** The row no tool replaces: the person. */
+    manager: {
+      icon: "chat",
+      job: "Account manager",
+      does: "A person who messages you whenever something's needed to improve your rankings",
+      replaces: "No separate tool does this",
+      only: "Only with Fynd",
+    },
+    total: { label: "Total, bought separately", sub: "8 tools, 8 logins, 8 bills", value: "$432" },
+    note: "Typical monthly prices for a standalone tool in each category. Actual prices vary by provider and plan.",
+  },
+
+  /**
+   * "Great local & AI SEO starts with a great website": navy, with the
+   * drawn site. ILLUSTRATION, the fictional salon; the "built while you
+   * set up" badge is the label.
+   */
+  website: {
+    badge: "Website & AI SEO · included",
+    lead: "Great local and AI SEO starts with a great website.",
+    accent: "So one's included.",
+    body: "Your website is one of the main things Google and AI assistants look at when they decide which local businesses to show. That's why full management comes with a fast, fully optimized website, built for you while you set up.",
+    points: [
+      { icon: "map", text: "Google uses it to understand what you do and where you do it" },
+      { icon: "chat", text: "ChatGPT, Gemini and Google AI Mode read it before they recommend you" },
+      { icon: "phone", text: "Customers check it before they call or book" },
+    ],
+    mock: {
+      builtLabel: "Built while you set up",
+      checks: "SEO check passed · published",
+      domain: "northsidehair.com",
+      live: "Live",
+      brand: "Northside",
+      brandSub: "Hair Studio",
+      nav: ["Services", "Stylists", "Reviews", "About"],
+      navCta: "Book online",
+      kicker: "Northside · Cut · Colour · Extensions",
+      headline: { lead: "Hair done properly,", accent: "in Northside." },
+      sub: "Cuts, balayage and extensions by stylists who've done it for years. Book online in a minute.",
+      cta: "Book online",
+      secondary: "See our work →",
+      rating: "4.6 · 23 Google reviews",
+      promise: { title: "Walk-ins", sub: "welcome on weekdays" },
+      review: { initials: "DK", quote: "“Best balayage I've had. Booked again before I left.”", who: "Dana K. · ★★★★★" },
+      photoLabel: "Balayage · Northside",
+      servicesEdit: "Edit services",
+      servicesTitle: "What we do",
+      servicesAll: "All services →",
+      services: [
+        { name: "Cut and finish", note: "Consultation, cut and blow-dry, usually under an hour." },
+        { name: "Balayage", note: "Hand-painted colour that grows out softly." },
+        { name: "Extensions", note: "Consultation first, fitted in one visit." },
+      ],
+      phone: {
+        time: "9:41",
+        kicker: "Northside · Cut · Colour",
+        headline: "Hair done properly, in Northside.",
+        cta: "Book online",
+        rating: "★★★★★ 4.6 · 23 reviews",
+      },
+      edit: { request: "Add a section about our walk-in hours", button: "Update" },
+    },
+    options: [
+      {
+        label: "Option 1",
+        title: "Use the website we build you",
+        pill: "Included",
+        items: [
+          "Built for you while you set up",
+          "Fast, mobile-first and multi-page",
+          "SEO and AI-ready on every page",
+          "Auto-adds new reviews & photos",
+          "Live on your domain in one click",
+          "Edit anything just by asking",
+        ],
+      },
+      {
+        label: "Option 2",
+        title: "Keep your current website",
+        items: [
+          "We scan it and list exactly what to fix",
+          "Widgets for fresh reviews, photos and posts",
+          "Every fix helps your website, AI and local SEO",
+        ],
+      },
+    ],
+  },
+
+  /** "Every day you wait, a competitor gets the call" and the pricing card, at #convert. */
+  pricing: {
+    kicker: "Full management",
+    lead: "Every day you wait,",
+    accent: "a competitor gets the call.",
+    sub: "Start today. Your baseline is ready in minutes, and work starts on your profile within one business day of connecting Google.",
+    card: {
+      label: "One simple price",
+      per: "/ month",
+      perNote: "per Google Business Profile",
+      pill: "$297 today · carries you to your first billing date",
+      explain: "A Google Business Profile is your listing on Google Search & Maps, one for each location. More than one? Each profile is $297 a month.",
+      allIn: {
+        title: "All-in price. No surprise token, credit or reporting bills.",
+        body: "Every AI and reporting cost is included in your monthly price. We don't charge for tokens.",
+      },
+      includedLine: {
+        label: "Included:",
+        text: "A full profile optimization first, then posts, reviews, website hosting and reporting every month.",
+      },
+      checks: [
+        "The one-time optimization, done first",
+        "Every feature listed below",
+        "No contracts. Cancel anytime.",
+        "Your data is safe and secure",
+        "Real humans when you need support",
+      ],
+      cta: "Start for $297",
+      ctaNote: "Billed monthly · No contract · Cancel anytime",
+      anchorNote: "Your first payment today covers you until your first billing date, the 1st or the 15th. Then $297 a month.",
+      onceLine: { lead: "Rather fix it once?", label: "The $99 update", href: "/optimize#convert" },
+    },
+  },
+
+  /** /manage/welcome — after the $297 goes through. */
+  welcome: {
+    heading: "Paid. Here's what happens next.",
+    sub: "Nothing else to fill in right now. Setup is about 20 minutes, and we'll send you the link.",
+    steps: [
+      {
+        when: "Within a day",
+        body: "You get an email with the link to connect the Google account that manages your profile and a short form about the business.",
+      },
+      {
+        when: "One business day after",
+        body: "Your profile is optimized first, every section checked and filled in. Then the first posts and review replies are ready, on autopilot or waiting for your OK, whichever you chose.",
+      },
+      {
+        when: "Day 30",
+        body: "Your first report, measured against the baseline we take the day you connect.",
+      },
+    ],
+    helpLine: "Questions? Reply to the first email you get from us.",
+  },
+
+  /**
+   * "Every local SEO feature, in plain English": the full table, every
+   * group open. Paige's list trimmed to what Fynd offers: review requests
+   * by text only, no citations add-on, no users / integrations / support /
+   * white-label groups.
+   */
+  features: {
+    eyebrow: (n: number) => `All ${n} features`,
+    heading: "Every feature, in plain English",
+    sub: "Everything below is included in your $297 a month. Nothing is an add-on.",
+    cta: "Start for $297",
+    cols: { feature: "Feature", means: "What it means for your business", included: "Included" },
+    groupCount: (n: number) => `${n} features`,
+    included: "Included",
+    groups: [
+      {
+        icon: "map",
+        title: "Google Business Profile optimization",
+        items: [
+          { name: "Optimize business description", means: "Rewritten so Google knows exactly what you do and where you do it." },
+          { name: "Optimize services list", means: "Every service you offer gets listed, so you show up for more searches." },
+          { name: "Optimize service descriptions", means: "Each service gets a clear, keyword-rich description." },
+          { name: "Optimize attributes", means: "Details like “walk-ins welcome” or “wheelchair accessible” filled in, so you match more filters." },
+          { name: "Optimize social links", means: "Your social profiles linked, so customers can find you everywhere." },
+        ],
+      },
+      {
+        icon: "globe",
+        title: "Website creation & hosting",
+        items: [
+          { name: "Website built for you", means: "A full, multi-page site built from your profile while you set up." },
+          { name: "Hosting included", means: "No separate hosting bill." },
+          { name: "Easy editing", means: "Change anything by telling us what you want." },
+          { name: "SEO set up for you", means: "Titles, schema and FAQs set up so Google and AI understand your site." },
+          { name: "Fresh content over time", means: "New reviews, photos and posts flow onto your site automatically." },
+        ],
+      },
+      {
+        icon: "star",
+        title: "Reputation management",
+        items: [
+          { name: "Link to get more reviews", means: "A simple link, texted to customers, so they review you in one tap." },
+          { name: "Automated review replies", means: "Every review answered in your voice, with the right keywords." },
+          { name: "Auto flag bad reviews", means: "You hear about negative reviews right away, so you can step in." },
+          { name: "Auto follow-up to get more", means: "Customers who didn't leave a review get a friendly reminder by text." },
+          { name: "Turn five-star reviews into social posts", means: "Your best reviews become posts that show off your work." },
+          { name: "See why you're not getting reviews", means: "Find out where requests stall and what to fix." },
+          { name: "Backup of your Google reviews", means: "Your reviews are saved, so you never lose your reputation." },
+        ],
+      },
+      {
+        icon: "chart",
+        title: "Rank tracking & reporting",
+        items: [
+          { name: "Automated monthly heatmap reporting", means: "See where you rank across your whole service area, every month." },
+          { name: "Before & after ranking heatmaps", means: "See exactly how far you've climbed since your baseline." },
+          { name: "Track up to 10 keywords", means: "Follow the searches that bring you the most customers." },
+          { name: "AI rank reports for Gemini, ChatGPT, Perplexity, Grok, Llama and Claude", means: "Know whether AI assistants recommend you, and whether it's improving." },
+          { name: "See all completed actions", means: "A clear log of everything done for you." },
+        ],
+      },
+      {
+        icon: "users",
+        title: "Competitor analysis",
+        items: [
+          { name: "See who your top competitors are", means: "Know exactly who's getting the customers you want." },
+          { name: "Momentum tracking", means: "See how fast competitors get reviews and photos compared with you." },
+          { name: "Competitor breakdown", means: "See what top-ranked competitors do differently." },
+        ],
+      },
+      {
+        icon: "zap",
+        title: "Google Business Profile automations",
+        items: [
+          { name: "Automated image uploads", means: "Your photos go up on a steady schedule." },
+          { name: "Automated video uploads", means: "Videos added to your profile automatically." },
+          { name: "Automated posts & updates", means: "Fresh posts go live every week." },
+          { name: "Automated review replies", means: "Reviews answered fast, without you lifting a finger." },
+          { name: "Automated offers", means: "Promotions posted when you have something to offer." },
+          { name: "Automated strategy adjustments", means: "Tactics change as Google changes how it ranks businesses." },
+        ],
+      },
+      {
+        icon: "bell",
+        title: "Your account manager",
+        items: [
+          { name: "Weekly progress updates", means: "A short note each week on what got done and what's next." },
+          { name: "Google Business Profile change alerts", means: "You're told right away if something on your profile changes." },
+          { name: "Automated report sending", means: "Your monthly report lands in your inbox." },
+          { name: "Proactive review reminders", means: "A nudge when it's time to collect more reviews." },
+          { name: "Proactive image reminders", means: "A nudge when fresh photos would help you rank." },
+          { name: "Approval requests", means: "We ask first whenever something needs your OK." },
+          { name: "Appreciation messages", means: "You hear about the wins, like new milestones and great reviews." },
+        ],
+      },
+      {
+        icon: "share",
+        title: "Automated social media posting",
+        items: [
+          { name: "Facebook posts", means: "Your updates shared to Facebook automatically." },
+          { name: "Instagram posts", means: "Your photos posted to Instagram for you." },
+          { name: "LinkedIn posts", means: "Stay visible on LinkedIn without logging in." },
+          { name: "YouTube videos", means: "Videos published to your YouTube channel." },
+          { name: "TikTok videos", means: "Short videos posted to TikTok for you." },
+        ],
+      },
+      {
+        icon: "video",
+        title: "Video automation",
+        items: [
+          { name: "Auto create videos", means: "Short videos made from your photos." },
+          { name: "Auto upload to your Google profile", means: "Videos added to your Google Business Profile." },
+          { name: "Auto upload to YouTube", means: "Published to YouTube for you." },
+          { name: "Auto upload to TikTok", means: "Published to TikTok for you." },
+          { name: "Auto upload to LinkedIn", means: "Shared on LinkedIn too." },
+          { name: "Auto-written descriptions", means: "Every video gets a title and description that help you get found." },
+        ],
+      },
+      {
+        icon: "camera",
+        title: "Image optimization",
+        items: [
+          { name: "Auto geotag images", means: "Location data added so Google ties your photos to your area." },
+          { name: "Drip images onto your profile", means: "Photos go up a few at a time, the way Google likes." },
+          { name: "Auto-add metadata", means: "Each photo labelled so search engines understand it." },
+          { name: "Send photos however is easiest", means: "Text them over, send a link or share a folder. We take it from there." },
+        ],
+      },
+      {
+        icon: "layout",
+        title: "Website widgets",
+        items: [
+          { name: "Add posts to your website", means: "Your latest Google posts appear on your own site." },
+          { name: "Add reviews to your website", means: "Show off your newest reviews automatically." },
+          { name: "Add images to your website", means: "Your newest photos show up on your site." },
+          { name: "Structured schema markup", means: "Behind-the-scenes code that helps AI assistants understand and recommend you." },
+          { name: "FAQ section", means: "Answers to common questions that help you show up in more searches." },
+        ],
+      },
+    ],
+  },
+
+  /** Paige's FAQ, minus the trial, agency and citations questions. */
+  faq: {
+    eyebrow: "FAQ",
+    heading: "Questions about full management",
+    sub: "Straight answers about pricing, setup and how it works.",
+    items: [
+      {
+        q: "What's included in the $297?",
+        a: "It starts with a full one-time optimization of your profile, the same work as the $99 update, so everything is correct before the ongoing work begins. Then everything on this page: setup, your baseline heatmap and AI visibility check, profile optimization, posts, photos, review requests and replies, social, video, your website and the monthly report. One price per Google Business Profile, every tool included.",
+      },
+      {
+        q: "Do I still need the $99 optimization?",
+        a: "No. Every subscription starts with it. The profile is optimized first, every section checked and filled in, and only then do the posts, photos and review replies begin. If you've already had the $99 update, we check it over and the recurring work starts right away.",
+      },
+      {
+        q: "When do I see results?",
+        a: "You get your baseline the day you connect, so every improvement is measured from day one. Rankings usually move over 30 to 90 days, and your first monthly report compares everything with your baseline.",
+      },
+      {
+        q: "How long does setup take, and what do I do after that?",
+        a: "About 20 minutes, once. You connect your Google Business Profile, tell us about your business and choose autopilot or approve-first. After that we only need two things from you: a few new photos now and then, and a heads-up when hours, services or offers change. Posts, review replies, AI search, website SEO and reporting run on their own.",
+      },
+      {
+        q: "Is this a tool I have to log into every day?",
+        a: "No. It works like a marketing employee, not software you operate. The work gets done and you get simple updates. Log in whenever you like to see results or approve content first.",
+      },
+      {
+        q: "Will you post anything without my OK?",
+        a: "Only if you want. Choose full autopilot, or approve every post and reply before it goes out. You can switch at any time.",
+      },
+      {
+        q: "Is it safe for my Google Business Profile?",
+        a: "Yes. Only practices within Google's guidelines: a complete profile, regular posts and photos, real reviews, a website that matches. Nothing that would put the profile at risk.",
+      },
+      {
+        q: "Do I need any SEO or marketing experience?",
+        a: "No. We learn about your business during setup and make the decisions. If we need something from you, we ask.",
+      },
+      {
+        q: "Is this just a Google Business Profile service?",
+        a: "No. Your Google Business Profile is the foundation, so we start there. It also covers AI search visibility, reviews, social posts on Facebook, Instagram and LinkedIn, videos for YouTube and TikTok, your website and reporting, with the software for each built in.",
+      },
+      {
+        q: "How do I rank higher on Google Maps?",
+        a: "Google ranks local results on relevance, distance and prominence. You can't change distance, but you can improve the other two: a complete, accurate profile, fresh posts and photos, steady new reviews with replies, and a website that matches your profile. That's the work we do every week, and the heatmaps show your Maps rankings across your whole area.",
+      },
+      {
+        q: "Can you help me get recommended by ChatGPT, Gemini and Google AI Mode?",
+        a: "Yes. We publish your content in the places AI assistants draw from, keep your business details consistent, and report each month whether ChatGPT, Gemini, Perplexity, Claude, Grok and Llama recommend you. Most local searches still happen on Google, so Google comes first and AI alongside it.",
+      },
+      {
+        q: "How are my rankings tracked?",
+        a: "Up to 10 searches, with Google Maps heatmaps that show where you rank across your whole area, before-and-after comparisons, and AI rank reports for ChatGPT, Gemini, Perplexity, Grok, Llama and Claude. The report goes out every month.",
+      },
+      {
+        q: "Do you charge for AI usage or tokens?",
+        a: "No. $297 a month includes every AI and reporting cost. No tokens, credits or surprise bills.",
+      },
+      {
+        q: "I have more than one location.",
+        a: "Each Google Business Profile is $297 a month. Add as many as you like.",
+      },
+      {
+        q: "Does it come with a website?",
+        a: "Yes. While you set up, we build a complete, multi-page website in the background, fast, mobile-first and SEO-ready on every page, that you can put live on your own domain in one click. Prefer your current site? We scan it and tell you exactly what to change.",
+      },
+      {
+        q: "Can I keep my current website?",
+        a: "Yes. We scan it, tell you exactly what to fix and give you widgets for fresh reviews, photos and posts. Or switch to the one we build you.",
+      },
+      {
+        q: "Is there a contract?",
+        a: "No. $297 a month, per profile, cancel anytime. Your first payment today carries you to your first billing date, the 1st or the 15th.",
+      },
+      {
+        q: "Do I keep control of the profile?",
+        a: "Yes. It stays on your Google account. You can remove our access in two clicks.",
+      },
+      {
+        q: "How do I get help?",
+        a: "Reply to any message from us and a person answers. When it's easier to show than tell, we'll jump on a screen-share call.",
+      },
+    ],
+  },
+
+  /** The closer, under the Fynd mark. */
+  finalCta: {
+    lead: "Stop managing your Google profile.",
+    accent: "Start answering the phone.",
+    body: "Set it up in about 20 minutes tonight and get your baseline right away. Within one business day of connecting Google, we start fixing what's missing and preparing posts and review replies, published on autopilot or after your OK.",
+    cta: "Start for $297",
+    note: "$297 a month per profile · No contract · Cancel anytime",
+    notReady: "Not ready?",
+    callLink: "Book a call",
+    once: { lead: "Just want it fixed once?", label: "See the $99 update", href: "/optimize" },
+  },
+
+  stickyCta: "Start now",
 } as const;

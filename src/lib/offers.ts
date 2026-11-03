@@ -42,6 +42,8 @@ export const OFFERS = {
   website: { plan: "website-reviews", billing: "now" },
   /** Review System only: $97 today, then $97/month. */
   reviews: { plan: "review-system", billing: "now" },
+  /** Profile management: $297 today, then $297/month. */
+  manage: { plan: "gbp-management", billing: "now" },
   /**
    * The /website checkout with the charge moved: nothing today, $249 on
    * November 1, then $97 on the 1st from December 1.

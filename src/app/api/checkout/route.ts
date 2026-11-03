@@ -1,15 +1,32 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { createCheckoutSession } from "@/lib/stripe";
-import { CANCEL_PATHS } from "@/lib/stripe-plans";
+import {
+  createCheckoutSession,
+  createOneTimeCheckoutSession,
+} from "@/lib/stripe";
+import {
+  CANCEL_PATHS,
+  ONE_TIME_PRODUCTS,
+  PLAN_LIST,
+  isOneTimeProduct,
+} from "@/lib/stripe-plans";
 import { notifyGhl } from "@/lib/ghl";
 import { siteOrigin } from "@/lib/site-origin";
 
 const bodySchema = z.object({
   cid: z.string().max(64).nullable().optional(),
-  plan: z.enum(["review-system", "website-reviews"]),
+  plan: z.enum([...PLAN_LIST, ...ONE_TIME_PRODUCTS]),
   cancelPath: z.enum(CANCEL_PATHS).optional(),
 });
+
+const pageFor = (plan: z.infer<typeof bodySchema>["plan"]) =>
+  plan === "website-reviews"
+    ? "website"
+    : plan === "gbp-optimization"
+      ? "optimize"
+      : plan === "gbp-management"
+        ? "manage"
+        : "start";
 
 export const POST = async (request: Request) => {
   const parsed = bodySchema.safeParse(await request.json().catch(() => null));
@@ -22,6 +39,7 @@ export const POST = async (request: Request) => {
   }
 
   const cid = parsed.data.cid ?? null;
+  const { plan } = parsed.data;
   // Where Stripe sends them back. Not the request origin — see site-origin.ts.
   const origin = siteOrigin(request);
 
@@ -30,18 +48,22 @@ export const POST = async (request: Request) => {
     {
       event: "checkout_started",
       ghl_contact_id: cid,
-      page: parsed.data.plan === "website-reviews" ? "website" : "start",
-      meta: { plan: parsed.data.plan },
+      page: pageFor(plan),
+      meta: { plan },
     },
     `${Date.now()}`,
   );
 
-  const result = await createCheckoutSession({
-    cid,
-    plan: parsed.data.plan,
-    origin,
-    cancelPath: parsed.data.cancelPath,
-  });
+  // Two builders, deliberately: the one-time products never touch the code
+  // that saves a card and creates a subscription.
+  const result = isOneTimeProduct(plan)
+    ? await createOneTimeCheckoutSession({ cid, product: plan, origin })
+    : await createCheckoutSession({
+        cid,
+        plan,
+        origin,
+        cancelPath: parsed.data.cancelPath,
+      });
 
   if (result.status === "ok") {
     return NextResponse.json({ url: result.url });

@@ -34,7 +34,11 @@ export type PageId =
   | "watch"
   | "website"
   | "welcome"
-  | "confirmed";
+  | "confirmed"
+  | "optimize"
+  | "optimize-thanks"
+  | "manage"
+  | "manage-welcome";
 
 type Props = Record<string, string | number | boolean | undefined>;
 

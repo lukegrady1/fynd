@@ -96,6 +96,210 @@ Stripe: all three redirect, the session wording and metadata are right, and
 the test sessions were expired. Not yet exercised: a completed setup-mode
 checkout creating the subscription and invoice item (needs a real card).
 
+### Profile optimization — `/optimize` ($99 once)
+
+A one-time Google Business Profile clean-up, as its own page. The page's
+shape is the pitch (Luke's brief, revised Nov 2, 2026): the problem as a
+picture, then the full list of **what** to update with why Google cares —
+deliberately **not what to write** in any of it — a typical profile beside
+an optimized one, then "want us to do it? $99, once", and a **separate**
+ask for whoever wants it managed monthly. The list is the free value; the
+writing is what's for sale. An earlier cut gave three fixes in full with
+worked examples; Luke pulled it because the examples were the "what to
+put". Aimed at salons and barbershops (example business, copy, meta).
+**Nothing on the page mentions reviews or replying to them** (Luke, Nov 2,
+2026: the Review System already does that) — no checklist item, no review
+row on the drawn profile, no "will it get me more reviews" FAQ. The
+rating line stays on the drawn profile because a Google panel without one
+looks fake.
+
+  Hero (phone showing the drawn "typical" profile, orange dots; the button
+  says "Learn how" and scrolls to the checklist at `#how`, not the
+  checkout — Luke, Nov 2, 2026) -> how Google ranks, three cards
+  (`RankingFactors`: relevance, distance, prominence, with distance drawn
+  muted as the one you can't change) -> fourteen things to update, in four
+  gray panels ("Who you are", "What you offer", "Signs you're open", "Links
+  and details"), numbered straight through, with why (`UpdateChecklist`)
+  -> typical beside optimized -> $99 card at `#convert` with a three-step
+  "how it works" row under it (pay, add us as a manager, done in five
+  business days) -> why kept-up beats filled-in at `#ongoing`
+  (`WhyOngoing`: three "what goes stale" cards, then the $99 beside the
+  $297 as one table, "See full management" button; the hero's quiet link
+  and the $99 card's hand-off both land here) -> FAQ -> closer. The
+  separate managed-plan ask ("Rather not think about it at all?", with
+  the book-a-call line) came out on Nov 3, 2026 (Luke); the table's
+  button is the only ask for the monthly plan.
+
+  The `#ongoing` table's right-hand column is only what the platform does
+  (no Q&A, no hours upkeep); it says the subscription starts with the same
+  optimization as the $99. Reviews are mentioned in this section only, as
+  the service's own deliverable (Luke, Nov 3, 2026:
+  "teach them why our GBP management service is worth it").
+
+  Nov 3, 2026 (Luke: "more value, cleaner"): the ranking section, the
+  grouped checklist and the steps row were added, and the FAQ was
+  replaced — it had been `manage`'s FAQ verbatim ($297, website, AI
+  search, autopilot posting), which contradicted the $99 one-off. The
+  new `optimize.faq` is ten questions about the one-off only; its last
+  answer is the page's one FAQ mention of full management.
+
+- **The profile is drawn, not a screenshot** (`GoogleProfile.tsx`, one
+  component in two states, drawn as the mobile Google panel: photo strip,
+  name and rating, round Call/Directions/Website buttons, then the stacked
+  rows). Typical rows show Google's own empty states with orange dots on
+  each gap. The hero puts the compact card inside a phone under a Google
+  search bar, cropped at the bottom with a navy fade (design.md's
+  "screenshot floated right with a soft blue glow"), with one tag on the
+  bezel counting the gaps. Fictional business, same rating and review count in both states on
+  purpose — optimization fixes the profile, not the review count; reviews
+  are the monthly plan. Every instance carries an "Example" chip. Do not
+  replace it with a client's profile without permission. `ReviewBody`,
+  `Chip` and `Stars` are exported for any section that needs to draw a
+  piece of the profile.
+- **Billing is a different shape**: one `payment` session, card not saved,
+  nothing recurring (`createOneTimeCheckoutSession`). `ensureSubscription`
+  returns `none` for these — see the AGENTS.md note on why that guard is
+  load-bearing. Success is `/optimize/thanks`; the webhook and the thanks
+  page both tag the GHL contact `fynd-gbp-paid`, with no pipeline card
+  (the onboarding pipeline is the subscription's). A GHL workflow on that
+  tag should send the "add Fynd as a manager" steps — **not built, and
+  Luke deferred it (Nov 2, 2026).** Until then each paid customer has to
+  be emailed the steps by hand. The page and the thanks page no longer
+  mention a receipt email; they say Fynd reaches out within a day.
+- Verified against live Stripe: a minted session had mode `payment`, $99,
+  no `setup_future_usage`, the one-time metadata and the right URLs; it was
+  expired afterwards. Not exercised: a completed payment (needs a card).
+- Indexable, like `/website`. The thanks page is `noindex`.
+
+### Full management — `/manage` (monthly, reviews included)
+
+Built Nov 2, 2026 as the sibling of `/optimize`: the service that keeps the
+profile the way the $99 leaves it. Salon/barber copy like `/optimize`.
+**Every subscription starts with the one-time optimization** (Luke, Nov 3,
+2026), and the page says so in four places: first-month step two
+("Optimization first"), the price card's included line and first check,
+the "What's included" FAQ answer, a "Do I still need the $99
+optimization?" FAQ (no, it's included; an existing $99 profile gets checked
+over), and the welcome page's second step.
+**$297/month per profile, no contract, review requests by text only**
+(Luke). The service is Merchynt's Paige, white-labelled; Luke: "everything
+it says on that page is what we are doing". The page's deliverables were
+taken from merchynt.com/paige on Nov 2, 2026: profile optimization at
+setup, website built or tuned, baseline Maps heatmap + AI-visibility
+check, daily review replies and requests, negative reviews flagged, weekly
+Google post shared to Facebook/Instagram/LinkedIn, geotagged photo drip
+from owner's photos, weekly progress update, monthly short videos to
+YouTube/TikTok, strategy vs competitors, monthly report (Maps rankings,
+calls/directions, AI recommendations), autopilot or approve-first, ~20-min
+setup, work within one business day. Deliberately NOT claimed because
+Paige doesn't: Q&A, hours/holiday upkeep, any ranking guarantee.
+
+**The ask is the checkout** (Luke: straight to checkout, not a call).
+Plan `gbp-management` in `stripe-plans.ts`/`stripe.ts`: the review
+system's billing shape ($297 today to the anchor, then $297/month) on a
+new live price created Nov 2, 2026 — product `prod_VYZPspD1a8m69f` "Fynd
+Profile Management", price `price_1UXSGn3sJGpur4VmLI0FgTYY` (env override
+`STRIPE_PRICE_MANAGE_297`). Lands on `/manage/welcome` (steps only, no
+form; `ensureSubscription` backstop like /start/welcome). Webhook tags
+`fynd-manage-paid` and opens the onboarding card. `/offer/manage` exists.
+Verified against live Stripe: a minted session had mode `payment`,
+$297.00, plan metadata, the /manage/welcome success URL and
+/manage?cancelled=1 cancel URL; expired afterwards. Not exercised: a
+completed payment. The `/optimize` managed section links here.
+
+**Rebuilt as a copy of the Paige page in Fynd branding (Nov 2, 2026,
+Luke: "basically copy the paige page from merchynt and put the fynd
+branding on it").** Same section order and layout as merchynt.com/paige,
+Fynd tokens throughout: navy hero (Luke: keep Fynd's dark style, not
+Paige's white) in the shape of the Paige hero he sent — badge, "Get
+found by customers / in your area on / <channel>" with the channel
+cycling as its logo and name in the brand's own styling, as on Paige
+(Luke asked for it to match): Google's letter colours, the Maps pin,
+the Google G, the AI Mode gradient glass, the Gemini gradient star and
+gradient text, Claude's orange mark in serif, OpenAI's knot in white,
+Perplexity's mark (`RotatingChannel` + `ChannelLogos.tsx`; marks
+redrawn as inline SVG from the public logos; letters rise in one by
+one via `.rot-ch` / `.rot-logo` keyframes in globals.css; first
+channel in the markup, no cycling under reduced motion), then the paragraph, three checks and the button
+on the left and a drawn search result on the right: the query, "Your
+business" first with a Call button, Competitor A and B under it, "New
+customer calling…" (`ManageHero`; captioned "Illustration") -> "built for busy owners": the owner's card (blue /
+orange left rules) beside our to-do list with the nested "if we ever
+need you" card, three stat tiles, button (`BusyOwners`) -> "Your
+business. Everywhere.": the navy panel redrawn to match Paige's (Luke,
+Nov 2, 2026): the business card in the middle (Paige's storefront
+drawing with the awning in Fynd Blue, a "Booked!" slip, a "+12 new
+customers / and counting" count, the Fynd team pill), eleven channels
+on a ring as their real marks on pale tiles (Google G, Maps pin,
+YouTube, ChatGPT, Claude, Gemini, Facebook, Instagram, TikTok,
+LinkedIn, website), small pulsing packets on the spokes and "Illustrative activity"
+under it (the legend was removed at Luke's request). Ring radius is a CSS variable
+per breakpoint; phones get the card then the tiles in rows. The
+count and booking are made up — labelled illustrative, and the
+screen-reader text says so (`Everywhere`, `ChannelLogos.tsx`) -> the first
+month in three steps on a horizontal rail (`FirstMonth`) -> what to
+judge in week one vs 30–90 days, two top-edged cards, then the sample
+monthly report (three counts, two 5x5 numbered maps day 1 / day 90,
+work done, AI line) with Paige's own caption "Sample monthly report for
+a made-up business. Numbers are illustrative, not results."
+(`JudgeReport`, grey) -> the math as one white card with cost bars drawn
+from the amounts (`TheMath`) -> "already paying for tools?": navy total
+card + the tools table with struck prices and an "Only with Fynd" row
+for the account manager (`ToolsReplaced`, `#tools`) -> the website on
+navy with the browser + phone mock, "built while you set up" badge, the
+edit-request chip, and the two option cards (`WebsiteSection`) -> "Every
+day you wait, a competitor gets the call." with the $297 card at
+`#convert` (`ManagePricing`, `CheckoutButton`; no location stepper —
+checkout is one profile, the card says each profile is $297) -> every
+feature as one open table with a navy header (`FeatureTable`, 58) ->
+numbered FAQ beside a sticky heading (`ManageFaq`, 18) -> closer with
+the Fynd mark above "Stop managing your Google profile. Start answering
+the phone." (`ManageCloser`; Luke didn't want Paige's "Give it one
+month" line or the orb). Shared `ScrollButton` and `CallLink` in
+`sections/manage/`. Header is dark (navy hero). Removed in the
+rebuild: MonthPlan, ReviewLoop (the SMS phone), Beyond, FirstNinety,
+RankReport, FeatureIndex, WebsiteCta, WaysCompare (the DIY / $99 /
+managed table — the $99 link now lives in the hero, the price card and
+the closer). **Every section is navy and the cards are dark too** (Luke, Nov 2,
+2026: first "make the background dark like the other pages and keep the
+card parts white", then "actually convert the cards too"): cards are
+`bg-navy-card ring-1 ring-white/10`, white text, `white/70` secondary,
+`#8FA0FF` for small blue text. Only the drawn mocks stay white — the
+hero search result, the business card in the channel ring, the sample
+monthly report and the website browser — because they are pictures of
+light UI, as on Paige. Checked at 1280 and
+390 (no horizontal scroll).
+
+**Phone pass (Luke, Nov 2, 2026: "most people viewing this will be on
+their phone").** The page at 390px went from ~28,000px to ~21,000px:
+the feature table is a closed `<details>` per group below md (the
+table itself is md and up), the three stat tiles and the report's
+three counts sit three across instead of stacked, the math bars drop
+their in-bar labels for a line underneath, the report letterhead
+stacks, and nothing wraps mid-number. The hero lost its "Book a call
+first" link; the only quiet link is now "Just want it optimized once?
+Check it out here" to /optimize (Luke).
+
+**Onboarding after payment is not built:** the welcome page promises an
+email within a day with the link to connect Google (the Paige white-label
+connect flow). Nothing sends it — same gap as the $99's manager-access
+email; a GHL workflow on `fynd-manage-paid` would do it. Still Claude's
+wording to check: "30 to 90 days".
+
+**Commitments written by Claude, not agreed policy** (all in `optimize` in
+`copy.ts`): "five business days", "manager access, never your password",
+"a short list of what we're changing before we start" (there is **no
+report** for the one-off: Luke, Nov 3, 2026, and the page says so on the
+$99 card, the steps, the table and the thanks page), the fourteen "why" lines in the checklist (including the
+salon-specific claims), and in the FAQ (Nov 3, 2026): "about ten minutes
+of questions", "we'll tell you which shots would help most", "we don't
+put stock photos on a salon's profile", "$99 per location", and "you can
+change any of it afterwards". The ranking section's three factors are
+Google's own (relevance, distance, prominence) and safe to keep. Edit
+before sending anyone the link.
+No `/offer/<slug>` link exists for it yet; one is a line in `offers.ts` if
+the table grows a one-time shape.
+
 ### VSL page — `/watch`
 
 The link to text a lead who has not been on a call yet. Now the same shape

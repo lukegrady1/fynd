@@ -132,6 +132,59 @@ The recurring product's Stripe **description** carries the standing billing
 policy and renders in the order summary. It lives in the Stripe Dashboard, not
 in this repo.
 
+### One-time products — /optimize ($99)
+
+`/optimize` sells a one-off Google Business Profile optimization. It is a
+different billing shape from everything above: **one `payment` mode session,
+card not saved, and no subscription afterwards.** `createOneTimeCheckoutSession`
+in `src/lib/stripe.ts` builds it, and the product table there (`ONE_TIME`) is
+where a second one-off would go. Copy is `optimize` in `copy.ts`; the drawn
+profile card is fictional and labelled "Example" — never swap in a client's
+without permission.
+
+- Sessions carry `billing: "one-time"` and `product`, **not `plan`**.
+  `ensureSubscription` checks for that first and returns `none`. Without
+  that guard a one-time session has no `plan`, falls back to the review
+  system, and gets a $97/month subscription hung on a $99 purchase. Keep
+  the guard ahead of `readBilling`.
+- Success goes to `/optimize/thanks`, not `/start/welcome` (which opens the
+  subscription onboarding form). The webhook and the thanks page both write
+  the contact to GHL with tag `fynd-gbp-paid` and **no** pipeline card.
+- `OneTimeProduct` is a separate type from `Plan` in `stripe-plans.ts` on
+  purpose; `CheckoutButton` accepts either (`Purchasable`).
+
+### Full management — /manage ($297/month, plan `gbp-management`)
+
+`/manage` sells the monthly service that keeps the profile the way the $99
+leaves it, reviews included. **What the page says the service does comes
+from the white-labelled platform behind it** (Merchynt's Paige,
+merchynt.com/paige) — don't add a deliverable that platform doesn't list
+(it does not do Q&A or hours upkeep, and guarantees nothing). Review
+requests are by text only; the price is per profile.
+
+Billing is the review system's shape on a third `Plan`, `gbp-management`:
+$297 today carried to the anchor, then $297/month on its own live price
+(`MANAGE_PRICE_ID`, product "Fynd Profile Management"). Everything in
+`createCheckoutSession` / `ensureSubscription` applies unchanged; the plan
+table carries `successPath`, and this one lands on **/manage/welcome**, not
+/start/welcome (the review onboarding form does not apply). The webhook
+tags the GHL contact `fynd-manage-paid` and still opens the onboarding
+card. `/offer/manage` is the permanent link. Copy is `manage` in
+`copy.ts`; sections live in `src/components/sections/manage/`. **The
+page is Paige's own sales page rebuilt in Fynd's branding, section for
+section and in its order** (Luke, Nov 2, 2026: "basically copy the
+paige page and put the fynd branding on it") — keep new sections in
+that shape rather than inventing a layout. Its illustrations (the
+"new customer" call, the channel ring, the sample report, the website
+browser) are drawn and fictional; the report carries Paige's own
+"numbers are illustrative" caption. What it leaves out on purpose is
+Paige's customer results, testimonials and vendor stats (not Fynd's to
+claim), the citations add-on, and anything agency- or
+platform-revealing — see the note on `manage` in `copy.ts` and
+`progress.md` before adding a section back. The $99 one-off is linked
+from the hero, the price card and the closer; `/optimize`'s managed
+section links here.
+
 `src/lib/ghl.ts` is still stubbed and marked `TODO(integration)`. See
 `progress.md` for the full state.
 

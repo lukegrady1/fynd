@@ -46,8 +46,8 @@ import type { Offer, OfferSlug } from "./offers";
  * call any number of times — see its own comment for how.
  */
 
-import type { CancelPath, Plan } from "./stripe-plans";
-export type { Plan };
+import type { CancelPath, OneTimeProduct, Plan } from "./stripe-plans";
+export type { OneTimeProduct, Plan };
 
 export type CheckoutRequest = {
   /** GHL contact id, carried into Stripe metadata. */
@@ -66,7 +66,7 @@ export type CheckoutResult =
   | { status: "error"; message: string };
 
 /**
- * The two plans. Same billing shape for both — a one-time charge today that
+ * The plans. Same billing shape for all — a one-time charge today that
  * carries the customer to the anchor, then a subscription from the anchor —
  * so a plan is a name, what today's charge is, and the recurring price to
  * hang the subscription on.
@@ -85,6 +85,9 @@ export type CheckoutResult =
  */
 const REVIEW_PRICE_ID =
   process.env.STRIPE_PRICE_REVIEW_97 ?? "price_1U95IV3sJGpur4VmHm1ixoq5";
+/** "Fynd Profile Management", $297/month (prod_VYZPspD1a8m69f, live). */
+const MANAGE_PRICE_ID =
+  process.env.STRIPE_PRICE_MANAGE_297 ?? "price_1UXSGn3sJGpur4VmLI0FgTYY";
 
 const PLANS: Record<
   Plan,
@@ -98,6 +101,10 @@ const PLANS: Record<
     describe: (anchorLabel: string, recurringLabel: string) => string;
     priceId: string | undefined;
     cancelPath: string;
+    /** Where Stripe sends them once paid. */
+    successPath: string;
+    /** `source` in the session metadata, when not from an offer link. */
+    source: string;
   }
 > = {
   "review-system": {
@@ -108,6 +115,8 @@ const PLANS: Record<
       `Your first period, today through ${anchorLabel}. Continues as a ${recurringLabel}/month subscription on ${anchorLabel}.`,
     priceId: REVIEW_PRICE_ID,
     cancelPath: "/",
+    successPath: "/start/welcome",
+    source: "start-page",
   },
   "website-reviews": {
     name: "Fynd Website + Reviews",
@@ -117,6 +126,25 @@ const PLANS: Record<
       `Your website build, plus the Review System today through ${anchorLabel}. The Review System continues as a ${recurringLabel}/month subscription on ${anchorLabel}.`,
     priceId: REVIEW_PRICE_ID,
     cancelPath: "/website",
+    successPath: "/start/welcome",
+    source: "website-page",
+  },
+  /**
+   * Full profile management, $297/month on its own recurring price. Same
+   * shape as the review system: one month today, carried to the anchor.
+   * Lands on /manage/welcome, not /start/welcome — the review onboarding
+   * form does not apply.
+   */
+  "gbp-management": {
+    name: "Fynd Profile Management",
+    firstCents: 29700,
+    recurringCents: 29700,
+    describe: (anchorLabel, recurringLabel) =>
+      `Your first month, today through ${anchorLabel}. Continues as a ${recurringLabel}/month subscription on ${anchorLabel}.`,
+    priceId: MANAGE_PRICE_ID,
+    cancelPath: "/manage",
+    successPath: "/manage/welcome",
+    source: "manage-page",
   },
 };
 
@@ -178,11 +206,7 @@ export const createCheckoutSession = async (
   // reads to pick the recurring price.
   const metadata = {
     ghl_contact_id: req.cid ?? "",
-    source: req.offer
-      ? `offer-${req.offer}`
-      : req.plan === "website-reviews"
-        ? "website-page"
-        : "start-page",
+    source: req.offer ? `offer-${req.offer}` : plan.source,
     plan: req.plan,
     ...(req.offer ? { offer: req.offer } : {}),
   };
@@ -227,7 +251,7 @@ export const createCheckoutSession = async (
           message: `${FIRST_LABEL} is due today and covers you through ${anchorLabel}. It then continues as a ${RECURRING_LABEL}/month subscription, billed on the ${anchorDayOrdinal(anchor)}. Cancel any time.`,
         },
       },
-      success_url: `${req.origin}/start/welcome?session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${req.origin}${plan.successPath}?session_id={CHECKOUT_SESSION_ID}`,
       // `plan` rides along so a page that sells both plans can reopen the
       // one they were on; the single-plan pages ignore it.
       // Offer links return to a plain page: no "Still deciding?" note and no
@@ -363,7 +387,7 @@ export const createDeferredCheckoutSession = async (
       metadata,
       expires_at: expiresAt,
       custom_text: { submit: { message } },
-      success_url: `${req.origin}/start/welcome?session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${req.origin}${plan.successPath}?session_id={CHECKOUT_SESSION_ID}`,
       // Plain page, like the other offer links — see createCheckoutSession.
       cancel_url: `${req.origin}${req.cancelPath ?? plan.cancelPath}`,
     });
@@ -386,9 +410,195 @@ const stripeErrorMessage = (error: unknown) =>
       ? error.message
       : "Unknown Stripe error.";
 
+/* ------------------------------------------------------------------ */
+
+/**
+ * One-off products. A single `payment` mode session, the card NOT saved for
+ * later, and nothing that follows: no subscription, no trial, no anchor.
+ * `ensureSubscription` recognises these sessions by the `billing: "one-time"`
+ * metadata and returns without creating anything — that guard is the only
+ * thing standing between a $99 purchase and a $97/month subscription,
+ * because an unknown `plan` otherwise falls back to the review system.
+ */
+const ONE_TIME: Record<
+  OneTimeProduct,
+  {
+    name: string;
+    cents: number;
+    /** Product description on the checkout line item. */
+    description: string;
+    /** The page that sells it; where a backed-out checkout returns. */
+    path: string;
+    /** Where Stripe sends them once paid. */
+    successPath: string;
+    /** Where the session came from, in metadata. */
+    source: string;
+  }
+> = {
+  "gbp-optimization": {
+    name: "Fynd Profile Optimization",
+    cents: 9900,
+    description:
+      "A one-time optimization of your Google Business Profile, done by a person. Nothing recurring.",
+    path: "/optimize",
+    successPath: "/optimize/thanks",
+    source: "optimize-page",
+  },
+};
+
+export type OneTimeCheckoutRequest = {
+  /** GHL contact id, carried into Stripe metadata. */
+  cid: string | null;
+  product: OneTimeProduct;
+  origin: string;
+};
+
+export const createOneTimeCheckoutSession = async (
+  req: OneTimeCheckoutRequest,
+): Promise<CheckoutResult> => {
+  const missing = missingStripeEnv();
+  if (missing.length > 0) {
+    return { status: "unconfigured", missing };
+  }
+
+  const product = ONE_TIME[req.product];
+  const label = priceLabel(product.cents);
+
+  // `billing: "one-time"` is what ensureSubscription keys off. `product`
+  // rather than `plan`, so nothing that reads `plan` can mistake this for a
+  // subscription plan.
+  const metadata = {
+    ghl_contact_id: req.cid ?? "",
+    source: product.source,
+    product: req.product,
+    billing: "one-time",
+  };
+
+  try {
+    const session = await stripe().checkout.sessions.create({
+      mode: "payment",
+      // A customer record, so the purchase is findable by email in the
+      // Dashboard later. No `setup_future_usage`: the card is used once and
+      // Checkout prints no "future payments" consent line, which would be
+      // untrue here.
+      customer_creation: "always",
+      payment_intent_data: { metadata },
+      line_items: [
+        {
+          quantity: 1,
+          price_data: {
+            currency: "usd",
+            unit_amount: product.cents,
+            product_data: {
+              name: product.name,
+              description: product.description,
+            },
+          },
+        },
+      ],
+      metadata,
+      custom_text: {
+        submit: {
+          message: `${label} once. Nothing recurring, nothing to cancel.`,
+        },
+      },
+      success_url: `${req.origin}${product.successPath}?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${req.origin}${product.path}?cancelled=1`,
+      allow_promotion_codes: true,
+    });
+
+    if (!session.url) {
+      return { status: "error", message: "Stripe returned no checkout URL." };
+    }
+
+    return { status: "ok", url: session.url };
+  } catch (error) {
+    const message = stripeErrorMessage(error);
+    console.error("[stripe] one-time checkout session failed:", message);
+    return { status: "error", message };
+  }
+};
+
+/** True for sessions minted by `createOneTimeCheckoutSession`. */
+const isOneTimeSession = (session: Stripe.Checkout.Session) =>
+  session.metadata?.billing === "one-time";
+
+export type OneTimeSession =
+  | {
+      status: "paid";
+      product: OneTimeProduct;
+      email: string | null;
+      name: string | null;
+      phone: string | null;
+      ghlContactId: string | null;
+    }
+  | { status: "unpaid" }
+  /** A real session, but not a one-time one. */
+  | { status: "not-one-time" }
+  | { status: "unconfigured" }
+  | { status: "error"; message: string };
+
+/**
+ * What the thank-you page needs off a one-time session: whether it is paid,
+ * and who paid. Reads only; the page writes the GHL contact from it as a
+ * backstop to the webhook, the same way /start/welcome backstops the
+ * subscription.
+ */
+export const readOneTimeSession = async (
+  sessionId: string,
+): Promise<OneTimeSession> => {
+  if (missingStripeEnv().length > 0) return { status: "unconfigured" };
+
+  try {
+    const session = await stripe().checkout.sessions.retrieve(sessionId);
+    if (!isOneTimeSession(session)) return { status: "not-one-time" };
+    if (session.payment_status !== "paid") return { status: "unpaid" };
+
+    const product = session.metadata?.product;
+    if (!product || !(product in ONE_TIME)) {
+      return {
+        status: "error",
+        message: `one-time session ${sessionId} carries unknown product ${product}`,
+      };
+    }
+
+    return {
+      status: "paid",
+      product: product as OneTimeProduct,
+      email: session.customer_details?.email ?? null,
+      name: session.customer_details?.name ?? null,
+      phone: session.customer_details?.phone ?? null,
+      ghlContactId: session.metadata?.ghl_contact_id || null,
+    };
+  } catch (error) {
+    // A made-up or mistyped id is "no such session", not an outage: the
+    // thank-you page should say the payment wasn't found rather than show
+    // the next steps to whoever pasted a bad link.
+    if (
+      error instanceof Stripe.errors.StripeInvalidRequestError &&
+      error.code === "resource_missing"
+    ) {
+      return { status: "unpaid" };
+    }
+    const message = stripeErrorMessage(error);
+    console.error("[stripe] readOneTimeSession failed:", message);
+    return { status: "error", message };
+  }
+};
+
+/** The product's GHL tag and source, for the contact write. */
+export const oneTimeGhl = (product: OneTimeProduct) => ({
+  tag: product === "gbp-optimization" ? "fynd-gbp-paid" : `fynd-${product}-paid`,
+  source: `Fynd checkout — ${ONE_TIME[product].name}`,
+});
+
+/* ------------------------------------------------------------------ */
+
 export type EnsureResult =
   | { status: "created"; subscriptionId: string }
   | { status: "existing"; subscriptionId: string }
+  /** A one-time purchase: there is no subscription to make. */
+  | { status: "none" }
   | { status: "unpaid" }
   | { status: "unconfigured" }
   | { status: "error"; message: string };
@@ -656,6 +866,11 @@ export const ensureSubscription = async (
     const session = await stripe().checkout.sessions.retrieve(sessionId, {
       expand: ["payment_intent", "setup_intent"],
     });
+
+    // Before anything else. A one-time session has no `plan`, and the
+    // fallback below would otherwise read it as the review system and hang
+    // a $97/month subscription on a $99 purchase.
+    if (isOneTimeSession(session)) return { status: "none" };
 
     const billing = readBilling(session);
     if (billing.status !== "ok") return billing;

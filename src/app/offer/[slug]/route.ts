@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 
 import { offerLinks } from "@/content/copy";
+import type { Plan } from "@/lib/stripe-plans";
 import { notifyGhl } from "@/lib/ghl";
 import { findOffer } from "@/lib/offers";
 import { sanitizeId } from "@/lib/params";
@@ -52,8 +53,8 @@ const previewCard = (title: string, description: string, origin: string) => {
 };
 
 /** Where a link goes when it cannot mint a session: the plan's own page. */
-const fallbackPath = (plan: "review-system" | "website-reviews") =>
-  plan === "website-reviews" ? "/website" : "/";
+const fallbackPath = (plan: Plan) =>
+  plan === "website-reviews" ? "/website" : plan === "gbp-management" ? "/manage" : "/";
 
 export const GET = async (
   request: NextRequest,
@@ -109,7 +110,12 @@ export const GET = async (
       {
         event: "checkout_started",
         ghl_contact_id: cid,
-        page: offer.plan === "website-reviews" ? "website" : "start",
+        page:
+          offer.plan === "website-reviews"
+            ? "website"
+            : offer.plan === "gbp-management"
+              ? "manage"
+              : "start",
         meta: { plan: offer.plan, offer: offer.slug },
       },
       `${Date.now()}`,

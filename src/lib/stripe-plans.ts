@@ -2,7 +2,29 @@
  * The plan names, on their own so client components can type against them.
  * `src/lib/stripe.ts` is server-only and cannot be imported from the browser.
  */
-export type Plan = "review-system" | "website-reviews";
+/**
+ * "gbp-management" is the $297/month profile management (/manage). Same
+ * billing shape as the review system — a month paid today, then monthly
+ * from the anchor — on its own recurring price.
+ */
+export type Plan = "review-system" | "website-reviews" | "gbp-management";
+
+export const PLAN_LIST = ["review-system", "website-reviews", "gbp-management"] as const satisfies readonly Plan[];
+
+/**
+ * One-off products: a single charge, no subscription behind it. Kept apart
+ * from `Plan` on purpose — everything typed `Plan` goes on to create a
+ * $97/month subscription, and a one-time product must never reach that code.
+ */
+export type OneTimeProduct = "gbp-optimization";
+
+/** Anything a checkout button can sell. */
+export type Purchasable = Plan | OneTimeProduct;
+
+export const ONE_TIME_PRODUCTS = ["gbp-optimization"] as const satisfies readonly OneTimeProduct[];
+
+export const isOneTimeProduct = (value: string): value is OneTimeProduct =>
+  (ONE_TIME_PRODUCTS as readonly string[]).includes(value);
 
 /**
  * Where Stripe sends someone who backs out of checkout, when the page they

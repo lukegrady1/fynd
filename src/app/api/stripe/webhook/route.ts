@@ -1,9 +1,14 @@
 import { NextResponse } from "next/server";
 import type Stripe from "stripe";
 
-import { constructWebhookEvent, ensureSubscription } from "@/lib/stripe";
+import {
+  constructWebhookEvent,
+  ensureSubscription,
+  oneTimeGhl,
+  readOneTimeSession,
+} from "@/lib/stripe";
 import { notifyGhl } from "@/lib/ghl";
-import { recordPaidCustomer } from "@/lib/ghl-contacts";
+import { recordOneTimeCustomer, recordPaidCustomer } from "@/lib/ghl-contacts";
 
 /**
  * Stripe webhook receiver.
@@ -53,6 +58,11 @@ export const POST = async (request: Request) => {
   const session = event.data.object as Stripe.Checkout.Session;
   const result = await ensureSubscription(session.id);
 
+  // A one-time purchase: nothing to build, just the contact to record.
+  if (result.status === "none") {
+    return oneTimePurchase(session);
+  }
+
   if (result.status === "error" || result.status === "unconfigured") {
     // 500 so Stripe retries. This is the path where a customer has paid and
     // has no subscription, and a retry is the thing that fixes it.
@@ -69,12 +79,14 @@ export const POST = async (request: Request) => {
   // write is idempotent, and a customer missing from GHL is worse than a
   // redundant upsert. Deliberately not fatal — Stripe must not retry forever
   // because GHL had a bad minute, and the subscription is already safe.
+  const plan = session.metadata?.plan;
   const email = session.customer_details?.email;
   if (email) {
     const written = await recordPaidCustomer({
       email,
       name: session.customer_details?.name,
       phone: session.customer_details?.phone,
+      ...(plan === "gbp-management" ? { tag: "fynd-manage-paid" } : {}),
     });
     if (written.status !== "ok") {
       console.error(
@@ -93,7 +105,12 @@ export const POST = async (request: Request) => {
       {
         event: "checkout_completed",
         ghl_contact_id: session.metadata?.ghl_contact_id ?? null,
-        page: "start",
+        page:
+          plan === "gbp-management"
+            ? "manage"
+            : plan === "website-reviews"
+              ? "website"
+              : "start",
         meta: {
           amount_total: session.amount_total,
           customer_email: session.customer_details?.email,
@@ -105,4 +122,58 @@ export const POST = async (request: Request) => {
   }
 
   return NextResponse.json({ received: true, subscription: result.status });
+};
+
+/**
+ * The $99 profile optimization and anything else sold once. Tags the contact
+ * so a GHL workflow can send the access steps; no pipeline card, because the
+ * onboarding pipeline is the subscription's. Non-fatal like the subscription
+ * path's GHL write, and the thank-you page makes the same write as a backstop.
+ */
+const oneTimePurchase = async (session: Stripe.Checkout.Session) => {
+  const paid = await readOneTimeSession(session.id);
+
+  if (paid.status !== "paid") {
+    // "unpaid" on a completed session should not happen; the rest are
+    // Stripe trouble worth a retry.
+    console.error(
+      "[stripe-webhook] one-time session not readable:",
+      session.id,
+      paid.status === "error" ? paid.message : paid.status,
+    );
+    return NextResponse.json({ error: "Retry." }, { status: 500 });
+  }
+
+  if (paid.email) {
+    const written = await recordOneTimeCustomer({
+      email: paid.email,
+      name: paid.name,
+      phone: paid.phone,
+      ...oneTimeGhl(paid.product),
+    });
+    if (written.status !== "ok") {
+      console.error(
+        "[stripe-webhook] one-time customer not written to GHL:",
+        JSON.stringify({ session: session.id, email: paid.email, written }),
+      );
+    }
+  } else {
+    console.error("[stripe-webhook] no email on session", session.id);
+  }
+
+  await notifyGhl(
+    {
+      event: "checkout_completed",
+      ghl_contact_id: paid.ghlContactId,
+      page: "optimize",
+      meta: {
+        amount_total: session.amount_total,
+        customer_email: paid.email,
+        product: paid.product,
+      },
+    },
+    session.id, // idempotent per checkout session
+  );
+
+  return NextResponse.json({ received: true, subscription: "none" });
 };
