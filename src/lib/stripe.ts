@@ -96,8 +96,9 @@ const MANAGE_PRICE_ID =
  * 15th. Your first payment today covers you until then.") is the other
  * plans' policy, not the trial's. This product's reads: "Your 7-day free
  * trial starts now and your card is saved. 7 days later it's $97/month,
- * billed on that day each month. Cancel any time." (Luke, Nov 3, 2026).
- * Edit it in the Dashboard, on this product, not the shared one.
+ * billed on that day each month." (Luke, Nov 3, 2026; no "cancel any
+ * time" and no "cancel before then", by his ask). Edit it in the
+ * Dashboard, on this product, not the shared one.
  */
 const TRIAL_PRICE_ID =
   process.env.STRIPE_PRICE_REVIEW_TRIAL_97 ?? "price_1UXpoj3sJGpur4Vmoxs6fwsk";
@@ -496,7 +497,7 @@ export const createTrialCheckoutSession = async (
       metadata,
       custom_text: {
         submit: {
-          message: `Nothing is charged today. Your ${days}-day free trial starts now, and your card is saved. From ${firstChargeLabel} it is ${recurringLabel}/month, billed on that day each month. Cancel before then and you pay nothing.`,
+          message: `Nothing is charged today. Your ${days}-day free trial starts now, and your card is saved. From ${firstChargeLabel} it is ${recurringLabel}/month, billed on that day each month.`,
         },
       },
       success_url: `${req.origin}${plan.successPath}?session_id={CHECKOUT_SESSION_ID}`,
