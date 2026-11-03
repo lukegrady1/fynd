@@ -3,7 +3,9 @@ import { z } from "zod";
 import {
   createCheckoutSession,
   createOneTimeCheckoutSession,
+  createTrialCheckoutSession,
 } from "@/lib/stripe";
+import { OFFERS } from "@/lib/offers";
 import {
   CANCEL_PATHS,
   ONE_TIME_PRODUCTS,
@@ -61,28 +63,26 @@ export const POST = async (request: Request) => {
     `${Date.now()}`,
   );
 
-  // TODO(stripe): the /watch free trial. No session builder exists for it
-  // yet — it needs a setup-mode session (card saved, nothing charged) and a
-  // subscription trialing `offer.trialDays` days, the shape
-  // `createDeferredCheckoutSession` already uses minus the one-time charge.
-  // Until then the button gets the same "not available" answer as missing
-  // env, rather than falling into `createCheckoutSession` and charging $97
-  // under a "free trial" label.
-  if (isTrialPlan(plan)) {
-    console.error("[checkout] trial checkout not built yet:", plan);
-    return NextResponse.json({ error: UNAVAILABLE }, { status: 503 });
-  }
-
-  // Two builders, deliberately: the one-time products never touch the code
-  // that saves a card and creates a subscription.
-  const result = isOneTimeProduct(plan)
-    ? await createOneTimeCheckoutSession({ cid, product: plan, origin })
-    : await createCheckoutSession({
+  // Three builders, deliberately: the one-time products never touch the
+  // code that saves a card and creates a subscription, and the free trial
+  // (the /watch button, the same session as /offer/trial) never touches the
+  // code that charges a month up front.
+  const result = isTrialPlan(plan)
+    ? await createTrialCheckoutSession({
+        offer: { slug: "trial", ...OFFERS.trial },
         cid,
-        plan,
         origin,
         cancelPath: parsed.data.cancelPath,
-      });
+        fromLink: false,
+      })
+    : isOneTimeProduct(plan)
+      ? await createOneTimeCheckoutSession({ cid, product: plan, origin })
+      : await createCheckoutSession({
+          cid,
+          plan,
+          origin,
+          cancelPath: parsed.data.cancelPath,
+        });
 
   if (result.status === "ok") {
     return NextResponse.json({ url: result.url });

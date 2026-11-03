@@ -191,21 +191,42 @@ section links here.
 
 `/watch` sells one thing: the Review System free for `offer.trialDays`
 (7) days, then $97/month. No website plan, no $197-to-$97 strikethrough,
-no offer clock on that page. **The page is /manage's page for reviews
-only** (Luke, Nov 3, 2026), built from the same section components —
-`BusyOwners`, `FirstMonth`, `ManagePricing`, `FeatureTable`, `ManageFaq`,
-`ManageCloser` each take an optional `copy` that defaults to /manage's,
-and the first, fourth and fifth a `tone` ("light" on /watch, so the page
-alternates light and dark instead of /manage's all-navy) —
-with `watch`'s copy in `copy.ts` passed in, plus `WatchJudge.tsx` for the
-judge cards and the numbers panel (FAQ figures only, source linked). Keep new sections in
-that shape, and keep every claim one the homepage FAQ or feature list
-already makes. The card's button posts `review-trial` — a `TrialPlan`,
-kept apart from `Plan` because every `Plan` charges a month up front.
-**The Stripe side is not built**: `/api/checkout` answers 503 "not
-available" for it (`TODO(stripe)`) until the trial session exists. Never
-route it into `createCheckoutSession`; that would take $97 off a "free
-trial" button.
+no offer clock on that page. **The page carries /manage's argument for
+reviews only, in its own format** (Luke, Nov 3, 2026): the copy is
+`watch` in `copy.ts`, section for section the shape of `manage`'s, and
+the components are the page's own in `src/components/sections/review/`
+(`WatchHowItWorks`, `WatchTrialTimeline`, `WatchProof`,
+`WatchFeatureGrid`, plus the homepage's `ObjectionFaq` and `FinalCta`).
+The one /manage component on it is `ManagePricing`, because Luke asked
+for that card. (The /manage sections also take a `copy` and `tone` —
+the first design, commit `a59f45e`, used them; defaults keep /manage as
+it was.) Keep every claim one the homepage FAQ or feature list already
+makes; the numbers panel's figures are documented on
+`watch.judge.numbers`. The card's button posts `review-trial` — a
+`TrialPlan`, kept apart from `Plan` because every `Plan` charges a month
+up front.
+
+**Billing is the one SUBSCRIPTION-mode checkout on the site**
+(`createTrialCheckoutSession`; `billing: "trial"` in `offers.ts`;
+`/offer/trial` is the permanent link and the /watch button mints the
+same session). Checkout saves the card and creates the subscription
+itself on the $97 recurring price with `trial_period_days: 7`; Stripe
+charges $97 when the trial ends and on that day each month after. No
+billing anchor, no first invoice, no `ensureSubscription` create: that
+function sees `mode: "subscription"`, tags the subscription with the
+session id once (so the webhook's `checkout_completed` fires once) and
+returns. Subscription mode is right here because "7 days free" is
+true; it stays wrong for the paid-first-period plans. Never route
+`review-trial` into `createCheckoutSession`.
+
+### Stageshow demos
+
+`src/components/stageshow/kit/` is the stageshow skill's kit, vendored
+as-is (ESLint ignores it); `fynd.css` beside it is Fynd's look for it.
+Demos are built with the `/stageshow` skill (`~/.claude/skills/stageshow`)
+and filmed with its `scripts/film.mjs` against the dev server; each demo
+keeps a `REHEARSAL.md` beside it. The first is `WatchJudgeDemo` on /watch.
+Every studio and figure in a demo is fictional and captioned as such.
 
 `src/lib/ghl.ts` is still stubbed and marked `TODO(integration)`. See
 `progress.md` for the full state.

@@ -412,6 +412,99 @@ const stripeErrorMessage = (error: unknown) =>
 
 /* ------------------------------------------------------------------ */
 
+export type TrialCheckoutRequest = {
+  offer: { slug: OfferSlug } & Extract<Offer, { billing: "trial" }>;
+  cid: string | null;
+  origin: string;
+  /** Overrides the plan's own cancel page — see `CANCEL_PATHS`. */
+  cancelPath?: CancelPath;
+  /** False when the session comes from the page's own button, not the link. */
+  fromLink?: boolean;
+};
+
+/**
+ * The free trial — "nothing today, $97/month from day 8" — the /watch deal
+ * (`billing: "trial"` in `src/lib/offers.ts`).
+ *
+ * The one place SUBSCRIPTION mode is right. The paid-first-period shape
+ * above rejected it because Checkout derives "7 days free" and "Start
+ * trial" wording from a trial, and that was untrue when $97 had just been
+ * taken; here it is exactly true. So this is ONE operation: Checkout saves
+ * the card and creates the subscription itself, trialing `days` days on
+ * the plan's own recurring price, and Stripe bills $97 when the trial ends
+ * and on that day each month after. No billing anchor: the first charge is
+ * seven days after signup, not the 1st or 15th.
+ *
+ * `ensureSubscription` recognises these sessions by `mode: "subscription"`
+ * and creates nothing — the subscription is already on the session — so the
+ * webhook and the success page only record the customer.
+ */
+export const createTrialCheckoutSession = async (
+  req: TrialCheckoutRequest,
+): Promise<CheckoutResult> => {
+  const missing = missingStripeEnv();
+  if (missing.length > 0) return { status: "unconfigured", missing };
+
+  const plan = PLANS[req.offer.plan];
+  if (!plan.priceId) {
+    return { status: "unconfigured", missing: [`price id for ${req.offer.plan}`] };
+  }
+
+  const days = req.offer.days;
+  const now = Math.floor(Date.now() / 1000);
+  const firstChargeLabel = formatAnchor(now + days * 24 * 60 * 60);
+  const recurringLabel = priceLabel(plan.recurringCents);
+
+  // On the session and the subscription both: the session's copy is read by
+  // checkout.session.completed, the subscription's by every later billing
+  // event. `billing: "trial"` is what tells the rest of the app which shape
+  // this is; `plan` keeps the GHL tag and the welcome page the review
+  // system's.
+  const metadata = {
+    ghl_contact_id: req.cid ?? "",
+    source: req.fromLink === false ? "watch-page" : `offer-${req.offer.slug}`,
+    plan: req.offer.plan,
+    offer: req.offer.slug,
+    billing: "trial",
+    trial_days: String(days),
+  };
+
+  try {
+    const session = await stripe().checkout.sessions.create({
+      mode: "subscription",
+      line_items: [{ price: plan.priceId, quantity: 1 }],
+      subscription_data: {
+        trial_period_days: days,
+        metadata,
+      },
+      // The card is taken now so the first charge on day 8 just happens;
+      // without it Stripe would have to cancel or pause when the trial ends.
+      payment_method_collection: "always",
+      metadata,
+      custom_text: {
+        submit: {
+          message: `Nothing is charged today. Your ${days}-day free trial starts now, and your card is saved. From ${firstChargeLabel} it is ${recurringLabel}/month, billed on that day each month. Cancel before then and you pay nothing.`,
+        },
+      },
+      success_url: `${req.origin}${plan.successPath}?session_id={CHECKOUT_SESSION_ID}`,
+      // Plain page, like the other offer links — see createCheckoutSession.
+      cancel_url: `${req.origin}${req.cancelPath ?? plan.cancelPath}`,
+      allow_promotion_codes: true,
+    });
+
+    if (!session.url) {
+      return { status: "error", message: "Stripe returned no checkout URL." };
+    }
+    return { status: "ok", url: session.url };
+  } catch (error) {
+    const message = stripeErrorMessage(error);
+    console.error("[stripe] trial checkout session failed:", message);
+    return { status: "error", message };
+  }
+};
+
+/* ------------------------------------------------------------------ */
+
 /**
  * One-off products. A single `payment` mode session, the card NOT saved for
  * later, and nothing that follows: no subscription, no trial, no anchor.
@@ -872,6 +965,12 @@ export const ensureSubscription = async (
     // a $97/month subscription on a $99 purchase.
     if (isOneTimeSession(session)) return { status: "none" };
 
+    // A free-trial session (subscription mode) made its own subscription;
+    // there is nothing to build. "created" is reported once per session so
+    // the webhook's checkout_completed fires once — the first caller to see
+    // the subscription marks it, the next sees the mark.
+    if (session.mode === "subscription") return trialSubscription(session);
+
     const billing = readBilling(session);
     if (billing.status !== "ok") return billing;
     const { customer, paymentMethod, trialEnd, firstInvoice, oneTime } = billing;
@@ -948,6 +1047,38 @@ export const ensureSubscription = async (
     console.error("[stripe] ensureSubscription failed:", message);
     return { status: "error", message };
   }
+};
+
+/**
+ * The subscription behind a trial session, which Checkout created itself.
+ * `payment_status` is "no_payment_required" on a trial, so the paid check
+ * the other shapes use does not apply; `status: "complete"` is the evidence
+ * the card was saved and the subscription made.
+ */
+const trialSubscription = async (
+  session: Stripe.Checkout.Session,
+): Promise<EnsureResult> => {
+  if (session.status !== "complete") return { status: "unpaid" };
+
+  const subscriptionId = idOf(session.subscription);
+  if (!subscriptionId) {
+    return {
+      status: "error",
+      message: `trial session ${session.id} complete but carries no subscription`,
+    };
+  }
+
+  const subscription = await stripe().subscriptions.retrieve(subscriptionId);
+  if (subscription.metadata?.checkout_session_id === session.id) {
+    return { status: "existing", subscriptionId };
+  }
+
+  // The session id goes on the subscription the way the other shapes write
+  // it, so later billing events can be traced back; doubling as the mark.
+  await stripe().subscriptions.update(subscriptionId, {
+    metadata: { ...subscription.metadata, checkout_session_id: session.id },
+  });
+  return { status: "created", subscriptionId };
 };
 
 export type WebhookVerification =

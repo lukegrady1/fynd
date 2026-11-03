@@ -1,0 +1,24 @@
+/* Fynd's look for stageshow scenes: the product's own tokens mapped onto the
+   kit's (references/looks.md, From a codebase). Blue accent, Poppins, the
+   8px control radius, navy ink. Applied with `className="look-fynd"` on a
+   Stage; every window, badge, row and phone on it reads these. */
+.look-fynd .ss-stage {
+  --ss-accent: #4c5bff;
+  --ss-accent-2: #7a5cff;
+  --ss-accent-soft: rgba(76, 91, 255, 0.12);
+  --ss-accent-text: #3a47d6;
+  --ss-success: #19d3a2;
+  --ss-success-soft: rgba(25, 211, 162, 0.16);
+  --ss-success-text: #0f8f6e;
+  --ss-warning: #ff8a1f;
+  --ss-text-strong: #0b132b;
+  --ss-text: #5a6478;
+  --ss-text-faint: #8a93a6;
+  --ss-line: #e3e7ee;
+  --ss-canvas: #f2f4f7;
+  --ss-font: var(--font-poppins), system-ui, sans-serif;
+  --ss-radius-sm: 6px;
+  --ss-radius-md: 8px;
+  --ss-radius-lg: 10px;
+  --ss-radius-window: 12px;
+}

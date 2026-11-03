@@ -269,6 +269,30 @@
       transform: none;
     }
 
+    /* The proportion bars in /watch's numbers panel grow from the left as
+       their Reveal arrives. Same progressive enhancement as the reveal
+       itself: without scripting the bar is simply full. */
+    .js-reveal .fynd-bar {
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 1400ms var(--ease-fynd) 400ms;
+    }
+
+    .js-reveal.is-visible .fynd-bar {
+      transform: none;
+    }
+
+    /* The lit dots in the same panel, one after another: each carries its
+       own transition-delay inline. */
+    .js-reveal .fynd-dot {
+      opacity: 0.12;
+      transition: opacity 500ms var(--ease-fynd);
+    }
+
+    .js-reveal.is-visible .fynd-dot {
+      opacity: 1;
+    }
+
     /* Slide in from the leading edge rather than rising. Phones only, and
        deliberately so: below sm a list is one column and each item arrives on
        its own as you scroll, which is the whole effect. From sm up the same
@@ -408,6 +432,16 @@
   .js-reveal.is-visible {
     opacity: 1;
     transform: none;
+    transition: none;
+  }
+
+  .js-reveal .fynd-bar {
+    transform: none;
+    transition: none;
+  }
+
+  .js-reveal .fynd-dot {
+    opacity: 1;
     transition: none;
   }
 

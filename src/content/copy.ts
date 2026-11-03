@@ -211,7 +211,7 @@ export const testimonialsSection = {
  * it — so every number here is the trial's.
  *
  * Every claim in the sections below is one the homepage FAQ or feature
- * list already makes (72 hours to live, one follow-up, 8am–8pm, private
+ * list already makes (8am–8pm, private
  * routing, replies in your voice, the widget, the past-customer wave).
  * Don't add a capability here the rest of the site doesn't promise, and
  * keep /manage's cost-figure sections (the math, the tools replaced) off:
@@ -231,7 +231,10 @@ export const watch = {
     accent: "appointments into reviews.",
     /** Under the big pill, then five stars and the trust line — the same
         ask /manage's hero has. The count is Fynd's own figure. */
-    ctaNote: `${offer.trialDays} days free · then $${offer.price}/mo · Cancel anytime`,
+    /** No price here or anywhere but the card (Luke, Nov 3, 2026: "I only
+        want it to say $97 on the pricing card"). Everything else says
+        "free trial". */
+    ctaNote: `${offer.trialDays}-day free trial · Cancel anytime`,
     trust: "Trusted by 100+ local businesses",
     trustSr: "Five stars.",
   },
@@ -257,7 +260,14 @@ export const watch = {
     accent: "once it's running.",
   },
 
-  /** "Built for busy owners", for reviews: the two cards and three stats. */
+  /**
+   * "Built for busy owners", for reviews. Rendered by `WatchHowItWorks`:
+   * the three blocks as icon cards in a row, then the to-do list as one
+   * navy band with the figures down its side. Not /manage's two cards
+   * (Luke, Nov 3, 2026: a different format), and not the you/us ledger
+   * that came between (Luke, same day: "I don't like the design").
+   * `BusyOwners` still reads this shape if wanted back.
+   */
   busy: {
     eyebrow: "How the Review System works",
     heading: "Google reviews, built for busy owners",
@@ -289,7 +299,7 @@ export const watch = {
         "Then connect your booking software so new appointments ask on their own",
         "Use their name and the service they booked",
         "Wait the right amount of time before sending",
-        "Follow up once with anyone who didn't respond",
+        "Follow up twice with anyone who didn't respond, then stop",
         "Send unhappy customers to you privately, not to Google",
         "Reply to every new review in your voice",
         "Flag reviews that break Google's rules so they can be reported",
@@ -309,9 +319,12 @@ export const watch = {
     },
     note: "We do the asking, the chasing and the replying while you keep seeing clients. The reviews come from real customers, so how many you get is up to them.",
     stats: [
-      { value: "72 hrs", label: "until it's live and sending" },
-      { value: "1", label: "follow-up, then it stops" },
-      { value: "0", label: "messages you write" },
+      /** Luke, Nov 3, 2026: "sending out within 24 hours once we have the customer list". */
+      { value: "24 hrs", label: "from your list to the first texts" },
+      /** Two follow-ups, not one (Luke, Nov 3, 2026). The homepage FAQ
+          still says one; see the note on `watchFaq`. */
+      { value: "2", label: "follow-ups, then it stops" },
+      { value: "0", label: "things for you to do" },
     ],
     cta: "Start your free trial",
   },
@@ -332,9 +345,9 @@ export const watch = {
         body: "Export your recent customers from your booking software or CRM and send it over. That's your setup: no forms to fill in and no software to learn.",
       },
       {
-        when: "Within 72 hours",
+        when: "Within 24 hours",
         title: "The reactivation wave goes out",
-        body: "Everyone on the list gets a review request from your studio's name, with one follow-up for anyone who goes quiet. Anyone unhappy lands with you, not on Google. The first reviews usually show up within 48 hours of the first send.",
+        body: "Once we have your list, everyone on it gets a review request from your studio's name, with two follow-ups for anyone who goes quiet. Anyone unhappy lands with you, not on Google. The first reviews usually show up within 3 hours of the first send.",
       },
       {
         when: "Once the wave is done",
@@ -344,10 +357,7 @@ export const watch = {
     ],
     proof: "Everything you see in the week is real: real customers, real reviews on your real profile, and they stay yours whether you keep going or not.",
     cta: "Start free trial",
-    /** The quiet link beside the button, for whoever isn't ready. */
-    callLead: "Not ready?",
-    callLink: "Book a demo call first",
-    note: `Cancel before the end of day ${offer.trialDays} and you won't be charged. After that, it's $${offer.price}/mo per location.`,
+    note: `Cancel before the end of day ${offer.trialDays} and you won't be charged.`,
   },
 
   /**
@@ -358,29 +368,45 @@ export const watch = {
   judge: {
     heading: `What you can judge in ${offer.trialDays} days, and what takes longer`,
     sub: "A week is enough to see the system work and the control you keep. Your rating and your rank move with every review after that, so judge those over the months, not the week.",
+    /**
+     * The demo beside the lists (`WatchJudgeDemo`, built with stageshow):
+     * the reviews dashboard and the owner's phone during the free week.
+     * ILLUSTRATION: both studios are fictional and every figure is drawn;
+     * this caption sits under it and says so.
+     */
+    demoCaption: "Illustration. The studios are made up and the figures are drawn, not measured.",
+    /**
+     * The two lists beside the demo: what the week shows, what the months
+     * after show. `icon` picks the glyph in `WatchProof`. No numbers in the
+     * rows, so nothing is invented. (Earlier layouts for this copy: plain
+     * lists, a time scale with header bands, two notification feeds; Luke
+     * asked for the stageshow demo instead, Nov 3, 2026.)
+     */
     cards: [
       {
         tone: "blue",
-        label: "In your free week",
-        title: "Check the work and the control",
+        label: "Your free week",
+        span: "Days 1–7",
+        title: "What you'll see happen",
         items: [
-          "The reactivation wave going out to your past customers, from your studio's name",
-          "The follow-up going out to anyone who didn't respond",
-          "Private feedback landing with you instead of on Google",
-          "The first reviews on your profile, usually within 48 hours of the first send",
-          "A reply in your voice on every new review",
-          "Your booking software connected, so every new appointment asks on its own",
+          { icon: "send", text: "The reactivation wave going out to your past customers, from your studio's name" },
+          { icon: "repeat", text: "The follow-ups going out to anyone who didn't respond" },
+          { icon: "inbox", text: "Private feedback landing with you instead of on Google" },
+          { icon: "star", text: "The first reviews on your profile, usually within 3 hours of the first send" },
+          { icon: "reply", text: "A reply in your voice on every new review" },
+          { icon: "plug", text: "Your booking software connected, so every new appointment asks on its own" },
         ],
       },
       {
         tone: "orange",
-        label: "Over the next 30–90 days",
-        title: "Watch the numbers move",
+        label: "The months after",
+        span: "Days 30–90",
+        title: "What you'll watch move",
         items: [
-          "Your review count climbing with every appointment",
-          "Your rating settling where your work deserves",
-          "Where you sit against the other studios nearby",
-          "Your spot in the map when someone searches for what you do",
+          { icon: "trend", text: "Your review count climbing with every appointment" },
+          { icon: "star", text: "Your rating settling where your work deserves" },
+          { icon: "users", text: "Where you sit against the other studios nearby" },
+          { icon: "map", text: "Your spot in the map when someone searches for what you do" },
         ],
       },
     ],
@@ -389,11 +415,10 @@ export const watch = {
      * here first; Luke, Nov 3, 2026: "Remove the salt salon pictures and
      * have like some stat or something instead like how many people
      * leave reviews on average with us"). REAL FIGURES ONLY: the three
-     * tiles are the response rates the FAQ ("How many reviews should I
-     * expect?", "How long until I see reviews?") already tells owners to
-     * expect — except the week-one figure, which is Luke's own average
-     * across the businesses Fynd manages — and the four facts under them
-     * are the BrightLocal survey
+     * tiles are Luke's own averages across the businesses Fynd manages
+     * (37% of new customers, 34% of past ones in week one, first
+     * reviews within 3 hours), and
+     * the four facts under them are the BrightLocal survey
      * the FAQ cites, with the same link. There is no measured "owner
      * asking in person" rate anywhere, so the comparison is said in
      * words, not a number. Change the FAQ and this together.
@@ -402,33 +427,50 @@ export const watch = {
       eyebrow: "The numbers",
       heading: "How many customers actually leave one?",
       sub: "Asked in person, when you remember, by the owner who's already on to the next client, most never get round to it. Asked by text, the same day, every time, here's what to expect.",
+      /**
+       * Each tile draws its figure as well as stating it, and the drawing
+       * gives it scale (Luke, Nov 3, 2026: the 34% has to feel like "wow,
+       * that's so much" and the 24 hours "super quick"). The percentages
+       * are a hundred dots with that many lit — 34 lit dots is a crowd —
+       * and the caption sets them against the 20-review mark from the
+       * survey on the card beside them. The hours are a sliver at the
+       * start of the three-month window the same survey says people
+       * look at. Nothing is amplified beyond the figures: the two
+       * percentages are Luke's own averages, the 3 hours is his too,
+       * and the 20 reviews / three months are BrightLocal's.
+       */
       tiles: [
         {
-          value: "20–30%",
+          value: "37%",
           label: "of new customers leave a review",
           basis: "Asked by text after their appointment. Some businesses see more than half.",
+          viz: { kind: "grid", lit: 37, legend: "37 of every 100 appointments" },
         },
-        /** Luke's own figure (Nov 3, 2026): "34% on average across the
-            businesses we manage". Change it here when it changes. */
         {
           value: "34%",
           label: "of past customers review you in week one",
-          basis: "On average across the businesses we manage, from the reactivation wave.",
+          basis: "A 100-name list is 34 new reviews in seven days. That clears the 20 reviews people look for before they'll pick you.",
+          viz: { kind: "grid", lit: 34, legend: "34 of every 100 names on your list" },
         },
         {
-          value: "48 hrs",
+          value: "3 hrs",
           label: "until the first reviews usually land",
-          basis: "From the first send. Then it builds with every appointment.",
+          basis: "People check for reviews from the last three months. Yours start landing the same day the first texts go out.",
+          viz: { kind: "span", at: "First review", total: "The 3 months people look back over" },
         },
       ],
+      /** Under the tiles: where the two averages come from. */
+      tilesNote: "The percentages are our averages across the businesses we manage.",
       /** Why those reviews are worth having: the survey the FAQ cites. */
       whyLabel: "Why it matters",
+      /** `icon` picks the glyph in `WatchProof`. */
       facts: [
-        { value: "97%", text: "of people read reviews before choosing a local business" },
-        { value: "47%", text: "won't use a business with fewer than 20 reviews" },
-        { value: "31%", text: "will only use one rated 4.5 stars or higher" },
-        { value: "74%", text: "want to see reviews from the last three months" },
+        { icon: "eye", value: "97%", text: "read reviews before choosing a local business" },
+        { icon: "list", value: "47%", text: "won't use a business with fewer than 20 reviews" },
+        { icon: "star", value: "31%", text: "will only use one rated 4.5 stars or higher" },
+        { icon: "clock", value: "74%", text: "want to see reviews from the last three months" },
       ],
+      factsLead: "Of people choosing a local business:",
       source: {
         label: "Source: BrightLocal, Local Consumer Review Survey 2026",
         href: "https://www.brightlocal.com/research/local-consumer-review-survey/",
@@ -437,7 +479,7 @@ export const watch = {
     },
     /** The section ends on the ask, like every section on the page. */
     cta: "Start your free trial",
-    ctaNote: `${offer.trialDays} days free · then $${offer.price} a month · Cancel anytime`,
+    ctaNote: `${offer.trialDays}-day free trial · Cancel anytime`,
   },
 
   /**
@@ -446,41 +488,40 @@ export const watch = {
    * all-in note, the included line, the checks and the button on the
    * right. No offer clock and no strikethrough: the trial is the deal.
    *
-   * Commitments written here by Claude, not agreed policy — the checkout
-   * behind the button is not built yet (Luke is doing the Stripe pass at
-   * the end). "Card on file, nothing charged" assumes the usual Stripe
-   * trial shape; if the trial ends up not taking a card, change
-   * `anchorNote` and the FAQ answer.
+   * The per-location paragraph and the card-on-file line came off the
+   * card (Luke, Nov 3, 2026). The checkout behind the button is not
+   * built yet (Luke is doing the Stripe pass at the end); the trial FAQ
+   * answer still says nothing is charged for 7 days.
    */
   pricing: {
     kicker: "Free trial",
     lead: "Every appointment you don't ask",
     accent: "is a review you don't get.",
-    sub: `Start today. Send us your customer list, the reactivation wave goes out within 72 hours, and once it's done your booking software takes over. Nothing is charged for ${offer.trialDays} days.`,
+    sub: `Start today. Send us your customer list, the reactivation wave goes out within 24 hours of us getting it, and once it's done your booking software takes over. Nothing is charged for ${offer.trialDays} days.`,
+    /** The big number is $0 — it's a free trial (Luke, Nov 3, 2026) —
+        with the monthly on the line under it. The page passes price 0. */
     card: {
       label: "One simple price",
-      per: "/ month",
-      perNote: "per location, after your free week",
-      pill: `${offer.trialDays} days free · then $${offer.price} a month`,
-      explain: `Each location has its own Google profile, so each one gets its own Review System: its own requests, routing and replies. More than one location? Each is $${offer.price} a month.`,
+      per: `for ${offer.trialDays} days`,
+      perNote: `then $${offer.price} a month, per location`,
+      pill: `Free for ${offer.trialDays} days · Cancel anytime`,
       allIn: {
         title: "All-in price. No setup fee, no per-seat pricing.",
         body: `The texts, the follow-ups, the replies and the dashboard are all in the $${offer.price}. Nothing is an add-on.`,
       },
       includedLine: {
         label: "Included:",
-        text: "A review request texted after every appointment, the follow-up, private routing for unhappy customers, a reply to every review, and your dashboard.",
+        text: "A review request texted after every appointment, the follow-ups, private routing for unhappy customers, a reply to every review, and your dashboard.",
       },
       checks: [
-        "Live and sending within 72 hours",
+        "Sending within 24 hours of your customer list",
         `Nothing charged for ${offer.trialDays} days`,
         "No contracts. Cancel anytime.",
         "Your reviews stay yours if you leave",
         "A person answers when you need help",
       ],
       cta: "Start your free trial",
-      ctaNote: `Free for ${offer.trialDays} days · No contract · Cancel anytime`,
-      anchorNote: `Card on file, nothing charged for ${offer.trialDays} days. Cancel before then and you pay nothing. After that, $${offer.price} a month.`,
+      ctaNote: `Then $${offer.price} a month · No contract · Cancel anytime`,
     },
   },
 
@@ -491,7 +532,7 @@ export const watch = {
   features: {
     eyebrow: (n: number) => `All ${n} features`,
     heading: "Every feature, in plain English",
-    sub: `Everything below is included in your $${offer.price} a month. Nothing is an add-on.`,
+    sub: "Everything below is in your free trial, and stays in after it. Nothing is an add-on.",
     cta: "Start your free trial",
     groupCount: (n: number) => `${n} feature${n === 1 ? "" : "s"}`,
     included: "Included",
@@ -505,7 +546,7 @@ export const watch = {
           { name: "Texted after every appointment", means: "The moment an appointment is marked complete, the request goes out on its own." },
           { name: "From your studio, to them by name", means: "Your business name on the message, their name and the service they booked in it." },
           { name: "Smart timing", means: "It waits the right amount of time before sending, rather than firing the second you close the ticket." },
-          { name: "One follow-up", means: "Anyone who didn't respond gets one friendly reminder. Then it stops." },
+          { name: "Two follow-ups", means: "Anyone who didn't respond gets two friendly reminders. Then it stops." },
           { name: "Past customers asked first", means: "Send us your recent customers and the reactivation wave goes out before anything else. It's the fastest lever you have." },
         ],
       },
@@ -545,7 +586,7 @@ export const watch = {
         title: "Reputation dashboard",
         items: [
           { name: "Your rating and review count", means: "Both numbers, and how they've moved, on one page." },
-          { name: "Where the reviews came from", means: "The text, the follow-up, or straight from your profile." },
+          { name: "Where the reviews came from", means: "The text, a follow-up, or straight from your profile." },
           { name: "How you compare nearby", means: "Where you sit against the other studios around you." },
         ],
       },
@@ -559,14 +600,15 @@ export const watch = {
     ],
   },
 
-  /** The closer, under the Fynd mark, in /manage's shape. */
+  /**
+   * The closer: the homepage's dark closer (`FinalCta`, the drawn
+   * underline under the payoff word), not /manage's under the mark.
+   * `accent` is the underlined word; `tail` is punctuation.
+   */
   finalCta: {
-    lead: "Stop asking for reviews.",
-    accent: "Start getting them.",
+    heading: { lead: "Stop asking for reviews. Start", accent: "getting them", tail: "." },
     cta: "Start your free trial",
-    note: `Free for ${offer.trialDays} days · then $${offer.price} a month · Cancel anytime`,
-    notReady: "Not ready?",
-    callLink: "Book a call",
+    note: `${offer.trialDays}-day free trial · No contract · Cancel anytime`,
   },
 
   /**
@@ -745,7 +787,7 @@ export const faq = {
  */
 const trialQuestion = {
   q: "How does the free trial work?",
-  a: `You start today by sending us your recent customer list. Within 72 hours the reactivation requests go out to them, and once that wave is finished we connect your booking software so every finished appointment asks on its own. Nothing is charged for the first ${offer.trialDays} days. If it isn't for you, cancel before then and you pay nothing. Otherwise it's $${offer.price} a month after that, month to month, cancel anytime.`,
+  a: `You start today by sending us your recent customer list. Within 24 hours of getting it, the reactivation requests go out to them, and once that wave is finished we connect your booking software so every finished appointment asks on its own. Nothing is charged for the first ${offer.trialDays} days. If it isn't for you, cancel before then and you pay nothing. Otherwise it carries on month to month, cancel anytime.`,
 } as const;
 
 export const watchFaq = {
@@ -1728,6 +1770,10 @@ export const offerLinks = {
     title: "Fynd Review System",
     description:
       "More 5-star Google reviews, on autopilot. Nothing today, first payment November 13.",
+  },
+  trial: {
+    title: "Fynd Review System — free trial",
+    description: `More 5-star Google reviews, on autopilot. Free for ${offer.trialDays} days, then $${offer.price} a month, cancel any time.`,
   },
 } as const;
 

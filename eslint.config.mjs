@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // The stageshow kit (src/components/stageshow/kit) is vendored from the
+    // skill as-is; it has its own conventions and is not ours to lint.
+    "src/components/stageshow/kit/**",
   ]),
 ]);
 

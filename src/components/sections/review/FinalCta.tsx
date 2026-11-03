@@ -1,6 +1,7 @@
 "use client";
 
 import { track } from "@/lib/analytics";
+import { cn } from "@/lib/utils";
 import { Container } from "@/components/ui/Layout";
 import { DotGrid } from "@/components/textures/Textures";
 import { DemoCta } from "./DemoCta";
@@ -16,11 +17,21 @@ export function FinalCta({
   ctaLabel,
   targetId,
   withDemo,
+  note,
+  compactOnMobile,
 }: {
   heading: { lead: string; accent: string; tail: string };
   ctaLabel: string;
   targetId: string;
   withDemo?: boolean;
+  /** One quiet line under the button — /watch's trial terms. */
+  note?: string;
+  /**
+   * A smaller button on phones: 48px tall and shrink-to-fit instead of
+   * 56px full width. /watch only (Luke, Nov 3, 2026); the other pages'
+   * closers keep the full-size one.
+   */
+  compactOnMobile?: boolean;
 }) {
   const handleClick = () => {
     track("cta_click", { cta: ctaLabel, section: "final_cta" });
@@ -50,12 +61,16 @@ export function FinalCta({
             <button
               type="button"
               onClick={handleClick}
-              className="flex h-14 w-full items-center justify-center rounded-sm bg-fynd-blue px-8 text-body font-semibold text-white transition-all duration-150 ease-fynd hover:-translate-y-px hover:bg-[#3F4DF0] active:scale-[0.99] sm:w-auto"
+              className={cn(
+                "flex h-14 w-full items-center justify-center rounded-sm bg-fynd-blue px-8 text-body font-semibold text-white transition-all duration-150 ease-fynd hover:-translate-y-px hover:bg-[#3F4DF0] active:scale-[0.99] sm:w-auto",
+                compactOnMobile && "max-sm:h-12 max-sm:w-auto max-sm:self-center max-sm:px-7 max-sm:text-small",
+              )}
             >
               {ctaLabel}
             </button>
             {withDemo && <DemoCta section="final_cta" />}
           </div>
+          {note && <p className="mt-4 text-small text-white/60">{note}</p>}
         </div>
       </Container>
     </section>

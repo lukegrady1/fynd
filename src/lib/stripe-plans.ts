@@ -22,10 +22,8 @@ export type OneTimeProduct = "gbp-optimization";
  * The free trial sold on /watch: the Review System, `offer.trialDays` free,
  * then $97/month. Its own type rather than a fourth `Plan` because the
  * billing shape is different — nothing is charged at checkout — and
- * everything typed `Plan` charges a month up front. **Not wired to Stripe
- * yet**: `/api/checkout` accepts it and answers "not available" until the
- * trial session exists (`TODO(stripe)` there). Luke is doing the Stripe pass
- * at the end, all at once.
+ * everything typed `Plan` charges a month up front. `/api/checkout` sends
+ * it to `createTrialCheckoutSession`, the same session `/offer/trial` mints.
  */
 export type TrialPlan = "review-trial";
 

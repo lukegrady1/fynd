@@ -9,6 +9,7 @@ import { siteOrigin } from "@/lib/site-origin";
 import {
   createCheckoutSession,
   createDeferredCheckoutSession,
+  createTrialCheckoutSession,
 } from "@/lib/stripe";
 
 /**
@@ -53,8 +54,14 @@ const previewCard = (title: string, description: string, origin: string) => {
 };
 
 /** Where a link goes when it cannot mint a session: the plan's own page. */
-const fallbackPath = (plan: Plan) =>
-  plan === "website-reviews" ? "/website" : plan === "gbp-management" ? "/manage" : "/";
+const fallbackPath = (plan: Plan, billing: string) =>
+  billing === "trial"
+    ? "/watch"
+    : plan === "website-reviews"
+      ? "/website"
+      : plan === "gbp-management"
+        ? "/manage"
+        : "/";
 
 export const GET = async (
   request: NextRequest,
@@ -95,13 +102,15 @@ export const GET = async (
   const result =
     offer.billing === "deferred"
       ? await createDeferredCheckoutSession({ offer, cid, origin, cancelPath })
-      : await createCheckoutSession({
-          cid,
-          plan: offer.plan,
-          origin,
-          offer: offer.slug,
-          cancelPath,
-        });
+      : offer.billing === "trial"
+        ? await createTrialCheckoutSession({ offer, cid, origin, cancelPath })
+        : await createCheckoutSession({
+            cid,
+            plan: offer.plan,
+            origin,
+            offer: offer.slug,
+            cancelPath,
+          });
 
   if (result.status === "ok") {
     // Only once a real session exists, so a closed or broken link never
@@ -111,11 +120,13 @@ export const GET = async (
         event: "checkout_started",
         ghl_contact_id: cid,
         page:
-          offer.plan === "website-reviews"
-            ? "website"
-            : offer.plan === "gbp-management"
-              ? "manage"
-              : "start",
+          offer.billing === "trial"
+            ? "watch"
+            : offer.plan === "website-reviews"
+              ? "website"
+              : offer.plan === "gbp-management"
+                ? "manage"
+                : "start",
         meta: { plan: offer.plan, offer: offer.slug },
       },
       `${Date.now()}`,
@@ -132,7 +143,7 @@ export const GET = async (
 
   // Closed (a deferred date has passed) or Stripe failed: the plan's public
   // page still has a working Start now button and a way to book a call.
-  return NextResponse.redirect(`${origin}${fallbackPath(offer.plan)}`, {
+  return NextResponse.redirect(`${origin}${fallbackPath(offer.plan, offer.billing)}`, {
     status: 303,
     headers: NO_INDEX,
   });

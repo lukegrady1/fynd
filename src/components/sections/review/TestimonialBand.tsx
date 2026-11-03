@@ -16,6 +16,14 @@ import { Reveal } from "./Reveal";
  * homepage. While that list is empty it falls back to the fictional
  * placeholders in `content/testimonials.ts`. The first real quote retires
  * the placeholders.
+ *
+ * On phones the cards flow past on their own — a marquee, the trust
+ * strip's pattern: the track is the list twice over and slides by half
+ * its width, so the loop is seamless — rather than six stacked cards
+ * that ran two thousand pixels (mobile pass, Nov 3, 2026; Luke: "I would
+ * rather have them just flow" than swipe). It pauses while a finger is
+ * on it, so a quote can be read. The second copy is aria-hidden. Under
+ * reduced motion the row is a plain swipe instead. From md it's the grid.
  */
 export function TestimonialBand() {
   const real = supplied();
@@ -37,7 +45,25 @@ export function TestimonialBand() {
           </h2>
         </Reveal>
 
-        <ul className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3 lg:gap-6">
+        {/* Phones: the marquee track. */}
+        <div className="mt-8 overflow-x-auto pb-2 [scrollbar-width:none] max-md:-mx-4 [&::-webkit-scrollbar]:hidden md:hidden">
+          <ul className="flex w-max gap-4 px-4 motion-safe:animate-[fynd-marquee_60s_linear_infinite] motion-safe:[animation-play-state:running] motion-safe:active:[animation-play-state:paused] motion-safe:hover:[animation-play-state:paused]">
+            {[0, 1].map((copy) =>
+              items.map((t) => (
+                <li
+                  key={`${copy}-${t.business}`}
+                  aria-hidden={copy === 1 ? "true" : undefined}
+                  className="flex w-[300px] shrink-0"
+                >
+                  <TestimonialCard item={t} />
+                </li>
+              )),
+            )}
+          </ul>
+        </div>
+
+        {/* md and up: the grid. */}
+        <ul className="mt-10 hidden gap-5 md:grid md:grid-cols-2 lg:grid-cols-3 lg:gap-6">
           {items.map((t, i) => (
             <li key={t.business} className="flex">
               <Reveal delay={(i % 3) * 0.06} className="flex w-full">

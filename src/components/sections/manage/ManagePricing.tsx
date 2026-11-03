@@ -19,13 +19,15 @@ export type PricingCopy = {
     per: string;
     perNote: string;
     pill: string;
-    explain: string;
+    /** The paragraph under the pill; /watch has none. */
+    explain?: string;
     allIn: { title: string; body: string };
     includedLine: { label: string; text: string };
     checks: readonly string[];
     cta: string;
     ctaNote: string;
-    anchorNote: string;
+    /** The second line under the button; /watch has none. */
+    anchorNote?: string;
     /** The quiet link under the price; /manage points at the $99. */
     onceLine?: { lead: string; label: string; href: string };
   };
@@ -105,7 +107,7 @@ export function ManagePricing({
                 <Check aria-hidden="true" strokeWidth={3} className="h-3.5 w-3.5" />
                 {card.pill}
               </span>
-              <p className="mt-5 text-small text-white/70">{card.explain}</p>
+              {card.explain && <p className="mt-5 text-small text-white/70">{card.explain}</p>}
               {card.onceLine && (
                 <p className="mt-4 text-small text-white/70">
                   {card.onceLine.lead}{" "}
@@ -155,7 +157,7 @@ export function ManagePricing({
                 cancelPath={cancelPath}
               />
               <p className="mt-3 text-center text-small text-white/60">{card.ctaNote}</p>
-              <p className="mt-3 text-center text-small text-white/60">{card.anchorNote}</p>
+              {card.anchorNote && <p className="mt-3 text-center text-small text-white/60">{card.anchorNote}</p>}
             </div>
           </div>
         </Reveal>

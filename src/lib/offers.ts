@@ -9,7 +9,7 @@ import type { Plan } from "./stripe-plans";
  * straight to Stripe. The link in a text message never expires; the session
  * behind it is always new, with today's dates and wording.
  *
- * Two billing shapes:
+ * Three billing shapes:
  *
  *   - "now"      the normal checkout, identical to the Start now buttons:
  *                the plan's first charge today, then $97/month from the
@@ -18,6 +18,10 @@ import type { Plan } from "./stripe-plans";
  *                Checkout only saves the card; the plan's first charge is
  *                taken on that day and the $97/month starts on the billing
  *                day after it. See `createDeferredCheckoutSession`.
+ *   - "trial"    nothing today: the card is saved and the plan's own
+ *                $97/month subscription starts after `days` free, billed on
+ *                that day each month from then (no 1st/15th anchor). The
+ *                /watch deal. See `createTrialCheckoutSession`.
  *
  * A new custom deal is one line here. Slugs are lowercase and URL-safe;
  * link-preview text for each lives in `offerLinks` in `src/content/copy.ts`.
@@ -35,6 +39,11 @@ export type Offer = { plan: Plan } & (
        */
       startsOn: string;
     }
+  | {
+      billing: "trial";
+      /** Free days before the first charge. */
+      days: number;
+    }
 );
 
 export const OFFERS = {
@@ -44,6 +53,12 @@ export const OFFERS = {
   reviews: { plan: "review-system", billing: "now" },
   /** Profile management: $297 today, then $297/month. */
   manage: { plan: "gbp-management", billing: "now" },
+  /**
+   * The Review System on a 7-day free trial: nothing today, then $97 a
+   * month from day 8, on that day each month. What /watch sells; its own
+   * button mints the same session (plan `review-trial` at /api/checkout).
+   */
+  trial: { plan: "review-system", billing: "trial", days: 7 },
   /**
    * The /website checkout with the charge moved: nothing today, $249 on
    * November 1, then $97 on the 1st from December 1.

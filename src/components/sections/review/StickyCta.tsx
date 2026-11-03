@@ -21,6 +21,7 @@ export function StickyCta({
   withDemo,
   showPrice = true,
   price = offer.price,
+  showAfterId,
 }: {
   ctaLabel: string;
   targetId: string;
@@ -34,6 +35,14 @@ export function StickyCta({
   showPrice?: boolean;
   /** The $/mo figure on the pill. Defaults to the review system's. */
   price?: number;
+  /**
+   * Appear once THIS element has scrolled off the top, instead of the
+   * target. /watch's price card is two-thirds of the way down a long
+   * page, so the pill would be absent for most of the read; passing the
+   * hero makes it available from the second section on (mobile pass,
+   * Nov 3, 2026). The click still scrolls to `targetId`.
+   */
+  showAfterId?: string;
 }) {
   const [visible, setVisible] = useState(false);
   const demoHref = useDemoHref();
@@ -47,7 +56,7 @@ export function StickyCta({
 
     const update = () => {
       frame = 0;
-      const target = document.getElementById(targetId);
+      const target = document.getElementById(showAfterId ?? targetId);
       if (!target) return;
       setVisible(target.getBoundingClientRect().bottom < 0);
     };
@@ -65,7 +74,7 @@ export function StickyCta({
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
     };
-  }, [targetId]);
+  }, [targetId, showAfterId]);
 
 
   const handleClick = () => {
