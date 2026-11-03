@@ -69,7 +69,8 @@ export default async function WatchPage({
   return (
     <>
       <PageTracking page="watch" cid={params.cid} />
-      <FunnelHeader tone="dark" />
+      {/* No link on the logo: nothing on this page leads back to the site. */}
+      <FunnelHeader tone="dark" homeLink={false} />
 
       <main className="flex-1">
         <WatchHero targetId={CONVERT_ID} />

@@ -240,7 +240,10 @@ export const watch = {
   },
 
   video: {
-    src: "/fynd-split-vsl-vo-web_4.mp4",
+    /** The free-trial cut (Nov 3, 2026): the end card is silent with the
+        music up and reads "Start your free trial now"; the spoken "$97 a
+        month" line is gone. Source: ~/Downloads/fynd_new_vsl, FyndSplitVSL. */
+    src: "/fynd-split-vsl-trial-web.mp4",
     poster: "/fynd-split-vsl-poster.jpg",
     /** Runs 47.1s, with voiceover. Update if the file is swapped. */
     duration: "0:47",

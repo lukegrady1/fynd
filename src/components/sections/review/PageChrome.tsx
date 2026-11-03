@@ -12,18 +12,30 @@ import { brand } from "@/lib/brand";
  */
 export function FunnelHeader({
   tone = "light",
+  homeLink = true,
 }: {
   /** "dark" sits directly above the navy hero with no seam. */
   tone?: "light" | "dark";
+  /**
+   * False renders the logo as a plain mark, not a link to the homepage.
+   * /watch sets it (Luke, Nov 3, 2026): the page is texted to a lead and
+   * the one way off it should be the trial, not the site.
+   */
+  homeLink?: boolean;
 }) {
   const dark = tone === "dark";
+  const logo = <Logo tone={dark ? "light" : "dark"} priority />;
   return (
     <header className={dark ? "bg-navy" : "border-b border-line bg-white"}>
       <Container>
         <div className="flex h-16 items-center">
-          <Link href="/" aria-label="Fynd — home">
-            <Logo tone={dark ? "light" : "dark"} priority />
-          </Link>
+          {homeLink ? (
+            <Link href="/" aria-label="Fynd — home">
+              {logo}
+            </Link>
+          ) : (
+            logo
+          )}
         </div>
       </Container>
     </header>

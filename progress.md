@@ -458,6 +458,9 @@ it, like `BookDemo.tsx` / `watch.book`).
   hero has scrolled off rather than once the price card has
   (`StickyCta`'s new `showAfterId`), so the trial is one tap away from
   the second section on instead of only after the card two-thirds down.
+- **The header logo is not a link here** (`FunnelHeader homeLink={false}`;
+  Luke, Nov 3, 2026: people on /watch shouldn't be able to leave it). The
+  footer's "Book a call" (/demo, new tab) is the one remaining way off.
 - **Every ask is the trial.** Each section ends on a "Start your free
   trial" button to `#convert`; the sticky pill has no "Book a Demo"
   beside it; the "Not ready? Book a demo call first" link in the trial
@@ -518,8 +521,18 @@ it, like `BookDemo.tsx` / `watch.book`).
   rather than to `/` or `/website`. `?plan=` is still parsed but ignored
   here now that there is one card.
 
-- **Video is self-hosted** — `public/fynd-split-vsl-vo-web_4.mp4` (1920x1080,
-  47.1s, 7.0MB, voiceover) played through a native `<video>` in
+- **Video is self-hosted** — `public/fynd-split-vsl-trial-web.mp4` (1920x1080,
+  47.1s, 5.3MB, voiceover; the free-trial cut, Nov 3, 2026: the end card
+  is music only, the logo comes in, "Start your free trial now" and a
+  "7 days free · start below ↓" pill replace the "$197 → $97/mo" card,
+  and the dashboard's "$97/mo · fully automated" badge reads "7-day free
+  trial · fully automated". Made in `~/Downloads/fynd_new_vsl`
+  (Remotion, `FyndSplitVSL`); the spoken last line was cut by trimming
+  the old voiceover mix at the CTA wipe with ffmpeg into
+  `splitvsl-voiceover-trial.mp3`, since there is no ElevenLabs
+  subscription any more — don't re-run `scripts/retime_splitvsl.py`
+  without a new line 20, it rebuilds the mix with the old one) played
+  through a native `<video>` in
   `src/components/sections/review/VslPlayer.tsx`. No YouTube script, no
   iframe. `preload="metadata"` so the file costs nothing until play; the
   poster is `public/fynd-split-vsl-poster.jpg`, a 1280x720 title card of the
