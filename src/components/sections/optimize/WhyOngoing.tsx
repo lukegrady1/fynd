@@ -1,7 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, Check, Image, MessageSquareText, Minus, Users } from "lucide-react";
+import {
+  ArrowRight,
+  Check,
+  Image,
+  MessageSquareText,
+  Minus,
+  Users,
+} from "lucide-react";
 import { optimize } from "@/content/copy";
 import { track } from "@/lib/analytics";
 import { Container } from "@/components/ui/Layout";
@@ -16,11 +23,14 @@ import { Reveal } from "@/components/sections/review/Reveal";
  * top of the page. Second, the one-off beside the monthly service as one
  * table, so the reader can see exactly what the $297 adds — and that it
  * starts with the same optimization. The right-hand column is only what
- * the white-labelled platform does.
+ * the white-labelled platform does. It stays one three-column table on
+ * phones too, with a narrow label column and tight cells, so both offers
+ * are side by side and the navy column runs unbroken.
  *
- * The button goes to /manage and is the page's only ask for the monthly
- * plan. The hero's quiet link and the $99 card's hand-off both land here
- * (`id`), so nobody reaches the ask without the case.
+ * Sits after the FAQ, last before the closer (Luke, Nov 3, 2026), so the
+ * one-off's own case is finished before the monthly plan is raised. The
+ * button goes to /manage and is the page's only ask for it. The hero's
+ * quiet link and the $99 card's hand-off both land here (`id`).
  */
 export function WhyOngoing({ id }: { id: string }) {
   const copy = optimize.ongoing;
@@ -64,17 +74,29 @@ export function WhyOngoing({ id }: { id: string }) {
 
         {/* Once beside every month */}
         <Reveal className="mx-auto mt-12 max-w-[880px] lg:mt-16">
+          {/* One table at every width. On phones the label column is
+              narrow and the cells tight, so the three columns still fit
+              side by side and the navy column runs unbroken. */}
           <div className="overflow-hidden rounded-lg border border-line bg-white shadow-sm">
             <table className="w-full border-collapse text-left">
               <thead>
                 <tr className="border-b border-line">
-                  <th scope="col" className="w-[26%] p-3 text-micro uppercase text-ink-soft sm:w-[30%] sm:px-6 sm:py-4">
+                  <th
+                    scope="col"
+                    className="w-[27%] px-2.5 py-2.5 sm:w-[30%] sm:px-6 sm:py-4"
+                  >
                     <span className="sr-only">What</span>
                   </th>
-                  <th scope="col" className="w-[30%] p-3 text-micro uppercase text-ink-soft sm:px-6 sm:py-4">
+                  <th
+                    scope="col"
+                    className="w-[31%] px-2.5 py-2.5 text-micro uppercase text-ink-soft sm:w-[30%] sm:px-6 sm:py-4"
+                  >
                     {copy.table.onceLabel}
                   </th>
-                  <th scope="col" className="w-[44%] bg-navy p-3 text-micro uppercase text-fynd-green sm:w-[40%] sm:px-6 sm:py-4">
+                  <th
+                    scope="col"
+                    className="w-[42%] bg-navy px-2.5 py-2.5 text-micro uppercase text-fynd-green sm:w-[40%] sm:px-6 sm:py-4"
+                  >
                     {copy.table.monthlyLabel}
                   </th>
                 </tr>
@@ -82,32 +104,39 @@ export function WhyOngoing({ id }: { id: string }) {
               <tbody className="divide-y divide-line">
                 {copy.table.rows.map((row) => (
                   <tr key={row.label}>
-                    <th scope="row" className="p-3 align-top text-small font-semibold text-ink sm:px-6 sm:py-4">
+                    <th
+                      scope="row"
+                      className="px-2.5 py-2.5 align-top text-[12px] font-semibold leading-snug text-ink sm:px-6 sm:py-4 sm:text-small"
+                    >
                       {row.label}
                     </th>
-                    <td className="p-3 align-top sm:px-6 sm:py-4">
+                    <td className="px-2.5 py-2.5 align-top sm:px-6 sm:py-4">
                       {row.once ? (
-                        <span className="flex items-start gap-2 text-small font-medium text-ink-soft">
+                        <span className="flex items-start gap-1.5 text-[12px] font-medium leading-snug text-ink-soft sm:gap-2 sm:text-small">
                           <Check
                             aria-hidden="true"
                             strokeWidth={2.5}
-                            className="mt-0.5 h-4 w-4 shrink-0 text-fynd-green-text"
+                            className="mt-[3px] h-3 w-3 shrink-0 text-fynd-green-text sm:mt-0.5 sm:h-4 sm:w-4"
                           />
                           {row.once}
                         </span>
                       ) : (
                         <span className="flex items-center gap-2 text-small text-ink-muted">
-                          <Minus aria-hidden="true" strokeWidth={2} className="h-4 w-4 shrink-0" />
+                          <Minus
+                            aria-hidden="true"
+                            strokeWidth={2}
+                            className="h-3.5 w-3.5 shrink-0 sm:h-4 sm:w-4"
+                          />
                           <span className="sr-only">Not included</span>
                         </span>
                       )}
                     </td>
-                    <td className="bg-navy p-3 align-top sm:px-6 sm:py-4">
-                      <span className="flex items-start gap-2 text-small font-medium text-white">
+                    <td className="bg-navy px-2.5 py-2.5 align-top sm:px-6 sm:py-4">
+                      <span className="flex items-start gap-1.5 text-[12px] font-medium leading-snug text-white sm:gap-2 sm:text-small">
                         <Check
                           aria-hidden="true"
                           strokeWidth={2.5}
-                          className="mt-0.5 h-4 w-4 shrink-0 text-fynd-green"
+                          className="mt-[3px] h-3 w-3 shrink-0 text-fynd-green sm:mt-0.5 sm:h-4 sm:w-4"
                         />
                         {row.monthly}
                       </span>
@@ -118,10 +147,15 @@ export function WhyOngoing({ id }: { id: string }) {
             </table>
           </div>
 
-          <div className="mt-8 flex justify-center">
+          <div className="mt-8 flex flex-col items-center gap-4">
+            <p className="text-center text-body font-semibold text-ink">
+              {copy.ctaLead}
+            </p>
             <Link
               href={copy.href}
-              onClick={() => track("cta_click", { cta: copy.cta, section: "ongoing" })}
+              onClick={() =>
+                track("cta_click", { cta: copy.cta, section: "ongoing" })
+              }
               className="group flex h-12 w-full items-center justify-center rounded-sm bg-fynd-blue px-6 text-body font-semibold text-white shadow-blue transition-all duration-150 ease-fynd hover:-translate-y-px hover:bg-[#3F4DF0] active:scale-[0.99] sm:h-14 sm:w-auto sm:px-8"
             >
               {copy.cta}

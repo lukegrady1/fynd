@@ -12,7 +12,8 @@ import { cn } from "@/lib/utils";
  *
  * Icons in the four-pillar style (48px circle, 1.5px ring in the icon's own
  * color). Blue, then green, for the two the profile controls; the one it
- * doesn't is ink-soft on a plain ring.
+ * doesn't is ink-soft on a plain ring. On phones each card is a row,
+ * icon beside the text, so three of them don't run a screen and a half.
  */
 export function RankingFactors() {
   const copy = optimize.ranking;
@@ -38,41 +39,50 @@ export function RankingFactors() {
                 <Reveal
                   delay={i * 0.08}
                   className={cn(
-                    "flex w-full flex-col rounded-md border bg-white p-6 shadow-sm lg:p-7",
+                    "flex w-full gap-4 rounded-md border bg-white p-5 shadow-sm md:flex-col md:p-6 lg:p-7",
                     factor.yours ? "border-line" : "border-dashed border-line",
                   )}
                 >
                   <span
                     aria-hidden="true"
                     className={cn(
-                      "flex h-12 w-12 items-center justify-center rounded-full border-[1.5px]",
+                      "flex h-11 w-11 shrink-0 items-center justify-center rounded-full border-[1.5px] md:h-12 md:w-12",
                       look.ring,
                     )}
                   >
-                    <look.Icon strokeWidth={1.75} className={cn("h-5 w-5", look.icon)} />
+                    <look.Icon
+                      strokeWidth={1.75}
+                      className={cn("h-5 w-5", look.icon)}
+                    />
                   </span>
 
-                  <h3 className="mt-5 text-h3 text-ink">{factor.name}</h3>
-                  <p className="mt-1.5 text-body text-ink-soft">{factor.what}</p>
+                  <div className="flex min-w-0 flex-1 flex-col">
+                    <h3 className="text-h3 text-ink md:mt-5">{factor.name}</h3>
+                    <p className="mt-1 text-small font-medium text-ink-soft md:mt-1.5 md:text-body">
+                      {factor.what}
+                    </p>
 
-                  <p className="mt-auto border-t border-line pt-4">
-                    <span
-                      className={cn(
-                        "block text-micro uppercase",
-                        factor.yours ? "text-fynd-green-text" : "text-ink-muted",
-                      )}
-                    >
-                      {factor.yours ? copy.yoursLabel : copy.notYoursLabel}
-                    </span>
-                    <span
-                      className={cn(
-                        "mt-1.5 block text-small font-medium",
-                        factor.yours ? "text-ink" : "text-ink-soft",
-                      )}
-                    >
-                      {factor.onProfile}
-                    </span>
-                  </p>
+                    <p className="mt-3 border-t border-line pt-3 md:mt-auto md:pt-4">
+                      <span
+                        className={cn(
+                          "block text-micro uppercase",
+                          factor.yours
+                            ? "text-fynd-green-text"
+                            : "text-ink-muted",
+                        )}
+                      >
+                        {factor.yours ? copy.yoursLabel : copy.notYoursLabel}
+                      </span>
+                      <span
+                        className={cn(
+                          "mt-1.5 block text-small font-medium",
+                          factor.yours ? "text-ink" : "text-ink-soft",
+                        )}
+                      >
+                        {factor.onProfile}
+                      </span>
+                    </p>
+                  </div>
                 </Reveal>
               </li>
             );

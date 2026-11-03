@@ -5,6 +5,7 @@ import {
   Phone,
   Sparkles,
   Star,
+  X,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { manage } from "@/content/copy";
@@ -16,8 +17,11 @@ import { Reveal } from "@/components/sections/review/Reveal";
  * "Great local & AI SEO starts with a great website. So Paige gives you
  * one.": navy, the argument on the left, the drawn site on the right
  * with the "built while you set up" badge over it and a phone mock
- * tucked into its corner, and under both the two option cards (use the
- * site we build / keep yours).
+ * tucked into its corner, and under both the two option cards: have us
+ * build one (featured, a one-time $249) and keep yours (drawn muted and
+ * marked "Not recommended", its items the drawbacks with orange marks,
+ * and a note sending the reader back to option 1). The section's job is
+ * to move people onto our site (Luke, Nov 3, 2026).
  *
  * The site is the fictional salon's. ILLUSTRATION: the badge and the
  * fictional name are the label.
@@ -67,33 +71,57 @@ export function WebsiteSection() {
 
         <div className="mt-12 grid gap-5 lg:mt-16 lg:grid-cols-[1.35fr_1fr]">
           {copy.options.map((opt, i) => {
-            const featured = "pill" in opt;
+            const featured = i === 0;
+            const warn = "tone" in opt && opt.tone === "warn";
             return (
               <Reveal
                 key={opt.label}
                 delay={i * 0.08}
                 className={cn(
                   "rounded-lg border p-6 lg:p-7",
-                  featured ? "border-fynd-blue/60 bg-white/[0.04]" : "border-white/15 bg-white/[0.02]",
+                  featured && "border-fynd-blue/60 bg-white/[0.04]",
+                  warn && "border-dashed border-white/15 bg-transparent",
+                  !featured && !warn && "border-white/15 bg-white/[0.02]",
                 )}
               >
                 <p className="text-micro uppercase text-white/60">{opt.label}</p>
                 <div className="mt-1.5 flex flex-wrap items-center justify-between gap-3">
-                  <h3 className="text-h3 text-white lg:text-[22px]">{opt.title}</h3>
-                  {featured && (
-                    <span className="rounded-full bg-fynd-green/20 px-3 py-1 text-[12px] font-semibold text-fynd-green">
+                  <h3 className={cn("text-h3 lg:text-[22px]", warn ? "text-white/80" : "text-white")}>
+                    {opt.title}
+                  </h3>
+                  {"pill" in opt && (
+                    <span
+                      className={cn(
+                        "rounded-full px-3 py-1 text-[12px] font-semibold",
+                        featured && "bg-fynd-green/20 text-fynd-green",
+                        warn && "bg-fynd-orange/15 text-fynd-orange",
+                        !featured && !warn && "bg-white/15 text-white",
+                      )}
+                    >
                       {opt.pill}
                     </span>
                   )}
                 </div>
                 <ul className={cn("mt-4 grid gap-2.5", featured && "sm:grid-cols-2")}>
                   {opt.items.map((item) => (
-                    <li key={item} className="flex items-start gap-2.5 text-body text-white/90">
-                      <Check aria-hidden="true" strokeWidth={3} className="mt-1 h-4 w-4 shrink-0 text-fynd-green" />
+                    <li
+                      key={item}
+                      className={cn("flex items-start gap-2.5 text-body", warn ? "text-white/65" : "text-white/90")}
+                    >
+                      {warn ? (
+                        <X aria-hidden="true" strokeWidth={3} className="mt-1 h-4 w-4 shrink-0 text-fynd-orange" />
+                      ) : (
+                        <Check aria-hidden="true" strokeWidth={3} className="mt-1 h-4 w-4 shrink-0 text-fynd-green" />
+                      )}
                       {item}
                     </li>
                   ))}
                 </ul>
+                {"note" in opt && (
+                  <p className="mt-5 border-t border-white/10 pt-4 text-small font-semibold text-white">
+                    {opt.note}
+                  </p>
+                )}
               </Reveal>
             );
           })}

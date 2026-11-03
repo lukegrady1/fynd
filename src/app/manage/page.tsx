@@ -31,8 +31,10 @@ import { ManageCloser } from "@/components/sections/manage/ManageCloser";
  * busy owners (the two cards, three stats) -> "your business,
  * everywhere" (the channel ring) -> the first month in three steps ->
  * what to judge when, with the sample report -> the math -> the tools
- * replaced -> the website -> "every day you wait" with the $297 card
- * (#convert) -> every feature as one table -> FAQ -> closer. What the
+ * replaced -> "every day you wait" with the $297 card (#convert) ->
+ * every feature as one table -> the website (moved down from before the
+ * price card, Luke, Nov 3, 2026; it is a $249 one-time add-on, not part
+ * of the $297) -> FAQ -> closer. What the
  * platform's page has that this one leaves out on purpose is listed on
  * `manage` in copy.ts.
  *
@@ -66,9 +68,9 @@ export default async function ManagePage({
         <JudgeReport />
         <TheMath />
         <ToolsReplaced />
-        <WebsiteSection />
         <ManagePricing cid={params.cid} cancelled={params.cancelled} />
         <FeatureTable />
+        <WebsiteSection />
         <ManageFaq />
         <ManageCloser targetId="convert" />
       </main>

@@ -122,13 +122,17 @@ looks fake.
   and details"), numbered straight through, with why (`UpdateChecklist`)
   -> typical beside optimized -> $99 card at `#convert` with a three-step
   "how it works" row under it (pay, add us as a manager, done in five
-  business days) -> why kept-up beats filled-in at `#ongoing`
-  (`WhyOngoing`: three "what goes stale" cards, then the $99 beside the
-  $297 as one table, "See full management" button; the hero's quiet link
-  and the $99 card's hand-off both land here) -> FAQ -> closer. The
-  separate managed-plan ask ("Rather not think about it at all?", with
-  the book-a-call line) came out on Nov 3, 2026 (Luke); the table's
-  button is the only ask for the monthly plan.
+  business days) -> FAQ -> why kept-up beats filled-in at `#ongoing`
+  (`WhyOngoing`, "Keep it optimized every month.": three "what goes
+  stale" cards, then the $99 beside the
+  $297 as one table, then "Interested in our monthly Google Business
+  Profile management plan?" over a "Learn more" button to /manage; the
+  hero's quiet link and the $99 card's hand-off both land here) ->
+  closer. It moved below the FAQ on Nov 3, 2026 (Luke), so the one-off's
+  own case is finished before the monthly plan is raised. The separate
+  managed-plan ask ("Rather not think about it at all?", with the
+  book-a-call line) came out the same day; the "Learn more" button is
+  the only ask for the monthly plan.
 
   The `#ongoing` table's right-hand column is only what the platform does
   (no Q&A, no hours upkeep); it says the subscription starts with the same
@@ -143,6 +147,18 @@ looks fake.
   new `optimize.faq` is ten questions about the one-off only; its last
   answer is the page's one FAQ mention of full management.
 
+- **Mobile is the primary target and anything compared is side by side
+  there** (Luke, Nov 3, 2026: "super important"). Below md the
+  typical/optimized section swaps the two drawn cards for a real
+  three-column table (`compare.rows` in copy.ts: narrow label column,
+  then typical and optimized) so both states are on one screen; the
+  once-vs-monthly table at `#ongoing` is one `<table>` at every width
+  with tighter cells and a narrower label column on phones. Both are
+  proper tables on purpose: a first pass put the row label on its own
+  line above two cells, and Luke sent both back because the coloured
+  column broke into floating chunks between labels. The three ranking
+  cards are rows (icon beside text) on phones. The closer's button says
+  "Fix my profile" (no price); the sticky pill keeps the $99.
 - **The profile is drawn, not a screenshot** (`GoogleProfile.tsx`, one
   component in two states, drawn as the mobile Google panel: photo strip,
   name and rating, round Call/Directions/Website buttons, then the stacked
@@ -223,7 +239,7 @@ one via `.rot-ch` / `.rot-logo` keyframes in globals.css; first
 channel in the markup, no cycling under reduced motion), then the paragraph, three checks and the button
 on the left and a drawn search result on the right: the query, "Your
 business" first with a Call button, Competitor A and B under it, "New
-customer calling…" (`ManageHero`; captioned "Illustration") -> "built for busy owners": the owner's card (blue /
+customer calling…" (`ManageHero`; the bar sits in its row, raised with a shadow and slight scale, and rings every 7s; the "Illustration" caption came off Nov 3, 2026) -> "built for busy owners": the owner's card (blue /
 orange left rules) beside our to-do list with the nested "if we ever
 need you" card, three stat tiles, button (`BusyOwners`) -> "Your
 business. Everywhere.": the navy panel redrawn to match Paige's (Luke,
@@ -299,6 +315,38 @@ Google's own (relevance, distance, prominence) and safe to keep. Edit
 before sending anyone the link.
 No `/offer/<slug>` link exists for it yet; one is a line in `offers.ts` if
 the table grows a one-time shape.
+
+**The first-month rail is scroll-driven** (Luke, Nov 3, 2026):
+`ProgressRail.tsx` grows the coloured line from the first dot to the last
+as the steps list moves up the viewport (0 when its top is at 85% of the
+viewport, 1 when its bottom passes the middle) and fills each dot as the
+line reaches it. Without JavaScript it is the old static state: first
+dot filled, line a third across. The "Not ready? Book a call first" link
+under the steps came off the same day.
+
+**The sample report's two maps are real** (Luke, Nov 3, 2026: "take one
+of the heatmaps from paige site"): the salon before/after pair from the
+platform's results page, saved as `public/images/heatmap-salon-before.webp`
+and `-after.webp`, named as the platform's in the caption and
+screen-reader text (no tag on the report itself). They are a vendor
+customer's results, not Fynd's own, which is why the caption says "on the
+platform full management runs on" rather than claiming them. The drawn
+5x5 grid they replaced is gone from `JudgeReport.tsx`.
+
+**The website is a $249 one-time add-on, not part of the $297** (Luke,
+Nov 3, 2026: "we aren't going to make the website for free"). The website
+section moved from before the price card to just above the FAQ, its
+badge, heading, body and option pills say $249 one time, and the "What's
+included", "Does it come with a website?" and "Can I keep my current
+website?" FAQ answers, the tools-replaced row, the feature-table row and
+the /optimize comparison table all say so. Hosting, widgets and the scan
+of an existing site are still in the plan, but **keeping an existing site
+is now the discouraged path** (Luke, Nov 3, 2026: the section's job is to
+move people onto our site): option 2 is drawn muted with a "Not
+recommended" pill, its items are the drawbacks with orange marks, and a
+note says "Our advice: switch"; the "Already have a website?" block and
+both website FAQ answers steer the same way. Nothing charges the $249 yet
+(no product or checkout for it).
 
 ### VSL page — `/watch`
 

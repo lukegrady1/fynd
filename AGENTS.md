@@ -179,7 +179,9 @@ that shape rather than inventing a layout. Its illustrations (the
 browser) are drawn and fictional; the report carries Paige's own
 "numbers are illustrative" caption. What it leaves out on purpose is
 Paige's customer results, testimonials and vendor stats (not Fynd's to
-claim), the citations add-on, and anything agency- or
+claim; the one exception is the real salon heatmap pair in the sample
+report, credited in the caption to "the platform full management
+runs on"), the citations add-on, and anything agency- or
 platform-revealing — see the note on `manage` in `copy.ts` and
 `progress.md` before adding a section back. The $99 one-off is linked
 from the hero, the price card and the closer; `/optimize`'s managed

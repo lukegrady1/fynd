@@ -17,8 +17,11 @@ import { ScrollButton } from "./ScrollButton";
  * search result drawn as a white card: the query, the business first
  * with a Call button, two competitors under it, a call coming in.
  *
- * ILLUSTRATION, captioned as one. The business is "Your business", not
- * a client, and the competitors are lettered.
+ * ILLUSTRATION (the caption saying so came off, Luke, Nov 3, 2026). The
+ * business is "Your business", not a client, and the competitors are
+ * lettered. The "new customer calling" bar sits in its row but is raised
+ * toward the viewer (shadow, slight scale) and rings every seven seconds
+ * (`.fynd-ring` in globals.css).
  */
 export function ManageHero({ targetId }: { targetId: string }) {
   const copy = manage.hero;
@@ -99,8 +102,11 @@ function SearchMock() {
   const m = manage.hero.mock;
 
   return (
-    <figure className="mx-auto w-full max-w-[520px] lg:ml-auto lg:mr-0">
-      <div aria-hidden="true" className="rounded-lg bg-white p-3 shadow-lg sm:p-4">
+    <div
+      aria-hidden="true"
+      className="mx-auto w-full max-w-[520px] lg:ml-auto lg:mr-0"
+    >
+      <div className="rounded-lg bg-white p-3 shadow-lg sm:p-4">
         <div className="flex items-center gap-3 rounded-full bg-fynd-gray px-4 py-3">
           <Search strokeWidth={2} className="h-4 w-4 shrink-0 text-ink-soft" />
           <span className="text-body font-semibold text-ink">{m.query}</span>
@@ -156,7 +162,9 @@ function SearchMock() {
           ))}
         </ul>
 
-        <div className="mt-3 flex items-center gap-3 rounded-md bg-navy px-4 py-3 text-white">
+        {/* In its row, but raised toward the viewer: a deep shadow, a
+            hairline, and a touch of scale, which the ring also pops. */}
+        <div className="fynd-ring relative z-10 mt-3 flex items-center gap-3 rounded-md bg-navy px-4 py-3 text-white shadow-lg ring-1 ring-white/15">
           <span className="relative flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-fynd-green text-navy">
             <span className="absolute inset-0 rounded-full bg-fynd-green/60 motion-safe:animate-ping" />
             <Phone strokeWidth={2} className="relative h-4 w-4" />
@@ -164,9 +172,6 @@ function SearchMock() {
           <span className="text-small font-semibold">{m.calling}</span>
         </div>
       </div>
-      <figcaption className="mt-2 text-right text-micro uppercase text-white/50">
-        {m.caption}
-      </figcaption>
-    </figure>
+    </div>
   );
 }

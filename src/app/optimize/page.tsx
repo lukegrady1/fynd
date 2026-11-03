@@ -60,8 +60,8 @@ export default async function OptimizePage({
           cancelled={params.cancelled}
           managedId="ongoing"
         />
-        <WhyOngoing id="ongoing" />
         <ObjectionFaq heading={optimize.faq.heading} items={optimize.faq.items} />
+        <WhyOngoing id="ongoing" />
         <FinalCta
           heading={optimize.finalCta.heading}
           ctaLabel={optimize.finalCta.cta}

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import {
   ArrowRight,
   Check,
@@ -24,11 +25,12 @@ import { Reveal } from "@/components/sections/review/Reveal";
  * edge (blue for the first week, orange for the months after), and
  * under them the sample monthly report drawn as the platform draws it —
  * three counts, two maps side by side, the work done, an AI line — with
- * its caption saying the numbers are made up.
+ * its caption saying which numbers are made up.
  *
- * Ranks on the maps: 1–3 green, 4–10 orange, 11–20 a faint orange with
- * dark numerals, not found a hollow ring. No red anywhere, so "not
- * found" is the absence of colour rather than a warning colour.
+ * The two maps are the real thing: a salon's before/after heatmaps from
+ * the platform's own results page (public/images/heatmap-salon-*.webp),
+ * named as the platform's in the caption (the "Real salon" tag that sat
+ * on the map header came off, Luke, Nov 3, 2026). They replaced a drawn 5x5 grid (Luke, Nov 3, 2026).
  */
 export function JudgeReport() {
   const copy = manage.judge;
@@ -90,10 +92,6 @@ export function JudgeReport() {
   );
 }
 
-const TOP3 = 3;
-const PAGE1 = 10;
-const FOUND = 20;
-
 function SampleReport() {
   const r = manage.judge.report;
 
@@ -132,7 +130,7 @@ function SampleReport() {
                 </span>
                 <div>
                   <p className="text-[11px] leading-tight text-ink-soft sm:text-small">{stat.label}</p>
-                  <p className="text-[20px] font-bold leading-tight tabular-nums text-ink sm:text-[24px]">{stat.value}</p>
+                  <p className="mt-0.5 text-[26px] font-bold leading-none tabular-nums tracking-[-0.02em] text-ink sm:text-[34px]">{stat.value}</p>
                   <p className="mt-0.5 flex items-center gap-1 whitespace-nowrap text-[10px] font-semibold text-fynd-green-text sm:text-[12px]">
                     <TrendingUp strokeWidth={2.5} className="hidden h-3 w-3 sm:block" />
                     {stat.delta}
@@ -143,10 +141,29 @@ function SampleReport() {
           })}
         </ul>
 
-        {/* Two maps */}
-        <div className="mt-3 grid gap-3 sm:grid-cols-2">
-          <RankMap grid={r.beforeGrid} day={r.before} />
-          <RankMap grid={r.afterGrid} day={r.after} />
+        {/* The two maps: real, so not inside the aria-hidden drawing's
+            silence — each image carries its own alt. */}
+        <div className="mt-3 overflow-hidden rounded-md border border-line">
+          <div className="bg-fynd-gray px-3 py-2">
+            <p className="text-small font-semibold text-ink">{r.heatmap.label}</p>
+          </div>
+          <div className="grid grid-cols-2 gap-px bg-line">
+            {[r.heatmap.before, r.heatmap.after].map((map) => (
+              <figure key={map.day} className="bg-white">
+                <Image
+                  src={map.src}
+                  alt={map.alt}
+                  width={560}
+                  height={560}
+                  sizes="(min-width: 1024px) 460px, 50vw"
+                  className="aspect-square w-full object-cover"
+                />
+                <figcaption className="px-3 py-2 text-[12px] font-semibold uppercase tracking-[0.08em] text-ink-soft">
+                  {map.day}
+                </figcaption>
+              </figure>
+            ))}
+          </div>
         </div>
 
         {/* Work done */}
@@ -157,12 +174,12 @@ function SampleReport() {
               const Icon = workIcon[item.icon] ?? FileText;
               return (
                 <li key={item.label} className="flex items-center gap-3">
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-fynd-gray text-fynd-blue">
-                    <Icon strokeWidth={1.75} className="h-[18px] w-[18px]" />
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-fynd-blue/10 text-fynd-blue">
+                    <Icon strokeWidth={1.75} className="h-5 w-5" />
                   </span>
                   <div>
-                    <p className="text-h3 leading-tight tabular-nums text-ink">{item.value}</p>
-                    <p className="text-[12px] font-medium leading-tight text-ink-soft">{item.label}</p>
+                    <p className="text-[28px] font-bold leading-none tabular-nums tracking-[-0.02em] text-ink sm:text-[32px]">{item.value}</p>
+                    <p className="mt-1 text-[12px] font-medium leading-tight text-ink-soft">{item.label}</p>
                   </div>
                 </li>
               );
@@ -187,73 +204,6 @@ function SampleReport() {
         </div>
       </div>
     </Reveal>
-  );
-}
-
-function RankMap({ grid, day }: { grid: readonly (readonly number[])[]; day: string }) {
-  const r = manage.judge.report;
-  return (
-    <div className="overflow-hidden rounded-md border border-line">
-      <div className="flex items-baseline justify-between gap-3 bg-fynd-gray px-3 py-2">
-        <p className="text-small text-ink">
-          {r.keywordLabel} <strong className="font-semibold text-fynd-blue">{r.keyword}</strong>
-        </p>
-        <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-ink-soft">{day}</p>
-      </div>
-      <div className="relative bg-[#f6f7f9] p-4">
-        <Streets />
-        <div className="relative mx-auto grid max-w-[220px] grid-cols-5 gap-2">
-          {grid.flatMap((row, i) =>
-            row.map((rank, j) => (
-              <span
-                key={`${i}-${j}`}
-                className={cn(
-                  "flex aspect-square items-center justify-center rounded-full text-[12px] font-bold tabular-nums",
-                  rankClass(rank),
-                )}
-              >
-                {rank > FOUND ? r.notFound : rank}
-              </span>
-            )),
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function rankClass(rank: number) {
-  if (rank <= TOP3) return "bg-fynd-green text-navy";
-  if (rank <= PAGE1) return "bg-fynd-orange text-navy";
-  if (rank <= FOUND) return "bg-fynd-orange/25 text-ink";
-  return "bg-white text-ink-soft ring-1 ring-inset ring-line";
-}
-
-/** Faint streets under the circles, so the grid reads as a map. */
-function Streets() {
-  return (
-    <svg
-      viewBox="0 0 300 300"
-      preserveAspectRatio="none"
-      className="pointer-events-none absolute inset-0 h-full w-full text-ink/[0.07]"
-      fill="none"
-      stroke="currentColor"
-    >
-      <g strokeWidth="5">
-        <path d="M0 110 H300" />
-        <path d="M0 200 H300" />
-        <path d="M95 0 V300" />
-        <path d="M215 0 V300" />
-      </g>
-      <g strokeWidth="2">
-        <path d="M0 50 H300" />
-        <path d="M0 255 H300" />
-        <path d="M40 0 V300" />
-        <path d="M155 0 V300" />
-        <path d="M270 0 V300" />
-        <path d="M0 300 L300 0" />
-      </g>
-    </svg>
   );
 }
 

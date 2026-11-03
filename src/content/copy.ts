@@ -1416,9 +1416,9 @@ export const optimize = {
   price: offer.gbp.price,
 
   hero: {
-    lead: "Your Google profile is",
-    accent: "half finished.",
-    sub: "When someone searches for a salon near them, Google decides who shows up based on how complete each profile is. Most profiles are missing half of what Google looks for.",
+    lead: "Verified, but",
+    accent: "not optimized.",
+    sub: "Verifying put your Google profile on the map. Filling in the rest is what gets you found, and most profiles are still missing half of what Google looks for. Those gaps are why the salon down the road shows up first.",
     /** Scrolls to the checklist, not the checkout: the page teaches first (Luke). */
     cta: "Learn how",
     reassure: "One-time, no subscription.",
@@ -1654,14 +1654,33 @@ export const optimize = {
       },
     ],
     /** The hand-off line under the list, into the $99. */
-    outro: "That's everything, and you can do all of it yourself. If you don't have the time, don't know where to start, or it's all a bit confusing, you can pay us to have it done professionally.",
+    outro: "That's everything, and you can do all of it yourself. If you don't have the time, don't know where to start, or it's all a bit confusing, we can do it for you.",
   },
 
-  /** Typical beside optimized. */
+  /**
+   * Typical beside optimized. From md the two drawn cards sit side by
+   * side; on a phone they'd stack a full screen apart, so phones get
+   * `rows` instead: the same comparison as a two-column table, one line
+   * per part of the profile, so both states are on screen together
+   * (Luke, Nov 3, 2026: anything compared must be side by side on mobile).
+   */
   compare: {
     lead: "Same salon. Next day.",
     accent: "Different profile.",
     sub: "Both are the same salon. The one on the right just has every section filled in.",
+    rows: [
+      { label: "Photos", typical: "3, all from 2019", optimized: "42, recent" },
+      { label: "Category", typical: "Beauty salon", optimized: "Hair salon" },
+      { label: "Hours", typical: "“Hours may differ”", optimized: "Set, holidays too" },
+      { label: "Book button", typical: "None", optimized: "On the profile" },
+      { label: "Description", typical: "None", optimized: "Written, town and all" },
+      { label: "Services", typical: "None listed", optimized: "14, each described" },
+      { label: "Q&A", typical: "None", optimized: "8, answered by the owner" },
+      { label: "Updates", typical: "Never posted", optimized: "Posted this week" },
+      { label: "Highlights", typical: "None", optimized: "Walk-ins, booking, accessible" },
+    ],
+    /** Under the phone table: the drawn cards are an example business. */
+    rowsNote: "Example salon. Same rating and reviews in both: optimization fills the profile in, it doesn't change the review count.",
   },
 
   /** The $99 card, at #convert, and the three steps under it. */
@@ -1711,8 +1730,8 @@ export const optimize = {
    * the managed ask.
    */
   ongoing: {
-    lead: "Filled in isn't the same as",
-    accent: "kept up.",
+    lead: "Keep it optimized",
+    accent: "every month.",
     sub: "Relevance is mostly set once. Prominence is earned every week, and Google notices when it stops.",
     decays: [
       {
@@ -1738,17 +1757,19 @@ export const optimize = {
       monthlyLabel: "$297 a month",
       /** `once` null means the one-off doesn't do it; the cell draws a dash. */
       rows: [
-        { label: "Profile optimization", once: "Every item, once", monthly: "First, then kept optimized" },
+        { label: "Profile optimization", once: "Every item", monthly: "First, then kept optimized" },
         { label: "Google posts", once: null, monthly: "Written and published every week" },
-        { label: "Photos", once: "The ones you send, added", monthly: "New ones added, geotagged" },
+        { label: "Photos", once: "The ones you send", monthly: "New ones added, geotagged" },
         { label: "Reviews", once: null, monthly: "Requested by text, every one answered" },
         { label: "Social and video", once: null, monthly: "Facebook, Instagram, LinkedIn, YouTube, TikTok" },
-        { label: "Website", once: null, monthly: "Built for you, or yours tuned up" },
+        { label: "Website", once: null, monthly: "Yours tuned up, or built for you for $249 once" },
         { label: "AI search", once: null, monthly: "Kept easy for ChatGPT and Gemini to recommend" },
         { label: "Report", once: null, monthly: "Monthly: rankings across your area, plus AI" },
       ],
     },
-    cta: "Let us run it for you",
+    /** The line over the button, then the button to /manage. */
+    ctaLead: "Want it kept up every month? That's our Google Business Profile management.",
+    cta: "Learn more",
     href: "/manage",
   },
 
@@ -1807,7 +1828,7 @@ export const optimize = {
 
   finalCta: {
     heading: { lead: "Fix the profile you", accent: "already have", tail: "." },
-    cta: `Fix my profile for $${offer.gbp.price}`,
+    cta: "Fix my profile",
   },
 
   stickyCta: `Fix my profile for $${offer.gbp.price}`,
@@ -1871,7 +1892,7 @@ export const manage = {
    * your area on" with the channel rotating on the third line, then the
    * paragraph, three checks and the button on the left and a drawn
    * search result on the right — the business first, two competitors
-   * under it, a call coming in. ILLUSTRATION, captioned as one. Navy,
+   * under it, a call coming in. ILLUSTRATION, no caption (Luke). Navy,
    * like the rest of Fynd's heroes.
    */
   hero: {
@@ -1908,7 +1929,6 @@ export const manage = {
     ctaNote: "$297/mo per profile · Cancel anytime",
     onceLink: { lead: "Just want it optimized once?", label: "Check it out here", href: "/optimize" },
     mock: {
-      caption: "Illustration",
       query: "balayage near me",
       results: [
         { rank: "1", name: "Your business", stars: 5, meta: "4.9 · Open now · 0.8 mi", action: "Call", you: true },
@@ -1940,7 +1960,7 @@ export const manage = {
       {
         tone: "blue",
         title: "Already have a website?",
-        body: "You can keep it. We scan it, list exactly what to fix and add widgets for fresh reviews, photos and posts. Replacing your site is not required.",
+        body: "You can keep it, but we'll tell you straight: it holds the rest back. We can scan it and list what to fix, not fix it, and a slow or desktop-only site drags on everything else we do. Most of this page works best on the site we build you.",
       },
     ],
     todo: {
@@ -2039,7 +2059,7 @@ export const manage = {
       {
         when: "Within 1 business day",
         title: "Optimization first",
-        body: "Once your profile is connected, we do the full one-time optimization first: every section checked and filled in, so everything after it is built on a correct profile. Then the first posts, review replies and your website are prepared.",
+        body: "Once your profile is connected, we do the full one-time optimization first: every section checked and filled in, so everything after it is built on a correct profile. Then the first posts and review replies are prepared.",
       },
       {
         when: "Days 1–30",
@@ -2049,7 +2069,6 @@ export const manage = {
     ],
     proof: "Your baseline is taken the day you connect, so every report is measured against it.",
     cta: "Start for $297",
-    callLink: "Not ready? Book a call first",
     note: "Billed monthly, per profile. No contract. Cancel anytime.",
   },
 
@@ -2083,9 +2102,12 @@ export const manage = {
       },
     ],
     /**
-     * ILLUSTRATION: a sample monthly report for the fictional salon. Every
-     * number is made up, and the caption under it says so, as Paige's does.
-     * Ranks: 1–3 green, 4–10 orange, 11–20 faint orange, 21+ not found.
+     * A sample monthly report for the fictional salon: the counts, the
+     * work done and the AI line are made up and the caption says so. The
+     * two maps are the exception (Luke, Nov 3, 2026: "take one of the
+     * heatmaps from paige site"): they are a REAL salon's before/after
+     * from the platform's own results page, saved in public/images and
+     * labelled as real and as the platform's, not Fynd's.
      */
     report: {
       business: "Northside Hair Studio",
@@ -2093,38 +2115,25 @@ export const manage = {
       badge: "Sample report",
       title: "Monthly report · Month 3",
       sub: "Here's how your business performed online this month.",
-      sr: "Sample monthly report for the fictional Northside Hair Studio. Three counts with made-up rises since day one: calls, direction requests and website clicks. Two maps for the search balayage near me: on day one the salon ranks eleventh to twentieth or is not found across town; by day 90 it is in the top three across the centre and on page one everywhere else. Then the work completed that month and an AI search visibility line.",
+      sr: "Sample monthly report for the fictional Northside Hair Studio. Three counts with made-up rises since day one: calls, direction requests and website clicks. Then two real Google Maps rank heatmaps from a salon on the platform full management runs on: before, mostly ranked twentieth or worse across its area, and after one month, mostly in the top three. Then the work completed that month and an AI search visibility line.",
       stats: [
-        { icon: "phone", label: "Calls", value: "42", delta: "+35% vs. day 1" },
-        { icon: "map", label: "Direction requests", value: "28", delta: "+47% vs. day 1" },
-        { icon: "pointer", label: "Website clicks", value: "96", delta: "+60% vs. day 1" },
+        { icon: "phone", label: "Calls", value: "118", delta: "+74% vs. day 1" },
+        { icon: "map", label: "Direction requests", value: "86", delta: "+91% vs. day 1" },
+        { icon: "pointer", label: "Website clicks", value: "312", delta: "+128% vs. day 1" },
       ],
-      keywordLabel: "Keyword:",
-      keyword: "balayage near me",
-      before: "Day 1",
-      after: "Day 90",
-      notFound: "–",
-      beforeGrid: [
-        [21, 18, 20, 19, 21],
-        [16, 15, 18, 20, 16],
-        [13, 17, 19, 18, 14],
-        [12, 15, 17, 16, 13],
-        [21, 14, 16, 14, 21],
-      ],
-      afterGrid: [
-        [6, 4, 3, 4, 6],
-        [4, 2, 1, 2, 4],
-        [3, 1, 1, 1, 3],
-        [4, 2, 1, 2, 4],
-        [6, 4, 3, 4, 6],
-      ],
+      /** The real pair. `src` under public/; the alt is what the image shows. */
+      heatmap: {
+        label: "Google Maps rank across the area",
+        before: { day: "Before", src: "/images/heatmap-salon-before.webp", alt: "Google Maps rank heatmap for a salon before: a grid of points across its area, most ranked 20 or worse, a few on page one near the centre." },
+        after: { day: "After 1 month", src: "/images/heatmap-salon-after.webp", alt: "The same grid one month later: most points ranked 1 to 3, the rest on page one." },
+      },
       work: {
         title: "Work completed this month",
         items: [
-          { icon: "post", value: "4", label: "Google posts published" },
-          { icon: "reply", value: "18", label: "review replies" },
-          { icon: "image", value: "6", label: "photos added" },
-          { icon: "video", value: "2", label: "videos published" },
+          { icon: "post", value: "14", label: "Google posts published" },
+          { icon: "reply", value: "37", label: "review replies" },
+          { icon: "image", value: "26", label: "photos added" },
+          { icon: "video", value: "8", label: "videos published" },
         ],
       },
       ai: {
@@ -2134,7 +2143,7 @@ export const manage = {
         tail: "checks",
         link: "View details",
       },
-      caption: "Sample monthly report for a made-up business. Numbers are illustrative, not results.",
+      caption: "Sample report for a made-up business: the counts and work done are illustrative. The two maps are real, from a salon on the platform full management runs on, before and one month in.",
     },
   },
 
@@ -2230,7 +2239,7 @@ export const manage = {
       {
         icon: "globe",
         job: "Your website",
-        does: "A complete website built for you, or a fix list for yours",
+        does: "A complete website built for you ($249 once), or a fix list for yours",
         replaces: "Website builder & hosting",
         price: "$39",
       },
@@ -2264,13 +2273,15 @@ export const manage = {
   /**
    * "Great local & AI SEO starts with a great website": navy, with the
    * drawn site. ILLUSTRATION, the fictional salon; the "built while you
-   * set up" badge is the label.
+   * set up" badge is the label. The site is NOT part of the $297: it is
+   * a one-time $249 add-on (Luke, Nov 3, 2026); hosting, widgets and the
+   * scan of an existing site stay in the plan.
    */
   website: {
-    badge: "Website & AI SEO · included",
+    badge: "Website & AI SEO · $249 one time",
     lead: "Great local and AI SEO starts with a great website.",
-    accent: "So one's included.",
-    body: "Your website is one of the main things Google and AI assistants look at when they decide which local businesses to show. That's why full management comes with a fast, fully optimized website, built for you while you set up.",
+    accent: "So we'll build you one.",
+    body: "Your website is one of the main things Google and AI assistants look at when they decide which local businesses to show. If you need one, we build you a fast, fully optimized site while you set up, for a one-time $249. Hosting and updates are part of your plan after that.",
     points: [
       { icon: "map", text: "Google uses it to understand what you do and where you do it" },
       { icon: "chat", text: "ChatGPT, Gemini and Google AI Mode read it before they recommend you" },
@@ -2314,25 +2325,35 @@ export const manage = {
     options: [
       {
         label: "Option 1",
-        title: "Use the website we build you",
-        pill: "Included",
+        title: "Have us build your website",
+        pill: "Recommended · $249 one time",
         items: [
-          "Built for you while you set up",
+          "Built for you while you set up, $249 once",
           "Fast, mobile-first and multi-page",
           "SEO and AI-ready on every page",
           "Auto-adds new reviews & photos",
           "Live on your domain in one click",
           "Edit anything just by asking",
         ],
+        note: "Yours to keep. Hosted, updated and fed with new reviews and photos as part of your plan.",
       },
+      /**
+       * The path we steer away from (Luke, Nov 3, 2026: the section's job
+       * is to move people onto our site). Drawn muted, the items are what
+       * it costs them, and the note hands them back to option 1.
+       */
       {
         label: "Option 2",
         title: "Keep your current website",
+        pill: "Not recommended",
+        tone: "warn",
         items: [
-          "We scan it and list exactly what to fix",
-          "Widgets for fresh reviews, photos and posts",
-          "Every fix helps your website, AI and local SEO",
+          "We can only scan it and list what to fix. Someone still has to fix it",
+          "If it's slow or not built for phones, Google and AI mark you down every day it stays that way",
+          "Fresh reviews, photos and posts only show where a widget fits",
+          "Everything else we do lands softer on a site we didn't build",
         ],
+        note: "Our advice: switch. The site is built while you set up, and it's $249 once.",
       },
     ],
   },
@@ -2367,7 +2388,7 @@ export const manage = {
       cta: "Start for $297",
       ctaNote: "Billed monthly · No contract · Cancel anytime",
       anchorNote: "Your first payment today covers you until your first billing date, the 1st or the 15th. Then $297 a month.",
-      onceLine: { lead: "Rather fix it once?", label: "The $99 update", href: "/optimize#convert" },
+      onceLine: { lead: "Only need it optimized once?", label: "Check it out here", href: "/optimize#convert" },
     },
   },
 
@@ -2422,7 +2443,7 @@ export const manage = {
         icon: "globe",
         title: "Website creation & hosting",
         items: [
-          { name: "Website built for you", means: "A full, multi-page site built from your profile while you set up." },
+          { name: "Website built for you", means: "A full, multi-page site built from your profile while you set up. A one-time $249, not part of the monthly price." },
           { name: "Hosting included", means: "No separate hosting bill." },
           { name: "Easy editing", means: "Change anything by telling us what you want." },
           { name: "SEO set up for you", means: "Titles, schema and FAQs set up so Google and AI understand your site." },
@@ -2542,7 +2563,7 @@ export const manage = {
     items: [
       {
         q: "What's included in the $297?",
-        a: "It starts with a full one-time optimization of your profile, the same work as the $99 update, so everything is correct before the ongoing work begins. Then everything on this page: setup, your baseline heatmap and AI visibility check, profile optimization, posts, photos, review requests and replies, social, video, your website and the monthly report. One price per Google Business Profile, every tool included.",
+        a: "It starts with a full one-time optimization of your profile, the same work as the $99 update, so everything is correct before the ongoing work begins. Then everything on this page: setup, your baseline heatmap and AI visibility check, profile optimization, posts, photos, review requests and replies, social, video, website hosting and widgets, and the monthly report. One price per Google Business Profile. The only extra is a website build, if you want one: a one-time $249.",
       },
       {
         q: "Do I still need the $99 optimization?",
@@ -2598,15 +2619,15 @@ export const manage = {
       },
       {
         q: "Does it come with a website?",
-        a: "Yes. While you set up, we build a complete, multi-page website in the background, fast, mobile-first and SEO-ready on every page, that you can put live on your own domain in one click. Prefer your current site? We scan it and tell you exactly what to change.",
+        a: "Building one is a one-time $249, not part of the $297. For that, while you set up, we build a complete, multi-page website in the background, fast, mobile-first and SEO-ready on every page, that you can put live on your own domain in one click. Hosting is included in your plan after that. You can keep your current site instead, but we don't recommend it: we can only tell you what to fix, not fix it, and it holds the rest of the work back.",
       },
       {
         q: "Can I keep my current website?",
-        a: "Yes. We scan it, tell you exactly what to fix and give you widgets for fresh reviews, photos and posts. Or switch to the one we build you.",
+        a: "You can, but we don't recommend it. We can scan it and tell you what to fix, and add widgets for fresh reviews, photos and posts where they fit, but we can't rebuild it, and a slow or desktop-only site holds back everything else on this page. Switching is a one-time $249 and the site is built while you set up.",
       },
       {
         q: "Is there a contract?",
-        a: "No. $297 a month, per profile, cancel anytime. Your first payment today carries you to your first billing date, the 1st or the 15th.",
+        a: "No. $297 a month, per profile, cancel anytime. You're charged when you sign up, then on the same day each month from then.",
       },
       {
         q: "Do I keep control of the profile?",

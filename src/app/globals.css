@@ -453,3 +453,27 @@
     animation-delay: calc(var(--i) * 28ms + 80ms);
   }
 }
+
+/* --- /manage hero: the "new customer calling" bar rings ------------------
+   The bar sits a step closer to the viewer than the card (a slight scale
+   and a deep shadow), and every seven seconds it pops forward a touch and
+   wiggles like a ringing phone for ~0.5s. Motion-safe only; the ping on
+   its phone icon is the always-on cue. */
+.fynd-ring {
+  transform: scale(1.05);
+}
+@keyframes fynd-ring {
+  0%, 8%, 100% { transform: scale(1.05) rotate(0) translateX(0); }
+  1% { transform: scale(1.08) rotate(-0.6deg) translateX(-1px); }
+  2% { transform: scale(1.08) rotate(0.6deg) translateX(1px); }
+  3% { transform: scale(1.08) rotate(-0.6deg) translateX(-1px); }
+  4% { transform: scale(1.08) rotate(0.6deg) translateX(1px); }
+  5% { transform: scale(1.07) rotate(-0.3deg) translateX(0); }
+  6% { transform: scale(1.06) rotate(0.3deg) translateX(0); }
+  7% { transform: scale(1.05) rotate(0) translateX(0); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .fynd-ring {
+    animation: fynd-ring 7s ease-in-out 1.5s infinite;
+  }
+}
