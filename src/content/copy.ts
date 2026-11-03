@@ -1896,7 +1896,7 @@ export const manage = {
    * like the rest of Fynd's heroes.
    */
   hero: {
-    badge: "Full Google profile management",
+    /** No eyebrow tag over the headline (Luke, Nov 3, 2026). */
     headline: { lead: "Get found by customers", mid: "in your area on" },
     /**
      * The third line cycles through these, each drawn as its logo and its
@@ -1925,11 +1925,15 @@ export const manage = {
       "Set up in 20 minutes, then it runs itself",
       "Google, Google Maps, ChatGPT and more",
     ],
-    cta: "Start for $297",
+    cta: "Start now",
     ctaNote: "$297/mo per profile · Cancel anytime",
-    onceLink: { lead: "Just want it optimized once?", label: "Check it out here", href: "/optimize" },
+    /** Five stars and this, under the note. The platform's hero has the
+        same row with its own count; this number is Fynd's (Luke, Nov 3,
+        2026), so change it here when it changes. */
+    trust: "Trusted by 100+ local businesses",
+    trustSr: "Five stars.",
     mock: {
-      query: "balayage near me",
+      query: "hair salon near me",
       results: [
         { rank: "1", name: "Your business", stars: 5, meta: "4.9 · Open now · 0.8 mi", action: "Call", you: true },
         { rank: "2", name: "Competitor A", stars: 4, meta: "4.2 · 2.4 mi", you: false },
@@ -2322,6 +2326,8 @@ export const manage = {
       },
       edit: { request: "Add a section about our walk-in hours", button: "Update" },
     },
+    /** The phone toggle between the two options (screen readers only). */
+    pickerLabel: "Choose a website option",
     options: [
       {
         label: "Option 1",
@@ -2368,7 +2374,7 @@ export const manage = {
       label: "One simple price",
       per: "/ month",
       perNote: "per Google Business Profile",
-      pill: "$297 today · carries you to your first billing date",
+      pill: "$297 today · then $297 a month from now",
       explain: "A Google Business Profile is your listing on Google Search & Maps, one for each location. More than one? Each profile is $297 a month.",
       allIn: {
         title: "All-in price. No surprise token, credit or reporting bills.",
@@ -2387,7 +2393,7 @@ export const manage = {
       ],
       cta: "Start for $297",
       ctaNote: "Billed monthly · No contract · Cancel anytime",
-      anchorNote: "Your first payment today covers you until your first billing date, the 1st or the 15th. Then $297 a month.",
+      anchorNote: "Charged today, then on the same day each month.",
       onceLine: { lead: "Only need it optimized once?", label: "Check it out here", href: "/optimize#convert" },
     },
   },
@@ -2424,9 +2430,11 @@ export const manage = {
     heading: "Every feature, in plain English",
     sub: "Everything below is included in your $297 a month. Nothing is an add-on.",
     cta: "Start for $297",
-    cols: { feature: "Feature", means: "What it means for your business", included: "Included" },
     groupCount: (n: number) => `${n} features`,
     included: "Included",
+    /** The hint beside each group's plus button, from md. */
+    open: "See what's inside",
+    close: "Close",
     groups: [
       {
         icon: "map",
@@ -2437,17 +2445,6 @@ export const manage = {
           { name: "Optimize service descriptions", means: "Each service gets a clear, keyword-rich description." },
           { name: "Optimize attributes", means: "Details like “walk-ins welcome” or “wheelchair accessible” filled in, so you match more filters." },
           { name: "Optimize social links", means: "Your social profiles linked, so customers can find you everywhere." },
-        ],
-      },
-      {
-        icon: "globe",
-        title: "Website creation & hosting",
-        items: [
-          { name: "Website built for you", means: "A full, multi-page site built from your profile while you set up. A one-time $249, not part of the monthly price." },
-          { name: "Hosting included", means: "No separate hosting bill." },
-          { name: "Easy editing", means: "Change anything by telling us what you want." },
-          { name: "SEO set up for you", means: "Titles, schema and FAQs set up so Google and AI understand your site." },
-          { name: "Fresh content over time", means: "New reviews, photos and posts flow onto your site automatically." },
         ],
       },
       {
@@ -2642,9 +2639,8 @@ export const manage = {
 
   /** The closer, under the Fynd mark. */
   finalCta: {
-    lead: "Stop managing your Google profile.",
+    lead: "Stop managing your profile.",
     accent: "Start answering the phone.",
-    body: "Set it up in about 20 minutes tonight and get your baseline right away. Within one business day of connecting Google, we start fixing what's missing and preparing posts and review replies, published on autopilot or after your OK.",
     cta: "Start for $297",
     note: "$297 a month per profile · No contract · Cancel anytime",
     notReady: "Not ready?",

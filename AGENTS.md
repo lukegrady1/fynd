@@ -184,7 +184,7 @@ report, credited in the caption to "the platform full management
 runs on"), the citations add-on, and anything agency- or
 platform-revealing — see the note on `manage` in `copy.ts` and
 `progress.md` before adding a section back. The $99 one-off is linked
-from the hero, the price card and the closer; `/optimize`'s managed
+from the price card and the closer; `/optimize`'s managed
 section links here.
 
 `src/lib/ghl.ts` is still stubbed and marked `TODO(integration)`. See

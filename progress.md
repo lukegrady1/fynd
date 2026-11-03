@@ -239,7 +239,7 @@ one via `.rot-ch` / `.rot-logo` keyframes in globals.css; first
 channel in the markup, no cycling under reduced motion), then the paragraph, three checks and the button
 on the left and a drawn search result on the right: the query, "Your
 business" first with a Call button, Competitor A and B under it, "New
-customer calling…" (`ManageHero`; the bar sits in its row, raised with a shadow and slight scale, and rings every 7s; the "Illustration" caption came off Nov 3, 2026) -> "built for busy owners": the owner's card (blue /
+customer calling…" (`ManageHero`; the ask is one big "Start now" pill the width of the column, the price line and five stars + "Trusted by 100+ local businesses" under it, as on the platform's hero; the count is Fynd's own (Luke, Nov 3, 2026), not the platform's; the eyebrow tag came off Nov 3, 2026; the bar sits in its row, raised with a shadow and slight scale, and rings every 5s; the "Illustration" caption came off Nov 3, 2026) -> "built for busy owners": the owner's card (blue /
 orange left rules) beside our to-do list with the nested "if we ever
 need you" card, three stat tiles, button (`BusyOwners`) -> "Your
 business. Everywhere.": the navy panel redrawn to match Paige's (Luke,
@@ -263,20 +263,25 @@ from the amounts (`TheMath`) -> "already paying for tools?": navy total
 card + the tools table with struck prices and an "Only with Fynd" row
 for the account manager (`ToolsReplaced`, `#tools`) -> the website on
 navy with the browser + phone mock, "built while you set up" badge, the
-edit-request chip, and the two option cards (`WebsiteSection`) -> "Every
+edit-request chip, and the two option cards (`WebsiteSection`; side by side from lg, a two-cell toggle showing one at a time on phones since Nov 3, 2026, `WebsiteOptions`) -> "Every
 day you wait, a competitor gets the call." with the $297 card at
 `#convert` (`ManagePricing`, `CheckoutButton`; no location stepper —
 checkout is one profile, the card says each profile is $297) -> every
-feature as one open table with a navy header (`FeatureTable`, 58) ->
+feature as closed open-and-close groups at every width (`FeatureTable`,
+53; it was one open table on desktop until Nov 3, 2026, when Luke asked
+for the phone's groups there too; the "Website creation & hosting"
+group came out the same day because the site is a separate $249, so
+the count dropped from 58) ->
 numbered FAQ beside a sticky heading (`ManageFaq`, 18) -> closer with
-the Fynd mark above "Stop managing your Google profile. Start answering
-the phone." (`ManageCloser`; Luke didn't want Paige's "Give it one
+the Fynd mark above "Stop managing your profile. Start answering the
+phone.", 24px on phones so each half is one line, no paragraph under it
+since Nov 3, 2026 (`ManageCloser`; Luke didn't want Paige's "Give it one
 month" line or the orb). Shared `ScrollButton` and `CallLink` in
 `sections/manage/`. Header is dark (navy hero). Removed in the
 rebuild: MonthPlan, ReviewLoop (the SMS phone), Beyond, FirstNinety,
 RankReport, FeatureIndex, WebsiteCta, WaysCompare (the DIY / $99 /
-managed table — the $99 link now lives in the hero, the price card and
-the closer). **Every section is navy and the cards are dark too** (Luke, Nov 2,
+managed table — the $99 link now lives in the price card and the
+closer; it was in the hero too until Nov 3, 2026). **Every section is navy and the cards are dark too** (Luke, Nov 2,
 2026: first "make the background dark like the other pages and keep the
 card parts white", then "actually convert the cards too"): cards are
 `bg-navy-card ring-1 ring-white/10`, white text, `white/70` secondary,

@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { Check, Phone, Search, Star } from "lucide-react";
 import { manage } from "@/content/copy";
 import { cn } from "@/lib/utils";
@@ -39,12 +38,7 @@ export function ManageHero({ targetId }: { targetId: string }) {
 
       <Container className="relative">
         <div className="mx-auto flex max-w-[900px] flex-col items-center text-center">
-          <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.06] px-3.5 py-1.5 text-micro uppercase text-white/85">
-            <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-fynd-green" />
-            {copy.badge}
-          </span>
-
-          <h1 className="mt-7 text-hero text-white lg:text-[64px] lg:leading-[1.06]">
+          <h1 className="text-hero text-white lg:text-[64px] lg:leading-[1.06]">
             <span className="block">{copy.headline.lead}</span>
             <span className="block">{copy.headline.mid}</span>
             <RotatingChannel
@@ -74,20 +68,27 @@ export function ManageHero({ targetId }: { targetId: string }) {
               ))}
             </ul>
 
-            <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-5">
-              <ScrollButton targetId={targetId} label={copy.cta} section="hero" />
+            {/* The platform hero's ask, in Fynd's colours: one big pill
+                the width of the column, the price line under it, then
+                five stars and the trust line (Luke, Nov 3, 2026). */}
+            <div className="mt-8 flex flex-col items-center gap-3 lg:items-start">
+              <ScrollButton
+                targetId={targetId}
+                label={copy.cta}
+                section="hero"
+                className="h-14 w-full rounded-full text-[18px] sm:h-16 sm:w-full sm:text-[20px] lg:max-w-[440px]"
+              />
               <p className="text-small text-white/60">{copy.ctaNote}</p>
+              <p className="flex items-center gap-2.5 text-small font-semibold text-white/85">
+                <span className="flex gap-0.5" role="img" aria-label={copy.trustSr}>
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Star key={i} strokeWidth={0} className="h-4 w-4 fill-fynd-orange" />
+                  ))}
+                </span>
+                {copy.trust}
+              </p>
             </div>
 
-            <p className="mt-4 text-small text-white/70">
-              {copy.onceLink.lead}{" "}
-              <Link
-                href={copy.onceLink.href}
-                className="font-semibold text-white/85 underline decoration-white/30 underline-offset-4 transition-colors duration-150 hover:text-white hover:decoration-white"
-              >
-                {copy.onceLink.label}
-              </Link>
-            </p>
           </div>
 
           <SearchMock />
@@ -163,8 +164,11 @@ function SearchMock() {
         </ul>
 
         {/* In its row, but raised toward the viewer: a deep shadow, a
-            hairline, and a touch of scale, which the ring also pops. */}
-        <div className="fynd-ring relative z-10 mt-3 flex items-center gap-3 rounded-md bg-navy px-4 py-3 text-white shadow-lg ring-1 ring-white/15">
+            hairline, and a touch of scale, which the ring also pops. A
+            pill only as wide as its words, centred, at every width, so
+            the ring reads as one small thing shaking rather than a whole
+            bar (Luke, Nov 3, 2026: phones first, then desktop too). */}
+        <div className="fynd-ring relative z-10 mx-auto mt-3 flex w-fit items-center gap-3 rounded-full bg-navy py-2.5 pl-3 pr-5 text-white shadow-lg ring-1 ring-white/15">
           <span className="relative flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-fynd-green text-navy">
             <span className="absolute inset-0 rounded-full bg-fynd-green/60 motion-safe:animate-ping" />
             <Phone strokeWidth={2} className="relative h-4 w-4" />
