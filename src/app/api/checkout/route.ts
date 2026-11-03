@@ -8,14 +8,16 @@ import {
   CANCEL_PATHS,
   ONE_TIME_PRODUCTS,
   PLAN_LIST,
+  TRIAL_PLANS,
   isOneTimeProduct,
+  isTrialPlan,
 } from "@/lib/stripe-plans";
 import { notifyGhl } from "@/lib/ghl";
 import { siteOrigin } from "@/lib/site-origin";
 
 const bodySchema = z.object({
   cid: z.string().max(64).nullable().optional(),
-  plan: z.enum([...PLAN_LIST, ...ONE_TIME_PRODUCTS]),
+  plan: z.enum([...PLAN_LIST, ...ONE_TIME_PRODUCTS, ...TRIAL_PLANS]),
   cancelPath: z.enum(CANCEL_PATHS).optional(),
 });
 
@@ -26,7 +28,12 @@ const pageFor = (plan: z.infer<typeof bodySchema>["plan"]) =>
       ? "optimize"
       : plan === "gbp-management"
         ? "manage"
-        : "start";
+        : plan === "review-trial"
+          ? "watch"
+          : "start";
+
+const UNAVAILABLE =
+  "Checkout isn't available right now. Please book a call and I'll get you set up.";
 
 export const POST = async (request: Request) => {
   const parsed = bodySchema.safeParse(await request.json().catch(() => null));
@@ -54,6 +61,18 @@ export const POST = async (request: Request) => {
     `${Date.now()}`,
   );
 
+  // TODO(stripe): the /watch free trial. No session builder exists for it
+  // yet — it needs a setup-mode session (card saved, nothing charged) and a
+  // subscription trialing `offer.trialDays` days, the shape
+  // `createDeferredCheckoutSession` already uses minus the one-time charge.
+  // Until then the button gets the same "not available" answer as missing
+  // env, rather than falling into `createCheckoutSession` and charging $97
+  // under a "free trial" label.
+  if (isTrialPlan(plan)) {
+    console.error("[checkout] trial checkout not built yet:", plan);
+    return NextResponse.json({ error: UNAVAILABLE }, { status: 503 });
+  }
+
   // Two builders, deliberately: the one-time products never touch the code
   // that saves a card and creates a subscription.
   const result = isOneTimeProduct(plan)
@@ -71,13 +90,7 @@ export const POST = async (request: Request) => {
 
   if (result.status === "unconfigured") {
     console.error("[checkout] missing env:", result.missing.join(", "));
-    return NextResponse.json(
-      {
-        error:
-          "Checkout isn't available right now. Please book a call and I'll get you set up.",
-      },
-      { status: 503 },
-    );
+    return NextResponse.json({ error: UNAVAILABLE }, { status: 503 });
   }
 
   return NextResponse.json(

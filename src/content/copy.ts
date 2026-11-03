@@ -17,6 +17,13 @@ export const offer = {
   price: 97,
   regular: 197,
 
+  /**
+   * The /watch deal: the Review System free for this many days, then
+   * `price` a month. Nothing on that page strikes `regular` through — the
+   * trial replaced the $197-to-$97 promo there (Luke, Nov 3, 2026).
+   */
+  trialDays: 7,
+
   /** NFC review card. One-off add-on, not part of the subscription. */
   nfcCard: 19,
 
@@ -192,23 +199,41 @@ export const testimonialsSection = {
 } as const;
 
 /**
- * /watch — the VSL page texted to leads. Three beats: the video, what owners
- * say, and the calendar. There is no price on it: the video sells the idea
- * and the call is the ask, so the number belongs on the call.
+ * /watch — the VSL page texted to leads, and since Nov 3, 2026 the Review
+ * System's own long sales page: /manage's shape, reviews only (Luke: "add
+ * stuff to this page like it is the management page but it's for reviews
+ * only"). The video hero, built for busy owners, the free week in three
+ * steps, what to judge when (ending on the real Salt Salon before/after),
+ * the owners' quotes, the price card in /manage's style, every feature,
+ * the FAQ, the closer. The ask is the Review System on a free trial:
+ * `offer.trialDays` days free, then `offer.price` a month. It is the only
+ * plan on the page — the website plan and the $197-to-$97 promo came off
+ * it — so every number here is the trial's.
+ *
+ * Every claim in the sections below is one the homepage FAQ or feature
+ * list already makes (72 hours to live, one follow-up, 8am–8pm, private
+ * routing, replies in your voice, the widget, the past-customer wave).
+ * Don't add a capability here the rest of the site doesn't promise, and
+ * keep /manage's cost-figure sections (the math, the tools replaced) off:
+ * there are no honest review-only cost figures to put in them.
  */
 export const watch = {
   /**
-   * The one ask on the page, on every button that scrolls to the plans:
-   * hero, video end-card, closer, sticky pill. Plain "Start now" rather than
-   * "Start for $97" because the page carries two prices, and naming one on
-   * the button would misquote the other.
+   * The one ask on the page, on every button that scrolls to the card:
+   * hero, video end-card, closer, sticky pill, and the card's own button.
+   * The trial is the offer, so the button names it rather than a price.
    */
-  cta: "Start now",
+  cta: "Start your free trial",
 
   hero: {
     /** One headline for everyone — no ?biz= variant on this page. */
     lead: "Watch how Fynd turns",
     accent: "appointments into reviews.",
+    /** Under the big pill, then five stars and the trust line — the same
+        ask /manage's hero has. The count is Fynd's own figure. */
+    ctaNote: `${offer.trialDays} days free · then $${offer.price}/mo · Cancel anytime`,
+    trust: "Trusted by 100+ local businesses",
+    trustSr: "Five stars.",
   },
 
   video: {
@@ -232,10 +257,321 @@ export const watch = {
     accent: "once it's running.",
   },
 
+  /** "Built for busy owners", for reviews: the two cards and three stats. */
+  busy: {
+    eyebrow: "How the Review System works",
+    heading: "Google reviews, built for busy owners",
+    sub: "Most review tools hand you a link and a dashboard and leave the asking to you. This is the opposite: when an appointment ends, we text the customer, follow up if they go quiet, send the unhappy ones to you privately and reply to every review that lands. You mark the appointment done. That's the whole job.",
+    question: "Is it right for a busy local business?",
+    questionSub: "If asking for reviews keeps slipping to the end of the day and then off the list, this does the asking. It handles the follow-ups and the replies too, so your profile keeps moving while you're with the next client.",
+    blocks: [
+      {
+        tone: "blue",
+        title: "Start with your customer list, not a blank dashboard",
+        body: "Send us the recent customers from your booking software or CRM and we start there: the reactivation wave goes out to them first. Once it's finished, we connect to your booking software and every finished appointment asks on its own. Marking it complete is your only step from then on.",
+      },
+      {
+        tone: "orange",
+        title: "What still needs you?",
+        body: "Mark appointments done the way you already do, and read the private feedback when it comes in: it's a customer telling you something before anyone else hears it. We never write a review, buy one or choose who gets asked, and nothing here guarantees how many you'll get.",
+      },
+      {
+        tone: "blue",
+        title: "Worried about a bad review?",
+        body: "The request asks how it went first. Excellent and Good are pointed at Google. Ok and Bad land on a private form that comes straight to you, usually within seconds. Everyone gets asked, which is what Google's rules require. The routing is what protects the rating.",
+      },
+    ],
+    todo: {
+      title: "Meanwhile, our to-do list",
+      sub: "Recurring work, after every appointment",
+      items: [
+        "Text your past customers first, the reactivation wave",
+        "Then connect your booking software so new appointments ask on their own",
+        "Use their name and the service they booked",
+        "Wait the right amount of time before sending",
+        "Follow up once with anyone who didn't respond",
+        "Send unhappy customers to you privately, not to Google",
+        "Reply to every new review in your voice",
+        "Flag reviews that break Google's rules so they can be reported",
+        "Keep your rating and review count on one page",
+        "Show your newest reviews on your website",
+      ],
+    },
+    reach: {
+      title: "If we ever need you, we reach out",
+      sub: "So nothing stalls quietly in the background",
+      items: [
+        "Private feedback comes straight to your inbox the moment it's sent",
+        "We ask for your customer list on day one; the reactivation wave starts from it",
+        "We tell you when a review has been flagged to Google",
+        "Text us whenever something's off and a person answers",
+      ],
+    },
+    note: "We do the asking, the chasing and the replying while you keep seeing clients. The reviews come from real customers, so how many you get is up to them.",
+    stats: [
+      { value: "72 hrs", label: "until it's live and sending" },
+      { value: "1", label: "follow-up, then it stops" },
+      { value: "0", label: "messages you write" },
+    ],
+    cta: "Start your free trial",
+  },
+
   /**
-   * The plan picker — the conversion module on /watch, at #convert. Two
-   * tabs above one card, so a phone is not stacking two full cards. The
-   * card bodies are the same ones as on / and /website.
+   * "Here's what your free trial looks like" — the week, three steps on
+   * the rail, the promise line, the button with the call link beside it
+   * and the cancel line under it, the way the platform's page lays out
+   * its own trial (Luke, Nov 3, 2026, from a screenshot of it).
+   */
+  trialWeek: {
+    heading: "Here's what your free trial looks like.",
+    sub: "Seven days, start to finish. No sales call and no setup team.",
+    steps: [
+      {
+        when: "Day 1",
+        title: "Send us your customer list",
+        body: "Export your recent customers from your booking software or CRM and send it over. That's your setup: no forms to fill in and no software to learn.",
+      },
+      {
+        when: "Within 72 hours",
+        title: "The reactivation wave goes out",
+        body: "Everyone on the list gets a review request from your studio's name, with one follow-up for anyone who goes quiet. Anyone unhappy lands with you, not on Google. The first reviews usually show up within 48 hours of the first send.",
+      },
+      {
+        when: "Once the wave is done",
+        title: "Your booking software takes over",
+        body: "With the reactivation requests finished, we connect to your booking software, and from then on every finished appointment sends its own request. You mark it complete. That's the whole job.",
+      },
+    ],
+    proof: "Everything you see in the week is real: real customers, real reviews on your real profile, and they stay yours whether you keep going or not.",
+    cta: "Start free trial",
+    /** The quiet link beside the button, for whoever isn't ready. */
+    callLead: "Not ready?",
+    callLink: "Book a demo call first",
+    note: `Cancel before the end of day ${offer.trialDays} and you won't be charged. After that, it's $${offer.price}/mo per location.`,
+  },
+
+  /**
+   * "What you can judge in 7 days, and what takes longer": the two cards,
+   * then the real before/after (`profileSwap`, Salt Salon) as the proof
+   * of the second card.
+   */
+  judge: {
+    heading: `What you can judge in ${offer.trialDays} days, and what takes longer`,
+    sub: "A week is enough to see the system work and the control you keep. Your rating and your rank move with every review after that, so judge those over the months, not the week.",
+    cards: [
+      {
+        tone: "blue",
+        label: "In your free week",
+        title: "Check the work and the control",
+        items: [
+          "The reactivation wave going out to your past customers, from your studio's name",
+          "The follow-up going out to anyone who didn't respond",
+          "Private feedback landing with you instead of on Google",
+          "The first reviews on your profile, usually within 48 hours of the first send",
+          "A reply in your voice on every new review",
+          "Your booking software connected, so every new appointment asks on its own",
+        ],
+      },
+      {
+        tone: "orange",
+        label: "Over the next 30–90 days",
+        title: "Watch the numbers move",
+        items: [
+          "Your review count climbing with every appointment",
+          "Your rating settling where your work deserves",
+          "Where you sit against the other studios nearby",
+          "Your spot in the map when someone searches for what you do",
+        ],
+      },
+    ],
+    /**
+     * The numbers panel under the cards (the real Salt Salon pair sat
+     * here first; Luke, Nov 3, 2026: "Remove the salt salon pictures and
+     * have like some stat or something instead like how many people
+     * leave reviews on average with us"). REAL FIGURES ONLY: the three
+     * tiles are the response rates the FAQ ("How many reviews should I
+     * expect?", "How long until I see reviews?") already tells owners to
+     * expect — except the week-one figure, which is Luke's own average
+     * across the businesses Fynd manages — and the four facts under them
+     * are the BrightLocal survey
+     * the FAQ cites, with the same link. There is no measured "owner
+     * asking in person" rate anywhere, so the comparison is said in
+     * words, not a number. Change the FAQ and this together.
+     */
+    numbers: {
+      eyebrow: "The numbers",
+      heading: "How many customers actually leave one?",
+      sub: "Asked in person, when you remember, by the owner who's already on to the next client, most never get round to it. Asked by text, the same day, every time, here's what to expect.",
+      tiles: [
+        {
+          value: "20–30%",
+          label: "of new customers leave a review",
+          basis: "Asked by text after their appointment. Some businesses see more than half.",
+        },
+        /** Luke's own figure (Nov 3, 2026): "34% on average across the
+            businesses we manage". Change it here when it changes. */
+        {
+          value: "34%",
+          label: "of past customers review you in week one",
+          basis: "On average across the businesses we manage, from the reactivation wave.",
+        },
+        {
+          value: "48 hrs",
+          label: "until the first reviews usually land",
+          basis: "From the first send. Then it builds with every appointment.",
+        },
+      ],
+      /** Why those reviews are worth having: the survey the FAQ cites. */
+      whyLabel: "Why it matters",
+      facts: [
+        { value: "97%", text: "of people read reviews before choosing a local business" },
+        { value: "47%", text: "won't use a business with fewer than 20 reviews" },
+        { value: "31%", text: "will only use one rated 4.5 stars or higher" },
+        { value: "74%", text: "want to see reviews from the last three months" },
+      ],
+      source: {
+        label: "Source: BrightLocal, Local Consumer Review Survey 2026",
+        href: "https://www.brightlocal.com/research/local-consumer-review-survey/",
+      },
+      note: "The rates are what we tell owners to expect, not a guarantee. The reviews come from your real customers, and how many you get is up to them.",
+    },
+    /** The section ends on the ask, like every section on the page. */
+    cta: "Start your free trial",
+    ctaNote: `${offer.trialDays} days free · then $${offer.price} a month · Cancel anytime`,
+  },
+
+  /**
+   * The price card — the conversion module on /watch, at #convert, in
+   * /manage's card: the price and what a location is on the left, the
+   * all-in note, the included line, the checks and the button on the
+   * right. No offer clock and no strikethrough: the trial is the deal.
+   *
+   * Commitments written here by Claude, not agreed policy — the checkout
+   * behind the button is not built yet (Luke is doing the Stripe pass at
+   * the end). "Card on file, nothing charged" assumes the usual Stripe
+   * trial shape; if the trial ends up not taking a card, change
+   * `anchorNote` and the FAQ answer.
+   */
+  pricing: {
+    kicker: "Free trial",
+    lead: "Every appointment you don't ask",
+    accent: "is a review you don't get.",
+    sub: `Start today. Send us your customer list, the reactivation wave goes out within 72 hours, and once it's done your booking software takes over. Nothing is charged for ${offer.trialDays} days.`,
+    card: {
+      label: "One simple price",
+      per: "/ month",
+      perNote: "per location, after your free week",
+      pill: `${offer.trialDays} days free · then $${offer.price} a month`,
+      explain: `Each location has its own Google profile, so each one gets its own Review System: its own requests, routing and replies. More than one location? Each is $${offer.price} a month.`,
+      allIn: {
+        title: "All-in price. No setup fee, no per-seat pricing.",
+        body: `The texts, the follow-ups, the replies and the dashboard are all in the $${offer.price}. Nothing is an add-on.`,
+      },
+      includedLine: {
+        label: "Included:",
+        text: "A review request texted after every appointment, the follow-up, private routing for unhappy customers, a reply to every review, and your dashboard.",
+      },
+      checks: [
+        "Live and sending within 72 hours",
+        `Nothing charged for ${offer.trialDays} days`,
+        "No contracts. Cancel anytime.",
+        "Your reviews stay yours if you leave",
+        "A person answers when you need help",
+      ],
+      cta: "Start your free trial",
+      ctaNote: `Free for ${offer.trialDays} days · No contract · Cancel anytime`,
+      anchorNote: `Card on file, nothing charged for ${offer.trialDays} days. Cancel before then and you pay nothing. After that, $${offer.price} a month.`,
+    },
+  },
+
+  /**
+   * "Every feature, in plain English": the Review System's list in
+   * /manage's accordion. Every row is a claim the homepage already makes.
+   */
+  features: {
+    eyebrow: (n: number) => `All ${n} features`,
+    heading: "Every feature, in plain English",
+    sub: `Everything below is included in your $${offer.price} a month. Nothing is an add-on.`,
+    cta: "Start your free trial",
+    groupCount: (n: number) => `${n} feature${n === 1 ? "" : "s"}`,
+    included: "Included",
+    open: "See what's inside",
+    close: "Close",
+    groups: [
+      {
+        icon: "send",
+        title: "Review requests",
+        items: [
+          { name: "Texted after every appointment", means: "The moment an appointment is marked complete, the request goes out on its own." },
+          { name: "From your studio, to them by name", means: "Your business name on the message, their name and the service they booked in it." },
+          { name: "Smart timing", means: "It waits the right amount of time before sending, rather than firing the second you close the ticket." },
+          { name: "One follow-up", means: "Anyone who didn't respond gets one friendly reminder. Then it stops." },
+          { name: "Past customers asked first", means: "Send us your recent customers and the reactivation wave goes out before anything else. It's the fastest lever you have." },
+        ],
+      },
+      {
+        icon: "shield",
+        title: "Review protection",
+        items: [
+          { name: "Private feedback first", means: "The request asks how it went. Ok and Bad land on a private form that comes to you, not on Google." },
+          { name: "Everyone asked, nobody filtered", means: "Every customer gets the same request, which is what Google's rules require. The routing is what protects the rating." },
+          { name: "Rule-breaking reviews flagged", means: "Anything fake, off-topic, from a competitor, or carrying slurs or personal details gets flagged so it can be reported to Google." },
+          { name: "Quiet hours", means: "Nothing sends outside 8am to 8pm in the customer's time zone." },
+          { name: "STOP means stop", means: "Anyone who replies STOP is removed immediately." },
+        ],
+      },
+      {
+        icon: "reply",
+        title: "Review replies",
+        items: [
+          { name: "Every review answered", means: "Each new review gets a reply posted for you, so nothing sits unanswered." },
+          { name: "In your voice", means: "Set the tone once in a training note and every reply follows it." },
+          { name: "Calm replies to bad reviews", means: "A measured reply in your voice, so the next reader sees how you handle it." },
+          { name: "Google counts them too", means: "A profile that answers its reviews is one Google weights. The replies aren't just manners." },
+        ],
+      },
+      {
+        icon: "plug",
+        title: "Booking software",
+        items: [
+          { name: "Vagaro, Mindbody, Square, Acuity and more", means: "Booker, Boulevard, Zenoti, Meevo, Setmore, MyTime and Appointy too, plus most CRMs. If it's on Zapier, we can connect it." },
+          { name: "Connected once the reactivation wave is done", means: "From then on the request fires when an appointment is marked complete. Marking it done is your only step." },
+          { name: "Regulars asked once", means: "Someone who's already reviewed you doesn't get asked again after every visit." },
+          { name: "No booking software? Fine", means: "Text us the number and the request still goes out." },
+        ],
+      },
+      {
+        icon: "chart",
+        title: "Reputation dashboard",
+        items: [
+          { name: "Your rating and review count", means: "Both numbers, and how they've moved, on one page." },
+          { name: "Where the reviews came from", means: "The text, the follow-up, or straight from your profile." },
+          { name: "How you compare nearby", means: "Where you sit against the other studios around you." },
+        ],
+      },
+      {
+        icon: "layout",
+        title: "Website widget",
+        items: [
+          { name: "Live Google reviews on your site", means: "An embeddable widget pulls your newest reviews onto the page people land on after they find you." },
+        ],
+      },
+    ],
+  },
+
+  /** The closer, under the Fynd mark, in /manage's shape. */
+  finalCta: {
+    lead: "Stop asking for reviews.",
+    accent: "Start getting them.",
+    cta: "Start your free trial",
+    note: `Free for ${offer.trialDays} days · then $${offer.price} a month · Cancel anytime`,
+    notReady: "Not ready?",
+    callLink: "Book a call",
+  },
+
+  /**
+   * The old two-tab plan picker (`PlanChooser.tsx`). The page no longer
+   * renders it; the component still reads this if it is wanted back.
    */
   plans: {
     eyebrow: "Pricing",
@@ -403,27 +739,25 @@ export const faq = {
 } as const;
 
 /**
- * /watch sells both plans, so its FAQ carries one question the homepage's
- * doesn't: why a website at all when the owner already has Vagaro. The
- * answer is the pitch for the bundle — the site ships with its own online
- * booking, so they move onto ours rather than keep paying for a booking
- * page. It goes second, straight after who it's for, because on this page
- * it is the objection. Everything else is the shared list, in order.
+ * The trial is the first thing anyone on /watch will wonder about, so it
+ * goes ahead of the homepage's questions. Same caveat as `watch.trial`: the
+ * checkout is not built yet, so keep this in step with what it ends up doing.
  */
-const websiteQuestion = {
-  q: "I already have Vagaro or online booking. Why do I need a website?",
-  a: "Because the site comes with online booking built in, so you end up with one thing instead of two. Vagaro is a booking page: a calendar with your logo on it that people reach once they've already picked you. It isn't where they find you, and it isn't what convinces them. The site we build is the whole thing in one place: your work, your reviews shown live, your services and prices, and a booking calendar that's part of your own site rather than a tab that sends people off to someone else's software. Every appointment booked there feeds the review requests automatically, and when someone searches for what you do, Google has a real page to send them to.",
+const trialQuestion = {
+  q: "How does the free trial work?",
+  a: `You start today by sending us your recent customer list. Within 72 hours the reactivation requests go out to them, and once that wave is finished we connect your booking software so every finished appointment asks on its own. Nothing is charged for the first ${offer.trialDays} days. If it isn't for you, cancel before then and you pay nothing. Otherwise it's $${offer.price} a month after that, month to month, cancel anytime.`,
 } as const;
 
-const afterWhoItsFor = faq.items.findIndex((item) => item.q === "Who is Fynd for?") + 1;
-
 export const watchFaq = {
-  heading: faq.heading,
-  items: [
-    ...faq.items.slice(0, afterWhoItsFor),
-    websiteQuestion,
-    ...faq.items.slice(afterWhoItsFor),
-  ],
+  eyebrow: "FAQ",
+  heading: "Questions about the Review System",
+  sub: "Straight answers about the trial, setup and how it works.",
+  /**
+   * The homepage's questions with the trial one in front. The Vagaro
+   * "why a website?" question that used to sit second is gone with the
+   * website plan — /watch stopped selling it on Nov 3, 2026.
+   */
+  items: [trialQuestion, ...faq.items],
 } as const;
 
 export const finalCta = {
@@ -512,7 +846,7 @@ export const meta = {
   watch: {
     title: "Watch — Fynd Review System",
     description:
-      "Forty-seven seconds on how Fynd turns finished appointments into Google reviews, then pick a plan and start today.",
+      `Forty-seven seconds on how Fynd turns finished appointments into Google reviews, then try it free for ${offer.trialDays} days.`,
   },
   optimize: {
     /** The layout appends " | Fynd". */

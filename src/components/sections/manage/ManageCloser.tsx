@@ -15,8 +15,25 @@ import { ScrollButton } from "./ScrollButton";
  * 24px below sm, where h1's 30px would wrap both halves, and the lead
  * dropped "Google" so it fits at that size with room to spare.
  */
-export function ManageCloser({ targetId }: { targetId: string }) {
-  const copy = manage.finalCta;
+export type CloserCopy = {
+  lead: string;
+  accent: string;
+  cta: string;
+  note: string;
+  notReady: string;
+  callLink: string;
+  /** The second quiet link; /manage's goes to the $99. */
+  once?: { lead: string; label: string; href: string };
+};
+
+/** `copy` defaults to /manage's; /watch passes `watch.finalCta`. */
+export function ManageCloser({
+  targetId,
+  copy = manage.finalCta,
+}: {
+  targetId: string;
+  copy?: CloserCopy;
+}) {
 
   return (
     <section className="relative isolate overflow-hidden bg-navy py-16 text-white lg:py-24">
@@ -39,14 +56,18 @@ export function ManageCloser({ targetId }: { targetId: string }) {
           <p className="mt-4 text-small text-white/70">
             {copy.notReady}{" "}
             <CallLink label={copy.callLink} section="final_cta" tone="light" className="text-small underline decoration-white/30" />
-            <span className="px-2 text-white/30">·</span>
-            {copy.once.lead}{" "}
-            <Link
-              href={copy.once.href}
-              className="font-semibold text-white/85 underline decoration-white/30 underline-offset-4 transition-colors duration-150 hover:text-white hover:decoration-white"
-            >
-              {copy.once.label}
-            </Link>
+            {copy.once && (
+              <>
+                <span className="px-2 text-white/30">·</span>
+                {copy.once.lead}{" "}
+                <Link
+                  href={copy.once.href}
+                  className="font-semibold text-white/85 underline decoration-white/30 underline-offset-4 transition-colors duration-150 hover:text-white hover:decoration-white"
+                >
+                  {copy.once.label}
+                </Link>
+              </>
+            )}
           </p>
         </div>
       </Container>

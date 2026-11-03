@@ -1,11 +1,10 @@
 "use client";
 
-import { ArrowRight } from "lucide-react";
+import { Star } from "lucide-react";
 import { watch } from "@/content/copy";
-import { track } from "@/lib/analytics";
 import { Container } from "@/components/ui/Layout";
 import { DottedWorldMap } from "@/components/textures/Textures";
-import { DemoCta } from "./DemoCta";
+import { ScrollButton } from "@/components/sections/manage/ScrollButton";
 import { VslPlayer } from "./VslPlayer";
 
 /**
@@ -16,20 +15,16 @@ import { VslPlayer } from "./VslPlayer";
  * into half the row is a thumbnail. On a phone the order is headline, video,
  * buttons — the video sits inside the first screen and a half.
  *
- * The CTAs are under the video, not beside the headline. Someone who arrives
- * ready to start scrolls one screen; everyone else meets the buttons after
- * the thing that earns them. Same pair as every other page: "Start now" to
- * the plans, "Book a Demo" in a new tab.
+ * The ask is under the video, not beside the headline. Someone who arrives
+ * ready to start scrolls one screen; everyone else meets it after the
+ * thing that earns it. It is /manage's hero ask (Luke, Nov 3, 2026): one
+ * big pill to the price card, the trial line under it, then five stars
+ * and the trust line. The "Book a Demo" button that sat beside the old
+ * one is gone from the hero; the call link lives in the trial section and
+ * the closer now.
  */
 export function WatchHero({ targetId }: { targetId: string }) {
   const copy = watch.hero;
-
-  const goTo = () => {
-    track("cta_click", { cta: watch.cta, section: "hero" });
-    document
-      .getElementById(targetId)
-      ?.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
 
   return (
     <section
@@ -55,23 +50,22 @@ export function WatchHero({ targetId }: { targetId: string }) {
           className="mx-auto mt-8 w-full max-w-[960px] lg:mt-10"
         />
 
-        {/* A two-column grid that shrinks to fit, not a flex row: equal fr
-            columns in a shrink-to-fit grid both take the wider button's
-            width, so the pair is the same size on desktop as well as when
-            they stack on a phone. */}
-        <div className="mt-8 grid gap-3 sm:mx-auto sm:w-max sm:grid-cols-2">
-          <button
-            type="button"
-            onClick={goTo}
-            className="group flex h-14 w-full items-center justify-center rounded-sm bg-fynd-blue px-8 text-body font-semibold text-white shadow-blue transition-all duration-150 ease-fynd hover:-translate-y-px hover:bg-[#3F4DF0] active:scale-[0.99]"
-          >
-            {watch.cta}
-            <ArrowRight
-              aria-hidden="true"
-              className="ml-2 h-4 w-4 transition-transform duration-150 ease-fynd group-hover:translate-x-[3px]"
-            />
-          </button>
-          <DemoCta section="hero" className="sm:w-full" />
+        <div className="mx-auto mt-8 flex w-full max-w-[440px] flex-col items-center gap-3">
+          <ScrollButton
+            targetId={targetId}
+            label={watch.cta}
+            section="hero"
+            className="h-14 w-full rounded-full text-[18px] sm:h-16 sm:w-full sm:text-[20px]"
+          />
+          <p className="text-small text-white/60">{copy.ctaNote}</p>
+          <p className="flex items-center gap-2.5 text-small font-semibold text-white/85">
+            <span className="flex gap-0.5" role="img" aria-label={copy.trustSr}>
+              {Array.from({ length: 5 }).map((_, i) => (
+                <Star key={i} strokeWidth={0} className="h-4 w-4 fill-fynd-orange" />
+              ))}
+            </span>
+            {copy.trust}
+          </p>
         </div>
       </Container>
     </section>

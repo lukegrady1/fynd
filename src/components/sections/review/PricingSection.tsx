@@ -217,9 +217,9 @@ export function CancelledNote({ className }: { className?: string }) {
  * a competing button undercuts the thing the card is for, and directly beneath
  * it a full-weight CTA does the same. This reads as an aside, which is what it
  * is. Opens in a new tab like every other route to /demo, and carries the
- * prefill params across.
+ * prefill params across. Exported for the trial card on /watch.
  */
-function DemoLine() {
+export function DemoLine() {
   const demoHref = useDemoHref();
 
   return (

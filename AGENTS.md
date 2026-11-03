@@ -187,6 +187,26 @@ platform-revealing — see the note on `manage` in `copy.ts` and
 from the price card and the closer; `/optimize`'s managed
 section links here.
 
+### Free trial — /watch (plan `review-trial`)
+
+`/watch` sells one thing: the Review System free for `offer.trialDays`
+(7) days, then $97/month. No website plan, no $197-to-$97 strikethrough,
+no offer clock on that page. **The page is /manage's page for reviews
+only** (Luke, Nov 3, 2026), built from the same section components —
+`BusyOwners`, `FirstMonth`, `ManagePricing`, `FeatureTable`, `ManageFaq`,
+`ManageCloser` each take an optional `copy` that defaults to /manage's,
+and the first, fourth and fifth a `tone` ("light" on /watch, so the page
+alternates light and dark instead of /manage's all-navy) —
+with `watch`'s copy in `copy.ts` passed in, plus `WatchJudge.tsx` for the
+judge cards and the numbers panel (FAQ figures only, source linked). Keep new sections in
+that shape, and keep every claim one the homepage FAQ or feature list
+already makes. The card's button posts `review-trial` — a `TrialPlan`,
+kept apart from `Plan` because every `Plan` charges a month up front.
+**The Stripe side is not built**: `/api/checkout` answers 503 "not
+available" for it (`TODO(stripe)`) until the trial session exists. Never
+route it into `createCheckoutSession`; that would take $97 off a "free
+trial" button.
+
 `src/lib/ghl.ts` is still stubbed and marked `TODO(integration)`. See
 `progress.md` for the full state.
 

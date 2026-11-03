@@ -3,6 +3,7 @@
 import { Plus } from "lucide-react";
 import { manage } from "@/content/copy";
 import { track } from "@/lib/analytics";
+import { cn } from "@/lib/utils";
 import { Container } from "@/components/ui/Layout";
 
 /**
@@ -12,20 +13,40 @@ import { Container } from "@/components/ui/Layout";
  * screen-reader semantics for free, readable without JavaScript. Which
  * question gets opened is tracked.
  */
-export function ManageFaq() {
-  const copy = manage.faq;
+export type FaqCopy = {
+  eyebrow: string;
+  heading: string;
+  sub: string;
+  items: readonly { q: string; a: string }[];
+};
+
+/** `copy` defaults to /manage's; /watch passes `watchFaq`. */
+export function ManageFaq({
+  copy = manage.faq,
+  tone = "dark",
+}: {
+  copy?: FaqCopy;
+  /** "dark" is /manage's navy; "light" is /watch's Fynd Gray with a white card. */
+  tone?: "dark" | "light";
+} = {}) {
+  const dark = tone === "dark";
 
   return (
-    <section className="bg-navy py-12 text-white lg:py-20">
+    <section className={cn("py-12 lg:py-20", dark ? "bg-navy text-white" : "bg-fynd-gray text-ink")}>
       <Container>
         <div className="grid gap-10 lg:grid-cols-[340px_1fr] lg:gap-14">
           <div className="lg:sticky lg:top-24 lg:self-start">
-            <p className="text-micro uppercase text-[#8FA0FF]">{copy.eyebrow}</p>
-            <h2 className="mt-3 text-h1 text-white lg:text-[44px] lg:leading-[1.15]">{copy.heading}</h2>
-            <p className="mt-4 text-body text-white/75">{copy.sub}</p>
+            <p className={cn("text-micro uppercase", dark ? "text-[#8FA0FF]" : "text-fynd-green-text")}>{copy.eyebrow}</p>
+            <h2 className={cn("mt-3 text-h1 lg:text-[44px] lg:leading-[1.15]", dark ? "text-white" : "text-ink")}>{copy.heading}</h2>
+            <p className={cn("mt-4 text-body", dark ? "text-white/75" : "text-ink-soft")}>{copy.sub}</p>
           </div>
 
-          <div className="divide-y divide-white/10 overflow-hidden rounded-lg bg-navy-card ring-1 ring-white/10 text-white shadow-lg">
+          <div
+            className={cn(
+              "divide-y overflow-hidden rounded-lg",
+              dark ? "divide-white/10 bg-navy-card text-white shadow-lg ring-1 ring-white/10" : "divide-line bg-white text-ink shadow-sm ring-1 ring-line",
+            )}
+          >
             {copy.items.map((item, i) => (
               <details
                 key={item.q}
@@ -35,15 +56,20 @@ export function ManageFaq() {
                 }}
               >
                 <summary className="flex cursor-pointer list-none items-center gap-4 px-5 py-5 text-left [&::-webkit-details-marker]:hidden sm:px-6">
-                  <span className="w-6 shrink-0 text-[12px] font-bold tabular-nums text-[#8FA0FF]">
+                  <span className={cn("w-6 shrink-0 text-[12px] font-bold tabular-nums", dark ? "text-[#8FA0FF]" : "text-fynd-blue")}>
                     {String(i + 1).padStart(2, "0")}
                   </span>
-                  <span className="flex-1 text-h3 text-white">{item.q}</span>
-                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-fynd-blue/25 text-[#8FA0FF] transition-all duration-250 ease-fynd group-open:rotate-45 group-open:bg-fynd-blue group-open:text-white">
+                  <span className={cn("flex-1 text-h3", dark ? "text-white" : "text-ink")}>{item.q}</span>
+                  <span
+                    className={cn(
+                      "flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-all duration-250 ease-fynd group-open:rotate-45 group-open:bg-fynd-blue group-open:text-white",
+                      dark ? "bg-fynd-blue/25 text-[#8FA0FF]" : "bg-fynd-blue/10 text-fynd-blue",
+                    )}
+                  >
                     <Plus aria-hidden="true" strokeWidth={2.5} className="h-4 w-4" />
                   </span>
                 </summary>
-                <p className="px-5 pb-6 text-body text-white/70 sm:pl-16 sm:pr-16">{item.a}</p>
+                <p className={cn("px-5 pb-6 text-body sm:pl-16 sm:pr-16", dark ? "text-white/70" : "text-ink-soft")}>{item.a}</p>
               </details>
             ))}
           </div>

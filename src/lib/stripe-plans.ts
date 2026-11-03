@@ -18,8 +18,24 @@ export const PLAN_LIST = ["review-system", "website-reviews", "gbp-management"] 
  */
 export type OneTimeProduct = "gbp-optimization";
 
+/**
+ * The free trial sold on /watch: the Review System, `offer.trialDays` free,
+ * then $97/month. Its own type rather than a fourth `Plan` because the
+ * billing shape is different — nothing is charged at checkout — and
+ * everything typed `Plan` charges a month up front. **Not wired to Stripe
+ * yet**: `/api/checkout` accepts it and answers "not available" until the
+ * trial session exists (`TODO(stripe)` there). Luke is doing the Stripe pass
+ * at the end, all at once.
+ */
+export type TrialPlan = "review-trial";
+
+export const TRIAL_PLANS = ["review-trial"] as const satisfies readonly TrialPlan[];
+
+export const isTrialPlan = (value: string): value is TrialPlan =>
+  (TRIAL_PLANS as readonly string[]).includes(value);
+
 /** Anything a checkout button can sell. */
-export type Purchasable = Plan | OneTimeProduct;
+export type Purchasable = Plan | OneTimeProduct | TrialPlan;
 
 export const ONE_TIME_PRODUCTS = ["gbp-optimization"] as const satisfies readonly OneTimeProduct[];
 

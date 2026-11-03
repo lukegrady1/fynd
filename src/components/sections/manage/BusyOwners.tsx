@@ -16,31 +16,63 @@ import { ScrollButton } from "./ScrollButton";
  * The platform's third tile is a vendor stat (80% run on autopilot).
  * Ours is the one-business-day start, which is a promise, not a claim.
  */
-export function BusyOwners() {
-  const copy = manage.busy;
+export type BusyCopy = {
+  eyebrow: string;
+  heading: string;
+  sub: string;
+  question: string;
+  questionSub: string;
+  blocks: readonly { tone: "blue" | "orange"; title: string; body: string }[];
+  todo: { title: string; sub: string; items: readonly string[] };
+  reach: { title: string; sub: string; items: readonly string[] };
+  note: string;
+  stats: readonly { value: string; label: string }[];
+  cta: string;
+};
+
+/**
+ * `copy` defaults to /manage's; /watch passes its reviews-only version
+ * (`watch.busy`) and gets the same section.
+ */
+export function BusyOwners({
+  copy = manage.busy,
+  targetId = "convert",
+  tone = "dark",
+}: {
+  copy?: BusyCopy;
+  targetId?: string;
+  /** "dark" is /manage's navy; "light" is /watch's Fynd Gray with white cards. */
+  tone?: "dark" | "light";
+} = {}) {
+  const dark = tone === "dark";
 
   return (
-    <section className="bg-navy py-12 text-white lg:py-20">
+    <section className={cn("py-12 lg:py-20", dark ? "bg-navy text-white" : "bg-fynd-gray text-ink")}>
       <Container>
         <Reveal className="mx-auto max-w-[800px] text-center">
-          <p className="text-micro uppercase text-[#8FA0FF]">{copy.eyebrow}</p>
-          <h2 className="mt-3 text-h1 text-white">{copy.heading}</h2>
-          <p className="mx-auto mt-4 max-w-[720px] text-body text-white/75 lg:text-[18px] lg:leading-[28px]">
+          <p className={cn("text-micro uppercase", dark ? "text-[#8FA0FF]" : "text-fynd-green-text")}>{copy.eyebrow}</p>
+          <h2 className={cn("mt-3 text-h1", dark ? "text-white" : "text-ink")}>{copy.heading}</h2>
+          <p className={cn("mx-auto mt-4 max-w-[720px] text-body lg:text-[18px] lg:leading-[28px]", dark ? "text-white/75" : "text-ink-soft")}>
             {copy.sub}
           </p>
         </Reveal>
 
         <Reveal className="mx-auto mt-12 max-w-[820px] text-center lg:mt-16">
-          <h2 className="text-h1 text-white lg:text-[46px] lg:leading-[1.12]">
+          <h2 className={cn("text-h1 lg:text-[46px] lg:leading-[1.12]", dark ? "text-white" : "text-ink")}>
             {copy.question}
           </h2>
-          <p className="mx-auto mt-4 max-w-[680px] text-body text-white/75 lg:text-[18px] lg:leading-[28px]">
+          <p className={cn("mx-auto mt-4 max-w-[680px] text-body lg:text-[18px] lg:leading-[28px]", dark ? "text-white/75" : "text-ink-soft")}>
             {copy.questionSub}
           </p>
         </Reveal>
 
         <div className="mx-auto mt-10 grid max-w-[1120px] gap-6 lg:mt-14 lg:grid-cols-[1.15fr_1fr] lg:items-start">
-          <Reveal className="rounded-lg border-2 border-fynd-blue bg-navy-card ring-1 ring-white/10 p-6 text-white shadow-lg lg:mt-14 lg:p-8">
+          <Reveal
+            className={cn(
+              "rounded-lg border-2 border-fynd-blue p-6 lg:mt-14 lg:p-8",
+              dark ? "bg-navy-card ring-1 ring-white/10 text-white shadow-lg" : "bg-white text-ink shadow-sm",
+            )}
+          >
             <div className="flex flex-col gap-7">
               {copy.blocks.map((block) => (
                 <div
@@ -50,51 +82,57 @@ export function BusyOwners() {
                     block.tone === "orange" ? "border-fynd-orange" : "border-fynd-blue",
                   )}
                 >
-                  <h3 className="text-h3 text-white lg:text-[22px]">{block.title}</h3>
-                  <p className="mt-2 text-body text-white/70">{block.body}</p>
+                  <h3 className={cn("text-h3 lg:text-[22px]", dark ? "text-white" : "text-ink")}>{block.title}</h3>
+                  <p className={cn("mt-2 text-body", dark ? "text-white/70" : "text-ink-soft")}>{block.body}</p>
                 </div>
               ))}
             </div>
           </Reveal>
 
-          <Reveal delay={0.08} className="rounded-lg bg-navy-card ring-1 ring-white/10 p-6 text-white shadow-lg lg:p-7">
+          <Reveal
+            delay={0.08}
+            className={cn(
+              "rounded-lg p-6 lg:p-7",
+              dark ? "bg-navy-card ring-1 ring-white/10 text-white shadow-lg" : "border border-line bg-white text-ink shadow-sm",
+            )}
+          >
             <div className="flex items-start gap-3">
               <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-fynd-blue text-white">
                 <Sparkles aria-hidden="true" strokeWidth={1.75} className="h-5 w-5" />
               </span>
               <div>
-                <h3 className="text-h3 text-white">{copy.todo.title}</h3>
-                <p className="mt-0.5 text-small text-white/70">{copy.todo.sub}</p>
+                <h3 className={cn("text-h3", dark ? "text-white" : "text-ink")}>{copy.todo.title}</h3>
+                <p className={cn("mt-0.5 text-small", dark ? "text-white/70" : "text-ink-soft")}>{copy.todo.sub}</p>
               </div>
             </div>
 
             <ul className="mt-5 flex flex-col gap-2.5">
               {copy.todo.items.map((item) => (
                 <li key={item} className="flex items-start gap-3">
-                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-fynd-green/20">
-                    <Check aria-hidden="true" strokeWidth={3} className="h-3 w-3 text-fynd-green" />
+                  <span className={cn("mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full", dark ? "bg-fynd-green/20" : "bg-fynd-green/15")}>
+                    <Check aria-hidden="true" strokeWidth={3} className={cn("h-3 w-3", dark ? "text-fynd-green" : "text-fynd-green-text")} />
                   </span>
-                  <span className="text-small font-medium text-white">{item}</span>
+                  <span className={cn("text-small font-medium", dark ? "text-white" : "text-ink")}>{item}</span>
                 </li>
               ))}
             </ul>
 
-            <div className="mt-5 rounded-md bg-white/[0.06] p-4">
-              <p className="text-small font-semibold text-white">{copy.reach.title}</p>
-              <p className="mt-0.5 text-small text-white/70">{copy.reach.sub}</p>
+            <div className={cn("mt-5 rounded-md p-4", dark ? "bg-white/[0.06]" : "bg-fynd-gray")}>
+              <p className={cn("text-small font-semibold", dark ? "text-white" : "text-ink")}>{copy.reach.title}</p>
+              <p className={cn("mt-0.5 text-small", dark ? "text-white/70" : "text-ink-soft")}>{copy.reach.sub}</p>
               <ul className="mt-3 flex flex-col gap-2">
                 {copy.reach.items.map((item) => (
                   <li key={item} className="flex items-start gap-2.5">
-                    <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-fynd-blue/25 text-[#8FA0FF]">
+                    <span className={cn("mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full", dark ? "bg-fynd-blue/25 text-[#8FA0FF]" : "bg-fynd-blue/10 text-fynd-blue")}>
                       <MessageCircle aria-hidden="true" strokeWidth={2} className="h-3 w-3" />
                     </span>
-                    <span className="text-small font-medium text-white">{item}</span>
+                    <span className={cn("text-small font-medium", dark ? "text-white" : "text-ink")}>{item}</span>
                   </li>
                 ))}
               </ul>
             </div>
 
-            <p className="mt-4 text-small text-white/70">{copy.note}</p>
+            <p className={cn("mt-4 text-small", dark ? "text-white/70" : "text-ink-soft")}>{copy.note}</p>
           </Reveal>
         </div>
 
@@ -103,17 +141,20 @@ export function BusyOwners() {
             <li key={stat.label}>
               <Reveal
                 delay={i * 0.06}
-                className="flex h-full flex-col items-center justify-center gap-1 rounded-lg bg-navy-card px-2 py-4 text-center shadow-lg ring-1 ring-white/10 sm:flex-row sm:flex-wrap sm:items-baseline sm:gap-x-3 sm:px-6 sm:py-6"
+                className={cn(
+                  "flex h-full flex-col items-center justify-center gap-1 rounded-lg px-2 py-4 text-center sm:flex-row sm:flex-wrap sm:items-baseline sm:gap-x-3 sm:px-6 sm:py-6",
+                  dark ? "bg-navy-card shadow-lg ring-1 ring-white/10" : "border border-line bg-white shadow-sm",
+                )}
               >
-                <span className="whitespace-nowrap text-[22px] font-bold leading-none tabular-nums text-[#8FA0FF] sm:text-data">{stat.value}</span>
-                <span className="text-[12px] leading-tight text-white/70 sm:text-body">{stat.label}</span>
+                <span className={cn("whitespace-nowrap text-[22px] font-bold leading-none tabular-nums sm:text-data", dark ? "text-[#8FA0FF]" : "text-fynd-blue")}>{stat.value}</span>
+                <span className={cn("text-[12px] leading-tight sm:text-body", dark ? "text-white/70" : "text-ink-soft")}>{stat.label}</span>
               </Reveal>
             </li>
           ))}
         </ul>
 
         <div className="mt-10 text-center">
-          <ScrollButton targetId="convert" label={copy.cta} section="busy_owners" />
+          <ScrollButton targetId={targetId} label={copy.cta} section="busy_owners" />
         </div>
       </Container>
     </section>

@@ -3,10 +3,33 @@
 import Link from "next/link";
 import { Check, ShieldCheck } from "lucide-react";
 import { manage } from "@/content/copy";
+import type { CancelPath, Purchasable } from "@/lib/stripe-plans";
 import { Container } from "@/components/ui/Layout";
 import { Reveal } from "@/components/sections/review/Reveal";
 import { CheckoutButton } from "@/components/sections/review/CheckoutButton";
 import { CancelledNote } from "@/components/sections/review/PricingSection";
+
+export type PricingCopy = {
+  kicker: string;
+  lead: string;
+  accent: string;
+  sub: string;
+  card: {
+    label: string;
+    per: string;
+    perNote: string;
+    pill: string;
+    explain: string;
+    allIn: { title: string; body: string };
+    includedLine: { label: string; text: string };
+    checks: readonly string[];
+    cta: string;
+    ctaNote: string;
+    anchorNote: string;
+    /** The quiet link under the price; /manage points at the $99. */
+    onceLine?: { lead: string; label: string; href: string };
+  };
+};
 
 /**
  * "Every day you wait, a competitor gets the call." and the price card —
@@ -20,14 +43,28 @@ import { CancelledNote } from "@/components/sections/review/PricingSection";
  * subscription checkout — a month paid today, then $297/month from the
  * anchor — see `createCheckoutSession` and the `gbp-management` plan.
  */
+/**
+ * `copy`, `plan` and `price` default to /manage's; /watch passes its own
+ * (`watch.pricing`, the `review-trial` plan, $97) and gets the same card.
+ */
 export function ManagePricing({
   cid,
   cancelled,
+  copy = manage.pricing,
+  plan = "gbp-management",
+  price = manage.price,
+  section = "manage_pricing",
+  cancelPath,
 }: {
   cid?: string;
   cancelled: boolean;
+  copy?: PricingCopy;
+  plan?: Purchasable;
+  price?: number;
+  /** For analytics, so the two cards can be told apart. */
+  section?: string;
+  cancelPath?: CancelPath;
 }) {
-  const copy = manage.pricing;
   const card = copy.card;
 
   return (
@@ -59,7 +96,7 @@ export function ManagePricing({
               <p className="text-micro uppercase text-white/60">{card.label}</p>
               <p className="mt-5 flex flex-wrap items-baseline gap-x-3 gap-y-1">
                 <span className="text-[72px] font-bold leading-none tabular-nums tracking-[-0.03em] text-fynd-green">
-                  ${manage.price}
+                  ${price}
                 </span>
                 <span className="text-h3 font-medium text-white/80">{card.per}</span>
               </p>
@@ -69,15 +106,17 @@ export function ManagePricing({
                 {card.pill}
               </span>
               <p className="mt-5 text-small text-white/70">{card.explain}</p>
-              <p className="mt-4 text-small text-white/70">
-                {card.onceLine.lead}{" "}
-                <Link
-                  href={card.onceLine.href}
-                  className="font-semibold text-white underline decoration-white/30 underline-offset-4 transition-colors duration-150 hover:decoration-white"
-                >
-                  {card.onceLine.label} &rarr;
-                </Link>
-              </p>
+              {card.onceLine && (
+                <p className="mt-4 text-small text-white/70">
+                  {card.onceLine.lead}{" "}
+                  <Link
+                    href={card.onceLine.href}
+                    className="font-semibold text-white underline decoration-white/30 underline-offset-4 transition-colors duration-150 hover:decoration-white"
+                  >
+                    {card.onceLine.label} &rarr;
+                  </Link>
+                </p>
+              )}
             </div>
 
             {/* What's in it, and the ask */}
@@ -109,10 +148,11 @@ export function ManagePricing({
               </ul>
 
               <CheckoutButton
-                plan="gbp-management"
+                plan={plan}
                 cid={cid}
                 label={card.cta}
-                section="manage_pricing"
+                section={section}
+                cancelPath={cancelPath}
               />
               <p className="mt-3 text-center text-small text-white/60">{card.ctaNote}</p>
               <p className="mt-3 text-center text-small text-white/60">{card.anchorNote}</p>

@@ -355,32 +355,89 @@ both website FAQ answers steer the same way. Nothing charges the $249 yet
 
 ### VSL page — `/watch`
 
-The link to text a lead who has not been on a call yet. Now the same shape
-as the homepage and `/website`: the video as the hero, what owners say, a
-**plan picker** at `#convert`, the FAQ, the closer. Every "Start now" (hero,
-video end-card, closer, sticky pill) scrolls to the picker; "Book a Demo"
-opens `/demo` in a new tab as everywhere else. The calendar column that used
-to be the only ask is gone from the page (`BookDemo.tsx` and `watch.book`
-are still in the tree if wanted back).
+The link to text a lead who has not been on a call yet, and since Nov 3,
+2026 the Review System's own long page: **/manage's page for reviews
+only** (Luke: "add stuff to this page like it is the management page but
+it's for reviews only"). The video hero with /manage's ask under it (big
+pill, trial line, five stars and the trust count; the "Book a Demo"
+button came out of the hero), the trust strip, built for busy owners,
+the free week in three steps on the rail, what to judge in 7 days and
+what takes longer (ending on the numbers panel), what owners say, the price card in /manage's card at `#convert`, every
+feature as the accordion, the numbered FAQ, the closer under the mark.
+The ask is the Review System on a **7-day free trial** (`offer.trialDays`),
+then $97/month — the only plan on the page. The two-tab picker that also
+sold the $249 website plan, and the $197-struck-to-$97 promo with the
+offer clock, are off this page (`PlanChooser.tsx` is still in the tree
+and `watch.plans` still feeds it, like `BookDemo.tsx` / `watch.book`).
+Every "Start your free trial" scrolls to the card.
 
-- **Plan picker** — `PlanChooser.tsx`: two tabs (Review System $97/mo,
-  Website + Reviews $249 today) above one card. The cards are the same
-  components the other pages render — `ReviewPlanCard` exported from
-  `PricingSection.tsx`, `BundlePlanCard` from `BundlePricing.tsx` — so a
-  price change shows up in all three places. Tabs rather than two stacked
-  cards because at 390px two full cards are three screens of pricing.
-  `?plan=` picks the opening tab; Stripe puts it on the cancel URL so someone
-  who backed out of the $249 checkout lands on the $249 card. The navy tab
-  fill is one element that slides between the cells (300ms, slight
-  overshoot) and the card rises in on each switch (`fynd-panel`, motion-safe
-  only). Both cards stay mounted in one grid cell — the one not showing is
-  `invisible` + `inert` — so the module is always the taller card's height
-  and the page never jumps; each card is a flex column with the list
-  absorbing the spare height, so the button sits at the same spot on both.
+- **Not /manage's wall of navy.** The sections alternate: navy hero,
+  white trust strip, Fynd Gray busy-owners (white cards), navy trial
+  rail, white judge section with the navy numbers panel inside it,
+  testimonials, navy price card, white features (grey groups), Fynd
+  Gray FAQ (white card), navy closer. `BusyOwners`, `FeatureTable` and
+  `ManageFaq` take `tone="light"` for it (default "dark" keeps /manage
+  as it was); eyebrows on the light sections are the AA green. Luke,
+  Nov 3, 2026: "switch design slightly" so it "isn't an exact copy of
+  the manage page".
+- **Every ask is the trial.** Each section ends on a "Start your free
+  trial" button to `#convert` (the judge section got one under the
+  numbers panel); the sticky pill has no "Book a Demo" beside it. The
+  call survives only as the quiet text link in the trial section and
+  the closer.
+- **Built from /manage's components, not copies.** `BusyOwners`,
+  `FirstMonth`, `ManagePricing`, `FeatureTable`, `ManageFaq` and
+  `ManageCloser` each take an optional `copy` (typed in the component:
+  `BusyCopy`, `FirstMonthCopy`, `PricingCopy`, `FeaturesCopy`, `FaqCopy`,
+  `CloserCopy`) that defaults to /manage's; /watch passes `watch.busy`,
+  `watch.trialWeek`, `watch.pricing`, `watch.features`, `watchFaq`,
+  `watch.finalCta`. `ManagePricing` also takes `plan`, `price`, `section`
+  and `cancelPath`; the `onceLine` / `once` links to the $99 are optional
+  and /watch has none. `FirstMonth` grew an optional `callLead` /
+  `callLink` beside the button (the platform's "Not ready? Run a free
+  audit first" row, with our call in its place). The one new component
+  is `WatchJudge.tsx`: /manage's two judge cards, then the numbers
+  panel where /manage draws its sample report — three tiles with the
+  response rates the FAQ already tells owners to expect (20–30% of new
+  customers, first reviews in 48 hours) plus Luke's own week-one figure
+  (34% of past customers, "on average across the businesses we manage",
+  Nov 3, 2026) and the four BrightLocal facts the FAQ cites, source linked.
+  The real Salt Salon before/after sat there first; Luke swapped it for
+  stats (Nov 3, 2026). There is no measured "owner asking in person"
+  rate, so that comparison is in words. Nothing on /watch is
+  illustrative or invented; change the FAQ and the panel together.
+- **The first week runs in this order** (Luke, Nov 3, 2026): the owner
+  sends their past-customer list -> the reactivation review requests go
+  out to it -> once that wave is finished, the booking software is
+  connected and requests send automatically after each appointment.
+  The trial-week steps, the busy-owners card, the judge card, the
+  numbers tile, the price-card sub, the features list and the trial FAQ
+  all say it in that order; keep them in step.
+- **Every claim is one the homepage already makes** (72 hours to live,
+  one follow-up, 8am–8pm, STOP, private routing, replies in your voice,
+  the widget, the past-customer wave, per-location pricing). What
+  /manage has that this leaves out on purpose: the channel ring, the
+  math and the tools replaced (no honest review-only cost figures), the
+  website section. The `watch.pricing` card note, the trial-week
+  cancel line and the "How does the free trial work?" FAQ item (first in
+  `watchFaq`) were written by Claude and assume the usual Stripe trial
+  shape (card on file, nothing charged for 7 days, $97/month after);
+  check them against what the checkout ends up doing.
+- **The checkout behind the button is not built.** The card posts plan
+  `review-trial` (`TrialPlan` in `stripe-plans.ts`, its own type so
+  nothing typed `Plan` can charge it a month up front). `/api/checkout`
+  accepts it and returns the 503 "not available, book a call" answer
+  with a `TODO(stripe)` — Luke is doing the Stripe pass for everything
+  at once: this trial session (setup mode, card saved, subscription
+  trialing `offer.trialDays` days; the `createDeferredCheckoutSession`
+  shape minus the one-time charge), the same-day billing anchor for
+  /manage, and the $249 website charge. Until then the page shows the
+  error rather than charging $97 under a "free trial" label.
 - **Cancel path** — `CheckoutButton` takes `cancelPath`, validated at
   `/api/checkout` against `CANCEL_PATHS` in `stripe-plans.ts` (only
   `/watch` today), so a backed-out checkout from this page returns here
-  rather than to `/` or `/website`.
+  rather than to `/` or `/website`. `?plan=` is still parsed but ignored
+  here now that there is one card.
 
 - **Video is self-hosted** — `public/fynd-split-vsl-vo-web_4.mp4` (1920x1080,
   47.1s, 7.0MB, voiceover) played through a native `<video>` in

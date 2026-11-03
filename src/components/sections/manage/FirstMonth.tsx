@@ -3,6 +3,7 @@ import { manage } from "@/content/copy";
 import { cn } from "@/lib/utils";
 import { Container } from "@/components/ui/Layout";
 import { Reveal } from "@/components/sections/review/Reveal";
+import { CallLink } from "./CallLink";
 import { ScrollButton } from "./ScrollButton";
 import { ProgressRail } from "./ProgressRail";
 
@@ -16,8 +17,29 @@ import { ProgressRail } from "./ProgressRail";
  * baseline is taken on day one), then the button. The "book a call"
  * link that sat beside it came off (Luke, Nov 3, 2026).
  */
-export function FirstMonth() {
-  const copy = manage.firstMonth;
+export type FirstMonthCopy = {
+  heading: string;
+  sub: string;
+  steps: readonly { when: string; title: string; body: string }[];
+  proof: string;
+  cta: string;
+  /** The quiet call link beside the button; /watch has one, /manage doesn't. */
+  callLead?: string;
+  callLink?: string;
+  note: string;
+};
+
+/**
+ * `copy` defaults to /manage's first month; /watch passes its free week
+ * (`watch.trialWeek`) and gets the same rail.
+ */
+export function FirstMonth({
+  copy = manage.firstMonth,
+  targetId = "convert",
+}: {
+  copy?: FirstMonthCopy;
+  targetId?: string;
+} = {}) {
 
   return (
     <section className="bg-navy py-12 text-white lg:py-20">
@@ -67,8 +89,17 @@ export function FirstMonth() {
             {copy.proof}
           </p>
 
-          <div className="mt-8 flex w-full flex-col items-center sm:w-auto">
-            <ScrollButton targetId="convert" label={copy.cta} section="first_month" />
+          {/* The button, with the call link beside it from sm when the copy
+              has one — the platform's "Not ready? Run a free audit first"
+              row, with our call in its place. */}
+          <div className="mt-8 flex w-full flex-col items-center gap-4 sm:w-auto sm:flex-row sm:gap-6">
+            <ScrollButton targetId={targetId} label={copy.cta} section="first_month" />
+            {copy.callLink && (
+              <p className="text-body text-white/70">
+                {copy.callLead}{" "}
+                <CallLink label={copy.callLink} section="first_month" tone="light" />
+              </p>
+            )}
           </div>
           <p className="mt-5 text-small text-white/60">{copy.note}</p>
         </Reveal>
