@@ -1,5 +1,6 @@
 import { Check } from "lucide-react";
 import { watch } from "@/content/copy";
+import type { Widen } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { Container } from "@/components/ui/Layout";
 import { ScrollButton } from "@/components/sections/manage/ScrollButton";
@@ -18,8 +19,9 @@ import { TimelineRail } from "./TimelineRail";
  * the promise line, the button, and the cancel line. Reads
  * `watch.trialWeek`.
  */
-export function WatchTrialTimeline({ targetId = "convert" }: { targetId?: string } = {}) {
-  const copy = watch.trialWeek;
+export type TimelineCopy = Omit<Widen<typeof watch.trialWeek>, "note"> & { readonly note?: string };
+
+export function WatchTrialTimeline({ targetId = "convert", copy = watch.trialWeek }: { targetId?: string; copy?: TimelineCopy } = {}) {
 
   return (
     <section className="bg-navy py-12 text-white lg:py-20">
@@ -81,7 +83,7 @@ export function WatchTrialTimeline({ targetId = "convert" }: { targetId?: string
           <div className="mt-8 flex w-full flex-col items-center sm:w-auto">
             <ScrollButton targetId={targetId} label={copy.cta} section="trial_week" />
           </div>
-          <p className="mt-5 text-small text-white/60">{copy.note}</p>
+          {copy.note && <p className="mt-5 text-small text-white/60">{copy.note}</p>}
         </Reveal>
       </Container>
     </section>

@@ -84,8 +84,9 @@ export function CheckoutButton({
           className="mt-3 rounded-sm border border-fynd-orange/40 bg-fynd-orange/8 px-3 py-2 text-small text-ink"
         >
           {error}{" "}
+          {/* /demo, not /call: the button sits on public pages and /call is never linked. */}
           <Link
-            href="/call"
+            href="/demo"
             className="font-semibold text-fynd-blue underline-offset-4 hover:underline"
           >
             Book a call instead &rarr;

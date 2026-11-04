@@ -70,7 +70,17 @@ const KEEP = 5;
 type Connect = "off" | "pending" | "on";
 type Review = { id: number; name: string; shown: boolean };
 
-export function WatchJudgeDemo() {
+export function WatchJudgeDemo({
+  compactBelow = 600,
+}: {
+  /**
+   * The container width under which the phone-column design shows. /watch
+   * keeps the default; the homepage's half-width plate (about 550px at
+   * 1280) passes a lower one so the desktop pair, phone included, scales
+   * down into it instead of the narrow compact design sitting in navy.
+   */
+  compactBelow?: number;
+} = {}) {
   const [connect, setConnect] = useState<Connect>("off");
   const [count, setCount] = useState(START_COUNT);
   const [reviews, setReviews] = useState<Review[]>([]);
@@ -161,7 +171,7 @@ export function WatchJudgeDemo() {
       <Stage<Record<string, never>>
         width={640}
         height={420}
-        compact={{ below: 600, width: 358, height: 470 }}
+        compact={{ below: compactBelow, width: 358, height: 470 }}
         initial={{}}
         script={keepAlive}
         className="look-fynd wj-demo"

@@ -47,5 +47,5 @@ export const isOneTimeProduct = (value: string): value is OneTimeProduct =>
  * visitor lands back on the video rather than on a page they never saw. A
  * closed list, not a free path, so the client cannot pick the destination.
  */
-export const CANCEL_PATHS = ["/watch"] as const;
+export const CANCEL_PATHS = ["/watch", "/reviews"] as const;
 export type CancelPath = (typeof CANCEL_PATHS)[number];

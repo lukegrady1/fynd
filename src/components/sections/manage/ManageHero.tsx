@@ -98,8 +98,8 @@ export function ManageHero({ targetId }: { targetId: string }) {
   );
 }
 
-/** The search result, drawn: the business first, two competitors, a call coming in. */
-function SearchMock() {
+/** The search result, drawn: the business first, two competitors, a call coming in. Exported for the homepage. */
+export function SearchMock() {
   const m = manage.hero.mock;
 
   return (

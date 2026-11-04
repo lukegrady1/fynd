@@ -101,7 +101,8 @@ export default async function WatchPage({
         />
       </main>
 
-      <FunnelFooter />
+      {/* No services column: nothing on this page leads back to the site. */}
+      <FunnelFooter services={false} />
 
       {/* No $/mo on the pill: the deal is the free days, not the monthly,
           and "$97/mo · Start your free trial" would read as both at once.

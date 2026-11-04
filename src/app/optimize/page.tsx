@@ -2,10 +2,8 @@ import type { Metadata } from "next";
 import { meta, optimize } from "@/content/copy";
 import { parseParams, type SearchParams } from "@/lib/params";
 import { PageTracking } from "@/components/sections/review/PageTracking";
-import {
-  FunnelHeader,
-  FunnelFooter,
-} from "@/components/sections/review/PageChrome";
+import { FunnelFooter } from "@/components/sections/review/PageChrome";
+import { Nav } from "@/components/site/Nav";
 import { ObjectionFaq } from "@/components/sections/review/ObjectionFaq";
 import { FinalCta } from "@/components/sections/review/FinalCta";
 import { StickyCta } from "@/components/sections/review/StickyCta";
@@ -48,7 +46,7 @@ export default async function OptimizePage({
   return (
     <>
       <PageTracking page="optimize" cid={params.cid} />
-      <FunnelHeader tone="dark" />
+      <Nav />
 
       <main className="flex-1">
         <OptimizeHero targetId="how" managedId="ongoing" />

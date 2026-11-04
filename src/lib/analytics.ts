@@ -28,6 +28,7 @@ export type AnalyticsEvent =
 
 export type PageId =
   | "home"
+  | "reviews"
   | "demo"
   | "start"
   | "call"

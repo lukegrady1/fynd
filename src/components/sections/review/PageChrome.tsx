@@ -4,7 +4,7 @@ import { Logo } from "@/components/brand/Logo";
 import { Container } from "@/components/ui/Layout";
 import { ArrowUpRight } from "lucide-react";
 import { demoCta, footerCta } from "@/content/copy";
-import { brand } from "@/lib/brand";
+import { brand, footerServices } from "@/lib/brand";
 
 /**
  * Minimal chrome for the funnel pages. They already know who I am — they just
@@ -52,7 +52,17 @@ export function FunnelHeader({
  * opt-out language wherever the programme is described. See the note in
  * AGENTS.md before assuming this page has no disclosure obligations.
  */
-export function FunnelFooter({ children }: { children?: ReactNode }) {
+export function FunnelFooter({
+  children,
+  services = true,
+}: {
+  children?: ReactNode;
+  /**
+   * The services column (Reviews, Website, Management, Optimization).
+   * Off on /watch, which must not lead anywhere else (Luke, Nov 3, 2026).
+   */
+  services?: boolean;
+}) {
   return (
         // pb clears the sticky CTA pills: they sit 20px off the bottom and stand
     // 48px tall, so without it the copyright line reads underneath them. The
@@ -60,13 +70,31 @@ export function FunnelFooter({ children }: { children?: ReactNode }) {
     // on navy.
     <footer className="bg-navy pb-28 pt-12 text-white lg:pb-32 lg:pt-14">
       <Container>
-        <div className="grid gap-10 md:grid-cols-[1.5fr_1fr_1fr]">
+        <div className={services ? "grid gap-10 md:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr]" : "grid gap-10 md:grid-cols-[1.5fr_1fr_1fr]"}>
           <div>
             <Logo tone="light" showTagline />
             <p className="measure mt-5 text-small text-white/72">
               {brand.description}
             </p>
           </div>
+
+          {services && (
+            <div>
+              <p className="text-micro uppercase text-white/72">Services</p>
+              <ul className="mt-4 flex flex-col gap-3">
+                {footerServices.map((l) => (
+                  <li key={l.href}>
+                    <Link
+                      href={l.href}
+                      className="text-small font-medium text-white/80 transition-colors hover:text-white"
+                    >
+                      {l.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           <div>
             <p className="text-micro uppercase text-white/72">Legal</p>

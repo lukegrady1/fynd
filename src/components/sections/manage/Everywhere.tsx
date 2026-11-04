@@ -177,7 +177,8 @@ const markSize: Record<string, string> = {
   youtube: "[&>svg]:h-[22px] [&>svg]:w-[26px] sm:[&>svg]:h-[26px] sm:[&>svg]:w-[31px]",
 };
 
-function BusinessCard({ className }: { className?: string }) {
+/** The business card with the live storefront. Exported for the homepage. */
+export function BusinessCard({ className }: { className?: string }) {
   const c = manage.everywhere.centre;
 
   return (

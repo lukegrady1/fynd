@@ -27,7 +27,7 @@ export type GhlEvent =
 export type GhlPayload = {
   event: GhlEvent;
   ghl_contact_id: string | null;
-  page: "start" | "call" | "website" | "watch" | "welcome" | "optimize" | "manage";
+  page: "start" | "call" | "website" | "watch" | "welcome" | "optimize" | "manage" | "reviews";
   timestamp: string;
   meta: Record<string, unknown>;
 };

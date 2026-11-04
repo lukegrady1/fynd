@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { watch } from "@/content/copy";
+import type { Widen } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { Container } from "@/components/ui/Layout";
 import { ScrollButton } from "@/components/sections/manage/ScrollButton";
@@ -27,8 +28,9 @@ import { Reveal } from "./Reveal";
  * (Luke): 18px from xl, where the three columns start; two columns
  * below that. Reads `watch.features`.
  */
-export function WatchFeatureGrid({ targetId = "convert" }: { targetId?: string } = {}) {
-  const copy = watch.features;
+export type FeaturesCopy = Widen<typeof watch.features>;
+
+export function WatchFeatureGrid({ targetId = "convert", copy = watch.features }: { targetId?: string; copy?: FeaturesCopy } = {}) {
   const total = copy.groups.reduce((n, g) => n + g.items.length, 0);
 
   return (

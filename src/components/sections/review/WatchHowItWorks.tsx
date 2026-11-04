@@ -1,6 +1,7 @@
 import { Check, Hand, ListChecks, MessageCircle, Plus, ShieldCheck, Sparkles } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { watch } from "@/content/copy";
+import type { Widen } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { Container } from "@/components/ui/Layout";
 import { ScrollButton } from "@/components/sections/manage/ScrollButton";
@@ -16,8 +17,9 @@ import { Reveal } from "./Reveal";
  * button. Reads `watch.busy`. Third layout for this copy: /manage's
  * two cards, then a you/us ledger Luke didn't like (Nov 3, 2026).
  */
-export function WatchHowItWorks({ targetId = "convert" }: { targetId?: string } = {}) {
-  const copy = watch.busy;
+export type HowItWorksCopy = Widen<typeof watch.busy>;
+
+export function WatchHowItWorks({ targetId = "convert", copy = watch.busy }: { targetId?: string; copy?: HowItWorksCopy } = {}) {
 
   return (
     <section className="bg-fynd-gray py-12 lg:py-20">

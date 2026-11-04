@@ -600,10 +600,14 @@ it, like `BookDemo.tsx` / `watch.book`).
 Keegan asked for "a website refresh + reviews for 249", at the bottom of the
 homepage and on its own page. Built as a second **plan**, not an add-on:
 
-- **`/website`** — hero (the two halves as a pair of cards), a two-column
-  "what's included" list, the $249 card at `#convert`, four questions, the
-  closer. Indexable. Copy is `bundle` in `copy.ts`; the price is
-  `offer.bundle.price`.
+- **`/website`** — rebuilt Nov 3, 2026 in /manage's shape (Luke): the
+  manage-style hero with the drawn salon site (`WebsiteHero`), the
+  two-column "what's included" list, the first two weeks on the scroll
+  rail (`WatchTrialTimeline` with `bundle.page.firstWeeks`), the $249 card
+  as `ManagePricing` at `#convert`, the questions, the closer. The offer
+  clock and the $197 strikethrough are gone from this page (`BundleHero`
+  and `BundlePricing` are no longer used by it). Indexable. Copy is
+  `bundle` (+ `bundle.page`) in `copy.ts`; the price is `offer.bundle.price`.
 - **Homepage** — `BundleTeaser` sits between the FAQ and the closer, and the
   "Custom website" add-on card now links to `/website` (same tab) instead of
   the demo calendar.
@@ -627,6 +631,37 @@ software, hosting/updates included, reviews shown on the site — and the
 "live in about two weeks", "no design fee", "keep your domain" and "move up
 from $97 later" answers are commitments written by Claude, not agreed
 policy. Edit before sending anyone the link.
+
+### The site as a site — nav, `/`, `/reviews` (Nov 3, 2026)
+
+Luke: "I would like to make it so that this Manage page will be found…
+interconnectivity… the only one that I don't want to be able to be found
+from any other page is the Watch page." Done as:
+
+- **Nav** on every public page (`Nav.tsx`, config in `brand.ts`): Reviews,
+  Website, Management, Book a call. Optimize deliberately not in it (a
+  homepage band and a footer link instead). `FunnelFooter` grew a
+  Services column (`footerServices`); /watch passes `services={false}`
+  and `homeLink={false}` on its header.
+- **`/`** became a hub (`src/components/sections/home/`): `HomeHero` (the
+  /manage search card), `TrustStrip`, `HomeServices` (three rows, each
+  with its page's own illustration: `WatchJudgeDemo` with
+  `compactBelow={480}` so the desktop pair fits a half-width plate,
+  `SiteMock`, `BusinessCard` — exported from their sections for this;
+  then the $99 band), `ResultsSection` (Salt Salon + the three outcomes),
+  `HomeNumbers` (`NumbersPanel`, extracted from `WatchProof`, with
+  `standalone`), the FAQ, `HomeCloser` (links, not a scroll). Copy is
+  `home`. `/start` still renders `LandingPage`.
+- **`/reviews`** (indexable): `ReviewsHero` (the request on the phone,
+  `ReviewPhone`, extracted from the hero), then /watch's sections with the
+  `reviews` copy — `WatchHowItWorks`, `WatchTrialTimeline`, `WatchProof`,
+  `WatchFeatureGrid` all take `copy` (typed with `Widen<>` from
+  `src/lib/types.ts`), `ManagePricing` on `review-system` at $97,
+  `cancelPath="/reviews"`. Every figure is /watch's.
+- `CheckoutButton`'s error fallback links `/demo` now, not `/call`.
+- **Not verified with a real card**: the `/reviews` and `/website`
+  buttons mint the same sessions as before (`review-system`,
+  `website-reviews`); only the pages around them changed.
 
 ### Onboarding form — `/start/welcome`
 

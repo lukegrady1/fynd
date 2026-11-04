@@ -70,13 +70,26 @@ export const pillars: {
   },
 ];
 
+/**
+ * The site navigation, shared by every public page (Luke, Nov 3, 2026:
+ * "pages can link together now"). The three services people come for;
+ * the $99 optimization is deliberately not here — it is a section on the
+ * homepage and a footer link, "just kind of there if someone needs it".
+ * /watch, /start and /call are never linked from anywhere.
+ */
 export const nav = {
   links: [
-    { label: "Product", href: "/#product" },
-    { label: "Solutions", href: "/#solutions" },
-    { label: "Pricing", href: "/#pricing" },
-    { label: "Resources", href: "/#resources" },
+    { label: "Reviews", href: "/reviews" },
+    { label: "Website", href: "/website" },
+    { label: "Management", href: "/manage" },
   ],
-  login: { label: "Login", href: "/login" },
-  cta: { label: "Book a Demo", href: "/#demo" },
+  cta: { label: "Book a call", href: "/demo" },
 } as const;
+
+/** The footer's services column: everything that can be bought, the $99 included. */
+export const footerServices = [
+  { label: "Review System", href: "/reviews" },
+  { label: "Website + Reviews", href: "/website" },
+  { label: "Profile management", href: "/manage" },
+  { label: "Profile optimization", href: "/optimize" },
+] as const;

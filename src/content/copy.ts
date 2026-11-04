@@ -802,6 +802,92 @@ export const watchFaq = {
   items: [trialQuestion, ...faq.items],
 } as const;
 
+/**
+ * /reviews — the Review System's own public page (Luke, Nov 3, 2026: a
+ * new /reviews page in the /manage and /optimize style; the homepage is a
+ * hub now). The same sections as /watch, which was already this page for
+ * texted leads, minus the video and the trial: a drawn hero, how it works,
+ * the first week, what to judge when, owners, the price card in /manage's
+ * card at $97/month (the anchored plan, like /start), every feature, the
+ * FAQ, the closer. Most blocks are `watch`'s with the trial words and the
+ * "Start your free trial" buttons swapped for "Start now".
+ */
+export const reviews = {
+  cta: "Start now",
+
+  hero: {
+    lead: "Turn appointments",
+    accent: "into reviews.",
+    body: {
+      lead: "Every finished appointment asks your customer for a Google review by text, follows up if they go quiet, sends anyone unhappy to ",
+      strong: "you",
+      tail: " instead of Google, and replies to every review in your voice. You mark the appointment done. That's the whole job.",
+    },
+    checks: [
+      "Texted after every appointment, automatically",
+      "Unhappy customers routed to you, not Google",
+      "Plugs into the booking software you already use",
+    ],
+    ctaNote: `$${offer.price}/mo · No contract · Cancel anytime`,
+    trust: "Trusted by 100+ local businesses",
+    trustSr: "Five stars.",
+  },
+
+  busy: { ...watch.busy, cta: "Start now" },
+
+  firstWeek: {
+    heading: "Here's what your first week looks like.",
+    sub: "Seven days, start to finish. No sales call and no setup team.",
+    steps: watch.trialWeek.steps,
+    proof: "Everything you see in the week is real: real customers, real reviews on your real profile, and they stay yours whether you keep going or not.",
+    cta: "Start now",
+  },
+
+  judge: { ...watch.judge, cta: "Start now", ctaNote: `$${offer.price} a month · No contract · Cancel anytime` },
+
+  pricing: {
+    kicker: "Pricing",
+    lead: "Every appointment you don't ask",
+    accent: "is a review you don't get.",
+    sub: "Start today. Send us your customer list, the reactivation wave goes out within 24 hours of us getting it, and once it's done your booking software takes over.",
+    card: {
+      label: "One simple price",
+      per: "/ month",
+      perNote: "No contract. Cancel anytime.",
+      pill: `$${offer.price} today · then $${offer.price} a month`,
+      allIn: {
+        title: "All-in price. No setup fee, no per-seat pricing.",
+        body: `The texts, the follow-ups, the replies and the dashboard are all in the $${offer.price}. Nothing is an add-on.`,
+      },
+      includedLine: {
+        label: "Included:",
+        text: "A review request texted after every appointment, the follow-ups, private routing for unhappy customers, a reply to every review, and your dashboard.",
+      },
+      checks: [
+        "Sending within 24 hours of your customer list",
+        "No contracts. Cancel anytime.",
+        "Your reviews stay yours if you leave",
+        "A person answers when you need help",
+      ],
+      cta: `Start for $${offer.price}`,
+      ctaNote: "Billed monthly · No contract · Cancel anytime",
+    },
+  },
+
+  features: { ...watch.features, sub: `Everything below is included in your $${offer.price} a month. Nothing is an add-on.`, cta: "Start now" },
+
+  faq: {
+    heading: "Questions about the Review System",
+    items: faq.items,
+  },
+
+  finalCta: {
+    heading: { lead: "Stop asking for reviews. Start", accent: "getting them", tail: "." },
+    cta: "Start now",
+    note: `$${offer.price} a month · No contract · Cancel anytime`,
+  },
+} as const;
+
 export const finalCta = {
   /**
    * Split so the payoff word carries Fynd Green, per design.md — inline here
@@ -859,6 +945,116 @@ export const setter = {
   notConfigured: "Calendar not configured — set NEXT_PUBLIC_GHL_SETTER_CALENDAR_ID.",
 } as const;
 
+/**
+ * The homepage, as a hub (Luke, Nov 3, 2026: "just be a homepage: show
+ * off each thing we do, say things about each service, show some proof,
+ * show some statistics"). It sells nothing itself: every button leads to
+ * the page that does (/reviews, /website, /manage, /optimize) or to the
+ * call. The hero's search card, the reviews dashboard, the drawn site and
+ * the live storefront are the service pages' own illustrations, so the
+ * visitor meets the same picture again when they click through. Every
+ * claim here is one those pages already make; the figures are the ones
+ * documented on `watch.judge.numbers` and `results`.
+ */
+export const home = {
+  hero: {
+    /** Three lines, the payoff in green: at 64px "Get found. Get reviews." broke mid-sentence. */
+    lead: "Get found.",
+    mid: "Get reviews.",
+    accent: "Get booked.",
+    body: "Fynd puts your business in front of the people searching for what you do, turns every finished appointment into a Google review, and builds you a website that gets you booked. You answer the phone.",
+    checks: [
+      "Google reviews on autopilot",
+      "Your Google profile run for you, every day",
+      "A website built while you set up",
+    ],
+    /** Scrolls to the three services. */
+    cta: "See what we do",
+    /** The call, beside it. */
+    call: { label: "Book a call", href: "/demo" },
+    trust: "Trusted by 100+ local businesses",
+    trustSr: "Five stars.",
+  },
+
+  services: {
+    eyebrow: "What we do",
+    heading: "Three things. Start with the one you need.",
+    sub: "Each is its own plan with its own page and its own price. Reviews on their own, a website with the reviews built in, or the whole profile run for you.",
+    /** `key` picks the illustration in `HomeServices`. */
+    items: [
+      {
+        key: "reviews",
+        eyebrow: "Review System",
+        title: "Every finished appointment asks for a Google review.",
+        body: "When an appointment ends, we text the customer, follow up twice if they go quiet, send the unhappy ones to you privately and reply to every review in your voice. You mark the appointment done. That's the whole job.",
+        points: [
+          "Texted after every appointment, from your studio's name",
+          "Two follow-ups, then it stops",
+          "Unhappy customers routed to you, not to Google",
+          "The first reviews usually land within 3 hours of the first send",
+        ],
+        price: `$${offer.price} a month · No contract`,
+        cta: "See the Review System",
+        href: "/reviews",
+        caption: "Illustration. The studio is made up and the figures are drawn, not measured.",
+      },
+      {
+        key: "website",
+        eyebrow: "Website + Reviews",
+        title: "A website built to get you booked.",
+        body: "Fast, mobile-first and written for you from one short call, on the domain you already own, with book-now wired to your booking software and your newest Google reviews shown live. The Review System comes with it.",
+        points: [
+          "Live in about two weeks",
+          "Hosting, security and updates handled",
+          "Your Google reviews shown live on the site",
+          "Edit anything just by asking",
+        ],
+        price: `$${offer.bundle.price} to start · then $${offer.price} a month`,
+        cta: "See the website plan",
+        href: "/website",
+        caption: "Illustration. The salon and its site are made up.",
+      },
+      {
+        key: "manage",
+        eyebrow: "Full management",
+        title: "Your Google profile, run for you every day.",
+        body: "We optimize your Google Business Profile, post for you, reply to reviews and fix your listings, so when someone nearby searches for what you do on Google, Google Maps or ChatGPT, they find you. Review requests are included.",
+        points: [
+          "A full optimization first, then upkeep every month",
+          "Google Search, Google Maps, ChatGPT, Gemini and more",
+          "Review requests included",
+          "Set up in 20 minutes, then it runs itself",
+        ],
+        price: "$297 a month per profile · No contract",
+        cta: "See full management",
+        href: "/manage",
+        caption: "Illustration. The count is drawn, not live data.",
+      },
+    ],
+    /** The $99, deliberately small: a band under the three, not a fourth (Luke, Nov 3, 2026: "just kind of there if someone needs it"). */
+    optimize: {
+      eyebrow: "One time",
+      title: "Just need your Google profile fixed once?",
+      body: `Every section of your Google Business Profile checked and filled in by a person. $${offer.gbp.price}, once. No subscription.`,
+      cta: `See the $${offer.gbp.price} optimization`,
+      href: "/optimize",
+    },
+  },
+
+  /** The stats (the /watch and /reviews numbers panel), then one link to the Review System. */
+  numbers: {
+    cta: "See the Review System",
+    href: "/reviews",
+  },
+
+  closer: {
+    heading: { lead: "Ready to be the one they", accent: "find first", tail: "?" },
+    primary: { label: "Book a call", href: "/demo" },
+    secondary: { label: "Start with reviews", href: "/reviews" },
+    note: "Fifteen minutes on the call. Or start with the Review System today, no contract.",
+  },
+} as const;
+
 export const meta = {
   schedule: {
     title: "Setter booking — Fynd",
@@ -901,6 +1097,12 @@ export const meta = {
   },
   manageWelcome: {
     title: "You're in — Fynd",
+  },
+  reviews: {
+    /** The layout appends " | Fynd". */
+    title: "Automated Google reviews for salons and barbers",
+    description:
+      "Every finished appointment asks for a Google review by text, follows up, routes unhappy customers to you and replies in your voice. $97 a month, no contract.",
   },
   manage: {
     /** The layout appends " | Fynd". */
@@ -1728,6 +1930,83 @@ export const bundle = {
   finalCta: {
     heading: { lead: "Ready for a site that", accent: "gets you booked", tail: "?" },
     cta: `Start for $${offer.bundle.price}`,
+  },
+
+  /**
+   * The /website page in /manage's shape (Luke, Nov 3, 2026: "same with the
+   * website page"): the hero with the drawn site, the includes, the first
+   * two weeks on the rail, the price card, the FAQ, the closer. No offer
+   * clock and no strikethrough on it any more.
+   */
+  page: {
+    hero: {
+      lead: "A new website, and",
+      accent: "the reviews to back it up.",
+      body: `Your site rebuilt to get you booked, on the domain you already own, and every finished appointment turned into a Google review. $${offer.bundle.price} to start, then $${offer.price} a month for the Review System.`,
+      checks: [
+        "Built for you from one short call, live in about two weeks",
+        "Book-now wired to your booking software",
+        "Every finished appointment asks for a Google review",
+      ],
+      cta: "Start now",
+      ctaNote: `$${offer.bundle.price} to start · then $${offer.price}/month · No contract`,
+      trust: "Trusted by 100+ local businesses",
+      trustSr: "Five stars.",
+    },
+    /** The first two weeks, on `WatchTrialTimeline`'s rail. The timings are the FAQ's. */
+    firstWeeks: {
+      heading: "Here's what your first two weeks look like.",
+      sub: "Kickoff to live. One short call and a few photos from you.",
+      steps: [
+        {
+          when: "Day 1",
+          title: "A short kickoff call",
+          body: `The $${offer.bundle.price} covers the build and your first period of the Review System. On the call we take down what you do, who you're for and how people book, and ask for a few photos.`,
+        },
+        {
+          when: "Within 72 hours",
+          title: "The review requests start sending",
+          body: "The Review System is live long before the site is: every finished appointment asks for a Google review by text, with follow-ups for anyone who goes quiet and unhappy customers routed to you. By the time the site goes up it has fresh reviews to show.",
+        },
+        {
+          when: "About two weeks",
+          title: "Your site goes live on your domain",
+          body: "You see the draft, we make the changes, and it goes live on the domain you already own. Hosting, security and updates are handled from then on, and your newest reviews show on it automatically.",
+        },
+      ],
+      proof: "Your domain stays yours, the site is yours to keep, and the reviews are on your real Google profile.",
+      cta: `Start for $${offer.bundle.price}`,
+    },
+    /** The price card, in `ManagePricing`. */
+    pricing: {
+      kicker: "Website + Reviews",
+      lead: "Every day without a site that books,",
+      accent: "a competitor gets the booking.",
+      sub: "Start today. The kickoff call is this week, the review requests start within 72 hours, and the site is live in about two weeks.",
+      card: {
+        label: "One price to start",
+        per: "today",
+        perNote: `then $${offer.price} a month for the Review System`,
+        pill: `$${offer.bundle.price} today · then $${offer.price} a month`,
+        allIn: {
+          title: "The build is paid once. The site is never billed again.",
+          body: `Hosting, security, updates and your reviews feeding onto the site are all part of the $${offer.price} a month.`,
+        },
+        includedLine: {
+          label: "Included:",
+          text: "The website build, hosting and updates, and the full Review System.",
+        },
+        checks: [
+          "Your domain, and the site is yours to keep",
+          "Book-now wired to your booking software",
+          `The same Review System as the $${offer.price} plan`,
+          "No contract. Cancel anytime.",
+        ],
+        cta: `Start for $${offer.bundle.price}`,
+        ctaNote: `Then $${offer.price}/month · No contract · Cancel anytime`,
+        anchorNote: `$${offer.bundle.price} today. The $${offer.price} a month starts on your next billing day.`,
+      },
+    },
   },
 
   /** The teaser at the bottom of the homepage. */

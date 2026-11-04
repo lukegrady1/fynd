@@ -2,10 +2,8 @@ import type { Metadata } from "next";
 import { manage, meta } from "@/content/copy";
 import { parseParams, type SearchParams } from "@/lib/params";
 import { PageTracking } from "@/components/sections/review/PageTracking";
-import {
-  FunnelHeader,
-  FunnelFooter,
-} from "@/components/sections/review/PageChrome";
+import { FunnelFooter } from "@/components/sections/review/PageChrome";
+import { Nav } from "@/components/site/Nav";
 import { StickyCta } from "@/components/sections/review/StickyCta";
 import { ManageHero } from "@/components/sections/manage/ManageHero";
 import { BusyOwners } from "@/components/sections/manage/BusyOwners";
@@ -58,7 +56,7 @@ export default async function ManagePage({
   return (
     <>
       <PageTracking page="manage" cid={params.cid} />
-      <FunnelHeader tone="dark" />
+      <Nav />
 
       <main className="flex-1">
         <ManageHero targetId="convert" />

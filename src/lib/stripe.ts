@@ -138,9 +138,10 @@ const PLANS: Record<
     describe: (anchorLabel, recurringLabel) =>
       `Your first period, today through ${anchorLabel}. Continues as a ${recurringLabel}/month subscription on ${anchorLabel}.`,
     priceId: REVIEW_PRICE_ID,
-    cancelPath: "/",
+    // The Review System's own page is /reviews now; the homepage is a hub.
+    cancelPath: "/reviews",
     successPath: "/start/welcome",
-    source: "start-page",
+    source: "reviews-page",
   },
   "website-reviews": {
     name: "Fynd Website + Reviews",

@@ -55,6 +55,35 @@ Hero map pins are positioned as percentages in an overlay layer and only render
 at `lg` and up: below that the hero stacks and there is no band clear of the text.
 
 
+## Site map (Nov 3, 2026)
+
+The public pages link to each other now; the funnel links do not.
+
+- **`/`** is a hub (`src/app/page.tsx`, sections in
+  `src/components/sections/home/`): it sells nothing itself, shows each
+  service with that service page's own illustration (the /manage search
+  card, the /watch reviews dashboard demo, the /manage drawn site, the
+  /manage live storefront), the real Salt Salon before/after, the numbers
+  panel, the FAQ, and a closer that links to the call or to /reviews. Copy
+  is `home` in `copy.ts`. The old $97 landing page (`LandingPage`) is what
+  `/start` still renders.
+- **Nav** (`src/components/site/Nav.tsx`, config `nav` in `brand.ts`):
+  Reviews → `/reviews`, Website → `/website`, Management → `/manage`, and
+  "Book a call" → `/demo`. The $99 `/optimize` is **not** in the nav on
+  purpose (Luke: "just kind of there if someone needs it"): it is a band on
+  the homepage and a footer link (`footerServices`).
+- **`/reviews`** is the indexable Review System page: /watch's sections
+  with the `reviews` copy (no trial; $97/month on the `review-system`
+  plan). The /watch section components take a `copy` prop for this.
+- **`/website`** is in /manage's shape: `WebsiteHero` with the drawn site,
+  `BundleIncludes`, the first two weeks on `WatchTrialTimeline`,
+  `ManagePricing` on the `website-reviews` plan, FAQ, closer. Copy is
+  `bundle.page`. No offer clock, no strikethrough.
+- **Never linked from anywhere:** `/watch` (its logo is not a link and its
+  footer has no services column), `/start`, `/call`. Keep it that way; the
+  grep for `href="/watch`, `/start`, `/call` outside their own routes
+  should come back empty.
+
 ## Funnel pages — /start and /call
 
 Built from `review-system-landing-pages.md` (the build spec). Two pages, ~85%

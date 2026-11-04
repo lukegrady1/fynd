@@ -69,7 +69,8 @@ export function WebsiteSection() {
 }
 
 /** The fictional salon's site in a browser, a phone beside it, an edit request under it. */
-function SiteMock() {
+/** The drawn site. Exported for the /website hero and the homepage. */
+export function SiteMock() {
   const m = manage.website.mock;
 
   return (
