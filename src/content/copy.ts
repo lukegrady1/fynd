@@ -2381,7 +2381,7 @@ export const manage = {
       { value: "0", label: "SEO knowledge needed" },
       { value: "1", label: "business day until work starts" },
     ],
-    cta: "Start for $297",
+    cta: "Start now",
   },
 
   /**
@@ -2426,7 +2426,7 @@ export const manage = {
       { brand: "website", label: "Your website" },
     ],
     illustrative: "Illustrative activity",
-    cta: "Start for $297",
+    cta: "Start now",
     ctaNote: "$297 a month per profile · No contract · Cancel anytime",
   },
 
@@ -2452,7 +2452,7 @@ export const manage = {
       },
     ],
     proof: "Your baseline is taken the day you connect, so every report is measured against it.",
-    cta: "Start for $297",
+    cta: "Start now",
     note: "Billed monthly, per profile. No contract. Cancel anytime.",
   },
 
@@ -2579,7 +2579,7 @@ export const manage = {
         strong: "$5,184 a year",
         tail: " in software you can cancel, before counting anyone's time.",
       },
-      cta: "Start for $297",
+      cta: "Start now",
     },
     cols: { job: "What we do", replaces: "Replaces", price: "Typical price" },
     per: "/mo",
@@ -2809,7 +2809,7 @@ export const manage = {
     eyebrow: (n: number) => `All ${n} features`,
     heading: "Every feature, in plain English",
     sub: "Everything below is included in your $297 a month. Nothing is an add-on.",
-    cta: "Start for $297",
+    cta: "Start now",
     groupCount: (n: number) => `${n} features`,
     included: "Included",
     /** The hint beside each group's plus button, from md. */
@@ -3021,7 +3021,7 @@ export const manage = {
   finalCta: {
     lead: "Stop managing your profile.",
     accent: "Start answering the phone.",
-    cta: "Start for $297",
+    cta: "Start now",
     note: "$297 a month per profile · No contract · Cancel anytime",
     notReady: "Not ready?",
     callLink: "Book a call",
