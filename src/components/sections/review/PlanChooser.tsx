@@ -7,7 +7,7 @@ import type { CancelPath, Plan } from "@/lib/stripe-plans";
 import { cn } from "@/lib/utils";
 import { Container, Eyebrow } from "@/components/ui/Layout";
 import { Reveal } from "./Reveal";
-import { CancelledNote, ReviewCheckout, ReviewPlanCard } from "./PricingSection";
+import { ReviewCheckout, ReviewPlanCard } from "./PricingSection";
 import { BundlePlanCard } from "./BundlePricing";
 
 /**
@@ -32,12 +32,10 @@ const PLANS: readonly Plan[] = ["review-system", "website-reviews"];
 
 export function PlanChooser({
   cid,
-  cancelled,
   initialPlan = "review-system",
   cancelPath,
 }: {
   cid?: string;
-  cancelled: boolean;
   initialPlan?: Plan;
   /** Where a backed-out checkout returns to — this page. */
   cancelPath: CancelPath;
@@ -60,8 +58,6 @@ export function PlanChooser({
             <span className="block">{copy.lead}</span>
             <span className="block text-fynd-green-text">{copy.accent}</span>
           </h2>
-
-          {cancelled && <CancelledNote className="bg-white" />}
 
           <div
             role="tablist"

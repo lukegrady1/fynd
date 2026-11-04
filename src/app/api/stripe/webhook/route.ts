@@ -5,6 +5,7 @@ import {
   constructWebhookEvent,
   ensureSubscription,
   oneTimeGhl,
+  oneTimePage,
   readOneTimeSession,
 } from "@/lib/stripe";
 import { notifyGhl } from "@/lib/ghl";
@@ -165,7 +166,7 @@ const oneTimePurchase = async (session: Stripe.Checkout.Session) => {
     {
       event: "checkout_completed",
       ghl_contact_id: paid.ghlContactId,
-      page: "optimize",
+      page: oneTimePage(paid.product),
       meta: {
         amount_total: session.amount_total,
         customer_email: paid.email,

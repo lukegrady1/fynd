@@ -22,25 +22,10 @@
 
 /* Two studios on one product, stacked: the scene change crossfades the body
    under the browser chrome, which stays put */
-.wj-demo .wj-scenes {
-  display: grid;
-  height: 100%;
-}
-
 .wj-demo .wj-scene {
   display: flex;
-  grid-area: 1 / 1;
+  height: 100%;
   min-height: 0;
-  opacity: 0;
-  /* Hidden outright once faded, so its reset (a snap) is never on stage */
-  visibility: hidden;
-  transition: opacity 0.45s ease 0.1s, visibility 0s linear 0.55s;
-}
-
-.wj-demo .wj-scene[data-on] {
-  opacity: 1;
-  visibility: visible;
-  transition: opacity 0.45s ease, visibility 0s;
 }
 
 .wj-demo .wj-sidebar {
@@ -90,13 +75,18 @@
   padding: 18px 16px;
 }
 
-/* Everything in the main column stops a gutter short of the phone's edge
-   (the window runs on under it): 224px from the column's inset. */
+/* The content column: wide, now that the phone is small and far right
+   (Luke, Nov 3, 2026: more of the recent list should show). */
 .wj-demo .wj-content {
-  max-width: 232px;
+  max-width: 248px;
 }
 
-/* The studio's name and the day chip */
+/* The chart sits under the strip with little air; the list is the point */
+.wj-demo .wj-chart {
+  margin-top: 8px;
+}
+
+/* The studio's name and the Live badge */
 .wj-demo .wj-head {
   display: flex;
   align-items: center;
@@ -139,6 +129,13 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* The counter's digit boxes are tabular cells and Poppins's figures carry
+   wide side bearings, so two digits read as spaced out ("3 3"). Pulled
+   together so they sit like set type (Luke, Nov 3, 2026). */
+.wj-demo .wj-total .ss-count__digit + .ss-count__digit {
+  margin-left: -4px;
+}
+
 .wj-demo .wj-rating {
   display: inline-flex;
   align-items: center;
@@ -154,7 +151,6 @@
 
 .wj-demo .wj-chart {
   display: block;
-  margin-top: 10px;
 }
 
 /* The connection strip: booking software, pending then connected */
@@ -219,11 +215,13 @@
   grid-template-columns: 22px minmax(0, 1fr) 44px;
 }
 
-/* Straddles the window's right edge, over margin and the filler rows; its
-   base is cropped by the stage. A level above the window. */
+/* Small, far right: at the stage's gutter, straddling the window's right
+   edge about a third outside it, over the window's margin, so the
+   dashboard's list reads whole beside it; its base is cropped by the
+   stage. A level above. */
 .wj-demo .wj-phone {
   position: absolute;
-  top: 84px;
+  top: 96px;
   right: var(--gutter);
   box-shadow: var(--ss-shadow-satellite), 0 30px 50px -20px rgba(11, 19, 43, 0.35);
 }
@@ -242,13 +240,9 @@
   height: 22px;
 }
 
-/* Narrow: a stack, not a squeeze. The sidebar goes and the window runs
-   off the right, whole in height (what shows is square, 342 by 342). The
-   phone is bigger (320, so its notification text reads) and straddles
-   the window's bottom edge over the filler rows, running off the stage's
-   bottom; its clock is off so the two notifications sit at the top of
-   its screen, whole. The studio, the count and the connection strip are
-   all above it. */
+/* Narrow: the sidebar goes, the window runs off the right and well past
+   the bottom, and there is no phone (Luke, Nov 3, 2026): the dashboard
+   alone, its recent list whole. */
 .wj-demo .ss-stage[data-layout='compact'] {
   --gutter: 16px;
 }
@@ -259,11 +253,15 @@
 
 .wj-demo .ss-stage[data-layout='compact'] .wj-window {
   width: 420px;
-  height: 342px;
+  height: 520px;
 }
 
 .wj-demo .ss-stage[data-layout='compact'] .wj-main {
   padding: 16px 18px;
+}
+
+.wj-demo .ss-stage[data-layout='compact'] .wj-content {
+  max-width: 300px;
 }
 
 .wj-demo .ss-stage[data-layout='compact'] .wj-list {
@@ -275,6 +273,3 @@
   margin: 4px 0 6px;
 }
 
-.wj-demo .ss-stage[data-layout='compact'] .wj-phone {
-  top: 284px;
-}

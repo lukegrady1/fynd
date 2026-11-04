@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import { Star } from "lucide-react";
 import {
   Avatar,
@@ -14,7 +15,6 @@ import {
   Phone,
   Roll,
   Stage,
-  States,
   Window,
   WALLPAPER,
   type Act,
@@ -25,208 +25,256 @@ import "./watch-judge-demo.css";
 /**
  * The free week, as the product shows it: a device pair (stageshow's
  * `device-pair` gold, Fynd's look). The hero is the reviews dashboard,
- * pinned top-left and off the bottom: the studio, a day chip, the one big
- * number (reviews) with the rating beside it, a chart, the booking
- * software strip, and the recent requests. The satellite is a phone
- * straddling its right edge, lock screen up, with the owner's
- * notifications from the Fynd app.
+ * pinned top-left and off the bottom: the studio with a Live badge, the
+ * one big number (reviews) with the rating, the booking-software strip,
+ * a chart, and the recent requests. The satellite is a small phone on
+ * the right, lock screen up, with the owner's notifications.
  *
- * A system story, no cursor, in five beats: the wave is out (frame one),
- * a review lands (the count rolls, a notification drops in), a second
- * lands, the booking software connects, and the day chip rolls to 7.
- * The payoff holds, then the scene crossfades to a second studio (the
- * subscriptions gold's reset: a different business on the same product,
- * so nothing rewinds in view) and plays once more before returning.
+ * It runs like the storefront on /manage (Luke, Nov 3, 2026: "I want it
+ * like the one we did on the manage page, where the count just keeps
+ * going up"): the booking software connects first (Connecting… →
+ * Connected), then a review lands every few seconds for as long as the
+ * card is on screen — a new row slides in at the top of Recent requests,
+ * the count rolls up, the chart takes the point, the phone gets the
+ * notification — and nothing ever resets. Off screen or in a hidden tab
+ * it pauses and carries on from where it was. The Stage is used for its
+ * frame, scaling and compact design only; the state lives here, not in
+ * a looping script, because a script's loop would rewind the count.
  *
- * ILLUSTRATION. Both studios are fictional (Marlow is the homepage's
- * made-up salon; the second is one of the placeholder testimonials), and
- * every figure is drawn, not measured; the caption under the stage says
- * so. Nothing here claims a result.
+ * ILLUSTRATION: the studio is fictional, the names are made up and every
+ * figure is drawn, not measured; the caption under the stage says so.
  */
 
-type Scene = {
-  studio: string;
-  reviews: number;
-  rating: string;
-  history: number[];
-  people: [string, string];
+const STUDIO = "Marlow Hair Studio";
+const START_COUNT = 31;
+const RATING = "4.8";
+const HISTORY = [20, 21, 21, 23, 24, 24, 26, 27, 29, 30];
+const NAMES = ["Dana M.", "Priya S.", "Jordan K.", "Amelia R.", "Marcus T.", "Sofia M.", "Elena K.", "Devon S.", "Jenna L.", "Theo B.", "Nia W.", "Casey O."];
+
+/**
+ * A Stage with no script is a still: it marks itself `data-still` and the
+ * kit's motion parts (Collapse, Count, Roll) switch their transitions off,
+ * which made every arrival snap. This script does nothing but keep the
+ * stage live; the scene is driven from the component's own state.
+ */
+const keepAlive = async (a: Act<Record<string, never>>) => {
+  await a.wait(60_000);
 };
 
-const SCENES: Scene[] = [
-  {
-    studio: "Marlow Hair Studio",
-    reviews: 31,
-    rating: "4.8",
-    history: [20, 21, 21, 23, 24, 24, 26, 27, 29, 30, 31],
-    people: ["Dana M.", "Priya S."],
-  },
-  {
-    studio: "Bright Lane Nail Studio",
-    reviews: 19,
-    rating: "4.9",
-    history: [9, 10, 10, 12, 13, 13, 15, 16, 17, 18, 19],
-    people: ["Jordan K.", "Amelia R."],
-  },
-];
+const CONNECT_MS = 1300;
+const FIRST_MS = 1100;
+const CYCLE_MS = 3200;
+/** Rows kept in the list; older ones have scrolled off the window's foot. */
+const KEEP = 5;
 
 type Connect = "off" | "pending" | "on";
-type S = {
-  scene: number;
-  /** Per scene: reviews landed (0–2), day on the chip, the second notification shown, the booking connection. */
-  landed: [number, number];
-  day: [number, number];
-  note: [boolean, boolean];
-  connect: [Connect, Connect];
-};
+type Review = { id: number; name: string; shown: boolean };
 
-const START: S = { scene: 0, landed: [0, 0], day: [1, 1], note: [false, false], connect: ["off", "off"] };
-/** The payoff: the week done on the first studio. */
-const POSTER: S = { ...START, landed: [2, 0], day: [7, 1], note: [true, false], connect: ["on", "off"] };
+export function WatchJudgeDemo() {
+  const [connect, setConnect] = useState<Connect>("off");
+  const [count, setCount] = useState(START_COUNT);
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [reduced, setReduced] = useState(false);
+  const root = useRef<HTMLDivElement>(null);
+  const next = useRef(0);
 
-const set2 = <T,>(pair: [T, T], i: number, v: T): [T, T] => (i === 0 ? [v, pair[1]] : [pair[0], v]);
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setReduced(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
 
-async function week(a: Act<S>, sc: number) {
-  // The first review lands: the count rolls and the phone hears about it
-  await a.set((s) => ({ landed: set2(s.landed, sc, 1), note: set2(s.note, sc, true) }));
-  await a.wait(2300);
-  // A second lands; said once on the phone, so only the dashboard moves
-  await a.set((s) => ({ landed: set2(s.landed, sc, 2) }));
-  await a.wait(1900);
-  // The wave is done, so the booking software is connected
-  await a.set((s) => ({ connect: set2(s.connect, sc, "pending") }));
-  await a.wait(900);
-  await a.set((s) => ({ connect: set2(s.connect, sc, "on"), day: set2(s.day, sc, 7) }));
+  useEffect(() => {
+    if (reduced) return;
+    const el = root.current;
+    if (!el) return;
+
+    let onScreen = false;
+    let running = false;
+    let timer = 0;
+    const wait = (ms: number) => new Promise<void>((r) => (timer = window.setTimeout(r, ms)));
+
+    const land = async () => {
+      const id = next.current++;
+      const name = NAMES[id % NAMES.length];
+      // Mounted closed, then opened a frame later, so the row slides in
+      // rather than appearing; the oldest beyond KEEP is let go.
+      setReviews((rs) => [{ id, name, shown: false }, ...rs].slice(0, KEEP));
+      await wait(40);
+      setReviews((rs) => rs.map((r) => (r.id === id ? { ...r, shown: true } : r)));
+      setCount((n) => n + 1);
+    };
+
+    const run = async () => {
+      if (running) return;
+      running = true;
+      try {
+        // First time only: the booking software connects, then the reviews start.
+        if (next.current === 0) {
+          setConnect("pending");
+          await wait(CONNECT_MS);
+          if (!running) return;
+          setConnect("on");
+          await wait(FIRST_MS);
+          if (!running) return;
+        }
+        while (onScreen && !document.hidden) {
+          await land();
+          if (!running) return;
+          await wait(CYCLE_MS);
+        }
+      } finally {
+        running = false;
+      }
+    };
+    const stop = () => {
+      running = false;
+      window.clearTimeout(timer);
+    };
+    const sync = () => (onScreen && !document.hidden ? void run() : stop());
+
+    const io = new IntersectionObserver(([entry]) => {
+      onScreen = entry.isIntersecting;
+      sync();
+    });
+    io.observe(el);
+    document.addEventListener("visibilitychange", sync);
+    return () => {
+      io.disconnect();
+      document.removeEventListener("visibilitychange", sync);
+      stop();
+    };
+  }, [reduced]);
+
+  // Reduced motion: the picture a few reviews in, still, derived rather
+  // than set so nothing moves and nothing is written in an effect.
+  const shownConnect: Connect = reduced ? "on" : connect;
+  const shownCount = reduced ? START_COUNT + 2 : count;
+  const shownReviews: Review[] = reduced ? STILL_REVIEWS : reviews;
+  const latest = shownReviews[0];
+  const data = [...HISTORY.slice(-10), shownCount];
+
+  return (
+    <div ref={root}>
+      <Stage<Record<string, never>>
+        width={640}
+        height={420}
+        compact={{ below: 600, width: 358, height: 470 }}
+        initial={{}}
+        script={keepAlive}
+        className="look-fynd wj-demo"
+      >
+        {(_s, _rect, layout) => {
+          const compact = layout === "compact";
+          return (
+            <>
+              <Window url="app.fynnd.co/reviews" className="wj-window">
+                <div className="wj-scene">
+                  <aside className="wj-sidebar">
+                    <span className="wj-brand">
+                      {/* eslint-disable-next-line @next/next/no-img-element -- a 16px mark inside a drawn window */}
+                      <img src="/transparent-fynd.PNG" alt="" />
+                      Fynd
+                    </span>
+                    {[46, 58, 40, 52, 36].map((w, i) => (
+                      <div key={i} className="wj-nav" data-active={i === 1 || undefined}>
+                        <Bar w={10} h={10} r={3} tone={i === 1 ? 4 : 2} />
+                        <Bar w={w} h={5} tone={i === 1 ? 4 : 2} />
+                      </div>
+                    ))}
+                  </aside>
+
+                  <div className="wj-main">
+                    <div className="wj-content">
+                      <div className="wj-head">
+                        <span className="wj-studio">{STUDIO}</span>
+                        <Badge tone="success" dot>
+                          Live
+                        </Badge>
+                      </div>
+
+                      <section className="wj-figure">
+                        <span className="wj-label">Google reviews</span>
+                        <div className="wj-count">
+                          <Count className="wj-total" value={shownCount} duration={650} />
+                          <span className="wj-rating">
+                            <Star size={12} strokeWidth={0} fill="currentColor" aria-hidden />
+                            {RATING}
+                          </span>
+                        </div>
+                      </section>
+
+                      <div className="wj-connect" data-on={shownConnect === "on" || undefined}>
+                        <Check on={shownConnect === "on"} pending={shownConnect === "pending"} size={16} />
+                        <span>Booking software</span>
+                        <span className="wj-connect__state">
+                          <Roll variant="fade">{shownConnect === "on" ? "Connected" : shownConnect === "pending" ? "Connecting…" : "Waiting"}</Roll>
+                        </span>
+                      </div>
+
+                      <Chart data={data} width={compact ? 300 : 248} height={compact ? 44 : 56} className="wj-chart" />
+
+                      <div className="wj-list">
+                        <div className="wj-list__title">Recent requests</div>
+                        {shownReviews.map((r) => (
+                          <Collapse key={r.id} open={r.shown} reveal="clip">
+                            <div className="wj-row">
+                              <Avatar name={r.name} size={22} />
+                              <span className="wj-name">{r.name}</span>
+                              <Badge tone="success" icon={<Star size={10} strokeWidth={0} fill="currentColor" aria-hidden />}>
+                                5 stars
+                              </Badge>
+                            </div>
+                          </Collapse>
+                        ))}
+                        {OLD.map((o, i) => (
+                          <div key={i} className="wj-row wj-row--old">
+                            <Bar w={22} h={22} r={11} tone={2} />
+                            <Bar w={o.name} h={5} tone={3} />
+                            <Bar w={o.status} h={5} tone={2} style={{ marginLeft: "auto" }} />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </Window>
+
+              {/* No phone on phones (Luke, Nov 3, 2026: it never sat well with
+                  the dashboard at that width); the dashboard alone, its list
+                  whole. Desktop keeps the pair. */}
+              {!compact && (
+                <Phone width={224} frame="pro" dark wallpaper={WALLPAPER} className="wj-phone">
+                  <LockScreen size="satellite" stack="top" clock={false}>
+                    <Notification icon={<NoteIcon />} title="Review requests sent" body="Your past customers have been asked" time="9:41" />
+                    {/* The latest review, and the one before it folding away under it */}
+                    {shownReviews.slice(0, 2).map((r) => (
+                      <Collapse key={r.id} open={r.shown && r.id === latest?.id} reveal="drop">
+                        <Notification icon={<NoteIcon />} title="New 5-star review" body={`${r.name} · reply posted in your voice`} />
+                      </Collapse>
+                    ))}
+                  </LockScreen>
+                </Phone>
+              )}
+            </>
+          );
+        }}
+      </Stage>
+    </div>
+  );
 }
 
-async function script(a: Act<S>) {
-  await a.wait(1100);
-  await week(a, 0);
-  // The mark lands after the roll, so a frame at it is never mid-change
-  await a.wait(800);
-  a.mark("payoff");
-  await a.wait(1800);
+/** The reduced-motion still: two reviews in. */
+const STILL_REVIEWS: Review[] = [1, 0].map((i) => ({ id: i, name: NAMES[i], shown: true }));
 
-  // The second studio: the scene change is the reset. The studio that
-  // left is put back while hidden; with `set`, not `snap`, so its count
-  // rolls down out of sight rather than jumping (a hidden reel that jumps
-  // still reads as a hop to the film).
-  a.mark("scene");
-  await a.set({ scene: 1 });
-  await a.wait(700);
-  await a.set((s) => ({ landed: set2(s.landed, 0, 0), day: set2(s.day, 0, 1), note: set2(s.note, 0, false), connect: set2(s.connect, 0, "off") }));
-  await a.wait(600);
-  await week(a, 1);
-  await a.wait(2400);
-
-  await a.set({ scene: 0 });
-  await a.wait(700);
-  await a.set((s) => ({ landed: set2(s.landed, 1, 0), day: set2(s.day, 1, 1), note: set2(s.note, 1, false), connect: set2(s.connect, 1, "off") }));
-  await a.wait(900);
-}
-
-/** Filler rows under the two real ones: requests that were there already. */
+/** Filler rows under the live ones: requests that were there already. */
 const OLD = [
   { name: 62, status: 34 },
   { name: 78, status: 40 },
   { name: 54, status: 34 },
 ];
-
-function Dashboard({ sc, s, compact }: { sc: number; s: S; compact: boolean }) {
-  const scene = SCENES[sc];
-  const landed = s.landed[sc];
-  const total = scene.reviews + landed;
-  const data = [...scene.history.slice(0, -1), total];
-  const connect = s.connect[sc];
-
-  return (
-    <div className="wj-scene" data-on={s.scene === sc || undefined} aria-hidden={s.scene !== sc || undefined}>
-      <aside className="wj-sidebar">
-        <span className="wj-brand">
-          {/* eslint-disable-next-line @next/next/no-img-element -- a 16px mark inside a drawn window */}
-          <img src="/transparent-fynd.PNG" alt="" />
-          Fynd
-        </span>
-        {[46, 58, 40, 52, 36].map((w, i) => (
-          <div key={i} className="wj-nav" data-active={i === 1 || undefined}>
-            <Bar w={10} h={10} r={3} tone={i === 1 ? 4 : 2} />
-            <Bar w={w} h={5} tone={i === 1 ? 4 : 2} />
-          </div>
-        ))}
-      </aside>
-
-      <div className="wj-main">
-        <div className="wj-content">
-        <div className="wj-head">
-          <span className="wj-studio">{scene.studio}</span>
-          <Badge tone="accent">
-            <Roll variant="fade">{`Day ${s.day[sc]}`}</Roll>
-          </Badge>
-        </div>
-
-        <section className="wj-figure">
-          <span className="wj-label">Google reviews</span>
-          <div className="wj-count">
-            <Count className="wj-total" value={total} duration={900} />
-            <span className="wj-rating">
-              <Star size={12} strokeWidth={0} fill="currentColor" aria-hidden />
-              {scene.rating}
-            </span>
-          </div>
-        </section>
-
-        {/* Under the number, above the chart, so it stays clear of the phone
-            at both widths: the last beat has to be seen. */}
-        <div className="wj-connect" data-on={connect === "on" || undefined}>
-          <Check on={connect === "on"} pending={connect === "pending"} size={16} />
-          <span>Booking software</span>
-          <span className="wj-connect__state">
-            <Roll variant="fade">{connect === "on" ? "Connected" : connect === "pending" ? "Connecting…" : "Waiting"}</Roll>
-          </span>
-        </div>
-
-        <Chart data={data} width={224} height={compact ? 48 : 64} className="wj-chart" />
-
-        <div className="wj-list">
-          <div className="wj-list__title">Recent requests</div>
-          {/* Compact: the phone covers the list, so its rows are all filler
-              there and the review lands on the phone and the count only. */}
-          {(compact ? [] : scene.people).map((name, i) => {
-            const done = landed > i;
-            return (
-              <div key={name} className="wj-row">
-                <Avatar name={name} size={22} />
-                <span className="wj-name">{name}</span>
-                {/* One slot, the two badges crossfaded in it (States holds
-                    the larger), so "Sent" fades out rather than vanishing */}
-                <States
-                  value={done ? "done" : "sent"}
-                  align="end"
-                  states={{
-                    sent: <Badge>Sent</Badge>,
-                    done: (
-                      <Badge tone="success" icon={<Star size={10} strokeWidth={0} fill="currentColor" aria-hidden />}>
-                        5 stars
-                      </Badge>
-                    ),
-                  }}
-                />
-              </div>
-            );
-          })}
-          {/* Compact's window is 342 tall: one filler row fills it, more would run past its foot */}
-          {(compact ? OLD.slice(0, 1) : OLD).map((r, i) => (
-            <div key={i} className="wj-row wj-row--old">
-              <Bar w={22} h={22} r={11} tone={2} />
-              <Bar w={r.name} h={5} tone={3} />
-              <Bar w={r.status} h={5} tone={2} style={{ marginLeft: "auto" }} />
-            </div>
-          ))}
-        </div>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 function NoteIcon() {
   return (
@@ -234,47 +282,5 @@ function NoteIcon() {
       {/* eslint-disable-next-line @next/next/no-img-element -- the app's own mark on its notification */}
       <img src="/transparent-fynd.PNG" alt="" />
     </span>
-  );
-}
-
-export function WatchJudgeDemo() {
-  return (
-    <Stage<S>
-      width={640}
-      height={420}
-      compact={{ below: 600, width: 358, height: 500 }}
-      initial={START}
-      poster={POSTER}
-      script={script}
-      className="look-fynd wj-demo"
-    >
-      {(s, _rect, layout) => {
-        const sc = s.scene;
-        const compact = layout === "compact";
-        return (
-          <>
-            <Window url="app.fynnd.co/reviews" className="wj-window">
-              <div className="wj-scenes">
-                <Dashboard sc={0} s={s} compact={compact} />
-                <Dashboard sc={1} s={s} compact={compact} />
-              </div>
-            </Window>
-
-            <Phone width={compact ? 320 : 236} frame="pro" dark wallpaper={WALLPAPER} className="wj-phone">
-              <LockScreen size="satellite" stack="top" clock={!compact}>
-                <Notification icon={<NoteIcon />} title="Review requests sent" body="Your past customers have been asked" time="9:41" />
-                {/* One per studio, so the leaving scene's review folds away
-                    with its own name on it and the next arrives as new */}
-                {SCENES.map((scene, i) => (
-                  <Collapse key={scene.studio} open={s.scene === i && s.note[i]} reveal="drop">
-                    <Notification icon={<NoteIcon />} title="New 5-star review" body={`${scene.people[0]} · reply posted in your voice`} />
-                  </Collapse>
-                ))}
-              </LockScreen>
-            </Phone>
-          </>
-        );
-      }}
-    </Stage>
   );
 }

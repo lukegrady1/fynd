@@ -7,7 +7,6 @@ import type { CancelPath, Purchasable } from "@/lib/stripe-plans";
 import { Container } from "@/components/ui/Layout";
 import { Reveal } from "@/components/sections/review/Reveal";
 import { CheckoutButton } from "@/components/sections/review/CheckoutButton";
-import { CancelledNote } from "@/components/sections/review/PricingSection";
 
 export type PricingCopy = {
   kicker: string;
@@ -51,7 +50,6 @@ export type PricingCopy = {
  */
 export function ManagePricing({
   cid,
-  cancelled,
   copy = manage.pricing,
   plan = "gbp-management",
   price = manage.price,
@@ -59,7 +57,6 @@ export function ManagePricing({
   cancelPath,
 }: {
   cid?: string;
-  cancelled: boolean;
   copy?: PricingCopy;
   plan?: Purchasable;
   price?: number;
@@ -88,7 +85,6 @@ export function ManagePricing({
           <p className="mx-auto mt-5 max-w-[680px] text-body text-white/75 lg:text-[18px] lg:leading-[28px]">
             {copy.sub}
           </p>
-          {cancelled && <CancelledNote className="mx-auto max-w-[600px] border-white/20 bg-white/10 text-white [&_a]:text-fynd-green" />}
         </div>
 
         <Reveal className="mx-auto mt-10 max-w-[1000px] rounded-lg border border-fynd-blue/50 bg-navy-card p-6 shadow-lg sm:p-8 lg:mt-12 lg:p-10">

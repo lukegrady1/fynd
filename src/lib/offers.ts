@@ -1,4 +1,4 @@
-import type { Plan } from "./stripe-plans";
+import type { OneTimeProduct, Plan } from "./stripe-plans";
 
 /**
  * Permanent payment links: fynnd.co/offer/<slug>.
@@ -22,12 +22,16 @@ import type { Plan } from "./stripe-plans";
  *                $97/month subscription starts after `days` free, billed on
  *                that day each month from then (no 1st/15th anchor). The
  *                /watch deal. See `createTrialCheckoutSession`.
+ *   - "one-time" a single charge for a `OneTimeProduct`, no plan and no
+ *                subscription after. See `createOneTimeCheckoutSession`.
  *
  * A new custom deal is one line here. Slugs are lowercase and URL-safe;
  * link-preview text for each lives in `offerLinks` in `src/content/copy.ts`.
  */
 
-export type Offer = { plan: Plan } & (
+export type Offer =
+  | { billing: "one-time"; product: OneTimeProduct }
+  | ({ plan: Plan } & (
   | { billing: "now" }
   | {
       billing: "deferred";
@@ -44,11 +48,16 @@ export type Offer = { plan: Plan } & (
       /** Free days before the first charge. */
       days: number;
     }
-);
+));
 
 export const OFFERS = {
-  /** Website + Reviews: $249 today, then $97/month. */
-  website: { plan: "website-reviews", billing: "now" },
+  /**
+   * The website build, $249 once, nothing after (Luke, Nov 3, 2026). This
+   * slug used to be the Website + Reviews plan ($249 then $97/month);
+   * that plan is still sold by the /website page's own button, and by the
+   * `nov1` link below while it lasts.
+   */
+  website: { billing: "one-time", product: "website-build" },
   /** Review System only: $97 today, then $97/month. */
   reviews: { plan: "review-system", billing: "now" },
   /** Profile management: $297 today, then $297/month. */

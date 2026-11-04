@@ -86,7 +86,6 @@ export function LandingPage({
         <PricingSection
           mode="checkout"
           cid={params.cid}
-          cancelled={params.cancelled}
         />
         <AddOnServices />
 

@@ -213,8 +213,9 @@ export function LiveShop() {
 
       <div className="mt-1.5 flex items-center justify-center gap-2 border-t border-[#356aa6]/[0.13] pt-2 text-left sm:gap-[11px] sm:pt-[11px]">
         <p data-count={count} className="whitespace-nowrap text-[36px] font-semibold leading-none tracking-[-2px] tabular-nums sm:text-[43px]">
-          <span className="mr-0.5 align-[4px] text-[23px] font-normal text-fynd-blue sm:text-[26px]">+</span>
-          <Count value={count} duration={650} />
+          <span className="align-[4px] text-[23px] font-normal text-fynd-blue sm:mr-0.5 sm:text-[26px]">+</span>
+          {/* ls-count: on phones the digit boxes are pulled together (live-shop.css) */}
+          <Count value={count} duration={650} className="ls-count" />
         </p>
         <p className="text-[9px] font-medium leading-[1.4] text-[#365372] sm:text-[10px]">
           {c.countLabel}

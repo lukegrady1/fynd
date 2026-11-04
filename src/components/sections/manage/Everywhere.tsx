@@ -181,7 +181,9 @@ function BusinessCard({ className }: { className?: string }) {
   const c = manage.everywhere.centre;
 
   return (
-    <div className={cn("w-[204px] pb-[19px] sm:w-[248px] sm:pb-[22px]", className)}>
+    // pb is the team pill's hang below the card: deeper on phones so it sits
+    // under the count and its "and counting" line, not over them (Luke, Nov 3, 2026).
+    <div className={cn("w-[204px] pb-[44px] sm:w-[248px] sm:pb-[22px]", className)}>
       <span className="pointer-events-none absolute -inset-x-14 -inset-y-10 -z-10 rounded-full bg-[radial-gradient(ellipse,rgba(76,91,255,0.18),transparent_69%)]" />
 
       <div className="relative rounded-[23px] border border-white/85 bg-[linear-gradient(145deg,#ffffff,#eaf5ff)] px-4 pb-[30px] pt-4 text-center text-[#182b3a] shadow-[0_20px_70px_rgba(0,0,0,0.4),0_0_45px_rgba(43,85,255,0.13)] sm:rounded-[26px] sm:px-[19px] sm:pb-[35px] sm:pt-[19px]">

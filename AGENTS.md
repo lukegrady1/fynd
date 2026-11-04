@@ -123,8 +123,10 @@ in `offerLinks` in `copy.ts`.
   invoice at creation and would sweep up an earlier item, charging it today).
   The session expires an hour before the start date; after that the link
   sends people to the plan's public page.
-- Backing out of any offer's checkout returns to plain `/watch`, with no
-  `?cancelled` note and no `?plan` tab switch.
+- Backing out of ANY checkout returns to the plain page it came from, with
+  no `?cancelled` note and no `?plan` tab switch (Luke, Nov 3, 2026: no
+  "still deciding? book a call" after the back button). The note and the
+  flag are gone from the code; don't add them back.
 - Link-preview crawlers (iMessage, WhatsApp, Slack) get a static OG card and
   never mint a session or fire `checkout_started`.
 
@@ -137,8 +139,12 @@ in this repo.
 `/optimize` sells a one-off Google Business Profile optimization. It is a
 different billing shape from everything above: **one `payment` mode session,
 card not saved, and no subscription afterwards.** `createOneTimeCheckoutSession`
-in `src/lib/stripe.ts` builds it, and the product table there (`ONE_TIME`) is
-where a second one-off would go. Copy is `optimize` in `copy.ts`; the drawn
+in `src/lib/stripe.ts` builds it, and the product table there (`ONE_TIME`)
+holds the second one-off too: **`website-build`, the $249 website on its
+own** (Luke, Nov 3, 2026), sold at `fynnd.co/offer/website` (the `website`
+offer is now `billing: "one-time"`, no plan; the Website + Reviews plan is
+still the /website page's own button and the `nov1` link) and landing on
+**/website/thanks**, tagged `fynd-website-paid`. Copy is `optimize` in `copy.ts`; the drawn
 profile card is fictional and labelled "Example" — never swap in a client's
 without permission.
 
@@ -162,14 +168,19 @@ merchynt.com/paige) — don't add a deliverable that platform doesn't list
 (it does not do Q&A or hours upkeep, and guarantees nothing). Review
 requests are by text only; the price is per profile.
 
-Billing is the review system's shape on a third `Plan`, `gbp-management`:
-$297 today carried to the anchor, then $297/month on its own live price
-(`MANAGE_PRICE_ID`, product "Fynd Profile Management"). Everything in
-`createCheckoutSession` / `ensureSubscription` applies unchanged; the plan
-table carries `successPath`, and this one lands on **/manage/welcome**, not
-/start/welcome (the review onboarding form does not apply). The webhook
-tags the GHL contact `fynd-manage-paid` and still opens the onboarding
-card. `/offer/manage` is the permanent link. Copy is `manage` in
+Billing is **same-day monthly**, not the review system's anchored shape
+(Luke, Nov 3, 2026, to match the page's "charged today, then on the same
+day each month"): the plan `gbp-management` carries `billing: "same-day"`
+in the `PLANS` table, and `createCheckoutSession` hands it to
+`createSameDayCheckoutSession` — a subscription-mode Checkout on the
+$297 recurring price (`MANAGE_PRICE_ID`, product "Fynd Profile
+Management", whose Stripe description is the same-day policy) with no
+trial, so Stripe takes $297 today, creates the subscription itself and
+renews on this day monthly. `ensureSubscription` sees `mode:
+"subscription"` and only tags the subscription with the session id. It
+lands on **/manage/welcome**, not /start/welcome (the review onboarding
+form does not apply). The webhook tags the GHL contact
+`fynd-manage-paid` and still opens the onboarding card. `/offer/manage` is the permanent link. Copy is `manage` in
 `copy.ts`; sections live in `src/components/sections/manage/`. **The
 page is Paige's own sales page rebuilt in Fynd's branding, section for
 section and in its order** (Luke, Nov 2, 2026: "basically copy the

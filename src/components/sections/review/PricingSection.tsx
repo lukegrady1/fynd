@@ -1,7 +1,6 @@
 "use client";
 
 import type { ReactNode } from "react";
-import Link from "next/link";
 import { Check, Lock } from "lucide-react";
 import { checkout, demoCta, offer, pricing } from "@/content/copy";
 import { track } from "@/lib/analytics";
@@ -29,7 +28,6 @@ export function PricingSection(
         /** The button runs Stripe checkout. */
         mode: "checkout";
         cid?: string;
-        cancelled: boolean;
       }
     | {
         /** The button scrolls to another module. */
@@ -48,10 +46,6 @@ export function PricingSection(
         <Reveal className="mx-auto max-w-[560px] text-center">
           <Eyebrow variant="pill">{pricing.eyebrow}</Eyebrow>
           <h2 className="mt-5 text-h1 text-ink">{pricing.heading}</h2>
-
-          {props.mode === "checkout" && props.cancelled && (
-            <CancelledNote className="bg-fynd-gray" />
-          )}
 
           <ReviewPlanCard
             className="mt-8"
@@ -182,30 +176,6 @@ export function SecureLine() {
     <p className="mt-4 flex items-center justify-center gap-1.5 text-small text-ink-soft">
       <Lock aria-hidden="true" className="h-3.5 w-3.5 shrink-0" />
       {checkout.secure}
-    </p>
-  );
-}
-
-/**
- * Shown above the card when Stripe sent someone back with ?cancelled=1. The
- * background is a prop because the note sits on white on one page and on
- * Fynd Gray on another, and it needs to differ from whichever it is on.
- */
-export function CancelledNote({ className }: { className?: string }) {
-  return (
-    <p
-      className={cn(
-        "mt-6 rounded-sm border border-line px-4 py-3 text-left text-small text-ink-soft",
-        className,
-      )}
-    >
-      {checkout.cancelledNote.lead}{" "}
-      <Link
-        href="/demo"
-        className="font-semibold text-fynd-blue underline-offset-4 hover:underline"
-      >
-        {checkout.cancelledNote.linkLabel} &rarr;
-      </Link>
     </p>
   );
 }

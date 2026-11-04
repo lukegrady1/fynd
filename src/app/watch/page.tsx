@@ -81,7 +81,6 @@ export default async function WatchPage({
         <TestimonialBand />
         <ManagePricing
           cid={params.cid}
-          cancelled={params.cancelled}
           copy={watch.pricing}
           plan="review-trial"
           price={0}

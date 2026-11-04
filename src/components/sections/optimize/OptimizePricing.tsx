@@ -5,7 +5,6 @@ import { optimize } from "@/content/copy";
 import { Container } from "@/components/ui/Layout";
 import { Reveal } from "@/components/sections/review/Reveal";
 import { CheckoutButton } from "@/components/sections/review/CheckoutButton";
-import { CancelledNote } from "@/components/sections/review/PricingSection";
 
 /**
  * The $99 card — the conversion module on /optimize, at #convert — and the
@@ -25,11 +24,9 @@ import { CancelledNote } from "@/components/sections/review/PricingSection";
  */
 export function OptimizePricing({
   cid,
-  cancelled,
   managedId,
 }: {
   cid?: string;
-  cancelled: boolean;
   /** The managed-plan section the hand-off link scrolls to. */
   managedId: string;
 }) {
@@ -44,7 +41,6 @@ export function OptimizePricing({
             <p className="measure mx-auto mt-4 text-body text-ink-soft">
               {copy.sub}
             </p>
-            {cancelled && <CancelledNote className="bg-fynd-gray" />}
           </div>
 
           <div className="mt-10 grid overflow-hidden rounded-lg bg-navy text-white shadow-lg md:grid-cols-[1fr_1.15fr] md:grid-rows-[auto_auto] lg:mt-12">

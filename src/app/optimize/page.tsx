@@ -57,7 +57,6 @@ export default async function OptimizePage({
         <ProfileCompare />
         <OptimizePricing
           cid={params.cid}
-          cancelled={params.cancelled}
           managedId="ongoing"
         />
         <ObjectionFaq heading={optimize.faq.heading} items={optimize.faq.items} />

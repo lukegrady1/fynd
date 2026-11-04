@@ -10,7 +10,7 @@ import { Reveal } from "./Reveal";
 import { useDemoHref } from "./DemoCta";
 import { CheckoutButton } from "./CheckoutButton";
 import { OfferClock } from "./OfferClock";
-import { CancelledNote, SecureLine } from "./PricingSection";
+import { SecureLine } from "./PricingSection";
 
 /**
  * The $249 card — the conversion module on /website, at #convert.
@@ -26,13 +26,7 @@ import { CancelledNote, SecureLine } from "./PricingSection";
  * so it carries the weight; the second is the thing people would otherwise
  * assume was $249 too.
  */
-export function BundlePricing({
-  cid,
-  cancelled,
-}: {
-  cid?: string;
-  cancelled: boolean;
-}) {
+export function BundlePricing({ cid }: { cid?: string }) {
   const copy = bundle.pricing;
 
   return (
@@ -41,8 +35,6 @@ export function BundlePricing({
         <Reveal className="mx-auto max-w-[560px] text-center">
           <Eyebrow variant="pill">{copy.eyebrow}</Eyebrow>
           <h2 className="mt-5 text-h1 text-ink">{copy.heading}</h2>
-
-          {cancelled && <CancelledNote className="bg-white" />}
 
           <BundlePlanCard className="mt-8" cid={cid} section="bundle_pricing" />
 

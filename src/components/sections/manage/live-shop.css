@@ -71,6 +71,15 @@
   transform-origin: top center;
 }
 
+/* Phones: the counter's digit boxes are each a tabular cell, and at 36px
+   with a narrow 1 the figures read as spaced out ("1 2"). Pulled together
+   by 5px so they sit like set type (Luke, Nov 3, 2026). */
+@media (max-width: 639px) {
+  .ls-count .ss-count__digit + .ss-count__digit {
+    margin-left: -5px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .ls .ls-walker, .ls .ls-door, .ls .ls-leg {
     animation: none !important;

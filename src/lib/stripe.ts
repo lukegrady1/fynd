@@ -107,6 +107,15 @@ const PLANS: Record<
   Plan,
   {
     name: string;
+    /**
+     * "anchored": the shape above — a month paid today in payment mode,
+     * carried to the 1st/15th anchor, the subscription made afterwards.
+     * "same-day": a plain subscription-mode Checkout on the recurring
+     * price — charged today, then on this day each month, Stripe making
+     * the subscription itself. No trial, so Checkout's wording is plain
+     * "$X per month" and "Subscribe", which is true.
+     */
+    billing: "anchored" | "same-day";
     /** Charged at checkout. Covers today through the anchor. */
     firstCents: number;
     /** What the subscription bills from the anchor. */
@@ -123,6 +132,7 @@ const PLANS: Record<
 > = {
   "review-system": {
     name: "Fynd Review System",
+    billing: "anchored",
     firstCents: 9700,
     recurringCents: 9700,
     describe: (anchorLabel, recurringLabel) =>
@@ -134,6 +144,7 @@ const PLANS: Record<
   },
   "website-reviews": {
     name: "Fynd Website + Reviews",
+    billing: "anchored",
     firstCents: 24900,
     recurringCents: 9700,
     describe: (anchorLabel, recurringLabel) =>
@@ -144,13 +155,16 @@ const PLANS: Record<
     source: "website-page",
   },
   /**
-   * Full profile management, $297/month on its own recurring price. Same
-   * shape as the review system: one month today, carried to the anchor.
-   * Lands on /manage/welcome, not /start/welcome — the review onboarding
-   * form does not apply.
+   * Full profile management, $297/month on its own recurring price.
+   * SAME-DAY billing (Luke, Nov 3, 2026, matching the /manage copy
+   * "charged today, then on the same day each month"): a subscription-mode
+   * Checkout, $297 today and on this day monthly, no anchor. Lands on
+   * /manage/welcome, not /start/welcome — the review onboarding form does
+   * not apply.
    */
   "gbp-management": {
     name: "Fynd Profile Management",
+    billing: "same-day",
     firstCents: 29700,
     recurringCents: 29700,
     describe: (anchorLabel, recurringLabel) =>
@@ -211,6 +225,7 @@ export const createCheckoutSession = async (
   if (!plan.priceId) {
     return { status: "unconfigured", missing: [`price id for ${req.plan}`] };
   }
+  if (plan.billing === "same-day") return createSameDayCheckoutSession(req, plan.priceId);
   const FIRST_LABEL = priceLabel(plan.firstCents);
   const RECURRING_LABEL = priceLabel(plan.recurringCents);
 
@@ -266,13 +281,9 @@ export const createCheckoutSession = async (
         },
       },
       success_url: `${req.origin}${plan.successPath}?session_id={CHECKOUT_SESSION_ID}`,
-      // `plan` rides along so a page that sells both plans can reopen the
-      // one they were on; the single-plan pages ignore it.
-      // Offer links return to a plain page: no "Still deciding?" note and no
-      // tab switch, so /watch looks exactly as it did when the lead first saw it.
-      cancel_url: req.offer
-        ? `${req.origin}${req.cancelPath ?? plan.cancelPath}`
-        : `${req.origin}${req.cancelPath ?? plan.cancelPath}?cancelled=1&plan=${req.plan}`,
+      // Backing out lands on the plain page, exactly as a first visit sees
+      // it: no "Still deciding?" note, no tab switch (Luke, Nov 3, 2026).
+      cancel_url: `${req.origin}${req.cancelPath ?? plan.cancelPath}`,
       allow_promotion_codes: true,
     });
 
@@ -290,6 +301,64 @@ export const createCheckoutSession = async (
           : "Unknown Stripe error.";
 
     console.error("[stripe] checkout session failed:", message);
+    return { status: "error", message };
+  }
+};
+
+/**
+ * "Charged today, then on the same day each month" — the /manage shape.
+ *
+ * One operation: a subscription-mode Checkout on the plan's recurring
+ * price with no trial. Stripe collects the first month at checkout,
+ * creates the subscription itself and renews it on this calendar day
+ * monthly. Checkout prints "$297.00 per month" and the product's own
+ * description (set in the Dashboard on "Fynd Profile Management":
+ * "Charged today, then on the same day each month. Cancel any time."),
+ * and the button says "Subscribe" — all true here, which is why
+ * subscription mode is fine for this plan and not for the anchored ones.
+ *
+ * `ensureSubscription` sees `mode: "subscription"` and creates nothing;
+ * it tags the subscription with the session id once so the webhook's
+ * `checkout_completed` fires once.
+ */
+const createSameDayCheckoutSession = async (
+  req: CheckoutRequest,
+  priceId: string,
+): Promise<CheckoutResult> => {
+  const plan = PLANS[req.plan];
+  const recurringLabel = priceLabel(plan.recurringCents);
+
+  const metadata = {
+    ghl_contact_id: req.cid ?? "",
+    source: req.offer ? `offer-${req.offer}` : plan.source,
+    plan: req.plan,
+    billing: "same-day",
+    ...(req.offer ? { offer: req.offer } : {}),
+  };
+
+  try {
+    const session = await stripe().checkout.sessions.create({
+      mode: "subscription",
+      line_items: [{ price: priceId, quantity: 1 }],
+      subscription_data: { metadata },
+      metadata,
+      custom_text: {
+        submit: {
+          message: `${recurringLabel} is charged today, then on this day each month. Cancel any time.`,
+        },
+      },
+      success_url: `${req.origin}${plan.successPath}?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${req.origin}${req.cancelPath ?? plan.cancelPath}`,
+      allow_promotion_codes: true,
+    });
+
+    if (!session.url) {
+      return { status: "error", message: "Stripe returned no checkout URL." };
+    }
+    return { status: "ok", url: session.url };
+  } catch (error) {
+    const message = stripeErrorMessage(error);
+    console.error("[stripe] same-day checkout session failed:", message);
     return { status: "error", message };
   }
 };
@@ -551,6 +620,21 @@ const ONE_TIME: Record<
     successPath: "/optimize/thanks",
     source: "optimize-page",
   },
+  /**
+   * The website build on its own, $249 once (Luke, Nov 3, 2026): the
+   * add-on /manage sells, and fynnd.co/offer/website. Not the /website
+   * page's $249 plan, which bundles the Review System and continues at
+   * $97/month — that stays on `website-reviews`.
+   */
+  "website-build": {
+    name: "Fynd Website Build",
+    cents: 24900,
+    description:
+      "A complete website built for you, once. Hosting and updates are part of your plan after that. Nothing recurring.",
+    path: "/manage",
+    successPath: "/website/thanks",
+    source: "website-build",
+  },
 };
 
 export type OneTimeCheckoutRequest = {
@@ -558,6 +642,8 @@ export type OneTimeCheckoutRequest = {
   cid: string | null;
   product: OneTimeProduct;
   origin: string;
+  /** Set when the session comes from a permanent /offer/<slug> link. */
+  offer?: OfferSlug;
 };
 
 export const createOneTimeCheckoutSession = async (
@@ -576,9 +662,10 @@ export const createOneTimeCheckoutSession = async (
   // subscription plan.
   const metadata = {
     ghl_contact_id: req.cid ?? "",
-    source: product.source,
+    source: req.offer ? `offer-${req.offer}` : product.source,
     product: req.product,
     billing: "one-time",
+    ...(req.offer ? { offer: req.offer } : {}),
   };
 
   try {
@@ -610,7 +697,7 @@ export const createOneTimeCheckoutSession = async (
         },
       },
       success_url: `${req.origin}${product.successPath}?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${req.origin}${product.path}?cancelled=1`,
+      cancel_url: `${req.origin}${product.path}`,
       allow_promotion_codes: true,
     });
 
@@ -695,9 +782,13 @@ export const readOneTimeSession = async (
 
 /** The product's GHL tag and source, for the contact write. */
 export const oneTimeGhl = (product: OneTimeProduct) => ({
-  tag: product === "gbp-optimization" ? "fynd-gbp-paid" : `fynd-${product}-paid`,
+  tag: product === "gbp-optimization" ? "fynd-gbp-paid" : product === "website-build" ? "fynd-website-paid" : `fynd-${product}-paid`,
   source: `Fynd checkout — ${ONE_TIME[product].name}`,
 });
+
+/** The page a one-time product belongs to, for the GHL events. */
+export const oneTimePage = (product: OneTimeProduct): "optimize" | "website" =>
+  product === "website-build" ? "website" : "optimize";
 
 /* ------------------------------------------------------------------ */
 
@@ -979,11 +1070,12 @@ export const ensureSubscription = async (
     // a $97/month subscription on a $99 purchase.
     if (isOneTimeSession(session)) return { status: "none" };
 
-    // A free-trial session (subscription mode) made its own subscription;
-    // there is nothing to build. "created" is reported once per session so
-    // the webhook's checkout_completed fires once — the first caller to see
-    // the subscription marks it, the next sees the mark.
-    if (session.mode === "subscription") return trialSubscription(session);
+    // A subscription-mode session (the /watch trial, the /manage same-day
+    // plan) made its own subscription; there is nothing to build. "created"
+    // is reported once per session so the webhook's checkout_completed
+    // fires once — the first caller to see the subscription marks it, the
+    // next sees the mark.
+    if (session.mode === "subscription") return nativeSubscription(session);
 
     const billing = readBilling(session);
     if (billing.status !== "ok") return billing;
@@ -1064,12 +1156,12 @@ export const ensureSubscription = async (
 };
 
 /**
- * The subscription behind a trial session, which Checkout created itself.
- * `payment_status` is "no_payment_required" on a trial, so the paid check
- * the other shapes use does not apply; `status: "complete"` is the evidence
- * the card was saved and the subscription made.
+ * The subscription behind a subscription-mode session, which Checkout
+ * created itself. `payment_status` is "no_payment_required" on a trial and
+ * "paid" on the same-day plan, so `status: "complete"` is the check: the
+ * evidence the card was taken and the subscription made.
  */
-const trialSubscription = async (
+const nativeSubscription = async (
   session: Stripe.Checkout.Session,
 ): Promise<EnsureResult> => {
   if (session.status !== "complete") return { status: "unpaid" };
@@ -1078,7 +1170,7 @@ const trialSubscription = async (
   if (!subscriptionId) {
     return {
       status: "error",
-      message: `trial session ${session.id} complete but carries no subscription`,
+      message: `subscription session ${session.id} complete but carries no subscription`,
     };
   }
 

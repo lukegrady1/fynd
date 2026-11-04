@@ -64,7 +64,6 @@ export type PageParams = {
   biz?: string;
   exp?: string;
   sig?: string;
-  cancelled: boolean;
   /**
    * Which plan to open on a page that sells both. Stripe puts it on the
    * cancel URL so someone who backs out of the $249 checkout lands on the
@@ -92,7 +91,6 @@ export const parseParams = (sp: SearchParams): PageParams => {
     biz: sanitizeName(sp.biz),
     exp: firstString(sp.exp),
     sig: firstString(sp.sig),
-    cancelled: firstString(sp.cancelled) === "1",
     plan: plan.success ? plan.data : undefined,
     email: emailSchema.safeParse(email).success ? email : undefined,
     phone: phoneSchema.safeParse(phone).success ? phone : undefined,

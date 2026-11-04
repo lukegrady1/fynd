@@ -16,7 +16,7 @@ export const PLAN_LIST = ["review-system", "website-reviews", "gbp-management"] 
  * from `Plan` on purpose — everything typed `Plan` goes on to create a
  * $97/month subscription, and a one-time product must never reach that code.
  */
-export type OneTimeProduct = "gbp-optimization";
+export type OneTimeProduct = "gbp-optimization" | "website-build";
 
 /**
  * The free trial sold on /watch: the Review System, `offer.trialDays` free,
@@ -35,7 +35,7 @@ export const isTrialPlan = (value: string): value is TrialPlan =>
 /** Anything a checkout button can sell. */
 export type Purchasable = Plan | OneTimeProduct | TrialPlan;
 
-export const ONE_TIME_PRODUCTS = ["gbp-optimization"] as const satisfies readonly OneTimeProduct[];
+export const ONE_TIME_PRODUCTS = ["gbp-optimization", "website-build"] as const satisfies readonly OneTimeProduct[];
 
 export const isOneTimeProduct = (value: string): value is OneTimeProduct =>
   (ONE_TIME_PRODUCTS as readonly string[]).includes(value);

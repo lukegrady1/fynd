@@ -54,7 +54,7 @@ export function WatchProof({ targetId = "convert" }: { targetId?: string } = {})
         </Reveal>
 
         {/* The demo, and the two lists beside it. */}
-        <div className="mt-10 grid gap-8 lg:mt-12 lg:grid-cols-[640px_1fr] lg:items-start lg:gap-12">
+        <div className="mt-6 grid gap-8 lg:mt-12 lg:grid-cols-[640px_1fr] lg:items-start lg:gap-12">
           {/* No Reveal around the stage: it carries its own motion, and a
               fade-in over a demo that has already started reads as a stall. */}
           <div className="min-w-0">

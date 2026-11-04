@@ -376,9 +376,12 @@ visible one runs. Checked at 1280 and 390.
 copied in as-is and ignored by ESLint. `src/components/stageshow/fynd.css`
 is Fynd's look for it (accent, Poppins, radii, inks). The one demo so far
 is `src/components/sections/review/WatchJudgeDemo.tsx` (+ its css and
-`REHEARSAL.md` beside it): the free week on the reviews dashboard with
-the owner's phone, a device pair, two fictional studios, caption says
-"Illustration". To film one: `cd ~/.claude/skills/stageshow && npm
+`REHEARSAL.md` beside it): the reviews dashboard with the owner's phone,
+a device pair. Not a Stage script: the Stage is the frame and compact
+switch, the state lives in the component like `LiveShop` — the booking
+strip connects first, then a review lands every 3.2s for as long as the
+card is on screen (row in, count up, chart point, phone notification)
+and nothing resets (Luke, Nov 3, 2026). Caption says "Illustration". To film one: `cd ~/.claude/skills/stageshow && npm
 install` once, then `CHROME_PATH="/Applications/Google
 Chrome.app/Contents/MacOS/Google Chrome" node scripts/film.mjs
 "http://localhost:3000/watch" --select ".wj-demo" --still --width 390`
@@ -388,6 +391,19 @@ the script tagging the stage before hydration; the page's own console is
 clean. Rules that bit: nothing real under the satellite (cap the content
 column), compact is its own layout not a squeeze, a hidden `Count` jumps
 on reset by design and the film reports it.
+
+### The $249 website build — `/offer/website`
+
+The website on its own, $249 once, nothing after (Luke, Nov 3, 2026):
+`website-build` in `ONE_TIME` (stripe.ts), the `website` offer slug now
+`billing: "one-time"` (the Offer union grew a plan-less one-time shape;
+the route and its fallback/page helpers branch on it), success on the
+new `/website/thanks` (a clone of /optimize/thanks with the build's own
+steps, `bundle.thanks` in copy.ts — Claude's wording, edit before use),
+GHL tag `fynd-website-paid`, the webhook's one-time path files it under
+page "website". The /website page's own button still sells the Website +
+Reviews plan ($249 then $97/month, anchored). Verified by minting the
+link's session, reading it back and expiring it.
 
 ### VSL page — `/watch`
 
@@ -513,8 +529,7 @@ it, like `BookDemo.tsx` / `watch.book`).
   button, reading both back (mode, trial days, submit text, URLs) and
   expiring them. Not yet exercised end to end with a real card; watch
   the first real trial in the Dashboard (subscription `trialing`, first
-  invoice on day 8). Still pending from the Stripe pass: the same-day
-  anchor for /manage, and the $249 website charge.
+  invoice on day 8).
 - **Cancel path** — `CheckoutButton` takes `cancelPath`, validated at
   `/api/checkout` against `CANCEL_PATHS` in `stripe-plans.ts` (only
   `/watch` today), so a backed-out checkout from this page returns here

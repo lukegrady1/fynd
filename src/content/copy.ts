@@ -656,10 +656,6 @@ export const checkout = {
    * are still used.
    */
   secure: "Secure checkout by Stripe",
-  cancelledNote: {
-    lead: "No charge was made. Still deciding?",
-    linkLabel: "Book a call instead",
-  },
 } as const;
 
 /**
@@ -901,6 +897,9 @@ export const meta = {
   },
   optimizeThanks: {
     title: "Paid — Fynd Profile Optimization",
+  },
+  websiteThanks: {
+    title: "Paid — Fynd Website Build",
   },
   manageWelcome: {
     title: "You're in — Fynd",
@@ -1733,6 +1732,41 @@ export const bundle = {
     cta: `Start for $${offer.bundle.price}`,
   },
 
+  /**
+   * /website/thanks — after the $249 build goes through (the one-time
+   * build sold at fynnd.co/offer/website and from /manage, not the
+   * Website + Reviews plan, which lands on /start/welcome). Commitments
+   * written by Claude from the /manage website copy ("built while you
+   * set up", "about two weeks", "photos and a look at the draft") — edit
+   * before sending anyone the link.
+   */
+  thanks: {
+    heading: "Paid. Here's what happens next.",
+    sub: "There's nothing else to fill out right now. We'll reach out within a day to get what the site needs from you.",
+    steps: [
+      {
+        when: "Within a day",
+        body: "We get in touch for the few things only you have: your logo if there is one, photos of your work, your services and prices, and the domain you'd like it on.",
+      },
+      {
+        when: "About a week in",
+        body: "You get a link to the draft to look over. Tell us what to change in a reply; most sites take one round.",
+      },
+      {
+        when: "About two weeks",
+        body: "The site goes live on your domain. Hosting and updates are part of your plan after that; the build isn't billed again.",
+      },
+    ],
+    /** When the session can't be confirmed as paid (a reload, a stray link). */
+    unpaid: {
+      heading: "We couldn't find that payment.",
+      sub: "If you just paid, give it a minute and refresh. If you backed out, the page is still here.",
+      cta: "Back to the page",
+      href: "/manage",
+    },
+    helpLine: "Questions? Reply to the first email you get from us.",
+  },
+
   /** The teaser at the bottom of the homepage. */
   teaser: {
     eyebrow: "New plan",
@@ -1752,8 +1786,8 @@ export const bundle = {
  */
 export const offerLinks = {
   website: {
-    title: "Fynd Website + Reviews",
-    description: `Your new website plus the Review System. $${offer.bundle.price} today, then $${offer.price} a month.`,
+    title: "Fynd Website Build",
+    description: `A complete website built for you. $${offer.bundle.price} once, nothing recurring.`,
   },
   reviews: {
     title: "Fynd Review System",

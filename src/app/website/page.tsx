@@ -44,7 +44,7 @@ export default async function WebsitePage({
       <main className="flex-1">
         <BundleHero targetId="convert" />
         <BundleIncludes />
-        <BundlePricing cid={params.cid} cancelled={params.cancelled} />
+        <BundlePricing cid={params.cid} />
         <ObjectionFaq heading={bundle.faq.heading} items={bundle.faq.items} />
         <FinalCta
           heading={bundle.finalCta.heading}

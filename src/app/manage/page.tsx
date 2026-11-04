@@ -68,7 +68,7 @@ export default async function ManagePage({
         <JudgeReport />
         <TheMath />
         <ToolsReplaced />
-        <ManagePricing cid={params.cid} cancelled={params.cancelled} />
+        <ManagePricing cid={params.cid} />
         <FeatureTable />
         <WebsiteSection />
         <ManageFaq />
