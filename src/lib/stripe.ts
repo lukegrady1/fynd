@@ -632,7 +632,10 @@ const ONE_TIME: Record<
     description:
       "A complete website built for you, once. Hosting and updates are part of your plan after that. Nothing recurring.",
     path: "/manage",
-    successPath: "/website/thanks",
+    // No thanks page for the build yet (Luke, Nov 3, 2026: "just remove
+    // that cycle for right now"): success lands back on /manage. The
+    // webhook records the customer; there is no page-side backstop.
+    successPath: "/manage",
     source: "website-build",
   },
 };

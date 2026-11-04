@@ -143,8 +143,9 @@ in `src/lib/stripe.ts` builds it, and the product table there (`ONE_TIME`)
 holds the second one-off too: **`website-build`, the $249 website on its
 own** (Luke, Nov 3, 2026), sold at `fynnd.co/offer/website` (the `website`
 offer is now `billing: "one-time"`, no plan; the Website + Reviews plan is
-still the /website page's own button and the `nov1` link) and landing on
-**/website/thanks**, tagged `fynd-website-paid`. Copy is `optimize` in `copy.ts`; the drawn
+still the /website page's own button and the `nov1` link), tagged
+`fynd-website-paid`. It has no thanks page yet (Luke): success lands back
+on /manage and only the webhook records the customer. Copy is `optimize` in `copy.ts`; the drawn
 profile card is fictional and labelled "Example" — never swap in a client's
 without permission.
 

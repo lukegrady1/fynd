@@ -694,7 +694,8 @@ export const faq = {
     },
     {
       q: "How many reviews should I expect?",
-      a: "Two waves. The first is your past customers: expect somewhere between 10% and 15% of the people already in your booking system or CRM to leave a review when we reach out to them. With 1,000 past customers on file, that's roughly 100 to 150 reviews in the first four to six weeks. The second wave is every customer from then on: expect 20% to 30% of new customers to leave a review after their appointment, and some businesses see more than half.",
+      /** Luke's own averages across the businesses Fynd manages (Nov 3, 2026), the same figures the /watch numbers panel shows. Change both together. */
+      a: "Two waves. The first is your past customers: on average across the businesses we manage, 34% of the people already in your booking system or CRM leave a review in the first week after we reach out to them. With 100 past customers on file, that's about 34 reviews in seven days. The second wave is every customer from then on: on average 37% of new customers leave a review after their appointment, and some businesses see more than half.",
     },
     {
       q: "What about repeat customers?",
@@ -702,7 +703,7 @@ export const faq = {
     },
     {
       q: "How long until I see reviews?",
-      a: "Fast. The moment setup is done, the messages start going out to your recent customers, and the first reviews usually land within 48 hours or shortly after. From there it builds with every appointment: the more clients you see, the faster the rating moves.",
+      a: "Fast. Within 24 hours of getting your customer list the requests go out, and the first reviews usually land within 3 hours of the first send. From there it builds with every appointment: the more clients you see, the faster the rating moves.",
     },
     {
       q: "Do I have to do anything?",
@@ -758,7 +759,7 @@ export const faq = {
     },
     {
       q: "How many messages will my customers get?",
-      a: "One request, and one follow-up if they don't respond. Then it stops. Anyone who replies STOP is removed immediately, and nothing sends outside 8am–8pm their time.",
+      a: "One request, and two follow-ups if they don't respond. Then it stops. Anyone who replies STOP is removed immediately, and nothing sends outside 8am–8pm their time.",
     },
     {
       q: "Can I ask customers from before I signed up?",
@@ -897,9 +898,6 @@ export const meta = {
   },
   optimizeThanks: {
     title: "Paid — Fynd Profile Optimization",
-  },
-  websiteThanks: {
-    title: "Paid — Fynd Website Build",
   },
   manageWelcome: {
     title: "You're in — Fynd",
@@ -1730,41 +1728,6 @@ export const bundle = {
   finalCta: {
     heading: { lead: "Ready for a site that", accent: "gets you booked", tail: "?" },
     cta: `Start for $${offer.bundle.price}`,
-  },
-
-  /**
-   * /website/thanks — after the $249 build goes through (the one-time
-   * build sold at fynnd.co/offer/website and from /manage, not the
-   * Website + Reviews plan, which lands on /start/welcome). Commitments
-   * written by Claude from the /manage website copy ("built while you
-   * set up", "about two weeks", "photos and a look at the draft") — edit
-   * before sending anyone the link.
-   */
-  thanks: {
-    heading: "Paid. Here's what happens next.",
-    sub: "There's nothing else to fill out right now. We'll reach out within a day to get what the site needs from you.",
-    steps: [
-      {
-        when: "Within a day",
-        body: "We get in touch for the few things only you have: your logo if there is one, photos of your work, your services and prices, and the domain you'd like it on.",
-      },
-      {
-        when: "About a week in",
-        body: "You get a link to the draft to look over. Tell us what to change in a reply; most sites take one round.",
-      },
-      {
-        when: "About two weeks",
-        body: "The site goes live on your domain. Hosting and updates are part of your plan after that; the build isn't billed again.",
-      },
-    ],
-    /** When the session can't be confirmed as paid (a reload, a stray link). */
-    unpaid: {
-      heading: "We couldn't find that payment.",
-      sub: "If you just paid, give it a minute and refresh. If you backed out, the page is still here.",
-      cta: "Back to the page",
-      href: "/manage",
-    },
-    helpLine: "Questions? Reply to the first email you get from us.",
   },
 
   /** The teaser at the bottom of the homepage. */

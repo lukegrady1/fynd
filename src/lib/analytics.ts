@@ -37,7 +37,6 @@ export type PageId =
   | "confirmed"
   | "optimize"
   | "optimize-thanks"
-  | "website-thanks"
   | "manage"
   | "manage-welcome";
 

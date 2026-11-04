@@ -397,10 +397,11 @@ on reset by design and the film reports it.
 The website on its own, $249 once, nothing after (Luke, Nov 3, 2026):
 `website-build` in `ONE_TIME` (stripe.ts), the `website` offer slug now
 `billing: "one-time"` (the Offer union grew a plan-less one-time shape;
-the route and its fallback/page helpers branch on it), success on the
-new `/website/thanks` (a clone of /optimize/thanks with the build's own
-steps, `bundle.thanks` in copy.ts — Claude's wording, edit before use),
-GHL tag `fynd-website-paid`, the webhook's one-time path files it under
+the route and its fallback/page helpers branch on it), success back on
+plain /manage — a /website/thanks page was built and then removed the
+same day (Luke: "I don't want a website thanks page yet"), so only the
+webhook records the buyer, there is no page-side backstop — GHL tag
+`fynd-website-paid`, the webhook's one-time path files it under
 page "website". The /website page's own button still sells the Website +
 Reviews plan ($249 then $97/month, anchored). Verified by minting the
 link's session, reading it back and expiring it.
@@ -491,18 +492,19 @@ it, like `BookDemo.tsx` / `watch.book`).
   for its own flow. The timeline, the ledger, the judge list, the numbers, the price-card
   sub, the features and the trial FAQ all say it in that order; keep
   them in step.
-- **Two follow-ups, not one** (Luke, Nov 3, 2026) everywhere on /watch.
-  The homepage FAQ ("How many messages will my customers get?") still
-  says one request and one follow-up, and that answer is on /watch too;
-  flagged to Luke with the two review-rate figures, his call.
+- **Two follow-ups, not one** (Luke, Nov 3, 2026) everywhere on /watch
+  and, since the FAQ change below, on the homepage too.
 - **Every claim is one the homepage already makes** ( 8am–8pm, STOP, private routing, replies in your voice,
   the widget, the past-customer wave, per-location pricing). The
   numbers are Luke's own averages "across the businesses we manage"
   (37% of new customers, 34% of past customers in week one; Nov 3,
   2026, and first reviews within 3 hours, not the FAQ's 48) plus the
-  four BrightLocal facts with the link. The homepage FAQ's "How many reviews should I
-  expect?" still says 10–15% of past customers over four to six weeks
-  and is on this page too — Luke has been told; his call. What /manage
+  four BrightLocal facts with the link. The homepage FAQ now says the
+  same (Luke, Nov 3, 2026: "use the numbers that are in the watch page
+  throughout"): 34% of past customers in week one, 37% of new customers,
+  requests within 24 hours of the list, first reviews within 3 hours,
+  two follow-ups. The FAQ is shared with the homepage, so those are the
+  site's figures now. What /manage
   has that this leaves out on purpose: the channel ring, the math and
   the tools replaced (no honest review-only cost figures), the website
   section. The `watch.pricing` card note, the trial-week cancel line
