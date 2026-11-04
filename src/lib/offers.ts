@@ -58,6 +58,8 @@ export const OFFERS = {
    * `nov1` link below while it lasts.
    */
   website: { billing: "one-time", product: "website-build" },
+  /** The Google Business Profile optimization, $99 once, nothing after. The same checkout as /optimize's own button. */
+  optimize: { billing: "one-time", product: "gbp-optimization" },
   /** Review System only: $97 today, then $97/month. */
   reviews: { plan: "review-system", billing: "now" },
   /** Profile management: $297 today, then $297/month. */

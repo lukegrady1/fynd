@@ -1752,6 +1752,10 @@ export const offerLinks = {
     title: "Fynd Website Build",
     description: `A complete website built for you. $${offer.bundle.price} once, nothing recurring.`,
   },
+  optimize: {
+    title: "Fynd Profile Optimization",
+    description: `Your Google Business Profile optimized by a person, every section filled in. $${offer.gbp.price} once, nothing recurring.`,
+  },
   reviews: {
     title: "Fynd Review System",
     description: `More 5-star Google reviews, on autopilot. $${offer.price} a month, cancel any time.`,
