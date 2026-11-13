@@ -2061,6 +2061,22 @@ export const offerLinks = {
 } as const;
 
 /**
+ * How a customer adds Fynd as a Manager on their Google Business Profile.
+ * Luke's wording, Nov 13, 2026. `email` is `gbpManagerEmail()`
+ * (gbp@gradydigital.com).
+ */
+export const gbpManagerSteps = (email: string): string[] => [
+  "Sign in to the Google account that manages your business profile.",
+  'Go to google.com and search for your business name (or search "my business"). Your profile will show up with an editing panel at the top.',
+  'Click the three dots (⋮) and choose "Business Profile settings."',
+  'Click "People and access."',
+  'Click "Add" (the little person icon with a +).',
+  `Enter this email: ${email}`,
+  'Under Access, select "Manager" (not Owner).',
+  'Click "Invite."',
+];
+
+/**
  * /optimize — the one-time Google Business Profile optimization.
  *
  * The page's shape is the pitch: here is the problem, here are three fixes
@@ -2496,24 +2512,11 @@ export const optimize = {
 
   stickyCta: `Fix my profile for $${offer.gbp.price}`,
 
-  /** /optimize/thanks — after the $99 goes through. */
+  /** /optimize/thanks — after the $99 goes through: the manager-invite steps and nothing else. */
   thanks: {
-    heading: "Paid. Here's what happens next.",
-    sub: "There's nothing else to fill out. We'll reach out within a day to get manager access to your profile and get started.",
-    steps: [
-      {
-        when: "Within a day",
-        body: "We get in touch with the two-minute steps to add Fynd as a manager on your profile. It never involves your password.",
-      },
-      {
-        when: "Once we're in",
-        body: "We go through the profile and send you a short list of what we're changing.",
-      },
-      {
-        when: "Within five business days",
-        body: "Everything on the list is done and we let you know. There's no report with the one-time update; open the profile and it's all there.",
-      },
-    ],
+    heading: "Add Fynd as a manager on your profile",
+    sub: "Thanks for your order. This is the one thing we need to start on your profile. It takes about two minutes and never involves your password.",
+    after: "That's it. Once the invite comes through we go through your profile and send you a short list of what we're changing, and it's all done within five business days.",
     /** When the session can't be confirmed as paid (a reload, a stray link). */
     unpaid: {
       heading: "We couldn't find that payment.",

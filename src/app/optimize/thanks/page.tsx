@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Check } from "lucide-react";
-import { meta, optimize } from "@/content/copy";
+import { gbpManagerSteps, meta, optimize } from "@/content/copy";
+import { gbpManagerEmail } from "@/lib/connect";
 import { parseParams, type SearchParams } from "@/lib/params";
 import { oneTimeGhl, readOneTimeSession } from "@/lib/stripe";
 import { recordOneTimeCustomer } from "@/lib/ghl-contacts";
@@ -11,6 +11,7 @@ import {
   FunnelFooter,
 } from "@/components/sections/review/PageChrome";
 import { PageTracking } from "@/components/sections/review/PageTracking";
+import { SetupInstructions } from "@/components/sections/onboarding/SetupInstructions";
 
 /**
  * /optimize/thanks — after the $99 goes through.
@@ -18,7 +19,7 @@ import { PageTracking } from "@/components/sections/review/PageTracking";
  * Its own page rather than /start/welcome: that page opens the onboarding
  * form for the subscription, which asks about booking software this customer
  * has no reason to answer. The one thing needed here is manager access to
- * the profile, and the receipt email carries those steps.
+ * the profile, so the page is those steps (Luke, Nov 13, 2026).
  *
  * Backstops the webhook the way /start/welcome does: if the session is paid,
  * the contact is written to GHL from here too. Idempotent (an upsert keyed
@@ -68,6 +69,7 @@ export default async function OptimizeThanksPage({
   }
 
   const copy = optimize.thanks;
+  const managerEmail = gbpManagerEmail();
 
   return (
     <>
@@ -78,31 +80,13 @@ export default async function OptimizeThanksPage({
         <Container>
           <div className="mx-auto max-w-[620px]">
             {paid ? (
-              <>
-                <span className="flex h-12 w-12 items-center justify-center rounded-full bg-fynd-green/15">
-                  <Check
-                    aria-hidden="true"
-                    strokeWidth={2.5}
-                    className="h-6 w-6 text-fynd-green-text"
-                  />
-                </span>
-
-                <h1 className="mt-5 text-h1 text-ink">{copy.heading}</h1>
-                <p className="mt-3 text-body text-ink-soft">{copy.sub}</p>
-
-                <ol className="mt-8 divide-y divide-line border-y border-line">
-                  {copy.steps.map((step) => (
-                    <li key={step.when} className="flex gap-5 py-5">
-                      <span className="w-28 shrink-0 text-small font-semibold text-fynd-blue">
-                        {step.when}
-                      </span>
-                      <span className="text-body text-ink">{step.body}</span>
-                    </li>
-                  ))}
-                </ol>
-
-                <p className="mt-8 text-small text-ink-soft">{copy.helpLine}</p>
-              </>
+              <SetupInstructions
+                heading={copy.heading}
+                intro={copy.sub}
+                steps={gbpManagerSteps(managerEmail)}
+                email={managerEmail}
+                after={copy.after}
+              />
             ) : (
               <>
                 <h1 className="text-h1 text-ink">{copy.unpaid.heading}</h1>

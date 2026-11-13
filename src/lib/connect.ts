@@ -56,3 +56,11 @@ export const oauthReadiness = (): Record<string, boolean> =>
  */
 export const inviteEmail = (): string | null =>
   process.env.FYND_INVITE_EMAIL?.trim() || null;
+
+/**
+ * The Google account a $99 /optimize customer adds as a Manager on their
+ * Business Profile. Luke, Nov 13, 2026: gbp@gradydigital.com. The env var
+ * overrides it; unlike `inviteEmail` it always has a real address.
+ */
+export const gbpManagerEmail = (): string =>
+  process.env.FYND_GBP_MANAGER_EMAIL?.trim() || "gbp@gradydigital.com";
