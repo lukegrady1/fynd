@@ -18,6 +18,11 @@ export const metadata: Metadata = {
   },
   description: brand.description,
   /**
+   * Without this, Next builds the og:image URL from localhost:3000 and every
+   * link preview comes up blank. SITE_URL overrides it, as in site-origin.ts.
+   */
+  metadataBase: new URL(process.env.SITE_URL ?? "https://fynnd.co"),
+  /**
    * The title is what a link preview prints under the image, so it is the
    * tagline on its own — the site name is already carried by `siteName` and by
    * the domain every unfurler shows, and repeating it inside the title just
