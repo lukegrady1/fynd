@@ -28,7 +28,7 @@ export function HomeServices({ id }: { id: string }) {
   const copy = home.services;
 
   return (
-    <section id={id} className="scroll-mt-16 bg-white py-12 lg:py-20">
+    <section id={id} className="scroll-mt-20 bg-white py-12 lg:py-20">
       <Container>
         <Reveal className="mx-auto max-w-[760px] text-center">
           <Eyebrow variant="pill" className="mx-auto">

@@ -1,6 +1,7 @@
 import { manage } from "@/content/copy";
 import { cn } from "@/lib/utils";
 import { Container } from "@/components/ui/Layout";
+import { ButtonLink } from "@/components/ui/Button";
 import { Reveal } from "@/components/sections/review/Reveal";
 import { ScrollButton } from "./ScrollButton";
 
@@ -14,14 +15,24 @@ import { ScrollButton } from "./ScrollButton";
  * Bar widths are the amounts, so the picture can't disagree with the
  * figures. The figures are the platform's typical-cost estimates, and
  * the note says so.
+ *
+ * On /manage it follows another navy section, so it has no top padding
+ * and its button scrolls to the tools table. The homepage passes `link`
+ * (a button to /manage instead) and `topPad` (it follows a white section).
  */
-export function TheMath() {
+export function TheMath({
+  link,
+  topPad = false,
+}: {
+  link?: { label: string; href: string };
+  topPad?: boolean;
+} = {}) {
   const copy = manage.math;
   const usualTotal = copy.usual.segments.reduce((n, s) => n + s.amount, 0);
   const pct = (amount: number) => `${(amount / usualTotal) * 100}%`;
 
   return (
-    <section className="bg-navy pb-12 lg:pb-20">
+    <section className={cn("bg-navy pb-12 lg:pb-20", topPad && "pt-12 lg:pt-20")}>
       <Container>
         <Reveal className="relative mx-auto max-w-[1120px] overflow-hidden rounded-lg bg-navy-card ring-1 ring-white/10 p-6 text-white shadow-lg sm:p-10 lg:p-12">
           <div
@@ -40,7 +51,13 @@ export function TheMath() {
                 {copy.body}
               </p>
             </div>
-            <ScrollButton targetId="tools" label={copy.cta} section="the_math" />
+            {link ? (
+              <ButtonLink href={link.href} size="lg" arrow className="w-full sm:w-auto">
+                {link.label}
+              </ButtonLink>
+            ) : (
+              <ScrollButton targetId="tools" label={copy.cta} section="the_math" />
+            )}
           </div>
 
           <div className="relative mt-10 flex flex-col gap-6">

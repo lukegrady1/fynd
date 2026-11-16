@@ -79,17 +79,17 @@ export const pillars: {
  */
 export const nav = {
   links: [
+    { label: "Management", href: "/manage" },
     { label: "Reviews", href: "/reviews" },
     { label: "Website", href: "/website" },
-    { label: "Management", href: "/manage" },
   ],
   cta: { label: "Book a call", href: "/demo" },
 } as const;
 
 /** The footer's services column: everything that can be bought, the $99 included. */
 export const footerServices = [
+  { label: "Profile management", href: "/manage" },
   { label: "Review System", href: "/reviews" },
   { label: "Website + Reviews", href: "/website" },
-  { label: "Profile management", href: "/manage" },
   { label: "Profile optimization", href: "/optimize" },
 ] as const;

@@ -1,15 +1,15 @@
 import type { Metadata } from "next";
-import { meta } from "@/content/copy";
+import { home, meta } from "@/content/copy";
 import { parseParams, type SearchParams } from "@/lib/params";
 import { PageTracking } from "@/components/sections/review/PageTracking";
 import { FunnelFooter } from "@/components/sections/review/PageChrome";
 import { Nav } from "@/components/site/Nav";
 import { HomeHero } from "@/components/sections/home/HomeHero";
 import { HomeServices } from "@/components/sections/home/HomeServices";
-import { HomeNumbers } from "@/components/sections/home/HomeNumbers";
 import { HomeCloser } from "@/components/sections/home/HomeCloser";
 import { TrustStrip } from "@/components/sections/review/TrustStrip";
-import { ResultsSection } from "@/components/sections/review/ResultsSection";
+import { TheMath } from "@/components/sections/manage/TheMath";
+import { ManageRoi } from "@/components/sections/manage/ManageRoi";
 import { ObjectionFaq } from "@/components/sections/review/ObjectionFaq";
 
 /**
@@ -17,9 +17,10 @@ import { ObjectionFaq } from "@/components/sections/review/ObjectionFaq";
  * landing page in full (`LandingPage`, still what /start renders); now it
  * shows each thing Fynd does and sends the visitor to the page that sells
  * it: the hero -> the industries -> the three services, each with its
- * page's own illustration, and the $99 as a band under them -> the real
- * before/after (Salt Salon) with the three outcomes -> the numbers -> the
- * questions -> the closer (the call, or the Review System).
+ * page's own illustration, and the $99 as a band under them -> /manage's
+ * "the math" and the payoff calculator (Nov 16, 2026; the Salt Salon
+ * results and the numbers panel stay on /reviews) -> the questions -> the
+ * closer (the call, or full management).
  *
  * Indexable. /watch, /start and /call are never linked from here.
  */
@@ -46,10 +47,10 @@ export default async function Home({
         <HomeHero targetId={SERVICES_ID} />
         <TrustStrip />
         <HomeServices id={SERVICES_ID} />
-        {/* The real profile and the three outcomes; no button of its own,
-            the closer carries the ask. */}
-        <ResultsSection />
-        <HomeNumbers />
+        {/* Full management's case: what it costs against a marketer, then
+            what it's worth in the visitor's own numbers. */}
+        <TheMath link={home.manageLink} topPad />
+        <ManageRoi link={home.manageLink} />
         <ObjectionFaq collapseAfter={6} />
         <HomeCloser />
       </main>

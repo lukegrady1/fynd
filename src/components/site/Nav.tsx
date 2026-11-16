@@ -17,12 +17,33 @@ import { cn } from "@/lib/utils";
  * phone a menu button opens a navy sheet with the same links. The current
  * page's link is white, the rest dimmed.
  *
- * In the flow, not fixed: every hero under it is navy, so a transparent
- * floating bar would only ever hide the top of the headline.
+ * Sticky (Luke, Nov 16, 2026): it stays at the top as you scroll. It's
+ * solid navy and takes its own 64px at the top of the page, so it never
+ * covers a hero's headline. Scroll targets under it carry `scroll-mt-20`
+ * (80px) so a scrolled-to section lands below the bar.
+ *
+ * Once the page scrolls, the bar lifts off the edges into a floating
+ * glass capsule (Luke, Nov 16, 2026: "transparent, or something else to
+ * look cooler"): navy at 85% with a blur, a hairline ring and a shadow,
+ * sized to the nav row (logo to button) rather than the screen. On
+ * desktop the row also draws in from the full 1152px to 820px, so the
+ * pill holds only the logo, the links and the button (Luke, Nov 16, 2026). Never fully clear: the links are white and half the sections
+ * are white (at 70–80% it went a muddy grey over white). The blur sits on its own layer behind the content,
+ * NOT on the header: backdrop-filter on the header would make it the
+ * containing block for the phone menu's `fixed inset-0` sheet and shrink
+ * the sheet to the bar.
  */
 export function Nav() {
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
@@ -32,9 +53,33 @@ export function Nav() {
   }, [open]);
 
   return (
-    <header className="bg-navy">
-      <Container>
-        <div className="flex h-16 items-center justify-between">
+    <header className="sticky top-0 z-40">
+      {/* At the top: the full-width solid bar. */}
+      <div
+        aria-hidden="true"
+        className={cn(
+          "absolute inset-0 -z-10 bg-navy transition-opacity duration-300 ease-fynd",
+          scrolled && "opacity-0",
+        )}
+      />
+      <Container className={cn("relative transition-transform duration-300 ease-fynd", scrolled && "translate-y-1")}>
+        <div
+          className={cn(
+            "relative mx-auto flex h-16 items-center justify-between lg:transition-[max-width] lg:duration-300 lg:ease-fynd",
+            scrolled ? "lg:max-w-[820px]" : "lg:max-w-[1152px]",
+          )}
+        >
+          {/* Scrolled: the glass pill, sized to the row (logo to button)
+              rather than the screen, so on a wide screen it hugs the
+              content. Inside the row, so it is NOT an ancestor of the
+              phone sheet below. */}
+          <div
+            aria-hidden="true"
+            className={cn(
+              "pointer-events-none absolute -inset-x-2 top-1 bottom-1 -z-10 rounded-full bg-navy/85 shadow-lg ring-1 ring-white/10 backdrop-blur-xl transition-[opacity,transform] duration-300 ease-fynd lg:-inset-x-5",
+              scrolled ? "opacity-100" : "scale-[0.98] opacity-0",
+            )}
+          />
           <Link href="/" aria-label="Fynd — home">
             <Logo tone="light" priority />
           </Link>
@@ -56,7 +101,7 @@ export function Nav() {
           </nav>
 
           <div className="hidden lg:flex">
-            <ButtonLink href={nav.cta.href} variant="outlineLight" arrow className="h-10 px-5 text-small sm:h-10">
+            <ButtonLink href={nav.cta.href} arrow className="h-10 px-5 text-small shadow-blue sm:h-10">
               {nav.cta.label}
             </ButtonLink>
           </div>

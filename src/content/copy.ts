@@ -120,15 +120,14 @@ export const heroFlow = {
 
 /** Small strip under the hero. Qualifies the visitor without an essay. */
 export const trustStrip = {
-  lead: "Built for studios and salons where clients book, come in, and leave happy.",
+  lead: "Built for local businesses that get chosen on Google.",
+  /** Who, not which industry: kept general on purpose (Nov 16, 2026 pivot). */
   industries: [
-    "Hair salons",
-    "Barbers",
-    "Massage therapy",
-    "Pilates studios",
-    "Yoga",
-    "Nails",
-    "Skincare",
+    "Solo owners",
+    "Small teams",
+    "Multiple locations",
+    "Service businesses",
+    "Local shops",
   ],
 } as const;
 
@@ -350,7 +349,7 @@ export const watch = {
       {
         when: "Within 24 hours",
         title: "The reactivation wave goes out",
-        body: "Once we have your list, everyone on it gets a review request from your studio's name, with two follow-ups for anyone who goes quiet. Anyone unhappy lands with you, not on Google. The first reviews usually show up within 3 hours of the first send.",
+        body: "Once we have your list, everyone on it gets a review request from your business name, with two follow-ups for anyone who goes quiet. Anyone unhappy lands with you, not on Google. The first reviews usually show up within 3 hours of the first send.",
       },
       {
         when: "Once the wave is done",
@@ -377,7 +376,7 @@ export const watch = {
      * ILLUSTRATION: both studios are fictional and every figure is drawn;
      * this caption sits under it and says so.
      */
-    demoCaption: "Illustration. The studios are made up and the figures are drawn, not measured.",
+    demoCaption: "Illustration. The businesses are made up and the figures are drawn, not measured.",
     /**
      * The two lists beside the demo: what the week shows, what the months
      * after show. `icon` picks the glyph in `WatchProof`. No numbers in the
@@ -392,7 +391,7 @@ export const watch = {
         span: "Days 1–7",
         title: "What you'll see happen",
         items: [
-          { icon: "send", text: "The reactivation wave going out to your past customers, from your studio's name" },
+          { icon: "send", text: "The reactivation wave going out to your past customers, from your business name" },
           { icon: "repeat", text: "The follow-ups going out to anyone who didn't respond" },
           { icon: "inbox", text: "Private feedback landing with you instead of on Google" },
           { icon: "star", text: "The first reviews on your profile, usually within 3 hours of the first send" },
@@ -408,7 +407,7 @@ export const watch = {
         items: [
           { icon: "trend", text: "Your review count climbing with every appointment" },
           { icon: "star", text: "Your rating settling where your work deserves" },
-          { icon: "users", text: "Where you sit against the other studios nearby" },
+          { icon: "users", text: "Where you sit against the other businesses nearby" },
           { icon: "map", text: "Your spot in the map when someone searches for what you do" },
         ],
       },
@@ -547,7 +546,7 @@ export const watch = {
         title: "Review requests",
         items: [
           { name: "Texted after every appointment", means: "The moment an appointment is marked complete, the request goes out on its own." },
-          { name: "From your studio, to them by name", means: "Your business name on the message, their name and the service they booked in it." },
+          { name: "From your business, to them by name", means: "Your business name on the message, their name and the service they booked in it." },
           { name: "Smart timing", means: "It waits the right amount of time before sending, rather than firing the second you close the ticket." },
           { name: "Two follow-ups", means: "Anyone who didn't respond gets two friendly reminders. Then it stops." },
           { name: "Past customers asked first", means: "Send us your recent customers and the reactivation wave goes out before anything else. It's the fastest lever you have." },
@@ -590,7 +589,7 @@ export const watch = {
         items: [
           { name: "Your rating and review count", means: "Both numbers, and how they've moved, on one page." },
           { name: "Where the reviews came from", means: "The text, a follow-up, or straight from your profile." },
-          { name: "How you compare nearby", means: "Where you sit against the other studios around you." },
+          { name: "How you compare nearby", means: "Where you sit against the other businesses around you." },
         ],
       },
       {
@@ -677,7 +676,7 @@ export const faq = {
   items: [
     {
       q: "Who is Fynd for?",
-      a: "Fynd is built for local business owners who want more 5-star Google reviews without the hassle. We work with hair salons, barbers, massage therapists, Pilates and yoga studios, nail and skincare studios, and home service businesses too. Whether you're a solo provider or running multiple locations, if you want more reviews without the hassle, Fynd is for you.",
+      a: "Fynd is built for local business owners who want more 5-star Google reviews without the hassle. Whether you're a solo provider or running multiple locations, if you want more reviews without the hassle, Fynd is for you.",
     },
     {
       q: "Are these reviews real?",
@@ -962,10 +961,10 @@ export const home = {
     lead: "Get found.",
     mid: "Get reviews.",
     accent: "Get booked.",
-    body: "Fynd puts your business in front of the people searching for what you do, turns every finished appointment into a Google review, and builds you a website that gets you booked. You answer the phone.",
+    body: "Fynd puts your business in front of the people searching for what you do, turns every customer into a Google review, and builds you a website that gets you booked. You answer the phone.",
     checks: [
-      "Google reviews on autopilot",
       "Your Google profile run for you, every day",
+      "Google reviews on autopilot",
       "A website built while you set up",
     ],
     /** Scrolls to the three services. */
@@ -979,41 +978,9 @@ export const home = {
   services: {
     eyebrow: "What we do",
     heading: "Three things. Start with the one you need.",
-    sub: "Each is its own plan with its own page and its own price. Reviews on their own, a website with the reviews built in, or the whole profile run for you.",
-    /** `key` picks the illustration in `HomeServices`. */
+    sub: "Each is its own plan with its own page and its own price. The whole profile run for you, reviews on their own, or a website with the reviews built in.",
+    /** `key` picks the illustration in `HomeServices`. Full management leads (Luke, Nov 16, 2026: "the main thing that I want to push now"). */
     items: [
-      {
-        key: "reviews",
-        eyebrow: "Review System",
-        title: "Every finished appointment asks for a Google review.",
-        body: "When an appointment ends, we text the customer, follow up twice if they go quiet, send the unhappy ones to you privately and reply to every review in your voice. You mark the appointment done. That's the whole job.",
-        points: [
-          "Texted after every appointment, from your studio's name",
-          "Two follow-ups, then it stops",
-          "Unhappy customers routed to you, not to Google",
-          "The first reviews usually land within 3 hours of the first send",
-        ],
-        price: `$${offer.price} a month · No contract`,
-        cta: "See the Review System",
-        href: "/reviews",
-        caption: "Illustration. The studio is made up and the figures are drawn, not measured.",
-      },
-      {
-        key: "website",
-        eyebrow: "Website + Reviews",
-        title: "A website built to get you booked.",
-        body: "Fast, mobile-first and written for you from one short call, on the domain you already own, with book-now wired to your booking software and your newest Google reviews shown live. The Review System comes with it.",
-        points: [
-          "Live in about two weeks",
-          "Hosting, security and updates handled",
-          "Your Google reviews shown live on the site",
-          "Edit anything just by asking",
-        ],
-        price: `$${offer.bundle.price} to start · then $${offer.price} a month`,
-        cta: "See the website plan",
-        href: "/website",
-        caption: "Illustration. The salon and its site are made up.",
-      },
       {
         key: "manage",
         eyebrow: "Full management",
@@ -1030,6 +997,38 @@ export const home = {
         href: "/manage",
         caption: "Illustration. The count is drawn, not live data.",
       },
+      {
+        key: "reviews",
+        eyebrow: "Review System",
+        title: "Every finished appointment asks for a Google review.",
+        body: "When an appointment ends, we text the customer, follow up twice if they go quiet, send the unhappy ones to you privately and reply to every review in your voice. You mark the appointment done. That's the whole job.",
+        points: [
+          "Texted after every appointment, from your business name",
+          "Two follow-ups, then it stops",
+          "Unhappy customers routed to you, not to Google",
+          "The first reviews usually land within 3 hours of the first send",
+        ],
+        price: `$${offer.price} a month · No contract`,
+        cta: "See the Review System",
+        href: "/reviews",
+        caption: "Illustration. The business is made up and the figures are drawn, not measured.",
+      },
+      {
+        key: "website",
+        eyebrow: "Website + Reviews",
+        title: "A website built to get you booked.",
+        body: "Fast, mobile-first and written for you from one short call, on the domain you already own, with book-now wired to your booking software and your newest Google reviews shown live. The Review System comes with it.",
+        points: [
+          "Live in about two weeks",
+          "Hosting, security and updates handled",
+          "Your Google reviews shown live on the site",
+          "Edit anything just by asking",
+        ],
+        price: `$${offer.bundle.price} to start · then $${offer.price} a month`,
+        cta: "See the website plan",
+        href: "/website",
+        caption: "Illustration. The business and its site are made up.",
+      },
     ],
     /** The $99, deliberately small: a band under the three, not a fourth (Luke, Nov 3, 2026: "just kind of there if someone needs it"). */
     optimize: {
@@ -1041,17 +1040,19 @@ export const home = {
     },
   },
 
-  /** The stats (the /watch and /reviews numbers panel), then one link to the Review System. */
-  numbers: {
-    cta: "See the Review System",
-    href: "/reviews",
-  },
+  /**
+   * Under the services, /manage's "the math" and "the payoff" calculator,
+   * each with a button to /manage. They replaced the Salt Salon results
+   * and the reviews numbers panel (Luke, Nov 16, 2026: those stay on
+   * /reviews; the homepage drives home full management).
+   */
+  manageLink: { label: "See full management", href: "/manage" },
 
   closer: {
     heading: { lead: "Ready to be the one they", accent: "find first", tail: "?" },
     primary: { label: "Book a call", href: "/demo" },
-    secondary: { label: "Start with reviews", href: "/reviews" },
-    note: "Fifteen minutes on the call. Or start with the Review System today, no contract.",
+    secondary: { label: "See full management", href: "/manage" },
+    note: "Fifteen minutes on the call. Or start full management today, no contract.",
   },
 } as const;
 
@@ -1066,9 +1067,9 @@ export const meta = {
       "Fifteen minutes to see where your rating stands and what the review system would do for your business.",
   },
   home: {
-    title: "Fynd — Automated Google reviews for local businesses",
+    title: "Fynd — Google Business Profile management for local businesses",
     description:
-      "Every finished appointment asks for a Google review, automatically. More reviews, a better rating, and hours a year off your plate.",
+      "We optimize and run your Google Business Profile so people nearby find you on Google, Google Maps and ChatGPT. Review requests included. $297 a month, no contract.",
   },
   start: {
     title: "Start — Fynd Review System",
@@ -1084,13 +1085,13 @@ export const meta = {
   watch: {
     title: "Watch — Fynd Review System",
     description:
-      `Forty-seven seconds on how Fynd turns finished appointments into Google reviews, then try it free for ${offer.trialDays} days.`,
+      `Forty-seven seconds on how Fynd turns customers into Google reviews, then try it free for ${offer.trialDays} days.`,
   },
   optimize: {
     /** The layout appends " | Fynd". */
-    title: "Google Business Profile optimization for salons and barbers",
+    title: "Google Business Profile optimization for local businesses",
     description:
-      "Everything to update on a salon or barbershop Google Business Profile, what finished looks like, and $99 once if you'd rather we did it.",
+      "Everything to update on a local business's Google Business Profile, what finished looks like, and $99 once if you'd rather we did it.",
   },
   optimizeThanks: {
     title: "Paid — Fynd Profile Optimization",
@@ -1100,13 +1101,13 @@ export const meta = {
   },
   reviews: {
     /** The layout appends " | Fynd". */
-    title: "Automated Google reviews for salons and barbers",
+    title: "Automated Google reviews for local businesses",
     description:
       "Every finished appointment asks for a Google review by text, follows up, routes unhappy customers to you and replies in your voice. $97 a month, no contract.",
   },
   manage: {
     /** The layout appends " | Fynd". */
-    title: "Google Business Profile management for salons and barbers",
+    title: "Google Business Profile management for local businesses",
     description:
       "Your Google Business Profile optimized and run for you: weekly posts and photos, review requests and replies, website, social, video and AI search, with a monthly ranking report. $297 a month, no contract.",
   },
@@ -1151,7 +1152,7 @@ export const mechanism = {
     {
       icon: "send",
       title: "Fynd sends the request",
-      body: "Within the hour, your client gets a personalized text from your studio.",
+      body: "Within the hour, your client gets a personalized text from your business.",
     },
     {
       icon: "star",
@@ -1744,7 +1745,7 @@ export const features = {
         accent: "asks for a review",
         tail: "— without you.",
       },
-      sub: "The message goes out from your studio's name, with the client's name and the service they booked on it.",
+      sub: "The message goes out from your business name, with the client's name and the service they booked on it.",
       points: [
         "It waits the right amount of time before sending, rather than firing the second you close the ticket.",
         "Every message uses the client's name and the service they booked.",
@@ -1807,11 +1808,11 @@ export const features = {
         accent: "on one page",
         tail: "—  no report to read.",
       },
-      sub: "Your rating, your review growth, and where you sit against the studios nearby.",
+      sub: "Your rating, your review growth, and where you sit against the businesses nearby.",
       points: [
         "Your rating and review count, and how both have moved.",
         "Where the reviews came from — the text, the NFC card, or straight from your profile.",
-        "How you compare to the other studios nearby.",
+        "How you compare to the other businesses nearby.",
         "One page. No report to read.",
       ],
       footer: {
@@ -1840,7 +1841,7 @@ export const bundle = {
   hero: {
     lead: "A new website, and",
     accent: "the reviews to back it up.",
-    sub: `Your site rebuilt to get you booked, and every appointment turned into a Google review. $${offer.bundle.price} to start, then $${offer.price} a month for the Review System. Nothing to piece together.`,
+    sub: `Your site rebuilt to get you booked, and every customer turned into a Google review. $${offer.bundle.price} to start, then $${offer.price} a month for the Review System. Nothing to piece together.`,
     cta: `Start for $${offer.bundle.price}`,
     reassure: `Then $${offer.price}/month. No contract. Cancel anytime.`,
   },
@@ -1942,7 +1943,7 @@ export const bundle = {
     hero: {
       lead: "A new website, and",
       accent: "the reviews to back it up.",
-      body: `Your site rebuilt to get you booked, on the domain you already own, and every finished appointment turned into a Google review. $${offer.bundle.price} to start, then $${offer.price} a month for the Review System.`,
+      body: `Your site rebuilt to get you booked, on the domain you already own, and every customer turned into a Google review. $${offer.bundle.price} to start, then $${offer.price} a month for the Review System.`,
       checks: [
         "Built for you from one short call, live in about two weeks",
         "Book-now wired to your booking software",
@@ -2097,7 +2098,7 @@ export const optimize = {
   hero: {
     lead: "Verified, but",
     accent: "not optimized.",
-    sub: "Verifying put your Google profile on the map. Filling in the rest is what gets you found, and most profiles are still missing half of what Google looks for. Those gaps are why the salon down the road shows up first.",
+    sub: "Verifying put your Google profile on the map. Filling in the rest is what gets you found, and most profiles are still missing half of what Google looks for. Those gaps are why the business down the road shows up first.",
     /** Scrolls to the checklist, not the checkout: the page teaches first (Luke). */
     cta: "Learn how",
     reassure: "One-time, no subscription.",
@@ -2212,7 +2213,7 @@ export const optimize = {
   ranking: {
     lead: "Google ranks on three things.",
     accent: "Your profile is two of them.",
-    sub: "Before the list, the reason for it. When someone searches “hair salon near me”, Google weighs every profile in the area on the same three things.",
+    sub: "Before the list, the reason for it. When someone searches for what you do “near me”, Google weighs every profile in the area on the same three things.",
     factors: [
       {
         key: "relevance",
@@ -2257,11 +2258,11 @@ export const optimize = {
         items: [
           {
             title: "Primary category",
-            why: "The first thing Google ranks you on. One broad word here and you're competing with every spa and nail bar in town.",
+            why: "The first thing Google ranks you on. One broad word here and you're competing with every loosely related business in town.",
           },
           {
             title: "Secondary categories",
-            why: "Everything else you do that people search for on its own. Barbering, extensions, waxing, each one a category.",
+            why: "Everything else you do that people search for on its own. Each one is a category.",
           },
           {
             title: "Business description",
@@ -2319,7 +2320,7 @@ export const optimize = {
         items: [
           {
             title: "Booking link",
-            why: "Puts a Book button on the profile itself. For a salon, that button is the whole point.",
+            why: "Puts a Book button on the profile itself. For anyone who takes bookings, that button is the whole point.",
           },
           {
             title: "Website link",
@@ -2344,9 +2345,9 @@ export const optimize = {
    * (Luke, Nov 3, 2026: anything compared must be side by side on mobile).
    */
   compare: {
-    lead: "Same salon. Next day.",
+    lead: "Same business. Next day.",
     accent: "Different profile.",
-    sub: "Both are the same salon. The one on the right just has every section filled in.",
+    sub: "Both are the same business. The one on the right just has every section filled in.",
     rows: [
       { label: "Photos", typical: "3, all from 2019", optimized: "42, recent" },
       { label: "Category", typical: "Beauty salon", optimized: "Hair salon" },
@@ -2359,7 +2360,7 @@ export const optimize = {
       { label: "Highlights", typical: "None", optimized: "Walk-ins, booking, accessible" },
     ],
     /** Under the phone table: the drawn cards are an example business. */
-    rowsNote: "Example salon. Same rating and reviews in both: optimization fills the profile in, it doesn't change the review count.",
+    rowsNote: "Example business. Same rating and reviews in both: optimization fills the profile in, it doesn't change the review count.",
   },
 
   /** The $99 card, at #convert, and the three steps under it. */
@@ -2425,7 +2426,7 @@ export const optimize = {
       },
       {
         key: "competitors",
-        title: "The salon down the road keeps going",
+        title: "The business down the road keeps going",
         body: "Rankings are relative. A competitor posting every week and collecting reviews moves ahead of a profile that was perfect once.",
       },
     ],
@@ -2471,11 +2472,11 @@ export const optimize = {
       },
       {
         q: "Do I have to write anything?",
-        a: "No. The writing is the job. You tell us about the salon in plain words and we write the description, the services and the answers. You can change any of it afterwards; it's your profile.",
+        a: "No. The writing is the job. You tell us about the business in plain words and we write the description, the services and the answers. You can change any of it afterwards; it's your profile.",
       },
       {
         q: "What about photos?",
-        a: "We use yours. Send what you have and we'll tell you which shots would help most, so you can take them on your phone in an afternoon. We don't put stock photos on a salon's profile.",
+        a: "We use yours. Send what you have and we'll tell you which shots would help most, so you can take them on your phone in an afternoon. We don't put stock photos on your profile.",
       },
       {
         q: "Can't I just do this myself?",
@@ -2785,7 +2786,7 @@ export const manage = {
       badge: "Sample report",
       title: "Monthly report · Month 3",
       sub: "Here's how your business performed online this month.",
-      sr: "Sample monthly report for the fictional Northside Hair Studio. Three counts with made-up rises since day one: calls, direction requests and website clicks. Then two real Google Maps rank heatmaps from a salon on the platform full management runs on: before, mostly ranked twentieth or worse across its area, and after one month, mostly in the top three. Then the work completed that month and an AI search visibility line.",
+      sr: "Sample monthly report for the fictional Northside Hair Studio. Three counts with made-up rises since day one: calls, direction requests and website clicks. Then two real Google Maps rank heatmaps from a business on the platform full management runs on: before, mostly ranked twentieth or worse across its area, and after one month, mostly in the top three. Then the work completed that month and an AI search visibility line.",
       stats: [
         { icon: "phone", label: "Calls", value: "118", delta: "+74% vs. day 1" },
         { icon: "map", label: "Direction requests", value: "86", delta: "+91% vs. day 1" },
@@ -2813,7 +2814,7 @@ export const manage = {
         tail: "checks",
         link: "View details",
       },
-      caption: "Sample report for a made-up business: the counts and work done are illustrative. The two maps are real, from a salon on the platform full management runs on, before and one month in.",
+      caption: "Sample report for a made-up business: the counts and work done are illustrative. The two maps are real, from a business on the platform full management runs on, before and one month in.",
     },
   },
 
@@ -2823,6 +2824,48 @@ export const manage = {
    * nothing here is a Fynd client's bill. "85% less" is $297 against
    * $1,932.
    */
+  /**
+   * The payoff calculator, under "the math" (Luke, Nov 16, 2026: show the
+   * ROI of management, more customers organically with zero ad spend).
+   * Arithmetic on the visitor's own numbers and nothing else: no assumed
+   * conversion rate, no ranking claim. The platform guarantees nothing,
+   * so the note says we don't either. Defaults are a starting point the
+   * visitor moves, not a result.
+   */
+  roi: {
+    /** The monthly price the return is measured against. */
+    price: 297,
+    eyebrow: "The payoff",
+    lead: "More customers.",
+    accent: "Zero ad spend.",
+    sub: "Full management works on the searches people already make for what you do. Nobody pays per click, and nothing stops when a budget runs out. Put in your own numbers and see what a few more customers a month are worth.",
+    value: {
+      label: "What a new customer is worth to you",
+      help: "Your average sale, times how often a customer comes back in a year.",
+      min: 50,
+      max: 5000,
+      step: 50,
+      initial: 500,
+    },
+    customers: {
+      label: "Extra customers a month from Google",
+      help: "People who find you on Google, Maps or AI search who wouldn't have otherwise. Pick a number you'd believe.",
+      min: 1,
+      max: 30,
+      step: 1,
+      initial: 4,
+    },
+    outputs: {
+      month: "New revenue a month",
+      year: "Over a year",
+      multiple: "Return on $297",
+      breakEven: (n: number) => `${n} new customer${n === 1 ? "" : "s"} a month covers it`,
+      ads: "$0 in ad spend",
+    },
+    cta: "Start now",
+    note: "An estimate from the numbers you enter, not a forecast. How many new customers you get depends on your market, your competition and where your profile starts, and we don't guarantee rankings or results.",
+  },
+
   math: {
     eyebrow: "The math",
     lead: "Hire a full-time local marketer,",
