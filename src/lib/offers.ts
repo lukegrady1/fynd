@@ -52,12 +52,19 @@ export type Offer =
 
 export const OFFERS = {
   /**
-   * The website build, $249 once, nothing after (Luke, Nov 3, 2026). This
-   * slug used to be the Website + Reviews plan ($249 then $97/month);
-   * that plan is still sold by the /website page's own button, and by the
-   * `nov1` link below while it lasts.
+   * The website with hosting after it (Luke, Nov 17, 2026): $249 today,
+   * then $47/month hosting from the next 1st or 15th at least a month out.
+   * Was the $249 build with nothing after (Nov 3); before that, the
+   * Website + Reviews plan, which is now `website-reviews` below.
    */
-  website: { billing: "one-time", product: "website-build" },
+  website: { plan: "website-hosting", billing: "now" },
+  /**
+   * The /website page's own deal (Luke, Nov 17, 2026): $249 today for the
+   * build, then $97/month for the Review System with hosting included,
+   * starting on the next 1st or 15th at least a month out. The same
+   * checkout as the /website price card.
+   */
+  "website-reviews": { plan: "website-reviews", billing: "now" },
   /** The Google Business Profile optimization, $99 once, nothing after. The same checkout as /optimize's own button. */
   optimize: { billing: "one-time", product: "gbp-optimization" },
   /**

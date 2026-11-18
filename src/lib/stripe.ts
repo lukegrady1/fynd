@@ -166,6 +166,24 @@ const PLANS: Record<
     source: "website-page",
   },
   /**
+   * The website on its own, then hosting (Luke, Nov 17, 2026): $249 today
+   * for the build (which also covers hosting until the anchor), then the
+   * $47/month "Fynd Website Hosting" price from the next 1st or 15th at
+   * least a month out. The same anchored shape as Website + Reviews.
+   */
+  "website-hosting": {
+    name: "Fynd Website + Hosting",
+    billing: "anchored",
+    firstCents: 24900,
+    recurringCents: 4700,
+    describe: (anchorLabel, recurringLabel) =>
+      `Your website build, with hosting included today through ${anchorLabel}. Hosting continues as a ${recurringLabel}/month subscription on ${anchorLabel}.`,
+    priceId: HOSTING_PRICE_ID,
+    cancelPath: "/website",
+    successPath: "/onboarding",
+    source: "website-hosting",
+  },
+  /**
    * Full profile management, $297/month on its own recurring price.
    * SAME-DAY billing (Luke, Nov 3, 2026, matching the /manage copy
    * "charged today, then on the same day each month"): a subscription-mode

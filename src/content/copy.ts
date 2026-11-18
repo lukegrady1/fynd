@@ -2042,8 +2042,8 @@ export const bundle = {
  */
 export const offerLinks = {
   website: {
-    title: "Fynd Website Build",
-    description: `A complete website built for you. $${offer.bundle.price} once, nothing recurring.`,
+    title: "Fynd Website + Hosting",
+    description: `A complete website built for you. $${offer.bundle.price} today, then $${offer.hosting.price} a month for hosting, starting at least a month later.`,
   },
   optimize: {
     title: "Fynd Profile Optimization",
@@ -2057,6 +2057,10 @@ export const offerLinks = {
     title: "Fynd Profile Management",
     description:
       "Your Google Business Profile run for you: posts, photos, reviews, website and AI search, every week. $297 a month, cancel any time.",
+  },
+  "website-reviews": {
+    title: "Fynd Website + Reviews",
+    description: `A website built for you plus the Review System. $${offer.bundle.price} today, then $${offer.price} a month with hosting included, starting at least a month later.`,
   },
   nov1: {
     title: "Fynd Website + Reviews",

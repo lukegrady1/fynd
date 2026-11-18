@@ -7,9 +7,14 @@
  * billing shape as the review system — a month paid today, then monthly
  * from the anchor — on its own recurring price.
  */
-export type Plan = "review-system" | "website-reviews" | "gbp-management";
+/**
+ * "website-hosting" is the website on its own with hosting after it (Luke,
+ * Nov 17, 2026): $249 today for the build, then $47/month hosting from the
+ * anchor. Sold at /offer/website.
+ */
+export type Plan = "review-system" | "website-reviews" | "gbp-management" | "website-hosting";
 
-export const PLAN_LIST = ["review-system", "website-reviews", "gbp-management"] as const satisfies readonly Plan[];
+export const PLAN_LIST = ["review-system", "website-reviews", "gbp-management", "website-hosting"] as const satisfies readonly Plan[];
 
 /**
  * One-off products: a single charge, no subscription behind it. Kept apart

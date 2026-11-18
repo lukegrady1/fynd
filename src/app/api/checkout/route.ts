@@ -24,7 +24,7 @@ const bodySchema = z.object({
 });
 
 const pageFor = (plan: z.infer<typeof bodySchema>["plan"]) =>
-  plan === "website-reviews"
+  plan === "website-reviews" || plan === "website-hosting"
     ? "website"
     : plan === "gbp-optimization"
       ? "optimize"

@@ -79,6 +79,8 @@ export const serviceFromMetadata = (
   }
   if (m.plan === "gbp-management") return "manage";
   if (m.plan === "website-reviews") return "website-reviews";
+  // The website with hosting after it: the website steps and email.
+  if (m.plan === "website-hosting") return "website";
   if (m.billing === "trial") return "reviews-trial";
   return "reviews";
 };

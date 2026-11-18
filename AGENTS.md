@@ -266,7 +266,11 @@ different billing shape from everything above: **one `payment` mode session,
 card not saved, and no subscription afterwards.** `createOneTimeCheckoutSession`
 in `src/lib/stripe.ts` builds it, and the product table there (`ONE_TIME`)
 holds the second one-off too: **`website-build`, the $249 website on its
-own** (Luke, Nov 3, 2026), sold at `fynnd.co/offer/website` (the `website`
+own** (Luke, Nov 3, 2026). Since Nov 17, 2026 `fynnd.co/offer/website`
+sells the plan `website-hosting` instead: $249 today, then the $47/month
+hosting price (`HOSTING_PRICE_ID`) from the anchor, landing on
+`/onboarding` with the website steps. The `/website` page's own deal,
+$249 then $97/month, is `fynnd.co/offer/website-reviews`. (The `website`
 offer is now `billing: "one-time"`, no plan; the Website + Reviews plan is
 still the /website page's own button and the `nov1` link), tagged
 `fynd-website-paid`. It has no thanks page yet (Luke): success lands back
