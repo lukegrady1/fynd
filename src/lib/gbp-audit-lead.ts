@@ -59,17 +59,24 @@ export const readAuditLead = (payload: unknown): AuditLead => {
     (first ? [first, last].filter(Boolean).join(" ") : null) ??
     find(
       fields,
-      (k, _, p) =>
+      (k, v, p) =>
         ["name", "fullname", "contactname", "ownername", "username", "displayname"].includes(k) &&
-        !BUSINESS_PATH.test(p.replace(/\.[^.]*$/, "")),
+        !BUSINESS_PATH.test(p.replace(/\.[^.]*$/, "")) &&
+        // Not a Google resource name ("locations/123") or an email.
+        !/[/@]/.test(v) && !/^\d+$/.test(v),
     );
 
-  const businessName = find(
-    fields,
-    (k, _, p) =>
-      ["businessname", "company", "companyname", "locationname", "profilename"].includes(k) ||
-      ((k === "name" || k === "title") && BUSINESS_PATH.test(p.replace(/\.[^.]*$/, ""))),
-  );
+  // The audit tool's own payload (seen Nov 17, 2026) is flat: name, email,
+  // phoneNumber, title (the Business Profile's name), websiteUri,
+  // category, optimisationPercent, auditReportUrl. So a top-level `title`
+  // is the business, after any explicitly named business field.
+  const businessName =
+    find(
+      fields,
+      (k, _, p) =>
+        ["businessname", "company", "companyname", "locationname", "profilename"].includes(k) ||
+        ((k === "name" || k === "title") && BUSINESS_PATH.test(p.replace(/\.[^.]*$/, ""))),
+    ) ?? find(fields, (k, _, p) => k === "title" && !p.includes("."));
   const website = find(fields, (k, v) => (k.includes("website") || k === "url" || k === "site") && /\./.test(v));
 
   return { email, phone, name, businessName, website, fields };
