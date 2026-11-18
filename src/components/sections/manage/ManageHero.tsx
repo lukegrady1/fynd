@@ -1,10 +1,11 @@
-import { Check, Phone, Search, Star } from "lucide-react";
+import { ArrowRight, Check, Phone, Search, Star } from "lucide-react";
 import { manage } from "@/content/copy";
 import { cn } from "@/lib/utils";
 import { Container } from "@/components/ui/Layout";
 import { DottedWorldMap } from "@/components/textures/Textures";
 import { RotatingChannel } from "./RotatingChannel";
 import { ScrollButton } from "./ScrollButton";
+import { AuditLink } from "./AuditLink";
 
 /**
  * /manage hero, in the shape of the platform's: navy (Fynd's heroes are
@@ -87,6 +88,13 @@ export function ManageHero({ targetId }: { targetId: string }) {
                 </span>
                 {copy.trust}
               </p>
+              <AuditLink
+                section="hero_audit"
+                className="text-small font-semibold text-fynd-green underline-offset-4 hover:underline"
+              >
+                {copy.auditLink}
+                <ArrowRight className="ml-1 inline h-4 w-4 align-[-3px]" strokeWidth={2} aria-hidden="true" />
+              </AuditLink>
             </div>
 
           </div>

@@ -1,3 +1,5 @@
+import { auditUrl } from "@/lib/brand";
+
 /**
  * Every string on /start and /call lives here so headlines can be rewritten
  * and A/B tested without touching component code.
@@ -36,6 +38,15 @@ export const offer = {
   bundle: {
     productName: "Website + Review System",
     price: 249,
+  },
+
+  /**
+   * Hosting on its own, for a website customer who drops the Review System
+   * (Luke, Nov 17, 2026). Waived while they're on the $97. Not sold at
+   * checkout; only quoted on /website. Stripe price: `HOSTING_PRICE_ID` in stripe.ts.
+   */
+  hosting: {
+    price: 47,
   },
 
   /**
@@ -227,7 +238,7 @@ export const watch = {
   hero: {
     /** One headline for everyone — no ?biz= variant on this page. */
     lead: "Watch how Fynd turns",
-    accent: "appointments into reviews.",
+    accent: "customers into reviews.",
     /** Under the big pill, then five stars and the trust line — the same
         ask /manage's hero has. The count is Fynd's own figure. */
     /** No price here or anywhere but the card (Luke, Nov 3, 2026: "I only
@@ -273,19 +284,19 @@ export const watch = {
   busy: {
     eyebrow: "How the Review System works",
     heading: "Google reviews, built for busy owners",
-    sub: "Most review tools hand you a link and a dashboard and leave the asking to you. This is the opposite: when an appointment ends, we text the customer, follow up if they go quiet, send the unhappy ones to you privately and reply to every review that lands. You mark the appointment done. That's the whole job.",
+    sub: "Most review tools hand you a link and a dashboard and leave the asking to you. This is the opposite: when you finish with a customer, we text them, follow up if they go quiet, send the unhappy ones to you privately and reply to every review that lands. You mark them done. That's the whole job.",
     question: "Is it right for a busy local business?",
     questionSub: "If asking for reviews keeps slipping to the end of the day and then off the list, this does the asking. It handles the follow-ups and the replies too, so your profile keeps moving while you're with the next client.",
     blocks: [
       {
         tone: "blue",
         title: "Start with your customer list, not a blank dashboard",
-        body: "Send us the recent customers from your booking software or CRM and we start there: the reactivation wave goes out to them first. Once it's finished, we connect to your booking software and every finished appointment asks on its own. Marking it complete is your only step from then on.",
+        body: "Send us the recent customers from your booking software or CRM and we start there: the reactivation wave goes out to them first. Once it's finished, we connect to your booking software and every customer you finish with is asked automatically. Marking them complete is your only step from then on.",
       },
       {
         tone: "orange",
         title: "What still needs you?",
-        body: "Mark appointments done the way you already do, and read the private feedback when it comes in: it's a customer telling you something before anyone else hears it. We never write a review, buy one or choose who gets asked, and nothing here guarantees how many you'll get.",
+        body: "Mark customers done the way you already do, and read the private feedback when it comes in: it's a customer telling you something before anyone else hears it. We never write a review, buy one or choose who gets asked, and nothing here guarantees how many you'll get.",
       },
       {
         tone: "blue",
@@ -295,10 +306,10 @@ export const watch = {
     ],
     todo: {
       title: "Meanwhile, our to-do list",
-      sub: "Recurring work, after every appointment",
+      sub: "Recurring work, after every customer",
       items: [
         "Text your past customers first, the reactivation wave",
-        "Then connect your booking software so new appointments ask on their own",
+        "Then connect your booking software so new customers are asked automatically",
         "Use their name and the service they booked",
         "Wait the right amount of time before sending",
         "Follow up twice with anyone who didn't respond, then stop",
@@ -354,7 +365,7 @@ export const watch = {
       {
         when: "Once the wave is done",
         title: "Your booking software takes over",
-        body: "With the reactivation requests finished, we connect to your booking software, and from then on every finished appointment sends its own request. You mark it complete. That's the whole job.",
+        body: "With the reactivation requests finished, we connect to your booking software, and from then on every customer you finish with gets their own request. You mark them complete. That's the whole job.",
       },
     ],
     proof: "Everything you see in the week is real: real customers, real reviews on your real profile, and they stay yours whether you keep going or not.",
@@ -396,7 +407,7 @@ export const watch = {
           { icon: "inbox", text: "Private feedback landing with you instead of on Google" },
           { icon: "star", text: "The first reviews on your profile, usually within 3 hours of the first send" },
           { icon: "reply", text: "A reply in your voice on every new review" },
-          { icon: "plug", text: "Your booking software connected, so every new appointment asks on its own" },
+          { icon: "plug", text: "Your booking software connected, so every new customer is asked automatically" },
         ],
       },
       {
@@ -405,7 +416,7 @@ export const watch = {
         span: "Days 30–90",
         title: "What you'll watch move",
         items: [
-          { icon: "trend", text: "Your review count climbing with every appointment" },
+          { icon: "trend", text: "Your review count climbing with every customer" },
           { icon: "star", text: "Your rating settling where your work deserves" },
           { icon: "users", text: "Where you sit against the other businesses nearby" },
           { icon: "map", text: "Your spot in the map when someone searches for what you do" },
@@ -445,8 +456,8 @@ export const watch = {
         {
           value: "37%",
           label: "of new customers leave a review",
-          basis: "Asked by text after their appointment. Some businesses see more than half.",
-          viz: { kind: "grid", lit: 37, legend: "37 of every 100 appointments" },
+          basis: "Asked by text the same day. Some businesses see more than half.",
+          viz: { kind: "grid", lit: 37, legend: "37 of every 100 customers" },
         },
         {
           value: "34%",
@@ -497,7 +508,7 @@ export const watch = {
    */
   pricing: {
     kicker: "Free trial",
-    lead: "Every appointment you don't ask",
+    lead: "Every customer you don't ask",
     accent: "is a review you don't get.",
     sub: `Start today. Send us your customer list, the reactivation wave goes out within 24 hours of us getting it, and once it's done your booking software takes over. Nothing is charged for ${offer.trialDays} days.`,
     /** The big number is $0 — it's a free trial (Luke, Nov 3, 2026) —
@@ -513,7 +524,7 @@ export const watch = {
       },
       includedLine: {
         label: "Included:",
-        text: "A review request texted after every appointment, the follow-ups, private routing for unhappy customers, a reply to every review, and your dashboard.",
+        text: "A review request texted to every customer, the follow-ups, private routing for unhappy customers, a reply to every review, and your dashboard.",
       },
       checks: [
         "Sending within 24 hours of your customer list",
@@ -545,7 +556,7 @@ export const watch = {
         icon: "send",
         title: "Review requests",
         items: [
-          { name: "Texted after every appointment", means: "The moment an appointment is marked complete, the request goes out on its own." },
+          { name: "Texted to every customer", means: "The moment a customer is marked complete, the request goes out on its own." },
           { name: "From your business, to them by name", means: "Your business name on the message, their name and the service they booked in it." },
           { name: "Smart timing", means: "It waits the right amount of time before sending, rather than firing the second you close the ticket." },
           { name: "Two follow-ups", means: "Anyone who didn't respond gets two friendly reminders. Then it stops." },
@@ -578,7 +589,7 @@ export const watch = {
         title: "Booking software",
         items: [
           { name: "Vagaro, Mindbody, Square, Acuity and more", means: "Booker, Boulevard, Zenoti, Meevo, Setmore, MyTime and Appointy too, plus most CRMs. If it's on Zapier, we can connect it." },
-          { name: "Connected once the reactivation wave is done", means: "From then on the request fires when an appointment is marked complete. Marking it done is your only step." },
+          { name: "Connected once the reactivation wave is done", means: "From then on the request fires when a customer is marked complete. Marking them done is your only step." },
           { name: "Regulars asked once", means: "Someone who's already reviewed you doesn't get asked again after every visit." },
           { name: "No booking software? Fine", means: "Text us the number and the request still goes out." },
         ],
@@ -680,7 +691,7 @@ export const faq = {
     },
     {
       q: "Are these reviews real?",
-      a: "Yes, every one of them. Fynd never writes a review, buys a review, or asks anyone who isn't your customer. The request goes only to people who actually had an appointment with you, and they write what they want in their own Google account, or don't. All Fynd does is ask at the right moment. The reviews are real customers saying real things, which is the only kind worth having.",
+      a: "Yes, every one of them. Fynd never writes a review, buys a review, or asks anyone who isn't your customer. The request goes only to people you've actually served, and they write what they want in their own Google account, or don't. All Fynd does is ask at the right moment. The reviews are real customers saying real things, which is the only kind worth having.",
     },
     {
       q: "Why do 5-star reviews matter?",
@@ -694,19 +705,19 @@ export const faq = {
     {
       q: "How many reviews should I expect?",
       /** Luke's own averages across the businesses Fynd manages (Nov 3, 2026), the same figures the /watch numbers panel shows. Change both together. */
-      a: "Two waves. The first is your past customers: on average across the businesses we manage, 34% of the people already in your booking system or CRM leave a review in the first week after we reach out to them. With 100 past customers on file, that's about 34 reviews in seven days. The second wave is every customer from then on: on average 37% of new customers leave a review after their appointment, and some businesses see more than half.",
+      a: "Two waves. The first is your past customers: on average across the businesses we manage, 34% of the people already in your booking system or CRM leave a review in the first week after we reach out to them. With 100 past customers on file, that's about 34 reviews in seven days. The second wave is every customer from then on: on average 37% of new customers leave a review once they're asked, and some businesses see more than half.",
     },
     {
       q: "What about repeat customers?",
-      a: "Someone who's already reviewed you doesn't get asked again. Your weekly regulars get asked once, not after every appointment.",
+      a: "Someone who's already reviewed you doesn't get asked again. Your weekly regulars get asked once, not every time they come in.",
     },
     {
       q: "How long until I see reviews?",
-      a: "Fast. Within 24 hours of getting your customer list the requests go out, and the first reviews usually land within 3 hours of the first send. From there it builds with every appointment: the more clients you see, the faster the rating moves.",
+      a: "Fast. Within 24 hours of getting your customer list the requests go out, and the first reviews usually land within 3 hours of the first send. From there it builds with every customer: the more customers you see, the faster the rating moves.",
     },
     {
       q: "Do I have to do anything?",
-      a: "No. We connect to your booking system or CRM, and from there it's automatic: when an appointment is marked complete, the request goes out on its own. Once we have access, it's hands-off. You don't write the message, you don't send it, and you don't chase anyone.",
+      a: "No. We connect to your booking system or CRM, and from there it's automatic: when a customer is marked complete, the request goes out on its own. Once we have access, it's hands-off. You don't write the message, you don't send it, and you don't chase anyone.",
     },
     {
       q: "What booking software do you connect to?",
@@ -786,7 +797,7 @@ export const faq = {
  */
 const trialQuestion = {
   q: "How does the free trial work?",
-  a: `You start today by sending us your recent customer list. Within 24 hours of getting it, the reactivation requests go out to them, and once that wave is finished we connect your booking software so every finished appointment asks on its own. Nothing is charged for the first ${offer.trialDays} days. If it isn't for you, cancel before then and you pay nothing. Otherwise it carries on month to month, cancel anytime.`,
+  a: `You start today by sending us your recent customer list. Within 24 hours of getting it, the reactivation requests go out to them, and once that wave is finished we connect your booking software so every customer you finish with is asked automatically. Nothing is charged for the first ${offer.trialDays} days. If it isn't for you, cancel before then and you pay nothing. Otherwise it carries on month to month, cancel anytime.`,
 } as const;
 
 export const watchFaq = {
@@ -812,68 +823,43 @@ export const watchFaq = {
  * "Start your free trial" buttons swapped for "Start now".
  */
 export const reviews = {
-  cta: "Start now",
+  /** Since Nov 17, 2026 /reviews sells the 7-day free trial (Luke: the
+      charge-today link "is done for the time being"); wording is /watch's. */
+  cta: watch.cta,
 
   hero: {
-    lead: "Turn appointments",
+    lead: "Turn customers",
     accent: "into reviews.",
     body: {
-      lead: "Every finished appointment asks your customer for a Google review by text, follows up if they go quiet, sends anyone unhappy to ",
+      lead: "Every customer you finish with is asked for a Google review by text, followed up if they go quiet, and sent to ",
       strong: "you",
-      tail: " instead of Google, and replies to every review in your voice. You mark the appointment done. That's the whole job.",
+      tail: " instead of Google if they're unhappy. We reply to every review in your voice. You mark them done. That's the whole job.",
     },
     checks: [
-      "Texted after every appointment, automatically",
+      "Every customer texted, automatically",
       "Unhappy customers routed to you, not Google",
       "Plugs into the booking software you already use",
     ],
-    ctaNote: `$${offer.price}/mo · No contract · Cancel anytime`,
+    ctaNote: watch.hero.ctaNote,
     trust: "Trusted by 100+ local businesses",
     trustSr: "Five stars.",
   },
 
-  busy: { ...watch.busy, cta: "Start now" },
+  busy: watch.busy,
 
   firstWeek: {
     heading: "Here's what your first week looks like.",
     sub: "Seven days, start to finish. No sales call and no setup team.",
     steps: watch.trialWeek.steps,
     proof: "Everything you see in the week is real: real customers, real reviews on your real profile, and they stay yours whether you keep going or not.",
-    cta: "Start now",
+    cta: watch.cta,
   },
 
-  judge: { ...watch.judge, cta: "Start now", ctaNote: `$${offer.price} a month · No contract · Cancel anytime` },
+  judge: watch.judge,
 
-  pricing: {
-    kicker: "Pricing",
-    lead: "Every appointment you don't ask",
-    accent: "is a review you don't get.",
-    sub: "Start today. Send us your customer list, the reactivation wave goes out within 24 hours of us getting it, and once it's done your booking software takes over.",
-    card: {
-      label: "One simple price",
-      per: "/ month",
-      perNote: "No contract. Cancel anytime.",
-      pill: `$${offer.price} today · then $${offer.price} a month`,
-      allIn: {
-        title: "All-in price. No setup fee, no per-seat pricing.",
-        body: `The texts, the follow-ups, the replies and the dashboard are all in the $${offer.price}. Nothing is an add-on.`,
-      },
-      includedLine: {
-        label: "Included:",
-        text: "A review request texted after every appointment, the follow-ups, private routing for unhappy customers, a reply to every review, and your dashboard.",
-      },
-      checks: [
-        "Sending within 24 hours of your customer list",
-        "No contracts. Cancel anytime.",
-        "Your reviews stay yours if you leave",
-        "A person answers when you need help",
-      ],
-      cta: `Start for $${offer.price}`,
-      ctaNote: "Billed monthly · No contract · Cancel anytime",
-    },
-  },
+  pricing: { ...watch.pricing, card: { ...watch.pricing.card, cta: "Start for free" } },
 
-  features: { ...watch.features, sub: `Everything below is included in your $${offer.price} a month. Nothing is an add-on.`, cta: "Start now" },
+  features: watch.features,
 
   faq: {
     heading: "Questions about the Review System",
@@ -882,8 +868,8 @@ export const reviews = {
 
   finalCta: {
     heading: { lead: "Stop asking for reviews. Start", accent: "getting them", tail: "." },
-    cta: "Start now",
-    note: `$${offer.price} a month · No contract · Cancel anytime`,
+    cta: watch.cta,
+    note: watch.finalCta.note,
   },
 } as const;
 
@@ -969,8 +955,8 @@ export const home = {
     ],
     /** Scrolls to the three services. */
     cta: "See what we do",
-    /** The call, beside it. */
-    call: { label: "Book a call", href: "/demo" },
+    /** The free audit, beside it, in a new tab (Luke, Nov 17, 2026: the audit, not a call). */
+    audit: "Run my free audit",
     trust: "Trusted by 100+ local businesses",
     trustSr: "Five stars.",
   },
@@ -1008,7 +994,7 @@ export const home = {
           "Unhappy customers routed to you, not to Google",
           "The first reviews usually land within 3 hours of the first send",
         ],
-        price: `$${offer.price} a month · No contract`,
+        price: `Free for ${offer.trialDays} days, then $${offer.price} a month · No contract`,
         cta: "See the Review System",
         href: "/reviews",
         caption: "Illustration. The business is made up and the figures are drawn, not measured.",
@@ -1050,9 +1036,10 @@ export const home = {
 
   closer: {
     heading: { lead: "Ready to be the one they", accent: "find first", tail: "?" },
-    primary: { label: "Book a call", href: "/demo" },
+    /** The free audit first (Luke, Nov 17, 2026: it was the call). */
+    audit: "Run my free audit",
     secondary: { label: "See full management", href: "/manage" },
-    note: "Fifteen minutes on the call. Or start full management today, no contract.",
+    note: "The audit is free: no card, no call. Or start full management today, no contract.",
   },
 } as const;
 
@@ -1093,9 +1080,6 @@ export const meta = {
     description:
       "Everything to update on a local business's Google Business Profile, what finished looks like, and $99 once if you'd rather we did it.",
   },
-  optimizeThanks: {
-    title: "Paid — Fynd Profile Optimization",
-  },
   manageWelcome: {
     title: "You're in — Fynd",
   },
@@ -1103,7 +1087,7 @@ export const meta = {
     /** The layout appends " | Fynd". */
     title: "Automated Google reviews for local businesses",
     description:
-      "Every finished appointment asks for a Google review by text, follows up, routes unhappy customers to you and replies in your voice. $97 a month, no contract.",
+      "Every customer you finish with is asked for a Google review by text, followed up, routed to you if unhappy, and answered in your voice. Free for 7 days, then $97 a month.",
   },
   manage: {
     /** The layout appends " | Fynd". */
@@ -1911,7 +1895,7 @@ export const bundle = {
       },
       {
         q: `What does the $${offer.bundle.price} cover?`,
-        a: `The website build and your first period of the Review System. From the next billing day it's $${offer.price} a month, exactly the same as the reviews-only plan. The site isn't billed again.`,
+        a: `The website build, once, plus the Review System and hosting until your first monthly charge. That charge is at least a month after you buy, on the next 1st or 15th, and from then it's $${offer.price} a month, the same as the reviews-only plan, with the $${offer.hosting.price} hosting fee waived. The site isn't billed again.`,
       },
       {
         q: `Is the review part the same as the $${offer.price} plan?`,
@@ -1920,6 +1904,10 @@ export const bundle = {
       {
         q: "How long until the site is live?",
         a: "About two weeks from the kickoff call, most of which is waiting on photos and a look at the draft. The review requests start sending within 72 hours, so that part is working long before the site goes up.",
+      },
+      {
+        q: "What if I don't want the Review System anymore?",
+        a: `That's fine. Cancel the Review System and drop down to hosting only at $${offer.hosting.price} a month. Your site stays up on your domain, and it's still yours.`,
       },
       {
         q: "Can I start with just reviews and add the site later?",
@@ -1943,14 +1931,14 @@ export const bundle = {
     hero: {
       lead: "A new website, and",
       accent: "the reviews to back it up.",
-      body: `Your site rebuilt to get you booked, on the domain you already own, and every customer turned into a Google review. $${offer.bundle.price} to start, then $${offer.price} a month for the Review System.`,
+      body: `Your site rebuilt to get you booked, on the domain you already own, and every customer turned into a Google review. $${offer.bundle.price} once for the website, then $${offer.price} a month for the Review System, with hosting included.`,
       checks: [
         "Built for you from one short call, live in about two weeks",
         "Book-now wired to your booking software",
         "Every finished appointment asks for a Google review",
       ],
       cta: "Start now",
-      ctaNote: `$${offer.bundle.price} to start · then $${offer.price}/month · No contract`,
+      ctaNote: `$${offer.bundle.price} once · then $${offer.price}/month · No contract`,
       trust: "Trusted by 100+ local businesses",
       trustSr: "Five stars.",
     },
@@ -1978,20 +1966,42 @@ export const bundle = {
       proof: "Your domain stays yours, the site is yours to keep, and the reviews are on your real Google profile.",
       cta: `Start for $${offer.bundle.price}`,
     },
+    /**
+     * The free audit band on this page, angled at the site (Luke, Nov 17,
+     * 2026: "where you're ranking or something like that"). The other
+     * pages use `manage.audit` as written. Same tool, same link.
+     */
+    audit: {
+      eyebrow: "Free ranking check",
+      lead: "A great site needs people to find it.",
+      accent: "See where you rank today.",
+      body: "Your Google Business Profile is what gets you found, and your website is what gets you booked. The free audit shows how your profile is doing now: what's working, what's missing and what's keeping you from showing up higher.",
+      points: [
+        "Sign in with Google and pick your profile",
+        "See what's holding back your local ranking",
+        "Free. No card, no call.",
+      ],
+    },
     /** The price card, in `ManagePricing`. */
     pricing: {
       kicker: "Website + Reviews",
       lead: "Every day without a site that books,",
       accent: "a competitor gets the booking.",
       sub: "Start today. The kickoff call is this week, the review requests start within 72 hours, and the site is live in about two weeks.",
+      /**
+       * The deal (Luke, Nov 17, 2026): $249 once for the site, then $97 a
+       * month for the Review System with the $47 hosting fee waived. The
+       * $97 starts on the anchored billing day, at least a month out (buy
+       * Nov 17, first $97 Jan 1). Drop the reviews and it's hosting only.
+       */
       card: {
-        label: "One price to start",
-        per: "today",
-        perNote: `then $${offer.price} a month for the Review System`,
-        pill: `$${offer.bundle.price} today · then $${offer.price} a month`,
+        label: "The website, one time",
+        per: "once",
+        perNote: `then $${offer.price} a month for the Review System, hosting included`,
+        pill: `$${offer.bundle.price} once · then $${offer.price} a month`,
         allIn: {
-          title: "The build is paid once. The site is never billed again.",
-          body: `Hosting, security, updates and your reviews feeding onto the site are all part of the $${offer.price} a month.`,
+          title: "The build is paid once. Hosting is on us.",
+          body: `Hosting is normally $${offer.hosting.price} a month. On this plan it's waived: hosting, security, updates and the full Review System are all in the $${offer.price}. Don't want the Review System anymore? That's fine. Drop down to hosting only at $${offer.hosting.price} a month and keep your site.`,
         },
         includedLine: {
           label: "Included:",
@@ -2001,12 +2011,15 @@ export const bundle = {
           "Your domain, and the site is yours to keep",
           "Book-now wired to your booking software",
           `The same Review System as the $${offer.price} plan`,
+          `$${offer.hosting.price}/month hosting fee waived`,
           "No contract. Cancel anytime.",
         ],
         cta: `Start for $${offer.bundle.price}`,
         ctaNote: `Then $${offer.price}/month · No contract · Cancel anytime`,
-        anchorNote: `$${offer.bundle.price} today. The $${offer.price} a month starts on your next billing day.`,
       },
+      /** Under the button, with the real date the page works out for today. */
+      firstCharge: (date: string) =>
+        `Buy today and your first $${offer.price} isn't until ${date}. At least a month of breathing room while your site gets built.`,
     },
   },
 
@@ -2037,8 +2050,8 @@ export const offerLinks = {
     description: `Your Google Business Profile optimized by a person, every section filled in. $${offer.gbp.price} once, nothing recurring.`,
   },
   reviews: {
-    title: "Fynd Review System",
-    description: `More 5-star Google reviews, on autopilot. $${offer.price} a month, cancel any time.`,
+    title: "Fynd Review System — free trial",
+    description: `More 5-star Google reviews, on autopilot. Free for ${offer.trialDays} days, then $${offer.price} a month, cancel any time.`,
   },
   manage: {
     title: "Fynd Profile Management",
@@ -2061,21 +2074,6 @@ export const offerLinks = {
   },
 } as const;
 
-/**
- * How a customer adds Fynd as a Manager on their Google Business Profile.
- * Luke's wording, Nov 13, 2026. `email` is `gbpManagerEmail()`
- * (gbp@gradydigital.com).
- */
-export const gbpManagerSteps = (email: string): string[] => [
-  "Sign in to the Google account that manages your business profile.",
-  'Go to google.com and search for your business name (or search "my business"). Your profile will show up with an editing panel at the top.',
-  'Click the three dots (⋮) and choose "Business Profile settings."',
-  'Click "People and access."',
-  'Click "Add" (the little person icon with a +).',
-  `Enter this email: ${email}`,
-  'Under Access, select "Manager" (not Owner).',
-  'Click "Invite."',
-];
 
 /**
  * /optimize — the one-time Google Business Profile optimization.
@@ -2513,20 +2511,6 @@ export const optimize = {
 
   stickyCta: `Fix my profile for $${offer.gbp.price}`,
 
-  /** /optimize/thanks — after the $99 goes through: the manager-invite steps and nothing else. */
-  thanks: {
-    heading: "Add Fynd as a manager on your profile",
-    sub: "Thanks for your order. This is the one thing we need to start on your profile. It takes about two minutes and never involves your password.",
-    after: "That's it. Once the invite comes through we go through your profile and send you a short list of what we're changing, and it's all done within five business days.",
-    /** When the session can't be confirmed as paid (a reload, a stray link). */
-    unpaid: {
-      heading: "We couldn't find that payment.",
-      sub: "If you just paid, give it a minute and refresh. If you backed out, the page is still here.",
-      cta: "Back to the page",
-      href: "/optimize",
-    },
-    helpLine: "Questions? Reply to the first email you get from us.",
-  },
 } as const;
 
 /**
@@ -2599,6 +2583,8 @@ export const manage = {
         2026), so change it here when it changes. */
     trust: "Trusted by 100+ local businesses",
     trustSr: "Five stars.",
+    /** Under the trust line: the free audit, for the owner not ready to buy. */
+    auditLink: "Not sure where your profile stands? Get a free audit",
     mock: {
       query: "hair salon near me",
       results: [
@@ -2981,6 +2967,27 @@ export const manage = {
     },
     total: { label: "Total, bought separately", sub: "8 tools, 8 logins, 8 bills", value: "$432" },
     note: "Typical monthly prices for a standalone tool in each category. Actual prices vary by provider and plan.",
+  },
+
+  /**
+   * The free Google Business Profile audit (Luke, Nov 17, 2026): sign in
+   * with Google, pick the profile, get a report. The public URL is the
+   * one the tool says to put behind a button. Its `/light-audit/search`
+   * URL is for running audits on leads yourself or a full embed.
+   */
+  audit: {
+    url: auditUrl,
+    eyebrow: "Free profile audit",
+    lead: "Not sure how your profile stacks up?",
+    accent: "Get a free audit.",
+    body: "A full report on your Google Business Profile: what's working, what's missing and what's holding you back.",
+    points: [
+      "Sign in with Google and pick your profile",
+      "A full report on your whole profile",
+      "Free. No card, no call.",
+    ],
+    cta: "Run my free audit",
+    newTabSr: "(opens in a new tab)",
   },
 
   /**

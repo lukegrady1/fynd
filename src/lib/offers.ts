@@ -60,8 +60,12 @@ export const OFFERS = {
   website: { billing: "one-time", product: "website-build" },
   /** The Google Business Profile optimization, $99 once, nothing after. The same checkout as /optimize's own button. */
   optimize: { billing: "one-time", product: "gbp-optimization" },
-  /** Review System only: $97 today, then $97/month. */
-  reviews: { plan: "review-system", billing: "now" },
+  /**
+   * Review System: was $97 today, then $97/month. Since Nov 17, 2026 the
+   * charge-today checkout is retired (Luke) and this slug mints the 7-day
+   * free trial, the same as `trial`, so links already sent keep working.
+   */
+  reviews: { plan: "review-system", billing: "trial", days: 7 },
   /** Profile management: $297 today, then $297/month. */
   manage: { plan: "gbp-management", billing: "now" },
   /**

@@ -891,3 +891,59 @@ These are the `TODO(integration)` markers in the codebase.
 - **Deadline formatting uses a fixed timezone** (`offer.timeZone`,
   America/New_York). Without it server and client format differently and React
   reports a hydration mismatch.
+
+## Nov 4, 2026 — onboarding moves into a chat on /onboarding
+
+Started as "send a per-service onboarding email from GHL after Stripe";
+Luke redirected mid-build: put an AI chat on the site after payment that
+knows the plan and does the onboarding there. What's in the tree:
+
+- `/onboarding?session_id=…` is every checkout's success URL now. The page
+  reads the session (`readCheckoutIdentity`), runs `ensureSubscription` as
+  the backstop, works out the service from metadata, creates or loads the
+  chat record, renders `OnboardingChat` (transcript + composer, checklist
+  sidebar / collapsed bar at 390px).
+- Agent: `src/lib/onboarding-chat/agent.ts`; copy and field lists:
+  `src/content/onboarding-chat.ts`; store: Netlify Blobs / local JSON.
+  Handoff: `completeOnboarding` in `ghl-contacts.ts` (note + tags
+  `fynd-onboarding-complete`, `fynd-onboarding-complete:<service>` + pipeline
+  move + the three existing custom fields).
+- Webhook now tags per service (`fynd-paid` + `SERVICE_TAG`) and sends one
+  "here's your setup link" email per service through GHL
+  (`src/lib/ghl-email.ts`, `fynd-email:<service>` tag for idempotency).
+  New env: `ANTHROPIC_API_KEY`, `FYND_EMAIL_FROM`, `FYND_GBP_MANAGER_EMAIL`,
+  `FYND_KICKOFF_URL`. Deps added: `@anthropic-ai/sdk`, `@netlify/blobs`.
+- Verified: tsc + eslint clean; all six previews render; unpaid / missing
+  session shows the "couldn't find that payment" state. NOT verified: a
+  live model turn (no API key locally), a real Stripe success redirect, a
+  send through GHL (Luke stopped the test send), Blobs on Netlify.
+- Open: ANTHROPIC_API_KEY and the other env vars in Netlify; GHL dedicated
+  sending domain + DNS at Netlify for fynnd.co (none exists); which Google
+  account is `FYND_GBP_MANAGER_EMAIL`; nudges for stalled onboardings; a
+  way for Luke to get the uploaded files (they sit in the blob store).
+
+## Nov 17, 2026 — /onboarding is a list of steps, not a chat
+
+Luke: "I'm not sure if an AI chatbot is really necessary." The chat (agent,
+store, API routes, `OnboardingChat`, `onboarding-chat.ts`,
+`completeOnboarding`, the `@anthropic-ai/sdk` and `@netlify/blobs` deps,
+`ANTHROPIC_API_KEY`) is deleted; it had never run against the live API.
+
+- `/onboarding` renders `OnboardingSteps` from `src/content/onboarding-steps.ts`:
+  per-service steps from Luke's notes, a localStorage tick-off checklist,
+  "what happens next".
+- The $99 optimization now uses the same Google connect link as the others
+  (Luke's call, Nov 17), not the 8 manager-invite steps. `/optimize/thanks`
+  still shows the old steps but nothing lands there.
+- Website onboarding no longer mentions a kickoff call (`FYND_KICKOFF_URL`
+  removed); the steps are domain, domain access, content by email.
+- Emails rewritten to match (no chat wording; `EmailVars` now carries
+  `gbpAccessUrl` instead of `inviteEmail` / `managerEmail` / `kickoffUrl`).
+- `FYND_GBP_ACCESS_URL` set locally to the Grady Digital-branded
+  seo.gradydigital.com invitation link (temporary; Luke wants a Fynd one).
+- GHL form "Fynd Onboarding: Customer List & CRM" (`1NlBHd9hwJOW4D3vb7Pd`)
+  created through the API with two new contact fields, Fynd Customer List
+  (file, up to 5) and Fynd CRM (dropdown), plus the existing Fynd Other
+  Platform. Verified it embeds and prefills name/email at 390px. No GHL
+  notification/workflow on submission yet.
+- Open: both env vars in Netlify; a GHL workflow to notify Luke on submit.

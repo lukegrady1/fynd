@@ -9,11 +9,28 @@ import { ButtonLink } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Layout";
 import { nav } from "@/lib/brand";
 import { cn } from "@/lib/utils";
+import { track } from "@/lib/analytics";
+
+const trackCta = () => track("cta_click", { cta: nav.cta.label, section: "nav" });
+
+/*
+ * The logo on the homepage itself: a link to the page you're on does
+ * nothing visible, so scroll back to the top instead, smoothly unless the
+ * visitor asks for reduced motion (Luke, Nov 17, 2026). Elsewhere it's an
+ * ordinary link home.
+ */
+const toTopOnHome = (e: React.MouseEvent<HTMLAnchorElement>) => {
+  if (window.location.pathname !== "/" || e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+  e.preventDefault();
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" });
+  if (window.location.hash) history.replaceState(null, "", "/" + window.location.search);
+};
 
 /**
  * The site header: navy, the same 64px bar as `FunnelHeader` so the pages
  * that keep that one (the texted links) line up with these. The logo goes
- * home, the three services link across, "Book a call" on the right; on a
+ * home, the three services link across, "Run my free audit" on the right; on a
  * phone a menu button opens a navy sheet with the same links. The current
  * page's link is white, the rest dimmed.
  *
@@ -80,7 +97,7 @@ export function Nav() {
               scrolled ? "opacity-100" : "scale-[0.98] opacity-0",
             )}
           />
-          <Link href="/" aria-label="Fynd — home">
+          <Link href="/" aria-label="Fynd — home" onClick={toTopOnHome}>
             <Logo tone="light" priority />
           </Link>
 
@@ -101,8 +118,16 @@ export function Nav() {
           </nav>
 
           <div className="hidden lg:flex">
-            <ButtonLink href={nav.cta.href} arrow className="h-10 px-5 text-small shadow-blue sm:h-10">
+            <ButtonLink
+              href={nav.cta.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={trackCta}
+              arrow
+              className="h-10 px-5 text-small shadow-blue sm:h-10"
+            >
               {nav.cta.label}
+              <span className="sr-only"> {nav.cta.newTabSr}</span>
             </ButtonLink>
           </div>
 
@@ -144,11 +169,17 @@ export function Nav() {
               ))}
               <ButtonLink
                 href={nav.cta.href}
+                target="_blank"
+                rel="noopener noreferrer"
                 arrow
                 className="mt-6 w-full"
-                onClick={() => setOpen(false)}
+                onClick={() => {
+                  trackCta();
+                  setOpen(false);
+                }}
               >
                 {nav.cta.label}
+                <span className="sr-only"> {nav.cta.newTabSr}</span>
               </ButtonLink>
             </nav>
           </Container>

@@ -58,9 +58,19 @@ export const inviteEmail = (): string | null =>
   process.env.FYND_INVITE_EMAIL?.trim() || null;
 
 /**
- * The Google account a $99 /optimize customer adds as a Manager on their
- * Business Profile. Luke, Nov 13, 2026: gbp@gradydigital.com. The env var
- * overrides it; unlike `inviteEmail` it always has a real address.
+ * The one link every customer uses to give us access to their Google
+ * Business Profile (the white-labelled platform's connect link; the owner
+ * signs in with Google and accepts). Null when unset: the onboarding page
+ * and email then say the link is coming by email rather than show a dead
+ * button.
  */
-export const gbpManagerEmail = (): string =>
-  process.env.FYND_GBP_MANAGER_EMAIL?.trim() || "gbp@gradydigital.com";
+export const gbpAccessUrl = (): string | null =>
+  process.env.FYND_GBP_ACCESS_URL?.trim() || null;
+
+/**
+ * The GHL form on /onboarding with the customer-list upload and the CRM
+ * dropdown. Null when unset: the step says to reply to the welcome email
+ * with the list instead.
+ */
+export const onboardingFormId = (): string | null =>
+  process.env.GHL_ONBOARDING_FORM_ID?.trim() || null;

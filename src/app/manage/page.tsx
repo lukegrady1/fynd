@@ -13,10 +13,10 @@ import { JudgeReport } from "@/components/sections/manage/JudgeReport";
 import { TheMath } from "@/components/sections/manage/TheMath";
 import { ManageRoi } from "@/components/sections/manage/ManageRoi";
 import { ToolsReplaced } from "@/components/sections/manage/ToolsReplaced";
-import { WebsiteSection } from "@/components/sections/manage/WebsiteSection";
 import { ManagePricing } from "@/components/sections/manage/ManagePricing";
 import { FeatureTable } from "@/components/sections/manage/FeatureTable";
 import { ManageFaq } from "@/components/sections/manage/ManageFaq";
+import { FreeAudit } from "@/components/sections/manage/FreeAudit";
 import { ManageCloser } from "@/components/sections/manage/ManageCloser";
 
 /**
@@ -28,13 +28,14 @@ import { ManageCloser } from "@/components/sections/manage/ManageCloser";
  * (merchynt.com/paige) rebuilt in Fynd's branding, section for section
  * and in its order: the hero with the "new customer" call -> built for
  * busy owners (the two cards, three stats) -> "your business,
- * everywhere" (the channel ring) -> the first month in three steps ->
+ * everywhere" (the channel ring) -> the free profile audit (a link out
+ * to the tool, Luke, Nov 17, 2026; not the platform's) -> the first month in three steps ->
  * what to judge when, with the sample report -> the math -> the payoff
  * calculator (ours, not the platform's; Luke, Nov 16, 2026) -> the tools
  * replaced -> "every day you wait" with the $297 card (#convert) ->
- * every feature as one table -> the website (moved down from before the
- * price card, Luke, Nov 3, 2026; it is a $249 one-time add-on, not part
- * of the $297) -> FAQ -> closer. What the
+ * every feature as one table -> FAQ -> closer. (The $249 website
+ * section was removed Nov 17, 2026: the site has its own /website page
+ * in the nav now, Luke.) What the
  * platform's page has that this one leaves out on purpose is listed on
  * `manage` in copy.ts.
  *
@@ -64,6 +65,7 @@ export default async function ManagePage({
         <ManageHero targetId="convert" />
         <BusyOwners />
         <Everywhere />
+        <FreeAudit />
         <FirstMonth />
         <JudgeReport />
         <TheMath />
@@ -71,7 +73,6 @@ export default async function ManagePage({
         <ToolsReplaced />
         <ManagePricing cid={params.cid} />
         <FeatureTable />
-        <WebsiteSection />
         <ManageFaq />
         <ManageCloser targetId="convert" />
       </main>

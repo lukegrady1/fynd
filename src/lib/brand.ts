@@ -77,13 +77,22 @@ export const pillars: {
  * homepage and a footer link, "just kind of there if someone needs it".
  * /watch, /start and /call are never linked from anywhere.
  */
+/** The free Google Business Profile audit tool (Luke, Nov 17, 2026). */
+export const auditUrl = "https://audit.seo.fynnd.co";
+
 export const nav = {
   links: [
     { label: "Management", href: "/manage" },
     { label: "Reviews", href: "/reviews" },
     { label: "Website", href: "/website" },
   ],
-  cta: { label: "Book a call", href: "/demo" },
+  /**
+   * The free profile audit, not a call (Luke, Nov 17, 2026: "we don't
+   * really want to have calls. We want them just to kind of sell
+   * themselves"). Off-site, so it opens in a new tab. /demo still exists
+   * and the closers still link it.
+   */
+  cta: { label: "Run my free audit", href: auditUrl, newTabSr: "(opens in a new tab)" },
 } as const;
 
 /** The footer's services column: everything that can be bought, the $99 included. */

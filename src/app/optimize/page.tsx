@@ -29,7 +29,7 @@ import { WhyOngoing } from "@/components/sections/optimize/WhyOngoing";
  *
  * Indexable: a public price for a public service, like /website. The
  * checkout is a plain one-time payment — see `createOneTimeCheckoutSession`
- * — and `/optimize/thanks` is its own success page, not /start/welcome.
+ * — and its checkout lands on /onboarding like every other.
  */
 export const metadata: Metadata = {
   title: meta.optimize.title,

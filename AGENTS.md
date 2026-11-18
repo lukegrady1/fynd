@@ -73,8 +73,9 @@ The public pages link to each other now; the funnel links do not.
   purpose (Luke: "just kind of there if someone needs it"): it is a band on
   the homepage and a footer link (`footerServices`).
 - **`/reviews`** is the indexable Review System page: /watch's sections
-  with the `reviews` copy (no trial; $97/month on the `review-system`
-  plan). The /watch section components take a `copy` prop for this.
+  with the `reviews` copy (since Nov 17, 2026 the 7-day free trial,
+  plan `review-trial`, as on /watch; Luke retired the charge-today
+  checkout, and `/offer/reviews` now mints the trial too). The /watch section components take a `copy` prop for this.
 - **`/website`** is in /manage's shape: `WebsiteHero` with the drawn site,
   `BundleIncludes`, the first two weeks on `WatchTrialTimeline`,
   `ManagePricing` on the `website-reviews` plan, FAQ, closer. Copy is
@@ -136,6 +137,101 @@ is what rescues a paid customer whose subscription did not get made. It needs
 `STRIPE_WEBHOOK_SECRET`; without it the route 503s and the success page is the
 only thing creating subscriptions.
 
+### Onboarding steps — /onboarding (every checkout lands here)
+
+Since Nov 4, 2026 **every** Stripe success URL is `/onboarding?session_id=…`
+(all three `PLANS` and both `ONE_TIME` products in `stripe.ts`). The old
+landing pages (`/start/welcome`, `/manage/welcome`) still exist but
+nothing lands on them (`/optimize/thanks` was deleted Nov 17, 2026); `/onboarding` is now the
+`ensureSubscription` backstop they used to be. It was an AI chat from Nov 4;
+on Nov 17, 2026 Luke replaced it with a plain list of steps per service
+("I'm not sure if an AI chatbot is really necessary") and the chat code was
+deleted. Don't bring a chat back without asking.
+
+- **`src/lib/services.ts`** — `OnboardingService` (`reviews`,
+  `reviews-trial`, `website-reviews`, `manage`, `optimize`, `website`),
+  `serviceFromMetadata(session.metadata)`, the per-service GHL tag. The
+  billing shapes (`Plan`/`TrialPlan`/`OneTimeProduct`) are a different cut;
+  don't merge them.
+- **`src/content/onboarding-steps.ts`** — all the copy: the steps (Luke's
+  own onboarding notes, client-facing), which service gets which, the
+  "what happens next" lines, the page strings. Reviews / trial / manage:
+  Google access + customer list and CRM. Optimize: Google access only.
+  Website: get a domain, give access (GoDaddy delegate access to
+  `domainAccessEmail`, luke@gradydigital.com; Namecheap / Cloudflare /
+  Squarespace share access; anywhere else, reply to the welcome email with
+  the registrar login — Luke, Nov 17, 2026: he'd rather have the login
+  than have them update DNS themselves, so there is no "I'll do DNS
+  myself" option), send logo/photos/services/area/colors by replying to the
+  welcome email. Website + Reviews: both groups.
+- **`/onboarding/google-profile`** — how to create and verify a Google
+  Business Profile (Luke's salon-suite guide `gbp_setup.pdf`, made general:
+  signage first, create, Google's process, video verification), linked from the Google access step ("Don't have a Business Profile yet? Check out how to set one up →",
+  `helpLink`, opens in a new tab, so the page has no back link). Copy is
+  `createProfilePage`. Don't claim you can connect before
+  Google verifies (unconfirmed for the connect platform).
+- **`OnboardingSteps`** (`src/components/sections/onboarding/`) renders it,
+  with a tick-off checklist kept in the visitor's localStorage only (it
+  tells us nothing).
+- **Env:** `FYND_GBP_ACCESS_URL` is the one Google-profile connect link for
+  every customer (the white-labelled platform's); unset, the page and email
+  say the link comes by email within 1 business day.
+  `GHL_ONBOARDING_FORM_ID` is the GHL form "Fynd Onboarding: Customer List
+  & CRM" (`1NlBHd9hwJOW4D3vb7Pd`, Grady Digital location; created by API
+  Nov 17, 2026; fills contact fields `contact.fynd_customer_list` (file),
+  `contact.fynd_crm` (dropdown), `contact.fynd_other_platform`) embedded in the customer-list step from `GHL_EMBED_HOST`,
+  prefilled with email/name/phone from Stripe; unset, the step says to
+  reply to the welcome email with the list. Both read in `src/lib/connect.ts`.
+- **Dev preview:** `/onboarding?preview=<service>` renders that service's
+  steps with a stand-in customer. `NODE_ENV === "development"` only.
+- **The email** (`src/content/emails.ts`, sent by the webhook through GHL's
+  conversations API in `src/lib/ghl-email.ts`, idempotent by the tag
+  `fynd-email:<service>`) is the way back in: the same link, what to have
+  handy, the "what happens next" lines; the $99 email carries the access
+  link itself. It goes out from `FYND_EMAIL_FROM` (`Luke at Fynd
+  <luke@fynnd.co>`). Since Nov 17, 2026 the Grady Digital subaccount has
+  `mg.fynnd.co` as a verified dedicated sending domain (beside
+  `mg.gradydigital.com`), header "Luke at Fynd" / luke@fynnd.co; its SPF,
+  DKIM (`mailo._domainkey.mg`), CNAME, two MX and `_dmarc.mg` records are
+  in Netlify DNS (NS1). Every Domain Configuration slot (calendar, payments,
+  1:1, bulk, campaign, workflow, client portal, default, OTP) is 100%
+  mg.fynnd.co; gradydigital.com no longer sends (Luke: the subaccount is
+  kept only for its A2P registration). **GHL ignores `emailFrom` from the
+  API unless the location's Business Profile email is on the same domain**:
+  the Friendly Business Name is "Fynd" and the Business Email luke@fynnd.co
+  (Nov 17); the Legal Business Name stays "Grady Digital LLC" for A2P.
+  Verified with a test send: "Luke at Fynd <luke@fynnd.co>", delivered.
+  fynnd.co itself still has **no MX** (luke@fynnd.co can't receive mail
+  outside GHL). A separate `mail.fynnd.co` Mailgun setup in the zone is
+  the GHL agency-level account's (Luke, Nov 17, 2026); leave it alone.
+- Notifications (GHL workflows, published Nov 17, 2026, each an internal
+  app notification to Luke that opens the contact): "Onboarding form
+  submitted: notify Luke" (Form submitted = the onboarding form) and
+  "Subscription started: notify Luke" (Contact tag added = `fynd-paid`,
+  which the webhook puts on every subscription, trial included, and never
+  on a one-time purchase). Not built: stalled-onboarding nudges.
+- The connect link (`FYND_GBP_ACCESS_URL`) is the Fynd-branded
+  `seo.fynnd.co/external-gbp-invitation/…` since Nov 17, 2026 (was
+  seo.gradydigital.com), locally and in Netlify.
+
+### Free GBP audit — leads webhook (Nov 17, 2026)
+
+The free audit tool is `auditUrl` in `brand.ts` (audit.seo.fynnd.co, the
+white-labelled platform's; its `/light-audit/search` URL is the
+no-sign-in, embeddable version). The nav button, the homepage hero and
+closer, and the `FreeAudit` band (home, /reviews, /website with its own
+`bundle.page.audit` wording, /manage) all link out to it in a new tab.
+Its "GBP Audit Leads Webhook" setting points at
+`/api/webhooks/gbp-audit?key=<GBP_AUDIT_WEBHOOK_SECRET>`: the route
+reads whatever payload arrives (`src/lib/gbp-audit-lead.ts`, shape not
+documented to us, matched by key names), upserts the GHL contact (source
+"GBP Audit"), adds the tag `gbp-audit-lead` **as a separate call** (an
+upsert's `tags` replaces the contact's tags), and attaches the whole
+payload as a note. The GHL workflow "GBP audit lead: notify Luke"
+(Contact tag added = `gbp-audit-lead` → internal app notification to
+Luke, opens the contact) does the push. Keep the tag and the workflow in
+step.
+
 ### Permanent payment links — /offer/<slug>
 
 Stripe Checkout URLs die after 24 hours, so links texted to leads point at
@@ -183,9 +279,10 @@ without permission.
   that guard a one-time session has no `plan`, falls back to the review
   system, and gets a $97/month subscription hung on a $99 purchase. Keep
   the guard ahead of `readBilling`.
-- Success goes to `/optimize/thanks`, not `/start/welcome` (which opens the
-  subscription onboarding form). The webhook and the thanks page both write
-  the contact to GHL with tag `fynd-gbp-paid` and **no** pipeline card.
+- Success goes to `/onboarding` (the Google access step only). The
+  webhook writes the contact to GHL with tag `fynd-gbp-paid` and **no**
+  pipeline card. (`/optimize/thanks`, with its old manager-invite steps,
+  was deleted Nov 17, 2026.)
 - `OneTimeProduct` is a separate type from `Plan` in `stripe-plans.ts` on
   purpose; `CheckoutButton` accepts either (`Purchasable`).
 

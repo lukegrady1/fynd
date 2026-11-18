@@ -332,8 +332,12 @@ export const recordPaidCustomer = async (paid: {
   email: string;
   name?: string | null;
   phone?: string | null;
-  /** Defaults to the review system's. The $297 management plan tags "fynd-manage-paid". */
-  tag?: string;
+  /**
+   * "fynd-paid" plus the service's own tag ("fynd-manage-paid",
+   * "fynd-trial-started", ...), so a GHL workflow can branch per service.
+   * Defaults to "fynd-paid" alone.
+   */
+  tags?: string[];
 }): Promise<WriteResult> => {
   const config = ghlConfig();
   if (!config) {
@@ -351,7 +355,7 @@ export const recordPaidCustomer = async (paid: {
         ...(firstName ? { firstName, lastName } : {}),
         ...(paid.phone ? { phone: paid.phone } : {}),
         source: "Fynd checkout",
-        tags: [paid.tag ?? "fynd-paid"],
+        tags: paid.tags?.length ? paid.tags : ["fynd-paid"],
       },
     });
 
@@ -439,3 +443,80 @@ export const recordOneTimeCustomer = async (paid: {
     };
   }
 };
+
+
+/**
+ * A lead from the free GBP audit (audit.seo.fynnd.co): upsert the contact,
+ * tag it, and attach everything the audit tool sent as a note.
+ *
+ * The tag is what the GHL workflow "GBP audit lead: notify" triggers on to
+ * push a notification to the LeadConnector app, so keep the two in step.
+ * Keyed on email when there is one, else phone (GHL's upsert matches
+ * either); with neither there is nobody to follow up and nothing is
+ * written.
+ */
+export const recordAuditLead = async (lead: {
+  email: string | null;
+  phone: string | null;
+  name: string | null;
+  businessName: string | null;
+  website: string | null;
+  note: string;
+}): Promise<WriteResult> => {
+  const config = ghlConfig();
+  if (!config) {
+    return { status: "unconfigured", missing: "GHL_PIT / GHL_LOCATION_ID" };
+  }
+  if (!lead.email && !lead.phone) {
+    return { status: "failed", reason: "no email or phone in the payload" };
+  }
+
+  const { firstName, lastName } = splitName(lead.name ?? "");
+
+  try {
+    const result = await request(config, "/contacts/upsert", {
+      method: "POST",
+      body: {
+        locationId: config.locationId,
+        ...(lead.email ? { email: lead.email } : {}),
+        ...(lead.phone ? { phone: lead.phone } : {}),
+        ...(firstName ? { firstName, lastName } : {}),
+        ...(lead.businessName ? { companyName: lead.businessName } : {}),
+        ...(lead.website ? { website: lead.website } : {}),
+        source: "GBP Audit",
+      },
+    });
+
+    const contactId: string | undefined = result?.contact?.id;
+    if (!contactId) throw new Error("upsert returned no contact id");
+
+    // Added separately, not on the upsert: an upsert's `tags` REPLACES the
+    // contact's tags, and an existing customer who runs the audit would
+    // lose theirs. This adds one and leaves the rest.
+    await request(config, `/contacts/${contactId}/tags`, {
+      method: "POST",
+      body: { tags: [AUDIT_LEAD_TAG] },
+    });
+
+    // Best-effort: the contact and its tag (which fires the notification)
+    // are the part that matters; a lost note is logged, not fatal.
+    try {
+      await request(config, `/contacts/${contactId}/notes`, {
+        method: "POST",
+        body: { body: lead.note },
+      });
+    } catch (error) {
+      console.error("[gbp-audit] note not added:", error instanceof Error ? error.message : error);
+    }
+
+    return { status: "ok", contactId, opportunityId: null };
+  } catch (error) {
+    return {
+      status: "failed",
+      reason: error instanceof Error ? error.message : "unknown error",
+    };
+  }
+};
+
+/** On every audit lead; the notify workflow in GHL triggers on it. */
+export const AUDIT_LEAD_TAG = "gbp-audit-lead";

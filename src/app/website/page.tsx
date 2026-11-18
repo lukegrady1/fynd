@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
+import { formatAnchor, nextBillingAnchor } from "@/lib/billing-anchor";
 import { bundle, meta } from "@/content/copy";
 import { parseParams, type SearchParams } from "@/lib/params";
 import { PageTracking } from "@/components/sections/review/PageTracking";
 import { FunnelFooter } from "@/components/sections/review/PageChrome";
 import { Nav } from "@/components/site/Nav";
+import { FreeAudit } from "@/components/sections/manage/FreeAudit";
 import { WebsiteHero } from "@/components/sections/website/WebsiteHero";
 import { BundleIncludes } from "@/components/sections/review/BundleIncludes";
 import { WatchTrialTimeline } from "@/components/sections/review/WatchTrialTimeline";
@@ -36,6 +38,9 @@ export default async function WebsitePage({
   searchParams: Promise<SearchParams>;
 }) {
   const params = parseParams(await searchParams);
+  // The first $97's real date for a purchase today, worked out the way
+  // checkout does (billing-anchor.ts). The function stays on the server.
+  const { firstCharge, ...pricingCopy } = bundle.page.pricing;
 
   return (
     <>
@@ -45,10 +50,11 @@ export default async function WebsitePage({
       <main className="flex-1">
         <WebsiteHero targetId={CONVERT_ID} />
         <BundleIncludes />
+        <FreeAudit section="website_audit" copy={bundle.page.audit} />
         <WatchTrialTimeline targetId={CONVERT_ID} copy={bundle.page.firstWeeks} />
         <ManagePricing
           cid={params.cid}
-          copy={bundle.page.pricing}
+          copy={{ ...pricingCopy, card: { ...pricingCopy.card, anchorNote: firstCharge(formatAnchor(nextBillingAnchor())) } }}
           plan="website-reviews"
           price={bundle.price}
           section="website_pricing"
@@ -58,7 +64,6 @@ export default async function WebsitePage({
           heading={bundle.finalCta.heading}
           ctaLabel={bundle.finalCta.cta}
           targetId={CONVERT_ID}
-          withDemo
         />
       </main>
 
@@ -66,7 +71,7 @@ export default async function WebsitePage({
 
       {/* No $/mo on the pill: "$249/mo" would be wrong and "$97/mo" would
           hide the first charge. The card has both numbers. */}
-      <StickyCta ctaLabel="Start now" targetId={CONVERT_ID} showPrice={false} withDemo />
+      <StickyCta ctaLabel="Start now" targetId={CONVERT_ID} showPrice={false} />
     </>
   );
 }

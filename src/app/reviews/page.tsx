@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
-import { meta, offer, reviews } from "@/content/copy";
+import { meta, reviews } from "@/content/copy";
 import { parseParams, type SearchParams } from "@/lib/params";
 import { PageTracking } from "@/components/sections/review/PageTracking";
 import { FunnelFooter } from "@/components/sections/review/PageChrome";
 import { Nav } from "@/components/site/Nav";
+import { FreeAudit } from "@/components/sections/manage/FreeAudit";
 import { ReviewsHero } from "@/components/sections/review/ReviewsHero";
 import { TrustStrip } from "@/components/sections/review/TrustStrip";
 import { WatchHowItWorks } from "@/components/sections/review/WatchHowItWorks";
@@ -24,8 +25,9 @@ import { ManagePricing } from "@/components/sections/manage/ManagePricing";
  * video and the paid plan in place of the trial: hero -> trust strip ->
  * how it works -> the first week -> what to judge when, with the live
  * dashboard demo -> owners -> the price card (#convert, the anchored
- * `review-system` plan, like /start) -> every feature -> FAQ -> closer.
- * Copy is `reviews` in copy.ts, mostly `watch`'s with the trial words out.
+ * `review-trial` plan since Nov 17, 2026: the 7-day free trial, as on
+ * /watch; Luke retired the charge-today checkout) -> every feature -> FAQ
+ * -> closer. Copy is `reviews` in copy.ts, the trial wording from `watch`.
  *
  * Indexable, like /optimize and /manage, and in the site nav.
  */
@@ -54,12 +56,13 @@ export default async function ReviewsPage({
         <WatchHowItWorks targetId={CONVERT_ID} copy={reviews.busy} />
         <WatchTrialTimeline targetId={CONVERT_ID} copy={reviews.firstWeek} />
         <WatchProof targetId={CONVERT_ID} copy={reviews.judge} />
+        <FreeAudit section="reviews_audit" />
         <TestimonialBand />
         <ManagePricing
           cid={params.cid}
           copy={reviews.pricing}
-          plan="review-system"
-          price={offer.price}
+          plan="review-trial"
+          price={0}
           section="reviews_pricing"
           cancelPath="/reviews"
         />
@@ -76,7 +79,7 @@ export default async function ReviewsPage({
 
       <FunnelFooter />
 
-      <StickyCta ctaLabel={reviews.cta} targetId={CONVERT_ID} price={offer.price} />
+      <StickyCta ctaLabel={reviews.cta} targetId={CONVERT_ID} showPrice={false} />
     </>
   );
 }

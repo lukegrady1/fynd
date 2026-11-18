@@ -1,7 +1,7 @@
-import { Check, Star } from "lucide-react";
+import { ArrowUpRight, Check, Star } from "lucide-react";
 import { home } from "@/content/copy";
 import { Container } from "@/components/ui/Layout";
-import { ButtonLink } from "@/components/ui/Button";
+import { AuditLink } from "@/components/sections/manage/AuditLink";
 import { DottedWorldMap } from "@/components/textures/Textures";
 import { SearchMock } from "@/components/sections/manage/ManageHero";
 import { ScrollButton } from "@/components/sections/manage/ScrollButton";
@@ -58,14 +58,17 @@ export function HomeHero({ targetId }: { targetId: string }) {
                   section="hero"
                   className="h-12 w-full whitespace-nowrap px-3 text-small sm:h-14 sm:w-auto sm:px-8 sm:text-body"
                 />
-                <ButtonLink
-                  href={copy.call.href}
-                  variant="outlineLight"
-                  arrow
-                  className="h-12 w-full whitespace-nowrap px-3 text-small sm:h-14 sm:w-auto sm:px-8 sm:text-body"
+                <AuditLink
+                  section="home_hero"
+                  className="group inline-flex items-center justify-center gap-2 rounded-sm font-semibold transition-all duration-150 ease-fynd h-12 w-full whitespace-nowrap border-[1.5px] border-white px-3 text-small text-white hover:bg-white/10 sm:h-14 sm:w-auto sm:px-8 sm:text-body"
                 >
-                  {copy.call.label}
-                </ButtonLink>
+                  {copy.audit}
+                  <ArrowUpRight
+                    aria-hidden="true"
+                    strokeWidth={2}
+                    className="h-4 w-4 shrink-0 transition-transform duration-150 ease-fynd group-hover:-translate-y-[2px] group-hover:translate-x-[2px]"
+                  />
+                </AuditLink>
               </div>
               <p className="flex items-center gap-2.5 text-small font-semibold text-white/85">
                 <span className="flex gap-0.5" role="img" aria-label={copy.trustSr}>

@@ -10,6 +10,12 @@ import {
 } from "@/lib/stripe";
 import { notifyGhl } from "@/lib/ghl";
 import { recordOneTimeCustomer, recordPaidCustomer } from "@/lib/ghl-contacts";
+import { sendOnboardingEmail } from "@/lib/ghl-email";
+import { formatAnchor } from "@/lib/billing-anchor";
+import { gbpAccessUrl } from "@/lib/connect";
+import { siteOrigin } from "@/lib/site-origin";
+import type { EmailVars } from "@/content/emails";
+import { SERVICE_TAG, serviceFromMetadata, type OnboardingService } from "@/lib/services";
 
 /**
  * Stripe webhook receiver.
@@ -22,6 +28,12 @@ import { recordOneTimeCustomer, recordPaidCustomer } from "@/lib/ghl-contacts";
  * Everything here is idempotent. Stripe delivers at-least-once, and the
  * success page races this on every normal checkout, so duplicate work is the
  * expected case rather than an edge one.
+ *
+ * It is also the one place the onboarding email is sent from (the "here's
+ * your setup link" email that brings a customer back to /onboarding). The
+ * success page doesn't send it: it races this route, and the email's
+ * idempotency is a tag check, not a key, so one sender keeps it to one
+ * email.
  */
 
 /** Signature verification needs the exact bytes Stripe signed. */
@@ -57,11 +69,12 @@ export const POST = async (request: Request) => {
   }
 
   const session = event.data.object as Stripe.Checkout.Session;
+  const origin = siteOrigin(request);
   const result = await ensureSubscription(session.id);
 
   // A one-time purchase: nothing to build, just the contact to record.
   if (result.status === "none") {
-    return oneTimePurchase(session);
+    return oneTimePurchase(session, origin);
   }
 
   if (result.status === "error" || result.status === "unconfigured") {
@@ -75,25 +88,29 @@ export const POST = async (request: Request) => {
     return NextResponse.json({ error: "Retry." }, { status: 500 });
   }
 
+  const plan = session.metadata?.plan;
+  const service = serviceFromMetadata(session.metadata);
+  const email = session.customer_details?.email;
+
   // Open the onboarding card as soon as they pay, not when they get round to
   // the form. Runs on every delivery, not just first creation: the contact
   // write is idempotent, and a customer missing from GHL is worse than a
   // redundant upsert. Deliberately not fatal — Stripe must not retry forever
   // because GHL had a bad minute, and the subscription is already safe.
-  const plan = session.metadata?.plan;
-  const email = session.customer_details?.email;
   if (email) {
     const written = await recordPaidCustomer({
       email,
       name: session.customer_details?.name,
       phone: session.customer_details?.phone,
-      ...(plan === "gbp-management" ? { tag: "fynd-manage-paid" } : {}),
+      tags: ["fynd-paid", SERVICE_TAG[service]],
     });
     if (written.status !== "ok") {
       console.error(
         "[stripe-webhook] paid customer not written to GHL:",
         JSON.stringify({ session: session.id, email, written }),
       );
+    } else {
+      await sendEmail(service, written.contactId, email, session, origin);
     }
   } else {
     console.error("[stripe-webhook] no email on session", session.id);
@@ -127,11 +144,12 @@ export const POST = async (request: Request) => {
 
 /**
  * The $99 profile optimization and anything else sold once. Tags the contact
- * so a GHL workflow can send the access steps; no pipeline card, because the
- * onboarding pipeline is the subscription's. Non-fatal like the subscription
- * path's GHL write, and the thank-you page makes the same write as a backstop.
+ * and sends the product's onboarding email (the setup-steps link); no pipeline card, because the onboarding pipeline is the
+ * subscription's. Non-fatal like the subscription path's GHL write, and the
+ * thank-you page makes the same contact write as a backstop (but never the
+ * email).
  */
-const oneTimePurchase = async (session: Stripe.Checkout.Session) => {
+const oneTimePurchase = async (session: Stripe.Checkout.Session, origin: string) => {
   const paid = await readOneTimeSession(session.id);
 
   if (paid.status !== "paid") {
@@ -157,6 +175,8 @@ const oneTimePurchase = async (session: Stripe.Checkout.Session) => {
         "[stripe-webhook] one-time customer not written to GHL:",
         JSON.stringify({ session: session.id, email: paid.email, written }),
       );
+    } else {
+      await sendEmail(serviceFromMetadata(session.metadata), written.contactId, paid.email, session, origin);
     }
   } else {
     console.error("[stripe-webhook] no email on session", session.id);
@@ -177,4 +197,58 @@ const oneTimePurchase = async (session: Stripe.Checkout.Session) => {
   );
 
   return NextResponse.json({ received: true, subscription: "none" });
+};
+
+/* ---------------- The email ---------------- */
+
+const SECONDS_PER_DAY = 24 * 60 * 60;
+
+/**
+ * Everything the email copy can mention, from the session alone. The
+ * onboarding link is the setup steps for this session's id, the trial end is the
+ * session's creation plus its `trial_days`, the deferred start is on the
+ * session as `deferred_start`; no second Stripe call needed.
+ */
+const emailVars = (session: Stripe.Checkout.Session, origin: string): EmailVars => {
+  const meta = session.metadata ?? {};
+  const name = session.customer_details?.name?.trim();
+  const trialDays = Number(meta.trial_days);
+  const deferredStart = Number(meta.deferred_start);
+
+  const onboarding = new URL("/onboarding", origin);
+  onboarding.searchParams.set("session_id", session.id);
+
+  return {
+    firstName: name ? name.split(/\s+/)[0] : null,
+    onboardingUrl: onboarding.toString(),
+    gbpAccessUrl: gbpAccessUrl(),
+    trialEndLabel:
+      meta.billing === "trial" && trialDays > 0
+        ? formatAnchor(session.created + trialDays * SECONDS_PER_DAY)
+        : null,
+    startsOnLabel: deferredStart > 0 ? formatAnchor(deferredStart) : null,
+  };
+};
+
+const sendEmail = async (
+  service: OnboardingService,
+  contactId: string,
+  email: string,
+  session: Stripe.Checkout.Session,
+  origin: string,
+) => {
+  const sent = await sendOnboardingEmail({
+    contactId,
+    email,
+    service,
+    vars: emailVars(session, origin),
+  });
+  if (sent.status === "sent") {
+    console.log("[stripe-webhook] onboarding email sent:", service, session.id);
+  } else if (sent.status !== "skipped") {
+    console.error(
+      "[stripe-webhook] onboarding email not sent:",
+      JSON.stringify({ session: session.id, service, email, sent }),
+    );
+  }
 };

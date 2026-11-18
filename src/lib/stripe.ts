@@ -103,6 +103,16 @@ const MANAGE_PRICE_ID =
 const TRIAL_PRICE_ID =
   process.env.STRIPE_PRICE_REVIEW_TRIAL_97 ?? "price_1UXpoj3sJGpur4Vmoxs6fwsk";
 
+/**
+ * "Fynd Website Hosting", $47/month (prod_VeHwDoaGQoaIul, live; created Nov
+ * 17, 2026). Hosting only, for a website customer who drops the Review
+ * System (the $97 includes hosting with this fee waived; /website says so).
+ * Not sold at checkout yet: move the customer's subscription onto this
+ * price in the Dashboard.
+ */
+export const HOSTING_PRICE_ID =
+  process.env.STRIPE_PRICE_HOSTING_47 ?? "price_1UczME3sJGpur4VmhHoaV6rm";
+
 const PLANS: Record<
   Plan,
   {
@@ -140,7 +150,7 @@ const PLANS: Record<
     priceId: REVIEW_PRICE_ID,
     // The Review System's own page is /reviews now; the homepage is a hub.
     cancelPath: "/reviews",
-    successPath: "/start/welcome",
+    successPath: "/onboarding",
     source: "reviews-page",
   },
   "website-reviews": {
@@ -152,7 +162,7 @@ const PLANS: Record<
       `Your website build, plus the Review System today through ${anchorLabel}. The Review System continues as a ${recurringLabel}/month subscription on ${anchorLabel}.`,
     priceId: REVIEW_PRICE_ID,
     cancelPath: "/website",
-    successPath: "/start/welcome",
+    successPath: "/onboarding",
     source: "website-page",
   },
   /**
@@ -172,7 +182,7 @@ const PLANS: Record<
       `Your first month, today through ${anchorLabel}. Continues as a ${recurringLabel}/month subscription on ${anchorLabel}.`,
     priceId: MANAGE_PRICE_ID,
     cancelPath: "/manage",
-    successPath: "/manage/welcome",
+    successPath: "/onboarding",
     source: "manage-page",
   },
 };
@@ -618,7 +628,7 @@ const ONE_TIME: Record<
     description:
       "A one-time optimization of your Google Business Profile, done by a person. Nothing recurring.",
     path: "/optimize",
-    successPath: "/optimize/thanks",
+    successPath: "/onboarding",
     source: "optimize-page",
   },
   /**
@@ -633,10 +643,7 @@ const ONE_TIME: Record<
     description:
       "A complete website built for you, once. Hosting and updates are part of your plan after that. Nothing recurring.",
     path: "/manage",
-    // No thanks page for the build yet (Luke, Nov 3, 2026: "just remove
-    // that cycle for right now"): success lands back on /manage. The
-    // webhook records the customer; there is no page-side backstop.
-    successPath: "/manage",
+    successPath: "/onboarding",
     source: "website-build",
   },
 };
@@ -780,6 +787,55 @@ export const readOneTimeSession = async (
     }
     const message = stripeErrorMessage(error);
     console.error("[stripe] readOneTimeSession failed:", message);
+    return { status: "error", message };
+  }
+};
+
+export type CheckoutIdentity =
+  | {
+      status: "ok";
+      email: string;
+      name: string | null;
+      phone: string | null;
+      metadata: Record<string, string>;
+    }
+  | { status: "unpaid" }
+  | { status: "unconfigured" }
+  | { status: "error"; message: string };
+
+/**
+ * Who just checked out, for the onboarding chat. Any session shape: paid
+ * (`payment` mode), card saved (`setup` mode, deferred start), or a
+ * subscription made by Checkout itself (trial, same-day), all of which
+ * finish with `status: "complete"`. A missing or unfinished session is
+ * "unpaid", so a stray link shows "we couldn't find that payment" rather
+ * than a setup chat for nobody.
+ */
+export const readCheckoutIdentity = async (sessionId: string): Promise<CheckoutIdentity> => {
+  if (missingStripeEnv().length > 0) return { status: "unconfigured" };
+  try {
+    const session = await stripe().checkout.sessions.retrieve(sessionId);
+    const settled =
+      session.status === "complete" &&
+      (session.payment_status === "paid" || session.payment_status === "no_payment_required");
+    if (!settled) return { status: "unpaid" };
+    const email = session.customer_details?.email;
+    if (!email) return { status: "error", message: `session ${sessionId} has no email` };
+    return {
+      status: "ok",
+      email,
+      name: session.customer_details?.name ?? null,
+      phone: session.customer_details?.phone ?? null,
+      metadata: Object.fromEntries(
+        Object.entries(session.metadata ?? {}).filter((e): e is [string, string] => typeof e[1] === "string"),
+      ),
+    };
+  } catch (error) {
+    if (error instanceof Stripe.errors.StripeInvalidRequestError && error.code === "resource_missing") {
+      return { status: "unpaid" };
+    }
+    const message = stripeErrorMessage(error);
+    console.error("[stripe] readCheckoutIdentity failed:", message);
     return { status: "error", message };
   }
 };

@@ -4,6 +4,7 @@ import { parseParams, type SearchParams } from "@/lib/params";
 import { PageTracking } from "@/components/sections/review/PageTracking";
 import { FunnelFooter } from "@/components/sections/review/PageChrome";
 import { Nav } from "@/components/site/Nav";
+import { FreeAudit } from "@/components/sections/manage/FreeAudit";
 import { HomeHero } from "@/components/sections/home/HomeHero";
 import { HomeServices } from "@/components/sections/home/HomeServices";
 import { HomeCloser } from "@/components/sections/home/HomeCloser";
@@ -47,6 +48,7 @@ export default async function Home({
         <HomeHero targetId={SERVICES_ID} />
         <TrustStrip />
         <HomeServices id={SERVICES_ID} />
+        <FreeAudit section="home_audit" />
         {/* Full management's case: what it costs against a marketer, then
             what it's worth in the visitor's own numbers. */}
         <TheMath link={home.manageLink} topPad />
